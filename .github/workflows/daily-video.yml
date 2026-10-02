@@ -1,0 +1,41 @@
+name: Radar dos Games - Daily Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Tema opcional; AUTO deixa o pipeline escolher"
+        required: false
+        default: "AUTO"
+  schedule:
+    - cron: "15 11 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar-dos-games-daily
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Preparar pipeline
+        env:
+          RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
+        run: python src/pipeline.py --topic "$RADAR_TOPIC"
+      - name: Guardar diagnóstico
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-daily-${{ github.run_id }}
+          path: output/
+          retention-days: 7
