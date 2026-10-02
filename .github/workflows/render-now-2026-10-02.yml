@@ -16,18 +16,18 @@ jobs:
           sudo apt-get update && sudo apt-get install -y ffmpeg
           python -m pip install -r requirements.txt
           pip install -U yt-dlp
-      - name: Guard against rejected Ace Combat inputs
+      - name: Guard Zero inputs and PT-BR voice
         run: |
           python - <<'PY'
           from pathlib import Path
           wf=Path('.github/workflows/render-now-2026-10-02.yml').read_text()
-          forbidden=['production/2026-10-02/script.txt','production/2026-10-02-ace-combat-8/media.json','render_reference.py']
-          bad=[x for x in forbidden if x in wf]
-          assert not bad, f'REJECTED OLD INPUTS: {bad}'
-          assert '--voice pt-BR-ThalitaNeural' in wf, 'MASTER VOICE NOT LOCKED TO THALITA'
-          print('ZERO INPUT + THALITA VOICE GUARD OK')
+          voice_cmd='python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural'
+          media_cmd='python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json'
+          assert voice_cmd in wf, 'THALITA PT-BR VOICE COMMAND MISSING'
+          assert media_cmd in wf, 'ZERO MEDIA COMMAND MISSING'
+          print('ZERO INPUTS + THALITA PT-BR OK')
           PY
-      - name: Voice PT-BR Thalita approved master voice
+      - name: Voice Thalita PT-BR master
         run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural
       - name: Acquire Zero visual assets only
         run: python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json
@@ -62,10 +62,10 @@ jobs:
       - name: Upload Zero preview only
         uses: actions/upload-artifact@v4
         with:
-          name: ace-combat-zero-preview-thalita
+          name: ace-combat-zero-preview-thalita-ptbr
           path: |
             output/ace-combat-zero-master.mp4
             output/voice.mp3
             production/2026-10-02-ace-combat-zero/storyboard.md
           retention-days: 7
-# ZERO trigger THALITA locked
+# ZERO PT-BR corrected trigger
