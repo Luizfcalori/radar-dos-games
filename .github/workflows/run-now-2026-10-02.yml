@@ -1,0 +1,32 @@
+name: Radar dos Games - Run Now 2026-10-02
+on:
+  push:
+    paths:
+      - '.github/workflows/run-now-2026-10-02.yml'
+permissions:
+  contents: write
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ferramentas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install yt-dlp
+      - name: Pesquisa
+        run: python src/research.py
+      - name: Preparar produção de hoje
+        env:
+          RADAR_TOPIC: 'ACE COMBAT 8: WINGS OF THEVE'
+        run: python src/pipeline.py --topic "$RADAR_TOPIC"
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-games-2026-10-02
+          path: output/
+          retention-days: 7
