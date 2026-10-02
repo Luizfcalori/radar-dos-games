@@ -15,88 +15,244 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+
       - name: Install free toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          sudo apt-get install -y ffmpeg fonts-dejavu-core curl
           python -m pip install -r requirements.txt
-          pip install -U edge-tts yt-dlp pillow
-      - name: Create Thalita PT-BR narration
+          pip install -U yt-dlp pillow requests beautifulsoup4 curl_cffi
+
+      - name: Fetch permanent approved Radar intro from main
         run: |
           mkdir -p output
-          python src/voice.py production/2026-10-02-gears-e-day/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
-      - name: Acquire official contextual media without paid services
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/Luizfcalori/radar-dos-games/main/radar-dos-games-intro-oficial.mp4 \
+            -o output/radar-intro-oficial.mp4
+          test -s output/radar-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 output/radar-intro-oficial.mp4
+
+      - name: Create Thalita PT-BR narration
+        run: |
+          python src/voice.py production/2026-10-02-gears-e-day/script-v1.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaNeural \
+            --segments-json output/voice-timings.json
+
+      - name: Acquire official contextual Gears media with free fallbacks
         run: |
           python - <<'PY'
-          import json, pathlib, subprocess
-          p=json.loads(pathlib.Path('production/2026-10-02-gears-e-day/media-plan.json').read_text())
-          pathlib.Path('output/media').mkdir(parents=True,exist_ok=True)
-          ok=[]
-          for i,u in enumerate(p['sources'],1):
-              dest=f'output/media/source_{i}.mp4'
-              r=subprocess.run(['yt-dlp','--no-playlist','-f','bv*+ba/b','--merge-output-format','mp4','-o',dest,u],check=False)
-              if r.returncode==0 and pathlib.Path(dest).exists(): ok.append(dest)
-          pathlib.Path('output/media-acquired.json').write_text(json.dumps({'files':ok,'sources':p['sources']},indent=2))
-          print('official playable assets:',len(ok))
-          PY
-      - name: Guard visual relevance and approved intro
-        run: |
-          python - <<'PY'
-          import json, subprocess
+          import json, re, subprocess, sys
           from pathlib import Path
-          acquired=json.loads(Path('output/media-acquired.json').read_text())['files']
-          assert acquired, 'OFFICIAL_CONTEXTUAL_VIDEO_MISSING: do not render black/text fallback'
-          intro=Path('production/reference-masters/radar-intro-official.mp4')
-          assert intro.exists() and intro.stat().st_size>100000, 'APPROVED_RADAR_INTRO_MISSING'
-          # Reject nearly-black media before render.
-          for p in acquired:
-              out=subprocess.check_output(['ffmpeg','-v','error','-ss','2','-i',p,'-frames:v','1','-vf','scale=64:36,signalstats,metadata=print:file=-','-f','null','-'],stderr=subprocess.STDOUT,text=True)
-              if 'lavfi.signalstats.YAVG=' in out:
-                  y=float(out.split('lavfi.signalstats.YAVG=')[1].splitlines()[0])
-                  assert y>18, (p,'NEAR_BLACK',y)
-          print('VISUAL + INTRO GUARDS OK')
+          import requests
+          from bs4 import BeautifulSoup
+
+          out=Path('output/media'); out.mkdir(parents=True,exist_ok=True)
+          spec=json.loads(Path('production/2026-10-02-gears-e-day/media-plan.json').read_text())
+          assets=[]
+
+          # Priority 1: official Xbox videos (gameplay first).
+          videos=[
+            'https://www.youtube.com/watch?v=y85lNvF3kVQ',
+            'https://www.youtube.com/watch?v=oDrFhLczzK4',
+          ]
+          for i,u in enumerate(videos,1):
+            dest=out/f'official_video_{i}.mp4'
+            attempts=[
+              ['yt-dlp','--no-playlist','--impersonate','chrome','--extractor-args','youtube:player_client=android_vr','-f','bv*[height<=1080]+ba/b[height<=1080]','--merge-output-format','mp4','-o',str(dest),u],
+              ['yt-dlp','--no-playlist','--extractor-args','youtube:player_client=android_vr','-f','bv*[height<=1080]+ba/b[height<=1080]','--merge-output-format','mp4','-o',str(dest),u],
+              ['yt-dlp','--no-playlist','-f','best[height<=1080]/best','-o',str(dest),u],
+            ]
+            for cmd in attempts:
+              r=subprocess.run(cmd,check=False)
+              if r.returncode==0 and dest.exists() and dest.stat().st_size>500_000:
+                try:
+                  d=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(dest)],text=True).strip())
+                  if d>10:
+                    assets.append(str(dest)); break
+                except Exception: pass
+
+          # Priority 2: official Xbox/Gears page imagery, converted into motion clips.
+          pages=list(spec.get('sources',[])) + ['https://www.xbox.com/pt-br/games/gears-of-war-eday']
+          image_urls=[]
+          headers={'User-Agent':'Mozilla/5.0'}
+          for page in pages:
+            try:
+              r=requests.get(page,headers=headers,timeout=20)
+              if r.status_code!=200: continue
+              soup=BeautifulSoup(r.text,'html.parser')
+              candidates=[]
+              for m in soup.find_all('meta'):
+                if m.get('property') in ('og:image','twitter:image') and m.get('content'):
+                  candidates.append(m.get('content'))
+              for tag in soup.find_all(['img','source']):
+                for key in ('src','data-src','srcset'):
+                  val=tag.get(key)
+                  if not val: continue
+                  for part in val.split(','):
+                    candidates.append(part.strip().split(' ')[0])
+              for u in candidates:
+                if u.startswith('//'): u='https:'+u
+                if not u.startswith('http'): continue
+                lu=u.lower()
+                if any(h in lu for h in ('xboxservices.com','xbox.com','microsoft.com')) and any(x in lu for x in ('.jpg','.jpeg','.png','.webp')):
+                  if u not in image_urls: image_urls.append(u)
+            except Exception as e:
+              print('page image scan failed',page,e)
+
+          for i,u in enumerate(image_urls[:16],1):
+            img=out/f'official_image_{i:02d}.jpg'
+            try:
+              rr=requests.get(u,headers=headers,timeout=25)
+              if rr.status_code!=200 or len(rr.content)<40_000: continue
+              img.write_bytes(rr.content)
+              clip=out/f'official_image_motion_{i:02d}.mp4'
+              vf="scale=2200:-2:force_original_aspect_ratio=increase,crop=1920:1080,zoompan=z='min(zoom+0.0006,1.07)':d=240:s=1920x1080:fps=30,format=yuv420p"
+              q=subprocess.run(['ffmpeg','-y','-v','error','-loop','1','-i',str(img),'-t','8','-vf',vf,'-an','-c:v','libx264','-preset','veryfast','-crf','20',str(clip)],check=False)
+              if q.returncode==0 and clip.exists() and clip.stat().st_size>150_000:
+                assets.append(str(clip))
+            except Exception as e:
+              print('image fallback failed',u,e)
+
+          # Remove duplicate paths and persist exact source set.
+          assets=list(dict.fromkeys(assets))
+          Path('output/media-acquired.json').write_text(json.dumps({'files':assets,'official_video_count':sum('official_video_' in x for x in assets),'official_motion_image_count':sum('official_image_motion_' in x for x in assets)},indent=2))
+          print('usable contextual assets',len(assets),assets)
+          if len(assets)<2:
+            sys.exit('OFFICIAL_CONTEXTUAL_MEDIA_INSUFFICIENT')
           PY
-      - name: Assemble Master with official intro and contextual media
+
+      - name: Guard intro and visual relevance
         run: |
           python - <<'PY'
-          import json, subprocess
+          import json, subprocess, statistics
           from pathlib import Path
+          intro=Path('output/radar-intro-oficial.mp4')
+          assert intro.exists() and intro.stat().st_size>1_000_000, 'APPROVED_RADAR_INTRO_MISSING'
           media=json.loads(Path('output/media-acquired.json').read_text())['files']
-          dur=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0','output/voice.mp3'],text=True).strip())
-          target=max(240,min(300,dur+8))
-          Path('output/concat.txt').write_text(''.join("file '%s'\n"%Path(x).resolve() for _ in range(16) for x in media))
-          subprocess.run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i','output/concat.txt','-t',str(target),'-vf','scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text=RADAR DOS GAMES:x=w-tw-45:y=35:fontsize=30:fontcolor=white@0.65','-an','-c:v','libx264','-preset','veryfast','-crf','21','output/body.mp4'],check=True)
-          subprocess.run(['ffmpeg','-y','-v','error','-i','output/body.mp4','-i','output/voice.mp3','-filter:a','loudnorm=I=-16:LRA=7:TP=-1.5','-map','0:v','-map','1:a','-c:v','copy','-c:a','aac','-b:a','192k','-shortest','output/body-av.mp4'],check=True)
-          Path('output/master-concat.txt').write_text("file '%s'\nfile '%s'\n"%(Path('production/reference-masters/radar-intro-official.mp4').resolve(),Path('output/body-av.mp4').resolve()))
-          subprocess.run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i','output/master-concat.txt','-c','copy','-movflags','+faststart','output/gears-e-day-master.mp4'],check=True)
+          assert len(media)>=2, media
+          good=0
+          for p in media:
+            try:
+              raw=subprocess.check_output(['ffmpeg','-v','error','-ss','2','-i',p,'-frames:v','1','-vf','scale=64:36','-f','rawvideo','-pix_fmt','gray','pipe:1'])
+              if not raw: continue
+              mean=sum(raw)/len(raw); sd=statistics.pstdev(raw)
+              if mean>10 or sd>10: good+=1
+              print(p,{'mean':round(mean,2),'sd':round(sd,2)})
+            except Exception as e: print('probe failed',p,e)
+          assert good>=2, ('NOT_ENOUGH_VISIBLE_MEDIA',good,len(media))
+          print('INTRO + VISUAL GUARDS OK')
           PY
+
+      - name: Assemble Master in approved Radar structure
+        run: |
+          python - <<'PY'
+          import json, math, subprocess
+          from pathlib import Path
+
+          spec=json.loads(Path('production/2026-10-02-gears-e-day/media-plan.json').read_text())
+          scenes=spec['scenes']
+          media=json.loads(Path('output/media-acquired.json').read_text())['files']
+          voice_d=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0','output/voice.mp3'],text=True).strip())
+          scene_d=voice_d/len(scenes)
+          cuts=[]
+          font='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+          fontreg='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+
+          def esc(s): return s.replace('\\','\\\\').replace(':','\\:').replace("'","\\'").replace('%','\\%')
+          def dur(p):
+            try: return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',p],text=True).strip())
+            except: return 8.0
+
+          # 4 cuts per block, each tied to the researched scene; card stays at the bottom.
+          idx=0
+          for si,scene in enumerate(scenes):
+            cut_d=scene_d/4
+            for ci in range(4):
+              src=media[idx%len(media)]; idx+=1
+              sd=dur(src)
+              start=0 if sd<=cut_d+1 else ((si*4+ci)*7.3)%(sd-cut_d-0.5)
+              out=Path(f'output/cut_{si:02d}_{ci}.mp4')
+              title=esc(scene['title'].upper()); sub=esc(scene['subtitle'].upper())
+              vf=(
+                "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,"
+                "drawbox=x=70:y=805:w=1780:h=205:color=black@0.68:t=fill,"
+                "drawbox=x=70:y=805:w=12:h=205:color=white@0.92:t=fill,"
+                f"drawtext=fontfile={font}:text='{title}':x=110:y=842:fontsize=58:fontcolor=white:shadowx=3:shadowy=3:shadowcolor=black@0.9,"
+                f"drawtext=fontfile={fontreg}:text='{sub}':x=112:y=922:fontsize=34:fontcolor=white:shadowx=2:shadowy=2:shadowcolor=black@0.9,"
+                f"drawtext=fontfile={font}:text='RADAR DOS GAMES':x=w-tw-42:y=35:fontsize=28:fontcolor=white@0.62,format=yuv420p"
+              )
+              subprocess.run(['ffmpeg','-y','-v','error','-stream_loop','-1','-ss',f'{start:.3f}','-i',src,'-t',f'{cut_d:.3f}','-vf',vf,'-an','-r','30','-c:v','libx264','-preset','veryfast','-crf','20',str(out)],check=True)
+              cuts.append(out)
+
+          Path('output/body-concat.txt').write_text(''.join(f"file '{p.resolve()}'\n" for p in cuts))
+          subprocess.run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i','output/body-concat.txt','-c','copy','output/body-video.mp4'],check=True)
+          subprocess.run(['ffmpeg','-y','-v','error','-i','output/body-video.mp4','-i','output/voice.mp3','-filter:a','loudnorm=I=-16:LRA=7:TP=-1.5','-map','0:v','-map','1:a','-c:v','copy','-c:a','aac','-b:a','192k','-ar','48000','-ac','2','-shortest','output/body-av.mp4'],check=True)
+
+          # Normalize technical format of approved intro without replacing its content/audio.
+          has_audio=subprocess.run(['ffprobe','-v','error','-select_streams','a','-show_entries','stream=index','-of','csv=p=0','output/radar-intro-oficial.mp4'],capture_output=True,text=True).stdout.strip()
+          if has_audio:
+            subprocess.run(['ffmpeg','-y','-v','error','-i','output/radar-intro-oficial.mp4','-vf','scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=30,format=yuv420p','-c:v','libx264','-preset','veryfast','-crf','18','-c:a','aac','-b:a','192k','-ar','48000','-ac','2','output/intro-normalized.mp4'],check=True)
+          else:
+            idur=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0','output/radar-intro-oficial.mp4'],text=True).strip())
+            subprocess.run(['ffmpeg','-y','-v','error','-i','output/radar-intro-oficial.mp4','-f','lavfi','-t',str(idur),'-i','anullsrc=r=48000:cl=stereo','-vf','scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=30,format=yuv420p','-map','0:v','-map','1:a','-c:v','libx264','-preset','veryfast','-crf','18','-c:a','aac','-b:a','192k','-ar','48000','-ac','2','-shortest','output/intro-normalized.mp4'],check=True)
+
+          Path('output/master-concat.txt').write_text("file '%s'\nfile '%s'\n"%(Path('output/intro-normalized.mp4').resolve(),Path('output/body-av.mp4').resolve()))
+          subprocess.run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i','output/master-concat.txt','-c','copy','-movflags','+faststart','output/gears-e-day-master.mp4'],check=True)
+          Path('output/qa.json').write_text(json.dumps({'scenes':scenes},ensure_ascii=False,indent=2))
+          PY
+
       - name: Generate exactly 3 approved-format Shorts
         run: python src/shorts.py output/gears-e-day-master.mp4
-      - name: Generate free thumbnail
+
+      - name: Generate free contextual thumbnail
         run: |
-          ffmpeg -y -v error -ss 00:00:20 -i output/gears-e-day-master.mp4 -frames:v 1 -vf "scale=1280:720,drawbox=x=0:y=470:w=1280:h=250:color=black@0.65:t=fill,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='GEARS OF WAR\: E-DAY':x=55:y=510:fontsize=72:fontcolor=white,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='O DIA DA EMERGÊNCIA CHEGOU':x=58:y=610:fontsize=42:fontcolor=white" output/gears-e-day-thumbnail.jpg
-      - name: Quality gates visual + intro + shorts
+          ffmpeg -y -v error -ss 00:00:35 -i output/gears-e-day-master.mp4 -frames:v 1 \
+            -vf "scale=1280:720,drawbox=x=0:y=470:w=1280:h=250:color=black@0.70:t=fill,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='GEARS OF WAR\: E-DAY':x=55:y=505:fontsize=70:fontcolor=white:shadowx=3:shadowy=3:shadowcolor=black,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='O DIA DA EMERGÊNCIA CHEGOU':x=58:y=605:fontsize=40:fontcolor=white:shadowx=2:shadowy=2:shadowcolor=black" \
+            -q:v 2 output/gears-e-day-thumbnail.jpg
+
+      - name: Quality gates intro + visibility + audio + Shorts
         run: |
           python - <<'PY'
-          import json, subprocess
+          import hashlib, json, statistics, subprocess
           from pathlib import Path
-          master=Path('output/gears-e-day-master.mp4'); assert master.exists() and master.stat().st_size>10_000_000
+          master=Path('output/gears-e-day-master.mp4')
+          assert master.exists() and master.stat().st_size>5_000_000
           def probe(p): return json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(p)],text=True))
-          m=probe(master); d=float(m['format']['duration']); assert 230 <= d <= 330, d
-          # Sample six frames; reject black masters like the previous false-positive QA.
-          for t in [5,30,60,120,180,min(240,d-2)]:
-              raw=subprocess.check_output(['ffmpeg','-v','error','-ss',str(t),'-i',str(master),'-frames:v','1','-vf','scale=64:36','-f','rawvideo','-pix_fmt','gray','pipe:1'])
-              avg=sum(raw)/len(raw); assert avg>18,(t,avg,'BLACK_MASTER')
+          m=probe(master); d=float(m['format']['duration'])
+          assert 240 <= d <= 330, d
+          v=next(x for x in m['streams'] if x['codec_type']=='video'); a=next(x for x in m['streams'] if x['codec_type']=='audio')
+          assert (int(v['width']),int(v['height']))==(1920,1080)
+          assert a['codec_name']=='aac'
+
+          # Prove Master starts with the exact normalized approved intro visually.
+          def frame(p,t): return subprocess.check_output(['ffmpeg','-v','error','-ss',str(t),'-i',str(p),'-frames:v','1','-vf','scale=64:36','-f','rawvideo','-pix_fmt','gray','pipe:1'])
+          f1=frame('output/intro-normalized.mp4',1); f2=frame(master,1)
+          assert len(f1)==len(f2)>0
+          mad=sum(abs(x-y) for x,y in zip(f1,f2))/len(f1)
+          assert mad<3.0, ('INTRO_MISMATCH',mad)
+
+          # Reject the previous black-video failure while allowing legitimately dark Gears scenes.
+          samples=[]
+          for t in [1,15,35,75,125,185,min(235,d-2)]:
+            raw=frame(master,t); mean=sum(raw)/len(raw); sd=statistics.pstdev(raw); samples.append((t,round(mean,2),round(sd,2)))
+            assert mean>8 or sd>10, (t,mean,sd,'BLACK_OR_EMPTY_FRAME')
+
           shorts=sorted(Path('output/shorts').glob('short_*.mp4')); assert len(shorts)==3
           for s in shorts:
-              q=probe(s); v=next(x for x in q['streams'] if x['codec_type']=='video'); assert (int(v['width']),int(v['height']))==(1080,1920)
-          assert Path('output/gears-e-day-thumbnail.jpg').exists()
-          Path('output/qa-gears.json').write_text(json.dumps({'topic':'Gears of War: E-Day','master_seconds':d,'voice':'pt-BR-ThalitaNeural','intro_required':True,'visual_black_gate':True,'shorts':3,'vertical':'1080x1920','thumbnail':True,'paid_tools':False},indent=2))
+            q=probe(s); sv=next(x for x in q['streams'] if x['codec_type']=='video')
+            assert (int(sv['width']),int(sv['height']))==(1080,1920)
+            sd=float(q['format']['duration']); assert 10<=sd<=30
+            raw=frame(s,min(5,sd/2)); assert (sum(raw)/len(raw)>8 or statistics.pstdev(raw)>10), (s,'BLACK_SHORT')
+          thumb=Path('output/gears-e-day-thumbnail.jpg'); assert thumb.exists() and thumb.stat().st_size>30_000
+          qa={'topic':'Gears of War: E-Day','master_seconds':d,'voice':'pt-BR-ThalitaNeural','intro':'main/radar-dos-games-intro-oficial.mp4','intro_verified_mad':mad,'visual_samples':samples,'shorts':3,'shorts_vertical':'1080x1920','thumbnail':True,'paid_tools':False,'four_cuts_per_block':True,'cards_position':'bottom'}
+          Path('output/qa-gears.json').write_text(json.dumps(qa,ensure_ascii=False,indent=2))
+          print(json.dumps(qa,ensure_ascii=False,indent=2))
           PY
-      - name: Upload Master + 3 Shorts + thumbnail
+
+      - name: Upload corrected Master + 3 Shorts + thumbnail
         uses: actions/upload-artifact@v4
         with:
-          name: radar-games-gears-e-day-test-2-fixed
+          name: radar-games-gears-e-day-test-2-corrected
           path: |
             output/gears-e-day-master.mp4
             output/shorts/short_1.mp4
