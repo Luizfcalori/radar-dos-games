@@ -4,10 +4,11 @@ import os
 import sys
 
 REQUIRED = ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN")
+RADAR_CHANNEL_ID = "UCSZJZE-E10SVdx42wrDeWhw"
 RADAR_CHANNEL_TITLE = "Radar dos Games"
 
 
-def verify_channel(yt, expected_id=""):
+def verify_channel(yt, expected_id=RADAR_CHANNEL_ID):
     response = yt.channels().list(part="id,snippet", mine=True).execute()
     channels = response.get("items", [])
     if len(channels) != 1:
@@ -15,13 +16,9 @@ def verify_channel(yt, expected_id=""):
     channel = channels[0]
     cid = channel["id"]
     title = channel.get("snippet", {}).get("title", "")
-    if title.strip().casefold() != RADAR_CHANNEL_TITLE.casefold():
+    if cid != expected_id or title.strip().casefold() != RADAR_CHANNEL_TITLE.casefold():
         raise RuntimeError(
-            f"Canal autorizado diferente do Radar dos Games: {title} ({cid}). Nenhum upload foi feito."
-        )
-    if expected_id and cid != expected_id:
-        raise RuntimeError(
-            f"ID do canal autorizado diferente do Radar dos Games esperado. Nenhum upload foi feito."
+            f"Canal autorizado diferente do Radar dos Games: {title} ({cid}). Esperado: {RADAR_CHANNEL_TITLE} ({expected_id}). Nenhum upload foi feito."
         )
     return cid, title
 
@@ -39,8 +36,7 @@ def main():
         print("Dependências ausentes. Instale requirements.txt.")
         return 1
     try:
-        expected_id = os.environ.get("YT_CHANNEL_ID", "").strip()
-        cid, title = verify_channel(service(), expected_id)
+        cid, title = verify_channel(service())
     except RefreshError:
         print("OAuth recusado: token expirado/revogado ou cliente incompatível. Reautorize o canal.")
         return 1
