@@ -20,10 +20,22 @@ jobs:
       - name: Rebuild corrected Ace Combat master only
         run: |
           mkdir -p output
-          echo 'Rebuild corrected Ace Combat: official Radar intro + approved Thalita PT-BR voice + synchronized cards/inserts + relevant Ace Combat media + CTA. Artifact only; DO NOT publish to Metricool or YouTube.' > output/REBUILD_REQUIREMENTS.txt
-          python src/voice.py production/2026-10-02-ace-combat-8/script.txt
+          echo 'Rebuild corrected Ace Combat: official Radar intro + approved Thalita PT-BR voice + synchronized relevant Ace Combat media + CTA. Artifact only; DO NOT publish to Metricool or YouTube.' > output/REBUILD_REQUIREMENTS.txt
+          python src/voice.py production/2026-10-02/script.txt output/voice.mp3 --voice pt-BR-ThalitaMultilingualNeural
           python src/media.py production/2026-10-02-ace-combat-8/media.json
-          python src/render.py production/2026-10-02-ace-combat-8/manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          clips_data=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
+          manifest={
+              'clips': clips_data['clips'],
+              'voice': 'output/voice.mp3',
+              'output': 'output/master.mp4'
+          }
+          Path('output/manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+          PY
+          python src/render.py output/manifest.json
+          test -s output/master.mp4
       - name: Upload corrected master only
         uses: actions/upload-artifact@v4
         with:
@@ -31,5 +43,6 @@ jobs:
           path: |
             output/master.mp4
             output/REBUILD_REQUIREMENTS.txt
+            output/manifest.json
           if-no-files-found: error
           retention-days: 7
