@@ -15,16 +15,23 @@ Referência aprovada em 02/10/2026: `THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JA
 
 ## Layout visual obrigatório
 
-1. Cabeçalho superior azul-marinho escuro com `RADAR DOS GAMES` em branco.
+1. Cabeçalho superior escuro com `RADAR DOS GAMES` em branco.
 2. Headline principal em caixa alta, centralizada, branca, dentro de uma área preta no topo.
 3. Fundo vertical contextual derivado da própria mídia, desfocado e escurecido.
 4. Gameplay/imagem contextual no centro, preservando enquadramento; não usar crop vertical destrutivo.
-5. Moldura/acento ciano ao redor da mídia principal.
-6. Faixa contextual curta em ciano logo abaixo da mídia.
+5. Moldura/acento ao redor da mídia principal usando uma cor contextual retirada do próprio vídeo/jogo.
+6. Faixa contextual curta logo abaixo da mídia usando a mesma cor de destaque contextual.
 7. CTA inferior em duas linhas:
    - `VÍDEO COMPLETO NO CANAL` em branco.
-   - `RADAR DOS GAMES` em amarelo.
+   - `RADAR DOS GAMES` em destaque.
 8. Nada de logos de terceiros, templates pagos ou elementos visuais que dependam de créditos.
+
+## Regra de cor
+
+- **Ciano NÃO é uma cor fixa do padrão.** Ele apareceu na referência aprovada porque combinava com aquele corte específico.
+- A estrutura/composição é fixa; a cor de destaque é variável e deve acompanhar a identidade visual do jogo ou do trecho.
+- O gerador deve extrair localmente uma cor forte da própria mídia usando FFmpeg/Python.
+- Se não houver uma cor útil no trecho, usar branco neutro como fallback em vez de impor ciano ou qualquer outra cor fixa.
 
 ## Conteúdo
 
