@@ -1,0 +1,29 @@
+{
+  "project": "ace-combat-zero",
+  "output": {"width":1920,"height":1080,"fps":30},
+  "hard_rules": {
+    "reject_previous_ace_renders": true,
+    "intro_requires_original_audio": true,
+    "cards_require_semantic_match": true,
+    "no_random_timestamp_cards": true,
+    "voice": "same-approved-master-voice-gears-minecraft"
+  },
+  "segments": [
+    {"id":"intro","source":"radar-approved-master-intro","purpose":"Radar dos Games opening","audio":"preserve-original","card":null},
+    {"id":"launch","source":"official-launch-trailer","purpose":"2 Oct 2026 launch / return after seven years","card":"ACE COMBAT 8 — DECOLA HOJE"},
+    {"id":"conflict","source":"official-game-overview","purpose":"FCU vs Sotoa / Endurance / Wings of Theve","card":"UMA NAÇÃO OCUPADA"},
+    {"id":"joker","source":"official-campaign-footage","purpose":"Baxter, Tasha, Coster / Joker Flight","card":"JOKER FLIGHT"},
+    {"id":"combat","source":"official-walkthrough-trailer","purpose":"dogfights / high-G / wingman commands / dynamic weather","card":"COMBATE EM CÉUS VIVOS"},
+    {"id":"loadout","source":"official-walkthrough-trailer","purpose":"aircraft / weapons / customization","card":"ESCOLHA O CAÇA. MONTE O LOADOUT."},
+    {"id":"superweapons","source":"official-walkthrough-trailer","purpose":"colossal superweapon battles","card":"AMEAÇAS COLOSSAIS"},
+    {"id":"online","source":"official-online-101","purpose":"Air Base / cross-play / co-op / PvPvE","card":"O MAIOR MULTIPLAYER DA SÉRIE"},
+    {"id":"cta","source":"fresh-best-action-montage","purpose":"Radar CTA","card":"QUAL É O SEU CAÇA FAVORITO?"}
+  ],
+  "validation": [
+    "No input path may contain prior Ace Combat rendered master/artifact",
+    "Every footage segment must be independently sourced before render",
+    "Intro must contain an audible audio stream",
+    "Every card must be tied to the narration block and matching footage",
+    "Final render must be preview-only until user approval"
+  ]
+}
