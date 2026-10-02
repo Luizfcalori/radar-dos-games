@@ -3,7 +3,8 @@
 import os
 import sys
 
-REQUIRED = ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN", "YT_CHANNEL_ID")
+REQUIRED = ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN")
+RADAR_CHANNEL_ID = "UCP5NhO1fNzw-fSK1-xXz0jw"
 # Revalidar sempre antes de qualquer publicação automática.
 
 
@@ -14,7 +15,7 @@ def verify_channel(yt, expected):
         raise RuntimeError("Selecione exatamente um canal durante o consentimento OAuth.")
     channel = channels[0]
     if channel["id"] != expected:
-        raise RuntimeError("Canal autorizado diferente de YT_CHANNEL_ID. Nenhum upload foi feito.")
+        raise RuntimeError("Canal autorizado diferente do Radar dos Games. Nenhum upload foi feito.")
     return channel["id"]
 
 
@@ -31,7 +32,8 @@ def main():
         print("Dependências ausentes. Instale requirements.txt.")
         return 1
     try:
-        cid = verify_channel(service(), os.environ["YT_CHANNEL_ID"].strip())
+        expected = (os.environ.get("YT_CHANNEL_ID") or RADAR_CHANNEL_ID).strip()
+        cid = verify_channel(service(), expected)
     except RefreshError:
         print("OAuth recusado: token expirado/revogado ou cliente incompatível. Reautorize o canal.")
         return 1
@@ -42,10 +44,9 @@ def main():
         print(str(error))
         return 1
     except Exception:
-        # Raw exception text can include request/credential details.
         print("Falha de conexão OAuth/YouTube. Nenhum upload foi feito; tente a validação novamente.")
         return 1
-    print("OAuth VALIDADO: token renovado e canal esperado confirmado (" + cid + "). Nenhum upload feito.")
+    print("OAuth VALIDADO: token renovado e canal Radar dos Games confirmado (" + cid + "). Nenhum upload feito.")
     return 0
 
 
