@@ -48,3 +48,4 @@ jobs:
         run: python src/check_youtube.py
 
 # Final OAuth smoke-check trigger before scheduled automation on 2026-10-03.
+# Revalidate after refresh token replacement: 2026-10-02T23:32Z.
