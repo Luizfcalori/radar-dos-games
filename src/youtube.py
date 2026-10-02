@@ -6,6 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 SCOPES=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube.readonly']
+RADAR_CHANNEL_ID='UCSZJZE-E10SVdx42wrDeWhw'
 RADAR_CHANNEL_TITLE='Radar dos Games'
 
 
@@ -25,29 +26,19 @@ def service():
     return build('youtube','v3',credentials=c)
 
 
-def expected_channel_id():
-    # O ID correto deve ser gravado somente depois de confirmar o canal real.
-    # Enquanto isso, o nome exato do canal funciona como trava adicional.
-    return os.getenv('YT_CHANNEL_ID','').strip()
-
-
 def channel_identity(yt):
     r=yt.channels().list(part='id,snippet',mine=True).execute()
-    if not r.get('items'):
-        raise RuntimeError('Nenhum canal autenticado')
-    item=r['items'][0]
-    return item['id'],item['snippet']['title']
+    items=r.get('items',[])
+    if len(items) != 1:
+        raise RuntimeError('Selecione exatamente um canal durante o consentimento OAuth.')
+    item=items[0]
+    return item['id'],item.get('snippet',{}).get('title','')
 
 
 def assert_radar_channel(cid,title):
-    if title.strip().casefold() != RADAR_CHANNEL_TITLE.casefold():
+    if cid != RADAR_CHANNEL_ID or title.strip().casefold() != RADAR_CHANNEL_TITLE.casefold():
         raise RuntimeError(
-            f'CANAL INCORRETO: autenticado={title} ({cid}); esperado={RADAR_CHANNEL_TITLE}. Upload bloqueado.'
-        )
-    expected=expected_channel_id()
-    if expected and cid != expected:
-        raise RuntimeError(
-            f'CANAL INCORRETO: autenticado={title} ({cid}), esperado ID={expected}. Upload bloqueado.'
+            f'CANAL INCORRETO: autenticado={title} ({cid}); esperado={RADAR_CHANNEL_TITLE} ({RADAR_CHANNEL_ID}). Upload bloqueado.'
         )
 
 
