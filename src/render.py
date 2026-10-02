@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Renderizador editorial Radar dos Games: intro real + cenas semânticas + cards contextuais."""
+"""Renderizador editorial Radar dos Games no padrão visual aprovado."""
 import json
 import subprocess
 import sys
@@ -9,6 +9,33 @@ FPS = 30
 W = 1920
 H = 1080
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+# Padrão oficial aprovado no Master Ace Combat 8 (02/10/2026).
+WATERMARK_X = "w-tw-44"
+WATERMARK_Y = 30
+WATERMARK_SIZE = 24
+
+CARD_X = 62
+CARD_Y = 850
+CARD_W = 1240
+CARD_H = 138
+CARD_ACCENT_W = 10
+CARD_BG = "black@0.68"
+CARD_ACCENT = "0x00DCC8@0.96"
+CARD_IN = 0.45
+CARD_MAX_SECONDS = 5.8
+CARD_END_MARGIN = 0.15
+
+TITLE_X = 102
+TITLE_Y = 869
+TITLE_SIZE = 40
+SUBTITLE_X = 102
+SUBTITLE_Y = 927
+SUBTITLE_SIZE = 25
+SUBTITLE_COLOR = "0x7FE8FF"
+
+AUDIO_NORMALIZE = "loudnorm=I=-16:LRA=7:TP=-1.5"
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
 def sh(cmd):
@@ -29,10 +56,30 @@ def asset_map(items):
     result = {}
     for pos, item in enumerate(items, 1):
         if isinstance(item, str):
-            result[pos] = {"index": pos, "path": item, "type": "image" if Path(item).suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"} else "video"}
+            path = Path(item)
+            result[pos] = {
+                "index": pos,
+                "path": item,
+                "type": "image" if path.suffix.lower() in IMAGE_EXTENSIONS else "video",
+            }
         else:
             result[int(item.get("index", pos))] = item
     return result
+
+
+def is_video(asset) -> bool:
+    path = Path(asset["path"])
+    return asset.get("type", "image") != "image" and path.suffix.lower() not in IMAGE_EXTENSIONS
+
+
+def ordered_scene_indices(indices, assets):
+    """Gameplay/vídeo contextual vem antes da imagem, preservando ordem dentro de cada grupo."""
+    return sorted(indices, key=lambda idx: 0 if is_video(assets[idx]) else 1)
+
+
+def scene_sequence(indices, cuts=4):
+    """Cadência padrão: quatro cortes por bloco, ciclando a mídia disponível."""
+    return [indices[i % len(indices)] for i in range(cuts)]
 
 
 def render_piece(asset, duration: float, dest: Path, card=None, piece_no=0):
@@ -41,42 +88,50 @@ def render_piece(asset, duration: float, dest: Path, card=None, piece_no=0):
     if not path.exists():
         raise RuntimeError(f"Asset ausente: {path}")
 
-    # Movimento discreto e contínuo para imagens oficiais; vídeos são tratados como mídia em movimento.
-    if typ == "image" or path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
-        zoom_step = "0.00042" if piece_no % 2 else "0.00034"
-        base = (
-            f"scale={W}:{H}:force_original_aspect_ratio=increase,"
-            f"crop={W}:{H},"
-            f"zoompan=z='min(zoom+{zoom_step},1.10)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS},"
-            "format=yuv420p"
-        )
+    # Movimento discreto e contínuo para imagens; gameplay/vídeo mantém movimento original.
+    if typ == "image" or path.suffix.lower() in IMAGE_EXTENSIONS:
+        motion_filters = [
+            "zoompan=z='min(zoom+0.00055,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30",
+            "zoompan=z='min(zoom+0.00038,1.065)':x='max(0,min(iw-iw/zoom,iw/2-(iw/zoom/2)+35*sin(on/55)))':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30",
+            "zoompan=z='if(eq(on,0),1.075,max(zoom-0.00045,1.0))':x='iw/2-(iw/zoom/2)':y='max(0,min(ih-ih/zoom,ih/2-(ih/zoom/2)+20*sin(on/45)))':d=1:s=1920x1080:fps=30",
+            "zoompan=z='min(zoom+0.00045,1.07)':x='max(0,min(iw-iw/zoom,iw/2-(iw/zoom/2)-35*sin(on/60)))':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30",
+        ]
+        base = motion_filters[piece_no % len(motion_filters)] + ",format=yuv420p"
         input_args = ["-loop", "1", "-i", str(path)]
     else:
         base = f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},format=yuv420p"
         input_args = ["-stream_loop", "-1", "-i", str(path)]
 
     vf = base
-    # Marca discreta: nunca compete com o jogo.
     vf += (
         f",drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':"
-        "x=w-tw-42:y=30:fontsize=24:fontcolor=white@0.72:borderw=1:bordercolor=black@0.55:expansion=none"
+        f"x={WATERMARK_X}:y={WATERMARK_Y}:fontsize={WATERMARK_SIZE}:"
+        "fontcolor=white@0.72:borderw=1:bordercolor=black@0.55:expansion=none"
     )
 
     if card:
-        show_end = max(1.5, min(6.8, duration - 0.35))
+        show_end = max(1.2, min(duration - CARD_END_MARGIN, CARD_MAX_SECONDS))
         title = esc(card.get("title", ""))
         subtitle = esc(card.get("subtitle", ""))
-        enable = f"between(t,0.65,{show_end:.3f})"
-        vf += f",drawbox=x=66:y=h-226:w=1160:h=132:color=black@0.68:t=fill:enable='{enable}'"
-        vf += f",drawbox=x=66:y=h-226:w=9:h=132:color=0x00F5B8@0.95:t=fill:enable='{enable}'"
+        enable = f"between(t,{CARD_IN:.2f},{show_end:.3f})"
+
+        # A sombra/faixa pertence ao mesmo bloco do texto. Não mover separadamente.
         vf += (
-            f",drawtext=fontfile='{FONT}':text='{title}':x=104:y=h-207:fontsize=40:"
-            f"fontcolor=white:borderw=1:bordercolor=black@0.7:expansion=none:enable='{enable}'"
+            f",drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_W}:h={CARD_H}:"
+            f"color={CARD_BG}:t=fill:enable='{enable}'"
+        )
+        vf += (
+            f",drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_ACCENT_W}:h={CARD_H}:"
+            f"color={CARD_ACCENT}:t=fill:enable='{enable}'"
+        )
+        vf += (
+            f",drawtext=fontfile='{FONT}':text='{title}':x={TITLE_X}:y={TITLE_Y}:fontsize={TITLE_SIZE}:"
+            f"fontcolor=white:borderw=2:bordercolor=black@0.65:expansion=none:enable='{enable}'"
         )
         if subtitle:
             vf += (
-                f",drawtext=fontfile='{FONT}':text='{subtitle}':x=104:y=h-151:fontsize=25:"
-                f"fontcolor=0x63EFFF:borderw=1:bordercolor=black@0.7:expansion=none:enable='{enable}'"
+                f",drawtext=fontfile='{FONT}':text='{subtitle}':x={SUBTITLE_X}:y={SUBTITLE_Y}:fontsize={SUBTITLE_SIZE}:"
+                f"fontcolor={SUBTITLE_COLOR}:borderw=1:bordercolor=black@0.7:expansion=none:enable='{enable}'"
             )
 
     sh(
@@ -93,7 +148,7 @@ def normalize_intro(src: Path, dest: Path):
         [
             "ffmpeg", "-y", "-v", "error", "-i", str(src),
             "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,format=yuv420p",
-            "-af", "aresample=48000,pan=stereo|c0=c0|c1=c0",
+            "-af", "aresample=48000",
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
             "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2", str(dest),
         ]
@@ -123,17 +178,20 @@ def render(manifest_path):
 
     for scene_no, (timing, scene) in enumerate(zip(voice_segments, scenes), 1):
         duration = float(timing["duration"])
-        indices = [int(x) for x in scene.get("media_indices", [])]
-        if not indices:
+        raw_indices = [int(x) for x in scene.get("media_indices", [])]
+        if not raw_indices:
             raise RuntimeError(f"Cena {scene_no} sem mídia contextual")
-        missing = [x for x in indices if x not in assets]
+        missing = [x for x in raw_indices if x not in assets]
         if missing:
             raise RuntimeError(f"Cena {scene_no} aponta para assets ausentes: {missing}")
 
-        per_piece = duration / len(indices)
+        indices = ordered_scene_indices(raw_indices, assets)
+        sequence = scene_sequence(indices, cuts=4)
+        per_piece = duration / len(sequence)
         scene_piece_paths = []
-        for j, idx in enumerate(indices):
-            piece_duration = duration - per_piece * j if j == len(indices) - 1 else per_piece
+
+        for j, idx in enumerate(sequence):
+            piece_duration = duration - per_piece * j if j == len(sequence) - 1 else per_piece
             p = tmp / f"scene_{scene_no:02d}_{j+1:02d}.mp4"
             render_piece(
                 assets[idx],
@@ -150,7 +208,10 @@ def render(manifest_path):
                 "scene": scene_no,
                 "paragraph": scene.get("paragraph"),
                 "voice_duration": round(duration, 3),
-                "media_indices": indices,
+                "media_indices_original": raw_indices,
+                "media_indices_priority": indices,
+                "sequence": sequence,
+                "gameplay_first": any(is_video(assets[idx]) for idx in indices),
                 "title": scene.get("title"),
                 "pieces": scene_piece_paths,
             }
@@ -165,8 +226,8 @@ def render(manifest_path):
     sh(
         [
             "ffmpeg", "-y", "-v", "error", "-i", str(visuals), "-i", m["voice"],
-            "-map", "0:v:0", "-map", "1:a:0", "-shortest", "-c:v", "copy", "-c:a", "aac",
-            "-b:a", "192k", "-ar", "48000", "-ac", "2", str(body),
+            "-map", "0:v:0", "-map", "1:a:0", "-shortest", "-c:v", "copy", "-af", AUDIO_NORMALIZE,
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2", str(body),
         ]
     )
 
@@ -188,13 +249,19 @@ def render(manifest_path):
     )
     qa = {
         "master": str(out),
+        "standard": "radar-dos-games-ace-combat-8-approved-v1",
         "intro_source": str(intro),
         "intro_audio_preserved": True,
         "voice": timings.get("voice"),
         "semantic_timing_source": timings.get("source"),
         "scenes": qa_scenes,
+        "card_style": {
+            "x": CARD_X, "y": CARD_Y, "w": CARD_W, "h": CARD_H,
+            "title_x": TITLE_X, "title_y": TITLE_Y,
+            "subtitle_x": SUBTITLE_X, "subtitle_y": SUBTITLE_Y,
+            "shadow_attached_to_text": True,
+        },
         "probe": json.loads(probe),
-        "legacy_ace_input": False,
     }
     Path("output/qa.json").write_text(json.dumps(qa, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"master": str(out), "scenes": len(qa_scenes), "intro": str(intro)}, ensure_ascii=False))
