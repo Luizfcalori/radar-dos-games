@@ -18,7 +18,7 @@ jobs:
           pip install -U yt-dlp
       - name: Voice PT-BR
         run: python src/voice.py production/2026-10-02/script.txt output/voice.mp3
-      - name: Acquire relevant media only
+      - name: Acquire official visual assets
         run: python src/media.py production/2026-10-02-ace-combat-8/media.json
       - name: Build render manifest
         run: |
@@ -55,4 +55,4 @@ jobs:
             output/voice.mp3
             production/2026-10-02/meta.json
           retention-days: 7
-# trigger run 4 quality-safe 2026-10-02T13:22Z
+# trigger run 5 official animated assets
