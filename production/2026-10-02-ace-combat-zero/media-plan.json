@@ -3,27 +3,28 @@
   "hard_rule": "FORBIDDEN: any previous Ace Combat rendered MP4/artifact as input",
   "format": "1920x1080 30fps",
   "media": [
-    {"type":"video","url":"https://www.youtube.com/watch?v=JQYx_867ua0","role":"announcement / campaign / Wings of Theve"},
-    {"type":"video","url":"https://www.youtube.com/watch?v=vPqLcA9LQMo","role":"aircraft / action / current official footage"},
-    {"type":"video","url":"https://www.youtube.com/watch?v=P8CcpvBk46U","role":"online / Air Base / multiplayer"},
-    {"type":"video","url":"https://www.youtube.com/watch?v=RXUrp_hBwPQ","role":"walkthrough / combat / loadout / superweapons"},
-    {"type":"video","url":"https://www.youtube.com/watch?v=Jn_ZzfShvUc","role":"release / launch / aerial action"}
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfamoct9vf06ljpc6m5jxo","role":"official Bandai world map / FCU vs Sotoa"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfamu0t8yp06kaz5kio2o2","role":"official Bandai Endurance aircraft carrier"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfan0yt8yx06kamzsom30n","role":"official Bandai mission briefing / strategic operations"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfan7vt24007ll0g545t1i","role":"official Bandai F/A-18F loadout and 6AAM"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfankct2wp07li88toeyvt","role":"official Bandai Lux Lunae 55th Unit"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfanpyt24807ll1daos6m4","role":"official Bandai online combat / superweapon action"}
   ],
   "blocks": [
     {"id":"intro","source_type":"approved_radar_intro_with_audio","purpose":"Radar dos Games opening","card":null},
-    {"id":"launch","source_type":"new_official_launch_gameplay","visual":"fighter launch / aerial action / release trailer","card":"ACE COMBAT 8 — LANÇAMENTO MUNDIAL"},
-    {"id":"conflict","source_type":"new_official_campaign_material","visual":"FCU / Sotoa / Endurance / campaign cinematics","card":"FCU × REPÚBLICA DE SOTOA"},
-    {"id":"wings","source_type":"new_official_campaign_material","visual":"Wings of Theve / squad / Endurance operations","card":"WINGS OF THEVE"},
-    {"id":"combat","source_type":"new_official_walkthrough_gameplay","visual":"dogfight / missile evasion / high-G turns / dynamic clouds","card":"COMBATE AÉREO EM NOVA GERAÇÃO"},
-    {"id":"loadout","source_type":"new_official_walkthrough_gameplay","visual":"aircraft selection / special weapons / upgrade parts / briefing","card":"MONTE O CAÇA PARA CADA MISSÃO"},
-    {"id":"superweapons","source_type":"new_official_walkthrough_gameplay","visual":"colossal enemy weapons / chain destruction / elite ace squadrons","card":"SUPERARMAS E ESQUADRÕES DE ELITE"},
-    {"id":"online","source_type":"new_official_online101_material","visual":"Air Base / avatars / co-op assault / co-op warfare","card":"CROSS-PLAY • AIR BASE • ATÉ 100 PILOTOS"},
-    {"id":"cta","source_type":"new_ace_combat_gameplay","visual":"clean cinematic flight shot with room for Radar CTA","card":"RADAR DOS GAMES"}
+    {"id":"launch","source_type":"official_bandai_asset","visual":"Ace Combat 8 official imagery","card":"ACE COMBAT 8 — LANÇAMENTO MUNDIAL"},
+    {"id":"conflict","source_type":"official_bandai_asset","visual":"FCU / Sotoa world map","card":"FCU × REPÚBLICA DE SOTOA"},
+    {"id":"wings","source_type":"official_bandai_asset","visual":"Endurance operations","card":"WINGS OF THEVE"},
+    {"id":"combat","source_type":"official_bandai_asset","visual":"online aerial combat / superweapon action","card":"COMBATE AÉREO EM NOVA GERAÇÃO"},
+    {"id":"loadout","source_type":"official_bandai_asset","visual":"F/A-18F special weapons / 6AAM","card":"MONTE O CAÇA PARA CADA MISSÃO"},
+    {"id":"superweapons","source_type":"official_bandai_asset","visual":"Lux Lunae / strategic mission imagery","card":"SUPERARMAS E ESQUADRÕES DE ELITE"},
+    {"id":"online","source_type":"official_bandai_asset","visual":"official online combat imagery","card":"CROSS-PLAY • AIR BASE • ATÉ 100 PILOTOS"},
+    {"id":"cta","source_type":"official_bandai_asset","visual":"Endurance / clean official imagery","card":"RADAR DOS GAMES"}
   ],
   "edit_rules": [
-    "Cards are overlays over matching moving footage; never separate random slides",
-    "No card may appear unless narration and footage discuss the same subject",
-    "Do not stretch one clip across unrelated narration",
+    "Cards are overlays over matching footage or animated official imagery; never separate random slides",
+    "No card may appear unless narration and visual discuss the same subject",
+    "Use Ken Burns/pan/zoom movement on still official assets",
     "Preserve intro audio",
     "No legacy Ace Combat master is an allowed source"
   ]
