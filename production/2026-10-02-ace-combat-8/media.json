@@ -1,9 +1,12 @@
 {
   "media": [
-    {
-      "url": "https://www.youtube.com/watch?v=cW6zBuO7sb4",
-      "source": "Bandai Namco Entertainment America — Release Date Trailer",
-      "purpose": "material oficial de referência visual; usar trechos transformativos curtos sob narração/comentário"
-    }
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfamoct9vf06ljpc6m5jxo","type":"image","source":"Bandai Namco official game overview","purpose":"mapa do conflito"},
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfamu0t8yp06kaz5kio2o2","type":"image","source":"Bandai Namco official game overview","purpose":"porta-aviões Endurance"},
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfan0yt8yx06kamzsom30n","type":"image","source":"Bandai Namco official game overview","purpose":"missões e combate"},
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfan7vt24007ll0g545t1i","type":"image","source":"Bandai Namco official game overview","purpose":"loadout e armas"},
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfancvt9xa06ljoekc885f","type":"image","source":"Bandai Namco official game overview","purpose":"esquadrão"},
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfankct2wp07li88toeyvt","type":"image","source":"Bandai Namco official game overview","purpose":"Lux Lunae"},
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfanpyt24807ll1daos6m4","type":"image","source":"Bandai Namco official game overview","purpose":"gameplay multiplayer"},
+    {"url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfanvct2wx07lixi9pk0j1","type":"image","source":"Bandai Namco official game overview","purpose":"customização online"}
   ]
 }
