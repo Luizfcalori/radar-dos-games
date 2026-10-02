@@ -18,7 +18,7 @@ jobs:
           pip install -U yt-dlp
       - name: Voice PT-BR
         run: python src/voice.py production/2026-10-02/script.txt output/voice.mp3
-      - name: Download official media with free fallbacks
+      - name: Download official media with resilient free fallback
         run: python src/media.py production/2026-10-02-ace-combat-8/media.json
       - name: Build render manifest
         run: |
@@ -54,3 +54,4 @@ jobs:
             output/voice.mp3
             production/2026-10-02/meta.json
           retention-days: 7
+# trigger resilient fallback 2026-10-02
