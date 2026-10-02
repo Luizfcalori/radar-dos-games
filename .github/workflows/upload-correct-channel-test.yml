@@ -1,0 +1,73 @@
+name: YouTube - Teste canal correto
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/upload-correct-channel-test.yml
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+
+      - name: Baixar Short aprovado do run anterior
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-games-3-shorts-recovered-2026-10-02
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37074453506
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovered
+
+      - name: Localizar Short 01 e preparar metadata nao listada
+        run: |
+          SHORT=$(find recovered -type f -name 'short_1.mp4' | head -n 1)
+          test -n "$SHORT"
+          echo "SHORT_PATH=$SHORT" >> "$GITHUB_ENV"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          meta={
+            'title':'ACE COMBAT 8 CHEGOU! 7 ANOS DE ESPERA ACABARAM ✈️ #Shorts',
+            'description':'Ace Combat 8: Wings of Theve chegou em 2 de outubro de 2026 para PS5, Xbox Series X|S e PC. Confira o vídeo completo no Radar dos Games.\n\n#AceCombat8 #AceCombat #Gaming #RadarDosGames #Shorts',
+            'tags':['Ace Combat 8','Ace Combat','Wings of Theve','Radar dos Games','games','gaming','Shorts'],
+            'privacy':'unlisted',
+            'containsSyntheticMedia':False
+          }
+          Path('short-1-youtube.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Validar OAuth e canal exato sem publicar
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/check_youtube.py
+
+      - name: Publicar Short 01 como nao listado no Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py "$SHORT_PATH" short-1-youtube.json | tee youtube-upload-result.json
+
+      - name: Guardar resultado
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-correct-channel-test-${{ github.run_id }}
+          path: youtube-upload-result.json
+          retention-days: 2
