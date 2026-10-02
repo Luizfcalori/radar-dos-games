@@ -1,0 +1,25 @@
+{
+  "topic": "Gears of War: E-Day",
+  "date": "2026-10-02",
+  "source_policy": "official_public_contextual_only",
+  "sources": [
+    "https://news.xbox.com/en-us/2026/10/01/gears-of-war-e-day-early-access-launch-trailer-xbox/",
+    "https://news.xbox.com/pt-br/2026/10/02/o-que-faz-de-gears-of-war-uma-serie-iconica-nos-games-a-comunidade-brasileira-tem-a-resposta/",
+    "https://www.gearsofwar.com/en-us/news/e-day-gameplay-updates/",
+    "https://www.gearsofwar.com/en-us/news/multiplayer/"
+  ],
+  "scenes": [
+    {"title":"E-DAY JÁ COMEÇOU","subtitle":"ACESSO ANTECIPADO NO AR","keywords":["E-Day","Marcus Fenix","Dom Santiago"]},
+    {"title":"14 ANOS ANTES","subtitle":"A ORIGEM DA INVASÃO LOCUST","keywords":["Emergence Day","Locust","Kalona"]},
+    {"title":"GEARS RECONSTRUÍDO","subtitle":"UNREAL ENGINE 5","keywords":["Unreal Engine 5","gameplay"]},
+    {"title":"COBERTURA EVOLUIU","subtitle":"MAIS ALTURAS E DESTRUIÇÃO","keywords":["cover","low ground"]},
+    {"title":"MOVIMENTO MAIS LIVRE","subtitle":"SLIDE, SALTO E FLANCO","keywords":["movement","slide","jump"]},
+    {"title":"TIRO MAIS TÁTICO","subtitle":"BALÍSTICA E TROCA DE OMBRO","keywords":["weapons","ballistics"]},
+    {"title":"HORDE SIEGE","subtitle":"ATÉ 12 JOGADORES","keywords":["Horde Siege","multiplayer"]},
+    {"title":"CLASSES DE ESQUADRÃO","subtitle":"COOPERAÇÃO NO CENTRO","keywords":["Assault","Marksman","Medic","Breacher"]},
+    {"title":"VERSUS ESTÁ DE VOLTA","subtitle":"COMPETITIVO E SOCIAL","keywords":["Versus","PvP"]},
+    {"title":"LANÇAMENTO EM 6/10","subtitle":"XBOX, PC, STEAM E NUVEM","keywords":["October 6","Xbox","PC"]},
+    {"title":"HORROR DE VOLTA","subtitle":"LOCUSTS MAIS AMEAÇADORES","keywords":["Locust","horror"]},
+    {"title":"GEARS, MAS NOVO","subtitle":"ESSÊNCIA + MODERNIZAÇÃO","keywords":["Gears of War E-Day","Marcus","Dom"]}
+  ]
+}
