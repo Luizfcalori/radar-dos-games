@@ -51,6 +51,26 @@ jobs:
           open('output/shorts-qa.json','w').write(json.dumps(report,indent=2))
           print(report)
           PY
+      - name: Prepare metadata for Short 01
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          meta={
+            'title':'ACE COMBAT 8 CHEGOU! 7 ANOS DE ESPERA ACABARAM ✈️ #Shorts',
+            'description':'Ace Combat 8: Wings of Theve chegou em 2 de outubro de 2026 para PS5, Xbox Series X|S e PC. Confira o vídeo completo no Radar dos Games.\n\n#AceCombat8 #AceCombat #Gaming #RadarDosGames #Shorts',
+            'tags':['Ace Combat 8','Ace Combat','Wings of Theve','Radar dos Games','games','gaming','Shorts'],
+            'privacy':'unlisted',
+            'containsSyntheticMedia':False
+          }
+          Path('output/short-1-youtube.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Upload Short 01 to YouTube as unlisted
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-upload-result.json
       - name: Upload recovered Shorts artifact
         uses: actions/upload-artifact@v4
         with:
@@ -58,4 +78,6 @@ jobs:
           path: |
             output/shorts/*.mp4
             output/shorts-qa.json
+            output/short-1-youtube.json
+            output/youtube-upload-result.json
           retention-days: 7
