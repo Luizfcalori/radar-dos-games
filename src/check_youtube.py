@@ -16,9 +16,13 @@ def verify_channel(yt, expected_id=RADAR_CHANNEL_ID):
     channel = channels[0]
     cid = channel["id"]
     title = channel.get("snippet", {}).get("title", "")
-    if cid != expected_id or title.strip().casefold() != RADAR_CHANNEL_TITLE.casefold():
+    if title.strip().casefold() != RADAR_CHANNEL_TITLE.casefold():
         raise RuntimeError(
-            f"Canal autorizado diferente do Radar dos Games: {title} ({cid}). Esperado: {RADAR_CHANNEL_TITLE} ({expected_id}). Nenhum upload foi feito."
+            f"Canal autorizado diferente do Radar dos Games: {title} ({cid}). Nenhum upload foi feito."
+        )
+    if cid != expected_id:
+        raise RuntimeError(
+            f"ID do canal autorizado diferente do Radar dos Games: {cid}. Esperado: {expected_id}. Nenhum upload foi feito."
         )
     return cid, title
 
