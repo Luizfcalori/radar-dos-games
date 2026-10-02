@@ -6,6 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 SCOPES=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube.readonly']
+RADAR_CHANNEL_ID='UCP5NhO1fNzw-fSK1-xXz0jw'
 
 def service():
     required=['YT_CLIENT_ID','YT_CLIENT_SECRET','YT_REFRESH_TOKEN']
@@ -14,6 +15,11 @@ def service():
     c=Credentials(None,refresh_token=os.environ['YT_REFRESH_TOKEN'],token_uri='https://oauth2.googleapis.com/token',client_id=os.environ['YT_CLIENT_ID'],client_secret=os.environ['YT_CLIENT_SECRET'],scopes=SCOPES)
     return build('youtube','v3',credentials=c)
 
+def expected_channel_id():
+    # O ID do canal não é segredo. Mantemos o canal oficial travado no código
+    # para reduzir configuração e impedir upload acidental em outro canal.
+    return (os.getenv('YT_CHANNEL_ID') or RADAR_CHANNEL_ID).strip()
+
 def channel_id(yt):
     r=yt.channels().list(part='id,snippet',mine=True).execute()
     if not r.get('items'): raise RuntimeError('Nenhum canal autenticado')
@@ -21,8 +27,8 @@ def channel_id(yt):
 
 def upload(path,meta):
     yt=service(); cid,title=channel_id(yt)
-    expected=os.getenv('YT_CHANNEL_ID')
-    if not expected or cid != expected: raise RuntimeError(f'CANAL INCORRETO: autenticado={title} ({cid}), esperado={expected}')
+    expected=expected_channel_id()
+    if cid != expected: raise RuntimeError(f'CANAL INCORRETO: autenticado={title} ({cid}), esperado={expected}')
     body={'snippet':{'title':meta['title'],'description':meta['description'],'tags':meta.get('tags',[]),'categoryId':'20'},'status':{'privacyStatus':meta.get('privacy','public'),'selfDeclaredMadeForKids':False,'containsSyntheticMedia':bool(meta.get('containsSyntheticMedia',True))}}
     req=yt.videos().insert(part='snippet,status',body=body,media_body=MediaFileUpload(path,chunksize=-1,resumable=True))
     resp=None
