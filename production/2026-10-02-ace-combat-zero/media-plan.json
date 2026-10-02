@@ -2,30 +2,41 @@
   "project": "ACE COMBAT 8 ZERO BUILD",
   "hard_rule": "FORBIDDEN: any previous Ace Combat rendered MP4/artifact as input",
   "format": "1920x1080 30fps",
+  "minimum_assets": 12,
   "media": [
-    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfamoct9vf06ljpc6m5jxo","role":"official Bandai world map / FCU vs Sotoa"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfamoct9vf06ljpc6m5jxo","role":"official Bandai FCU / Sotoa world map"},
     {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfamu0t8yp06kaz5kio2o2","role":"official Bandai Endurance aircraft carrier"},
-    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfan0yt8yx06kamzsom30n","role":"official Bandai mission briefing / strategic operations"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfan0yt8yx06kamzsom30n","role":"official Bandai strategic mission briefing"},
     {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfan7vt24007ll0g545t1i","role":"official Bandai F/A-18F loadout and 6AAM"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfancvt9xa06ljoekc885f","role":"official Bandai squadron pilot / hangar"},
     {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfankct2wp07li88toeyvt","role":"official Bandai Lux Lunae 55th Unit"},
-    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfanpyt24807ll1daos6m4","role":"official Bandai online combat / superweapon action"}
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfanpyt24807ll1daos6m4","role":"official Bandai online combat / superweapon action"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmuhfanvct2wx07lixi9pk0j1","role":"official Bandai Air Base avatar customization"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmrwlrzb96u3u06lqcvr1hpxg","role":"official Bandai F/A-18F in flight"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmsf15gr53tdy07lci20tauwd","role":"official Bandai Su-57 aircraft imagery"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmtqeo2cy0wvw08lmdkg5efea","role":"official Bandai F-14A carrier hangar imagery"},
+    {"type":"image","url":"https://us-east-1-bandai.graphassets.com/AXzioIclSWilEjFtsMJPwz/cmtqest6c15pf08lmvw006lre","role":"official Bandai F-22A in cloudscape"}
   ],
-  "blocks": [
-    {"id":"intro","source_type":"approved_radar_intro_with_audio","purpose":"Radar dos Games opening","card":null},
-    {"id":"launch","source_type":"official_bandai_asset","visual":"Ace Combat 8 official imagery","card":"ACE COMBAT 8 — LANÇAMENTO MUNDIAL"},
-    {"id":"conflict","source_type":"official_bandai_asset","visual":"FCU / Sotoa world map","card":"FCU × REPÚBLICA DE SOTOA"},
-    {"id":"wings","source_type":"official_bandai_asset","visual":"Endurance operations","card":"WINGS OF THEVE"},
-    {"id":"combat","source_type":"official_bandai_asset","visual":"online aerial combat / superweapon action","card":"COMBATE AÉREO EM NOVA GERAÇÃO"},
-    {"id":"loadout","source_type":"official_bandai_asset","visual":"F/A-18F special weapons / 6AAM","card":"MONTE O CAÇA PARA CADA MISSÃO"},
-    {"id":"superweapons","source_type":"official_bandai_asset","visual":"Lux Lunae / strategic mission imagery","card":"SUPERARMAS E ESQUADRÕES DE ELITE"},
-    {"id":"online","source_type":"official_bandai_asset","visual":"official online combat imagery","card":"CROSS-PLAY • AIR BASE • ATÉ 100 PILOTOS"},
-    {"id":"cta","source_type":"official_bandai_asset","visual":"Endurance / clean official imagery","card":"RADAR DOS GAMES"}
+  "scenes": [
+    {"paragraph":1,"media_indices":[7,9],"title":"ACE COMBAT 8 JÁ DECOLOU","subtitle":"Lançamento mundial • 2 de outubro de 2026"},
+    {"paragraph":2,"media_indices":[1,2],"title":"UMA NAÇÃO OCUPADA","subtitle":"FCU × República de Sotoa"},
+    {"paragraph":3,"media_indices":[5,10],"title":"WINGS OF THEVE","subtitle":"Uma lenda que o novo ás precisa tornar real"},
+    {"paragraph":4,"media_indices":[11,5],"title":"JOKER FLIGHT","subtitle":"Liderança • rádio • laços de esquadrão"},
+    {"paragraph":5,"media_indices":[9,10],"title":"CÉUS DE NOVA GERAÇÃO","subtitle":"Unreal Engine 5 + tecnologia Bandai Namco Aces"},
+    {"paragraph":6,"media_indices":[12,2],"title":"CÉUS VIVOS","subtitle":"Clima e visibilidade interferem no combate"},
+    {"paragraph":7,"media_indices":[4,11],"title":"MONTE O CAÇA PARA A MISSÃO","subtitle":"Aeronave • armas • peças • configuração"},
+    {"paragraph":8,"media_indices":[8,7],"title":"O MAIOR ONLINE DA SÉRIE","subtitle":"Cross-play • Air Base • até 100 pilotos"},
+    {"paragraph":9,"media_indices":[7,6],"title":"QUATRO FORMAS DE LUTAR ONLINE","subtitle":"Co-op Assault • Warfare • Scramble • Emergency Sortie"},
+    {"paragraph":10,"media_indices":[6,9],"title":"CAMPANHA + ONLINE","subtitle":"Guerra cinematográfica, progressão e cooperação"},
+    {"paragraph":11,"media_indices":[10,12],"title":"A FÓRMULA ACE COMBAT","subtitle":"Velocidade • espetáculo • rádio • drama"},
+    {"paragraph":12,"media_indices":[2,3],"title":"RADAR DOS GAMES","subtitle":"Notícias • lançamentos • gameplays"}
   ],
   "edit_rules": [
-    "Cards are overlays over matching footage or animated official imagery; never separate random slides",
-    "No card may appear unless narration and visual discuss the same subject",
-    "Use Ken Burns/pan/zoom movement on still official assets",
-    "Preserve intro audio",
+    "Use the real approved Radar intro with its original audio and never reconstruct it with drawtext",
+    "Scene boundaries come from real narration paragraph durations, never arbitrary timestamps",
+    "Cards are overlays only on the matching narration scene",
+    "Each scene uses only official Bandai assets mapped to that subject",
+    "Use slow Ken Burns movement on still official assets",
     "No legacy Ace Combat master is an allowed source"
   ]
 }
