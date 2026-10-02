@@ -2,6 +2,13 @@
   "project": "ACE COMBAT 8 ZERO BUILD",
   "hard_rule": "FORBIDDEN: any previous Ace Combat rendered MP4/artifact as input",
   "format": "1920x1080 30fps",
+  "media": [
+    {"type":"video","url":"https://www.youtube.com/watch?v=JQYx_867ua0","role":"announcement / campaign / Wings of Theve"},
+    {"type":"video","url":"https://www.youtube.com/watch?v=vPqLcA9LQMo","role":"aircraft / action / current official footage"},
+    {"type":"video","url":"https://www.youtube.com/watch?v=P8CcpvBk46U","role":"online / Air Base / multiplayer"},
+    {"type":"video","url":"https://www.youtube.com/watch?v=RXUrp_hBwPQ","role":"walkthrough / combat / loadout / superweapons"},
+    {"type":"video","url":"https://www.youtube.com/watch?v=Jn_ZzfShvUc","role":"release / launch / aerial action"}
+  ],
   "blocks": [
     {"id":"intro","source_type":"approved_radar_intro_with_audio","purpose":"Radar dos Games opening","card":null},
     {"id":"launch","source_type":"new_official_launch_gameplay","visual":"fighter launch / aerial action / release trailer","card":"ACE COMBAT 8 — LANÇAMENTO MUNDIAL"},
