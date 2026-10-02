@@ -1,4 +1,4 @@
-name: Radar Games Render Now 2026-10-02
+name: Radar Games Ace Combat Zero
 on:
   push:
     paths:
@@ -16,43 +16,55 @@ jobs:
           sudo apt-get update && sudo apt-get install -y ffmpeg
           python -m pip install -r requirements.txt
           pip install -U yt-dlp
-      - name: Voice PT-BR
-        run: python src/voice.py production/2026-10-02/script.txt output/voice.mp3
-      - name: Acquire official visual assets
-        run: python src/media.py production/2026-10-02-ace-combat-8/media.json
-      - name: Build render manifest
+      - name: Guard against rejected Ace Combat inputs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          wf=Path('.github/workflows/render-now-2026-10-02.yml').read_text()
+          forbidden=['production/2026-10-02/script.txt','production/2026-10-02-ace-combat-8/media.json','render_reference.py']
+          bad=[x for x in forbidden if x in wf]
+          assert not bad, f'REJECTED OLD INPUTS: {bad}'
+          print('ZERO INPUT GUARD OK')
+          PY
+      - name: Voice PT-BR approved master voice
+        run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3
+      - name: Acquire Zero visual assets only
+        run: python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json
+      - name: Build Zero render manifest
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           data=json.loads(Path('output/clips.json').read_text())
           assert data.get('publishable_media') and not data.get('generic_fallback'), data
-          Path('output/render.json').write_text(json.dumps({'clips':data['clips'],'voice':'output/voice.mp3','output':'output/master.mp4'},indent=2))
+          Path('output/render.json').write_text(json.dumps({
+            'clips':data['clips'],
+            'voice':'output/voice.mp3',
+            'output':'output/ace-combat-zero-master.mp4',
+            'storyboard':'production/2026-10-02-ace-combat-zero/storyboard.md',
+            'asset_plan':'production/2026-10-02-ace-combat-zero/asset-plan.json'
+          },indent=2))
           PY
-      - name: Render master
+      - name: Render Ace Combat Zero master
         run: python src/render.py output/render.json
-      - name: Generate exactly 3 shorts
-        run: python src/shorts.py output/master.mp4
-      - name: Quality gates
+      - name: Quality gate
         run: |
           python - <<'PY'
           import subprocess
           from pathlib import Path
-          files=[Path('output/master.mp4')]+[Path(f'output/shorts/short_{i}.mp4') for i in range(1,4)]
-          assert all(x.exists() and x.stat().st_size>250000 for x in files), files
-          def dur(p): return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(p)],text=True))
-          md=dur(files[0]); assert md>=180, md
-          sd=[dur(x) for x in files[1:]]; assert len(sd)==3 and all(20<=x<=60 for x in sd), sd
-          print({'master_seconds':md,'short_seconds':sd})
+          p=Path('output/ace-combat-zero-master.mp4')
+          assert p.exists() and p.stat().st_size>250000, p
+          d=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(p)],text=True))
+          assert d>=180, d
+          print({'master_seconds':d,'bytes':p.stat().st_size})
           PY
-      - name: Upload final package
+      - name: Upload Zero preview only
         uses: actions/upload-artifact@v4
         with:
-          name: radar-games-final-2026-10-02
+          name: ace-combat-zero-preview
           path: |
-            output/master.mp4
-            output/shorts/*.mp4
+            output/ace-combat-zero-master.mp4
             output/voice.mp3
-            production/2026-10-02/meta.json
+            production/2026-10-02-ace-combat-zero/storyboard.md
           retention-days: 7
-# trigger run 5 official animated assets
+# ZERO trigger 2026-10-02 corrected pipeline
