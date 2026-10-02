@@ -15,10 +15,10 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
           python -m pip install -r requirements.txt
-          pip install yt-dlp
+          pip install -U yt-dlp
       - name: Voice PT-BR
         run: python src/voice.py production/2026-10-02/script.txt output/voice.mp3
-      - name: Download official media
+      - name: Download official media with free fallbacks
         run: python src/media.py production/2026-10-02-ace-combat-8/media.json
       - name: Build render manifest
         run: |
