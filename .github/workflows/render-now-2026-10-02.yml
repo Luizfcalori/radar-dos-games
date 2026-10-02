@@ -24,10 +24,11 @@ jobs:
           forbidden=['production/2026-10-02/script.txt','production/2026-10-02-ace-combat-8/media.json','render_reference.py']
           bad=[x for x in forbidden if x in wf]
           assert not bad, f'REJECTED OLD INPUTS: {bad}'
-          print('ZERO INPUT GUARD OK')
+          assert '--voice pt-BR-ThalitaNeural' in wf, 'MASTER VOICE NOT LOCKED TO THALITA'
+          print('ZERO INPUT + THALITA VOICE GUARD OK')
           PY
-      - name: Voice PT-BR approved master voice
-        run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3
+      - name: Voice PT-BR Thalita approved master voice
+        run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural
       - name: Acquire Zero visual assets only
         run: python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json
       - name: Build Zero render manifest
@@ -61,10 +62,10 @@ jobs:
       - name: Upload Zero preview only
         uses: actions/upload-artifact@v4
         with:
-          name: ace-combat-zero-preview
+          name: ace-combat-zero-preview-thalita
           path: |
             output/ace-combat-zero-master.mp4
             output/voice.mp3
             production/2026-10-02-ace-combat-zero/storyboard.md
           retention-days: 7
-# ZERO trigger 2026-10-02 corrected pipeline
+# ZERO trigger THALITA locked
