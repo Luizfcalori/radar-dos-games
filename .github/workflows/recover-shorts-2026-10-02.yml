@@ -19,8 +19,16 @@ jobs:
         run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
       - name: Acquire official Bandai assets
         run: python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json
-      - name: Build recovery master without deleted intro
+      - name: Build recovery master with temporary intro carrier
         run: |
+          ffmpeg -y -v error \
+            -loop 1 -i output/media/asset_07.jpg \
+            -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=48000 \
+            -t 0.5 -shortest \
+            -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,fps=30,setsar=1,format=yuv420p" \
+            -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p \
+            -c:a aac -b:a 192k -ar 48000 -ac 2 \
+            output/recovery-intro.mp4
           python - <<'PY'
           import json
           from pathlib import Path
@@ -29,7 +37,7 @@ jobs:
           spec=json.loads(Path('production/2026-10-02-ace-combat-zero/media-plan.json').read_text())
           assert len(media['assets'])==12
           assert len(voice['segments'])==12
-          Path('output/render-recovery.json').write_text(json.dumps({'assets':media['assets'],'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'','scenes':spec['scenes'],'output':'output/recovery-master.mp4','storyboard':'production/2026-10-02-ace-combat-zero/storyboard.md','asset_plan':'production/2026-10-02-ace-combat-zero/asset-plan.json'},ensure_ascii=False,indent=2))
+          Path('output/render-recovery.json').write_text(json.dumps({'assets':media['assets'],'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'output/recovery-intro.mp4','scenes':spec['scenes'],'output':'output/recovery-master.mp4','storyboard':'production/2026-10-02-ace-combat-zero/storyboard.md','asset_plan':'production/2026-10-02-ace-combat-zero/asset-plan.json'},ensure_ascii=False,indent=2))
           PY
           python src/render.py output/render-recovery.json
       - name: Generate exactly 3 Shorts
