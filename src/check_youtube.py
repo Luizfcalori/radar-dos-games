@@ -4,6 +4,7 @@ import os
 import sys
 
 REQUIRED = ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN", "YT_CHANNEL_ID")
+# Revalidar sempre antes de qualquer publicação automática.
 
 
 def verify_channel(yt, expected):
