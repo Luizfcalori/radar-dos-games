@@ -88,26 +88,29 @@ def render_piece(asset, duration: float, dest: Path, card=None, piece_no=0):
     if not path.exists():
         raise RuntimeError(f"Asset ausente: {path}")
 
-    # Movimento discreto e contínuo para imagens; gameplay/vídeo mantém movimento original.
+    # Regra permanente de enquadramento: a mídia principal fica SEMPRE 100% visível.
+    # O espaço excedente é preenchido com a própria mídia ampliada/desfocada ao fundo,
+    # evitando crop destrutivo em personagem, HUD, texto ou logo.
     if typ == "image" or path.suffix.lower() in IMAGE_EXTENSIONS:
-        motion_filters = [
-            "zoompan=z='min(zoom+0.00055,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30",
-            "zoompan=z='min(zoom+0.00038,1.065)':x='max(0,min(iw-iw/zoom,iw/2-(iw/zoom/2)+35*sin(on/55)))':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30",
-            "zoompan=z='if(eq(on,0),1.075,max(zoom-0.00045,1.0))':x='iw/2-(iw/zoom/2)':y='max(0,min(ih-ih/zoom,ih/2-(ih/zoom/2)+20*sin(on/45)))':d=1:s=1920x1080:fps=30",
-            "zoompan=z='min(zoom+0.00045,1.07)':x='max(0,min(iw-iw/zoom,iw/2-(iw/zoom/2)-35*sin(on/60)))':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30",
-        ]
-        base = motion_filters[piece_no % len(motion_filters)] + ",format=yuv420p"
         input_args = ["-loop", "1", "-i", str(path)]
     else:
-        base = f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},format=yuv420p"
         input_args = ["-stream_loop", "-1", "-i", str(path)]
 
-    vf = base
-    vf += (
-        f",drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':"
-        f"x={WATERMARK_X}:y={WATERMARK_Y}:fontsize={WATERMARK_SIZE}:"
-        "fontcolor=white@0.72:borderw=1:bordercolor=black@0.55:expansion=none"
+    base = (
+        f"[0:v]fps={FPS},split=2[bg0][fg0];"
+        f"[bg0]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+        "boxblur=28:14,eq=brightness=-0.18:saturation=0.88[bg];"
+        f"[fg0]scale={W}:{H}:force_original_aspect_ratio=decrease,setsar=1[fg];"
+        f"[bg][fg]overlay=(W-w)/2:(H-h)/2,"
     )
+
+    filters = [
+        (
+            f"drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':"
+            f"x={WATERMARK_X}:y={WATERMARK_Y}:fontsize={WATERMARK_SIZE}:"
+            "fontcolor=white@0.72:borderw=1:bordercolor=black@0.55:expansion=none"
+        )
+    ]
 
     if card:
         show_end = max(1.2, min(duration - CARD_END_MARGIN, CARD_MAX_SECONDS))
@@ -116,27 +119,28 @@ def render_piece(asset, duration: float, dest: Path, card=None, piece_no=0):
         enable = f"between(t,{CARD_IN:.2f},{show_end:.3f})"
 
         # A sombra/faixa pertence ao mesmo bloco do texto. Não mover separadamente.
-        vf += (
-            f",drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_W}:h={CARD_H}:"
-            f"color={CARD_BG}:t=fill:enable='{enable}'"
-        )
-        vf += (
-            f",drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_ACCENT_W}:h={CARD_H}:"
-            f"color={CARD_ACCENT}:t=fill:enable='{enable}'"
-        )
-        vf += (
-            f",drawtext=fontfile='{FONT}':text='{title}':x={TITLE_X}:y={TITLE_Y}:fontsize={TITLE_SIZE}:"
-            f"fontcolor=white:borderw=2:bordercolor=black@0.65:expansion=none:enable='{enable}'"
+        filters.extend(
+            [
+                f"drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_W}:h={CARD_H}:color={CARD_BG}:t=fill:enable='{enable}'",
+                f"drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_ACCENT_W}:h={CARD_H}:color={CARD_ACCENT}:t=fill:enable='{enable}'",
+                (
+                    f"drawtext=fontfile='{FONT}':text='{title}':x={TITLE_X}:y={TITLE_Y}:fontsize={TITLE_SIZE}:"
+                    f"fontcolor=white:borderw=2:bordercolor=black@0.65:expansion=none:enable='{enable}'"
+                ),
+            ]
         )
         if subtitle:
-            vf += (
-                f",drawtext=fontfile='{FONT}':text='{subtitle}':x={SUBTITLE_X}:y={SUBTITLE_Y}:fontsize={SUBTITLE_SIZE}:"
+            filters.append(
+                f"drawtext=fontfile='{FONT}':text='{subtitle}':x={SUBTITLE_X}:y={SUBTITLE_Y}:fontsize={SUBTITLE_SIZE}:"
                 f"fontcolor={SUBTITLE_COLOR}:borderw=1:bordercolor=black@0.7:expansion=none:enable='{enable}'"
             )
 
+    fc = base + ",".join(filters) + ",format=yuv420p[v]"
+
     sh(
         [
-            "ffmpeg", "-y", "-v", "error", *input_args, "-t", f"{duration:.3f}", "-vf", vf,
+            "ffmpeg", "-y", "-v", "error", *input_args, "-t", f"{duration:.3f}",
+            "-filter_complex", fc, "-map", "[v]",
             "-an", "-r", str(FPS), "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
             "-pix_fmt", "yuv420p", str(dest),
         ]
@@ -144,10 +148,11 @@ def render_piece(asset, duration: float, dest: Path, card=None, piece_no=0):
 
 
 def normalize_intro(src: Path, dest: Path):
+    # A intro oficial também é preservada integralmente; sem cortar bordas.
     sh(
         [
             "ffmpeg", "-y", "-v", "error", "-i", str(src),
-            "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,format=yuv420p",
+            "-vf", f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=black,fps={FPS},setsar=1,format=yuv420p",
             "-af", "aresample=48000",
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
             "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2", str(dest),
@@ -207,12 +212,15 @@ def render(manifest_path):
             {
                 "scene": scene_no,
                 "paragraph": scene.get("paragraph"),
+                "voice_start": timing.get("start"),
+                "voice_end": timing.get("end"),
                 "voice_duration": round(duration, 3),
                 "media_indices_original": raw_indices,
                 "media_indices_priority": indices,
                 "sequence": sequence,
                 "gameplay_first": any(is_video(assets[idx]) for idx in indices),
                 "title": scene.get("title"),
+                "subtitle": scene.get("subtitle"),
                 "pieces": scene_piece_paths,
             }
         )
@@ -249,11 +257,12 @@ def render(manifest_path):
     )
     qa = {
         "master": str(out),
-        "standard": "radar-dos-games-ace-combat-8-approved-v1",
+        "standard": "radar-dos-games-ace-combat-8-approved-v2-full-frame",
         "intro_source": str(intro),
         "intro_audio_preserved": True,
         "voice": timings.get("voice"),
         "semantic_timing_source": timings.get("source"),
+        "framing_policy": "full_source_visible; blurred_background_fill; no_destructive_crop",
         "scenes": qa_scenes,
         "card_style": {
             "x": CARD_X, "y": CARD_Y, "w": CARD_W, "h": CARD_H,
