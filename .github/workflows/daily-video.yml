@@ -20,20 +20,37 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-      - name: Instalar FFmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
-      - name: Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Preparar pipeline
+      - name: Instalar ferramentas gratuitas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install yt-dlp
+      - name: Pesquisar pautas atuais
+        run: python src/research.py
+      - name: Preparar pipeline seguro
         env:
           RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/pipeline.py --topic "$RADAR_TOPIC"
-      - name: Guardar diagnóstico
+      - name: Verificar configuração do YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          names=['YT_CLIENT_ID','YT_CLIENT_SECRET','YT_REFRESH_TOKEN','YT_CHANNEL_ID']
+          missing=[n for n in names if not os.getenv(n)]
+          print('YouTube OAuth:', 'PENDENTE: '+', '.join(missing) if missing else 'CONFIGURADO')
+          PY
+      - name: Guardar pesquisa e diagnóstico
         uses: actions/upload-artifact@v4
         with:
           name: radar-daily-${{ github.run_id }}
