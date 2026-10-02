@@ -1,6 +1,6 @@
 # Conectar o YouTube ao Radar dos Games
 
-Estado em 02/10/2026: o canal oficial está fixado no código como `UCP5NhO1fNzw-fSK1-xXz0jw` (Radar dos Games). O ID do canal não é segredo e não precisa mais ser salvo como GitHub Secret.
+Estado em 02/10/2026: o canal oficial confirmado é `UCSZJZE-E10SVdx42wrDeWhw` (Radar dos Games). O ID do canal não é segredo e está travado no código para impedir upload acidental em outro canal.
 
 ## Preparação pelo navegador, inclusive celular
 
@@ -15,12 +15,12 @@ Estado em 02/10/2026: o canal oficial está fixado no código como `UCP5NhO1fNzw
 6. Autorize somente os escopos:
    - https://www.googleapis.com/auth/youtube.upload
    - https://www.googleapis.com/auth/youtube.readonly
-7. Na autorização Google, escolha **Radar dos Games**, incluindo a conta de marca quando aplicável. Conclua o consentimento pessoalmente.
+7. Na autorização Google, escolha a identidade que realmente administra o canal **Radar dos Games**. Não conclua se a API retornar outro canal.
 8. No Step 2 do Playground, troque o código pelos tokens e obtenha o refresh token.
    Não envie códigos ou tokens pelo chat, nem os salve no repositório.
 9. Pelo próprio Playground, consulte:
    https://www.googleapis.com/youtube/v3/channels?part=id,snippet&mine=true
-   e confirme que o canal retornado é `Radar dos Games` com ID `UCP5NhO1fNzw-fSK1-xXz0jw`.
+   e confirme que o retorno é exatamente `Radar dos Games` com ID `UCSZJZE-E10SVdx42wrDeWhw`.
 10. Em https://github.com/Luizfcalori/radar-dos-games/settings/secrets/actions, salve somente estes três Repository Secrets:
 
 | Secret | Valor |
@@ -34,8 +34,9 @@ Estado em 02/10/2026: o canal oficial está fixado no código como `UCP5NhO1fNzw
 ## Segurança
 
 - `YT_CLIENT_SECRET` e `YT_REFRESH_TOKEN` nunca devem aparecer em commits, logs, issues ou chats.
-- O canal esperado fica travado no código. Mesmo com um OAuth válido, upload para outro canal é bloqueado.
+- O canal esperado fica travado no código por **nome e ID**. Mesmo com um OAuth válido, upload para outro canal é bloqueado.
 - O workflow de diagnóstico verifica apenas se os Secrets existem; não imprime os valores.
+- Um eventual Secret antigo `YT_CHANNEL_ID` não é usado como fonte de verdade; o ID oficial está fixado no código.
 
 Use credenciais OAuth próprias: as credenciais padrão do Playground não servem como configuração durável. Em apps externos no estado Testing, refresh tokens com esses escopos podem expirar conforme as regras do Google. Para operação contínua, mantenha o consentimento/configuração do projeto compatíveis com uso prolongado.
 
