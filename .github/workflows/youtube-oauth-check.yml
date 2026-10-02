@@ -46,3 +46,5 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
         run: python src/check_youtube.py
+
+# Final OAuth smoke-check trigger before scheduled automation on 2026-10-03.
