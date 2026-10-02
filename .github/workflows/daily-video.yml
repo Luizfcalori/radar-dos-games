@@ -1,14 +1,25 @@
-name: Radar dos Games - Daily Video
+name: Radar dos Games - Daily Auto Master + 3 Shorts
 
 on:
   workflow_dispatch:
     inputs:
       topic:
-        description: "Tema opcional; AUTO deixa o pipeline escolher"
+        description: "Tema opcional; AUTO deixa o Radar escolher a pauta mais atual"
         required: false
         default: "AUTO"
+      publish:
+        description: "Publicar no YouTube nesta execução manual"
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: "15 11 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/daily-video.yml"
+      - "src/auto_daily.py"
+      - "src/research.py"
 
 permissions:
   contents: write
@@ -18,36 +29,193 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  produce:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+
       - name: Instalar ferramentas gratuitas
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install yt-dlp
-      - name: Pesquisar pautas atuais
+          pip install -U yt-dlp
+
+      - name: Validar intro oficial permanente
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: Pesquisar pautas atuais nas fontes oficiais
         run: python src/research.py
-      - name: Preparar pipeline seguro
+
+      - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
           RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
-          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
-        run: python src/pipeline.py --topic "$RADAR_TOPIC"
-      - name: Verificar configuração do YouTube
+          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'public' || 'unlisted' }}
+        run: python src/auto_daily.py
+
+      - name: Criar narração Thalita PT-BR com timings semânticos
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaNeural \
+            --segments-json output/voice-timings.json
+
+      - name: Baixar mídia oficial/contextual
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Montar manifesto apenas com mídias validadas
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          spec = json.loads(Path("output/auto-media-plan.json").read_text(encoding="utf-8"))
+          media = json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
+          assets = media["assets"]
+          ok = [int(a["index"]) for a in assets]
+          assert len(ok) >= 2, ok
+          scenes = spec["scenes"]
+          for i, scene in enumerate(scenes):
+              a = ok[i % len(ok)]
+              b = ok[(i + 1) % len(ok)]
+              scene["media_indices"] = [a] if a == b else [a, b]
+          manifest = {
+              "assets": assets,
+              "voice": "output/voice.mp3",
+              "voice_timings": "output/voice-timings.json",
+              "intro": "radar-dos-games-intro-oficial.mp4",
+              "scenes": scenes,
+              "output": "output/master.mp4",
+          }
+          Path("output/render.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Renderizar Master no padrão aprovado
+        run: python src/render.py output/render.json
+
+      - name: Gerar exatamente 3 Shorts
+        run: python src/shorts.py output/master.mp4
+
+      - name: Quality gate Master + Shorts
+        run: |
+          python - <<'PY'
+          import glob
+          import json
+          import subprocess
+          from pathlib import Path
+          def probe(path):
+              return json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(path)], text=True))
+          master = Path("output/master.mp4")
+          assert master.exists() and master.stat().st_size > 3_000_000, master
+          m = probe(master)
+          md = float(m["format"]["duration"])
+          mv = next(x for x in m["streams"] if x["codec_type"] == "video")
+          assert 100 <= md <= 420, md
+          assert (int(mv["width"]), int(mv["height"])) == (1920, 1080)
+          assert any(x["codec_type"] == "audio" for x in m["streams"])
+          qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
+          assert qa["card_style"]["shadow_attached_to_text"] is True
+          assert qa["framing_policy"] == "full_source_visible; blurred_background_fill; no_destructive_crop"
+          assert qa["voice"] == "pt-BR-ThalitaNeural"
+          assert qa["semantic_timing_source"] == "paragraph_boundaries"
+          assert len(qa["scenes"]) == 8
+          shorts = sorted(glob.glob("output/shorts/short_*.mp4"))
+          assert len(shorts) == 3, shorts
+          report = []
+          for path in shorts:
+              p = probe(path)
+              d = float(p["format"]["duration"])
+              v = next(x for x in p["streams"] if x["codec_type"] == "video")
+              assert (int(v["width"]), int(v["height"])) == (1080, 1920), path
+              assert 10 <= d <= 65, (path, d)
+              assert any(x["codec_type"] == "audio" for x in p["streams"]), path
+              report.append({"file": path, "seconds": round(d, 2)})
+          Path("output/final-qa.json").write_text(json.dumps({"master_seconds": round(md, 2), "master": "1920x1080@30", "shorts": report, "status": "APPROVED"}, indent=2), encoding="utf-8")
+          print(Path("output/final-qa.json").read_text())
+          PY
+
+      - name: Verificar OAuth/canal do YouTube
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/check_youtube.py
-      - name: Guardar pesquisa e diagnóstico
+
+      - name: Publicar Master automaticamente no agendamento
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+
+      - name: Publicar Short 1 automaticamente no agendamento
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+
+      - name: Publicar Short 2 automaticamente no agendamento
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+
+      - name: Publicar Short 3 automaticamente no agendamento
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Registrar pauta publicada para não repetir
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          selected = json.loads(Path("output/selected.json").read_text(encoding="utf-8"))
+          p = Path("data/published.json")
+          history = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"videos": []}
+          history.setdefault("videos", []).append({"content_id": selected["content_id"], "title": selected["title"], "url": selected["url"], "published_at": datetime.now(timezone.utc).isoformat()})
+          history["videos"] = history["videos"][-200:]
+          p.write_text(json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published.json
+          git diff --cached --quiet || git commit -m "bot: registrar pauta publicada"
+          git push
+
+      - name: Guardar pacote final e diagnósticos
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: radar-daily-${{ github.run_id }}
-          path: output/
+          name: radar-daily-auto-${{ github.run_id }}
+          path: |
+            output/research.json
+            output/selected.json
+            output/auto-script.txt
+            output/auto-media-plan.json
+            output/clips.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/master.mp4
+            output/qa.json
+            output/final-qa.json
+            output/shorts/*.mp4
+            output/*youtube*.json
           retention-days: 7
