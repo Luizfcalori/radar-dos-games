@@ -1,0 +1,56 @@
+name: YouTube - Publicar 3 Shorts validados
+on:
+  push:
+    paths:
+      - .github/workflows/publish-existing-shorts.yml
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+      - name: Confirmar canal e tornar os 3 Shorts publicos
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          sys.path.insert(0, 'src')
+          from youtube import service, channel_identity, assert_radar_channel, RADAR_CHANNEL_ID
+
+          video_ids = ['qF_J0S_Ro24', 'iRGjt-366xQ', 'PTKLCEgdxTo']
+          yt = service()
+          cid, title = channel_identity(yt)
+          assert_radar_channel(cid, title)
+          print(f'Canal confirmado: {title} ({cid})')
+
+          for vid in video_ids:
+              listed = yt.videos().list(part='snippet,status', id=vid).execute().get('items', [])
+              if len(listed) != 1:
+                  raise RuntimeError(f'Video nao encontrado: {vid}')
+              item = listed[0]
+              owner = item.get('snippet', {}).get('channelId')
+              if owner != RADAR_CHANNEL_ID:
+                  raise RuntimeError(f'Video {vid} pertence a outro canal ({owner}); alteracao bloqueada.')
+              current = item.get('status', {})
+              status = {
+                  'privacyStatus': 'public',
+                  'license': current.get('license', 'youtube'),
+                  'embeddable': bool(current.get('embeddable', True)),
+                  'publicStatsViewable': bool(current.get('publicStatsViewable', True)),
+                  'selfDeclaredMadeForKids': bool(current.get('selfDeclaredMadeForKids', False)),
+                  'containsSyntheticMedia': bool(current.get('containsSyntheticMedia', False)),
+              }
+              updated = yt.videos().update(part='status', body={'id': vid, 'status': status}).execute()
+              print(json.dumps({'id': vid, 'channelId': owner, 'privacyStatus': updated.get('status', {}).get('privacyStatus')}, ensure_ascii=False))
+          PY
