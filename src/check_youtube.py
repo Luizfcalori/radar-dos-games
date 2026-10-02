@@ -4,19 +4,26 @@ import os
 import sys
 
 REQUIRED = ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN")
-RADAR_CHANNEL_ID = "UCP5NhO1fNzw-fSK1-xXz0jw"
-# Revalidar sempre antes de qualquer publicação automática.
+RADAR_CHANNEL_TITLE = "Radar dos Games"
 
 
-def verify_channel(yt, expected):
+def verify_channel(yt, expected_id=""):
     response = yt.channels().list(part="id,snippet", mine=True).execute()
     channels = response.get("items", [])
     if len(channels) != 1:
         raise RuntimeError("Selecione exatamente um canal durante o consentimento OAuth.")
     channel = channels[0]
-    if channel["id"] != expected:
-        raise RuntimeError("Canal autorizado diferente do Radar dos Games. Nenhum upload foi feito.")
-    return channel["id"]
+    cid = channel["id"]
+    title = channel.get("snippet", {}).get("title", "")
+    if title.strip().casefold() != RADAR_CHANNEL_TITLE.casefold():
+        raise RuntimeError(
+            f"Canal autorizado diferente do Radar dos Games: {title} ({cid}). Nenhum upload foi feito."
+        )
+    if expected_id and cid != expected_id:
+        raise RuntimeError(
+            f"ID do canal autorizado diferente do Radar dos Games esperado. Nenhum upload foi feito."
+        )
+    return cid, title
 
 
 def main():
@@ -32,8 +39,8 @@ def main():
         print("Dependências ausentes. Instale requirements.txt.")
         return 1
     try:
-        expected = (os.environ.get("YT_CHANNEL_ID") or RADAR_CHANNEL_ID).strip()
-        cid = verify_channel(service(), expected)
+        expected_id = os.environ.get("YT_CHANNEL_ID", "").strip()
+        cid, title = verify_channel(service(), expected_id)
     except RefreshError:
         print("OAuth recusado: token expirado/revogado ou cliente incompatível. Reautorize o canal.")
         return 1
@@ -46,7 +53,7 @@ def main():
     except Exception:
         print("Falha de conexão OAuth/YouTube. Nenhum upload foi feito; tente a validação novamente.")
         return 1
-    print("OAuth VALIDADO: token renovado e canal Radar dos Games confirmado (" + cid + "). Nenhum upload feito.")
+    print(f"OAuth VALIDADO: canal {title} confirmado ({cid}). Nenhum upload feito.")
     return 0
 
 
