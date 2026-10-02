@@ -3,6 +3,11 @@ on:
   push:
     paths:
       - '.github/workflows/render-now-2026-10-02.yml'
+      - 'src/media.py'
+      - 'src/render.py'
+      - 'src/voice.py'
+      - 'production/2026-10-02-ace-combat-zero/**'
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -29,7 +34,7 @@ jobs:
           PY
       - name: Voice Thalita PT-BR master
         run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural
-      - name: Acquire Zero visual assets only
+      - name: Acquire Zero visual assets with fallback
         run: python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json
       - name: Build Zero render manifest
         run: |
@@ -68,5 +73,4 @@ jobs:
             output/voice.mp3
             production/2026-10-02-ace-combat-zero/storyboard.md
           retention-days: 7
-# ZERO PT-BR corrected trigger
-# corrected fresh-media trigger 2026-10-02
+# SaveFrom fallback trigger
