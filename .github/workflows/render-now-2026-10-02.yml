@@ -34,7 +34,7 @@ jobs:
           PY
       - name: Voice Thalita PT-BR master
         run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural
-      - name: Acquire Zero visual assets with fallback
+      - name: Acquire Zero visual assets with SaveFrom fallback
         run: python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json
       - name: Build Zero render manifest
         run: |
@@ -73,4 +73,4 @@ jobs:
             output/voice.mp3
             production/2026-10-02-ace-combat-zero/storyboard.md
           retention-days: 7
-# SaveFrom fallback trigger
+# SaveFrom fallback execution 2
