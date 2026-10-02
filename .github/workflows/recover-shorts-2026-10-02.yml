@@ -1,0 +1,61 @@
+name: Recuperar 3 Shorts - 2026-10-02
+on:
+  push:
+    paths: ['.github/workflows/recover-shorts-2026-10-02.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          python -m pip install -r requirements.txt
+      - name: Voice Thalita PT-BR
+        run: python src/voice.py production/2026-10-02-ace-combat-zero/script-v1.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
+      - name: Acquire official Bandai assets
+        run: python src/media.py production/2026-10-02-ace-combat-zero/media-plan.json
+      - name: Build recovery master without deleted intro
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          media=json.loads(Path('output/clips.json').read_text())
+          voice=json.loads(Path('output/voice-timings.json').read_text())
+          spec=json.loads(Path('production/2026-10-02-ace-combat-zero/media-plan.json').read_text())
+          assert len(media['assets'])==12
+          assert len(voice['segments'])==12
+          Path('output/render-recovery.json').write_text(json.dumps({'assets':media['assets'],'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'','scenes':spec['scenes'],'output':'output/recovery-master.mp4','storyboard':'production/2026-10-02-ace-combat-zero/storyboard.md','asset_plan':'production/2026-10-02-ace-combat-zero/asset-plan.json'},ensure_ascii=False,indent=2))
+          PY
+          python src/render.py output/render-recovery.json
+      - name: Generate exactly 3 Shorts
+        run: python src/shorts.py output/recovery-master.mp4
+      - name: Quality gate Shorts
+        run: |
+          python - <<'PY'
+          import glob,json,subprocess
+          files=sorted(glob.glob('output/shorts/short_*.mp4'))
+          assert len(files)==3, files
+          report=[]
+          for f in files:
+            p=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',f],text=True))
+            v=next(x for x in p['streams'] if x['codec_type']=='video'); d=float(p['format']['duration'])
+            assert int(v['width'])==1080 and int(v['height'])==1920,(f,v['width'],v['height'])
+            assert 20<=d<=60,(f,d)
+            assert any(x['codec_type']=='audio' for x in p['streams']),f
+            report.append({'file':f,'seconds':d,'width':1080,'height':1920,'audio':True})
+          open('output/shorts-qa.json','w').write(json.dumps(report,indent=2))
+          print(report)
+          PY
+      - name: Upload recovered Shorts artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-games-3-shorts-recovered-2026-10-02
+          path: |
+            output/shorts/*.mp4
+            output/shorts-qa.json
+          retention-days: 7
