@@ -27,12 +27,11 @@ jobs:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: |
           python - <<'PY'
           import json, os
           from pathlib import Path
-          names=['YT_CLIENT_ID','YT_CLIENT_SECRET','YT_REFRESH_TOKEN','YT_CHANNEL_ID']
+          names=['YT_CLIENT_ID','YT_CLIENT_SECRET','YT_REFRESH_TOKEN']
           Path('oauth-presence.json').write_text(json.dumps({n: bool(os.environ.get(n,'').strip()) for n in names}, indent=2))
           PY
       - name: Salvar diagnóstico seguro
@@ -46,5 +45,4 @@ jobs:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/check_youtube.py
