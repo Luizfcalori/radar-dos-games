@@ -1,0 +1,56 @@
+name: Radar Games Render Now 2026-10-02
+on:
+  push:
+    paths:
+      - '.github/workflows/render-now-2026-10-02.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          python -m pip install -r requirements.txt
+          pip install yt-dlp
+      - name: Voice PT-BR
+        run: python src/voice.py production/2026-10-02/script.txt output/voice.mp3
+      - name: Download official media
+        run: python src/media.py production/2026-10-02-ace-combat-8/media.json
+      - name: Build render manifest
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          clips=json.loads(Path('output/clips.json').read_text())['clips']
+          Path('output/render.json').write_text(json.dumps({'clips':clips,'voice':'output/voice.mp3','output':'output/master.mp4'},indent=2))
+          PY
+      - name: Render master
+        run: python src/render.py output/render.json
+      - name: Generate exactly 3 shorts
+        run: python src/shorts.py output/master.mp4
+      - name: Quality gates
+        run: |
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          files=[Path('output/master.mp4')]+[Path(f'output/shorts/short_{i}.mp4') for i in range(1,4)]
+          assert all(x.exists() and x.stat().st_size>1000000 for x in files), files
+          def dur(p): return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(p)],text=True))
+          md=dur(files[0]); assert md>=180, md
+          sd=[dur(x) for x in files[1:]]; assert len(sd)==3 and all(20<=x<=60 for x in sd), sd
+          print({'master_seconds':md,'short_seconds':sd})
+          PY
+      - name: Upload final package
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-games-final-2026-10-02
+          path: |
+            output/master.mp4
+            output/shorts/*.mp4
+            output/voice.mp3
+            production/2026-10-02/meta.json
+          retention-days: 7
