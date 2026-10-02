@@ -1,0 +1,35 @@
+name: Ace Combat Corrected Artifact
+on:
+  push:
+    paths:
+      - '.github/workflows/ace-combat-corrected-artifact.yml'
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Rebuild corrected Ace Combat master only
+        run: |
+          mkdir -p output
+          echo 'Rebuild corrected Ace Combat: official Radar intro + approved Thalita PT-BR voice + synchronized cards/inserts + relevant Ace Combat media + CTA. Artifact only; DO NOT publish to Metricool or YouTube.' > output/REBUILD_REQUIREMENTS.txt
+          python src/voice.py production/2026-10-02-ace-combat-8/script.txt
+          python src/media.py production/2026-10-02-ace-combat-8/media.json
+          python src/render.py production/2026-10-02-ace-combat-8/manifest.json
+      - name: Upload corrected master only
+        uses: actions/upload-artifact@v4
+        with:
+          name: ace-combat-8-corrected-master-only
+          path: |
+            output/master.mp4
+            output/REBUILD_REQUIREMENTS.txt
+          if-no-files-found: error
+          retention-days: 7
