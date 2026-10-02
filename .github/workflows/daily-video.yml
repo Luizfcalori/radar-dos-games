@@ -43,14 +43,9 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
-        run: |
-          python - <<'PY'
-          import os
-          names=['YT_CLIENT_ID','YT_CLIENT_SECRET','YT_REFRESH_TOKEN','YT_CHANNEL_ID']
-          missing=[n for n in names if not os.getenv(n)]
-          print('YouTube OAuth:', 'PENDENTE: '+', '.join(missing) if missing else 'CONFIGURADO')
-          PY
+        run: python src/check_youtube.py
       - name: Guardar pesquisa e diagnóstico
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: radar-daily-${{ github.run_id }}

@@ -1,0 +1,31 @@
+name: YouTube - Validar OAuth
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - src/check_youtube.py
+      - src/youtube.py
+      - tests/test_check_youtube.py
+      - .github/workflows/youtube-oauth-check.yml
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt
+      - name: Testar proteção do canal
+        run: python -m unittest discover -s tests -v
+      - name: Renovar token e conferir canal (sem publicar)
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/check_youtube.py
