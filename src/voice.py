@@ -60,7 +60,10 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
         cursor += d
 
     concat_file = seg_dir / "concat.txt"
-    concat_file.write_text("".join(f"file '{s['file']}'\n" for s in segments), encoding="utf-8")
+    concat_file.write_text(
+        "".join(f"file '{Path(s['file']).resolve()}'\n" for s in segments),
+        encoding="utf-8",
+    )
     subprocess.run(
         ["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(concat_file), "-c", "copy", str(out)],
         check=True,
