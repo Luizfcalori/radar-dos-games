@@ -1,0 +1,82 @@
+name: YouTube - Subir Shorts 2 e 3
+
+on:
+  push:
+    paths:
+      - '.github/workflows/upload-shorts-2-3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+      - name: Baixar 3 Shorts aprovados
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-games-3-shorts-recovered-2026-10-02
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37074453506
+          github-token: ${{ github.token }}
+          path: recovered
+      - name: Preparar metadados
+        run: |
+          test -f recovered/shorts/short_2.mp4
+          test -f recovered/shorts/short_3.mp4
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          metas = {
+            2: {
+              'title':'ACE COMBAT 8: O RETORNO QUE OS FÃS ESPERARAM ✈️ #Shorts',
+              'description':'Mais um corte de Ace Combat 8: Wings of Theve no Radar dos Games.\n\n#AceCombat8 #AceCombat #Gaming #RadarDosGames #Shorts',
+            },
+            3: {
+              'title':'ACE COMBAT 8 JÁ ESTÁ ENTRE NÓS ✈️ #Shorts',
+              'description':'Terceiro corte de Ace Combat 8: Wings of Theve no Radar dos Games.\n\n#AceCombat8 #AceCombat #Gaming #RadarDosGames #Shorts',
+            },
+          }
+          for n,m in metas.items():
+              m.update({
+                'tags':['Ace Combat 8','Ace Combat','Wings of Theve','Radar dos Games','games','gaming','Shorts'],
+                'privacy':'unlisted',
+                'containsSyntheticMedia':False,
+              })
+              Path(f'short-{n}-youtube.json').write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Validar OAuth e canal exato
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/check_youtube.py
+      - name: Subir Short 02 como nao listado
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py recovered/shorts/short_2.mp4 short-2-youtube.json | tee youtube-short-2-result.json
+      - name: Subir Short 03 como nao listado
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py recovered/shorts/short_3.mp4 short-3-youtube.json | tee youtube-short-3-result.json
+      - name: Guardar resultados
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-shorts-2-3-results-${{ github.run_id }}
+          path: |
+            youtube-short-2-result.json
+            youtube-short-3-result.json
+          retention-days: 2
