@@ -22,6 +22,25 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Testar proteção do canal
         run: python -m unittest discover -s tests -v
+      - name: Diagnosticar presença dos Secrets sem expor valores
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          names=['YT_CLIENT_ID','YT_CLIENT_SECRET','YT_REFRESH_TOKEN','YT_CHANNEL_ID']
+          Path('oauth-presence.json').write_text(json.dumps({n: bool(os.environ.get(n,'').strip()) for n in names}, indent=2))
+          PY
+      - name: Salvar diagnóstico seguro
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-oauth-presence
+          path: oauth-presence.json
+          retention-days: 1
       - name: Renovar token e conferir canal (sem publicar)
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
