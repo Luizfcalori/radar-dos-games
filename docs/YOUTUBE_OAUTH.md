@@ -1,67 +1,50 @@
 # Conectar o YouTube ao Radar dos Games
 
-Estado em 02/10/2026: o projeto tem módulos iniciais, mas src/pipeline.py ainda
-gera apenas um manifesto. Validar OAuth não significa que a produção ou publicação
-de vídeos já esteja funcionando. Não há upload no workflow de validação.
+Estado em 02/10/2026: o canal oficial está fixado no código como `UCP5NhO1fNzw-fSK1-xXz0jw` (Radar dos Games). O ID do canal não é segredo e não precisa mais ser salvo como GitHub Secret.
 
 ## Preparação pelo navegador, inclusive celular
 
 1. Abra https://console.cloud.google.com/ e selecione/crie o projeto Radar dos Games.
 2. Habilite **YouTube Data API v3** em APIs e serviços.
-3. Configure Google Auth Platform: nome Radar dos Games, seu email de suporte,
-   audiência externa e seus dados de contato. Se estiver em Testing, adicione
-   como testador a conta que administra o canal.
+3. Configure Google Auth Platform: nome Radar dos Games, seu email de suporte, audiência externa e seus dados de contato. Se estiver em Testing, adicione como testador a conta que administra o canal.
 4. Crie cliente OAuth do tipo **Aplicativo da Web**, nome Radar dos Games.
    Cadastre exatamente este URI de redirecionamento autorizado:
    https://developers.google.com/oauthplayground
-5. Abra https://developers.google.com/oauthplayground. Na engrenagem, marque
-   **Use your own OAuth credentials** e insira o Client ID e Client Secret desse cliente.
+5. Abra https://developers.google.com/oauthplayground. Na engrenagem, marque **Use your own OAuth credentials** e insira o Client ID e Client Secret desse cliente.
    Use acesso offline e consentimento explícito.
 6. Autorize somente os escopos:
    - https://www.googleapis.com/auth/youtube.upload
    - https://www.googleapis.com/auth/youtube.readonly
-7. Na autorização Google, escolha **Radar dos Games**, incluindo a conta de marca
-   quando aplicável. Conclua o consentimento pessoalmente.
+7. Na autorização Google, escolha **Radar dos Games**, incluindo a conta de marca quando aplicável. Conclua o consentimento pessoalmente.
 8. No Step 2 do Playground, troque o código pelos tokens e obtenha o refresh token.
    Não envie códigos ou tokens pelo chat, nem os salve no repositório.
-9. Pelo próprio Playground, consulte
+9. Pelo próprio Playground, consulte:
    https://www.googleapis.com/youtube/v3/channels?part=id,snippet&mine=true
-   e confirme que o título corresponde a Radar dos Games. Copie o ID UC... retornado.
-10. Em https://github.com/Luizfcalori/radar-dos-games/settings/secrets/actions,
-    salve os quatro Repository Secrets:
+   e confirme que o canal retornado é `Radar dos Games` com ID `UCP5NhO1fNzw-fSK1-xXz0jw`.
+10. Em https://github.com/Luizfcalori/radar-dos-games/settings/secrets/actions, salve somente estes três Repository Secrets:
 
 | Secret | Valor |
 | --- | --- |
-| YT_CLIENT_ID | Client ID do seu cliente Google |
+| YT_CLIENT_ID | Client ID do cliente Google |
 | YT_CLIENT_SECRET | Client Secret do mesmo cliente |
 | YT_REFRESH_TOKEN | Refresh token da autorização desse cliente |
-| YT_CHANNEL_ID | ID UC... do canal confirmado |
 
-11. Em Actions, execute **YouTube - Validar OAuth**. Sucesso exige token renovado
-    e o canal exato confirmado. Nenhum vídeo é enviado por esse teste.
+11. Em Actions, execute **YouTube - Validar OAuth**. O workflow renova o token e confirma que a autorização pertence exatamente ao canal Radar dos Games. Nenhum vídeo é enviado por esse teste.
 
-Use credenciais OAuth próprias: as credenciais padrão do Playground não servem
-como configuração durável. Em apps externos no estado Testing, refresh tokens
-com esses escopos expiram em sete dias. Para operação contínua, configure o estado
-In production conforme as exigências aplicáveis do Google e refaça a autorização.
-Produção OAuth não substitui eventual verificação/auditoria da API para publicar
-vídeos; restrições do projeto YouTube precisam ser verificadas antes de ativar uploads.
+## Segurança
+
+- `YT_CLIENT_SECRET` e `YT_REFRESH_TOKEN` nunca devem aparecer em commits, logs, issues ou chats.
+- O canal esperado fica travado no código. Mesmo com um OAuth válido, upload para outro canal é bloqueado.
+- O workflow de diagnóstico verifica apenas se os Secrets existem; não imprime os valores.
+
+Use credenciais OAuth próprias: as credenciais padrão do Playground não servem como configuração durável. Em apps externos no estado Testing, refresh tokens com esses escopos podem expirar conforme as regras do Google. Para operação contínua, mantenha o consentimento/configuração do projeto compatíveis com uso prolongado.
 
 ## Diagnóstico
 
-- Secrets ausentes: preencher apenas os nomes indicados no GitHub.
+- Secrets ausentes: preencher somente `YT_CLIENT_ID`, `YT_CLIENT_SECRET` e `YT_REFRESH_TOKEN` no GitHub.
 - Token recusado: refazer consentimento com o mesmo cliente e canal.
-- HTTP 403: verificar API habilitada, escopos, permissões e quota.
-- Canal diferente: corrigir a seleção durante o OAuth; não mudar o ID esperado
-  apenas para fazer o teste passar.
-
-## Próxima etapa
-
-Após OAuth validado: integrar roteiro, voz aprovada, mídia, renderização,
-três Shorts, controle de duplicidade e revisão do resultado. O workflow diário
-ainda não publica. O mesmo tema pode reaparecer, mas o mesmo vídeo não pode ser
-republicado. A verificação de histórico deve incluir os vídeos já existentes
-no canal antes do primeiro upload automatizado.
+- HTTP 403: verificar YouTube Data API v3 habilitada, escopos, permissões e quota.
+- Canal diferente: refazer a seleção durante o OAuth. Não altere o ID esperado apenas para fazer o teste passar.
 
 Referências oficiais:
 - https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps
