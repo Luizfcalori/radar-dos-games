@@ -1,0 +1,23 @@
+{
+  "project": "ACE COMBAT 8 ZERO BUILD",
+  "hard_rule": "FORBIDDEN: any previous Ace Combat rendered MP4/artifact as input",
+  "format": "1920x1080 30fps",
+  "blocks": [
+    {"id":"intro","source_type":"approved_radar_intro_with_audio","purpose":"Radar dos Games opening","card":null},
+    {"id":"launch","source_type":"new_official_launch_gameplay","visual":"fighter launch / aerial action / release trailer","card":"ACE COMBAT 8 — LANÇAMENTO MUNDIAL"},
+    {"id":"conflict","source_type":"new_official_campaign_material","visual":"FCU / Sotoa / Endurance / campaign cinematics","card":"FCU × REPÚBLICA DE SOTOA"},
+    {"id":"wings","source_type":"new_official_campaign_material","visual":"Wings of Theve / squad / Endurance operations","card":"WINGS OF THEVE"},
+    {"id":"combat","source_type":"new_official_walkthrough_gameplay","visual":"dogfight / missile evasion / high-G turns / dynamic clouds","card":"COMBATE AÉREO EM NOVA GERAÇÃO"},
+    {"id":"loadout","source_type":"new_official_walkthrough_gameplay","visual":"aircraft selection / special weapons / upgrade parts / briefing","card":"MONTE O CAÇA PARA CADA MISSÃO"},
+    {"id":"superweapons","source_type":"new_official_walkthrough_gameplay","visual":"colossal enemy weapons / chain destruction / elite ace squadrons","card":"SUPERARMAS E ESQUADRÕES DE ELITE"},
+    {"id":"online","source_type":"new_official_online101_material","visual":"Air Base / avatars / co-op assault / co-op warfare","card":"CROSS-PLAY • AIR BASE • ATÉ 100 PILOTOS"},
+    {"id":"cta","source_type":"new_ace_combat_gameplay","visual":"clean cinematic flight shot with room for Radar CTA","card":"RADAR DOS GAMES"}
+  ],
+  "edit_rules": [
+    "Cards are overlays over matching moving footage; never separate random slides",
+    "No card may appear unless narration and footage discuss the same subject",
+    "Do not stretch one clip across unrelated narration",
+    "Preserve intro audio",
+    "No legacy Ace Combat master is an allowed source"
+  ]
+}
