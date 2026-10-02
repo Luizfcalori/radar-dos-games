@@ -1,0 +1,54 @@
+name: Produzir vídeo de hoje
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ferramentas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r requirements.txt
+          python -m pip install yt-dlp
+      - name: Narração PT-BR
+        run: python src/voice.py production/2026-10-02-ace-combat-8/script.txt output/voice.mp3
+      - name: Baixar material oficial
+        run: python src/media.py production/2026-10-02-ace-combat-8/media.json
+      - name: Preparar manifest
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          c=json.load(open('output/clips.json'))
+          pathlib.Path('output/render.json').write_text(json.dumps({'clips':c['clips'],'voice':'output/voice.mp3','output':'output/master.mp4'}))
+          PY
+      - name: Render master
+        run: python src/render.py output/render.json
+      - name: Quality gate master
+        run: python src/quality.py output/master.mp4
+      - name: Thumbnail
+        run: python src/thumbnail.py output/master.mp4 'ACE COMBAT 8 LANÇOU!' output/thumbnail.jpg
+      - name: Gerar 3 Shorts
+        run: python src/shorts.py output/master.mp4
+      - name: Quality gate Shorts
+        run: |
+          python src/quality.py output/shorts/short_1.mp4 --short
+          python src/quality.py output/shorts/short_2.mp4 --short
+          python src/quality.py output/shorts/short_3.mp4 --short
+      - name: Pacote final
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-games-ace-combat-8-final
+          path: |
+            output/master.mp4
+            output/thumbnail.jpg
+            output/shorts/*.mp4
+            output/voice.mp3
+          retention-days: 7
