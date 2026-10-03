@@ -27,9 +27,9 @@ jobs:
           import json
           from pathlib import Path
           source='https://www.capcom.co.jp/ir/english/news/html/e260610.html'
-          # Não raspar a loja Capcom: o runner recebeu HTTP 429. Usamos o anúncio oficial como fonte editorial
-          # e tentamos mídia oficial pública por rotas independentes; media.py possui fallbacks gratuitos.
+          official_site='https://www.dragonsdogma.com/2/pt-br/'
           media=[
+            {'type':'video','url':official_site,'role':'official_dragons_dogma_2_ptbr_site_priority'},
             {'type':'video','url':'https://captown.capcom.com/en/theaters/dragonsdogma/57','role':'official_announcement_trailer'},
             {'type':'video','url':'https://www.youtube.com/@dragonsdogma','role':'official_dragons_dogma_channel'},
             {'type':'video','url':'https://www.youtube.com/@capcom','role':'official_capcom_channel'}
@@ -39,9 +39,9 @@ jobs:
           paras=[p for p in script.split('\n\n') if p.strip()]
           titles=['LANÇAMENTO','DE VOLTA À AVENTURA','COMBATE','PAWNS','DESEMPENHO','CONTEÚDO NOVO','O QUE ESPERAR','RADAR DOS GAMES']
           scenes=[{'title':titles[i],'narration':paras[min(i,len(paras)-1)],'media_indices':[]} for i in range(8)]
-          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':source,'minimum_assets':2,'media_policy':'official_only; free_fallbacks; no_paid_tools','media':media,'scenes':scenes}
+          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'minimum_assets':2,'media_policy':'official_only; prioritize_dragonsdogma_site; free_fallbacks; no_paid_tools','media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
-          Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':source,'release_date':'2026-10-09'},ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'release_date':'2026-10-09'},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
       - name: Narracao Thalita
         run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
