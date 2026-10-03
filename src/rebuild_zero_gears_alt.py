@@ -1,30 +1,29 @@
 #!/usr/bin/env python3
-"""Executa o rebuild ZERO usando vídeos de gameplay publicados pela conta oficial Xbox.
+"""Executa o rebuild ZERO usando vídeos oficiais incorporados no Xbox Wire.
 
-Os IDs abaixo foram verificados contra as páginas oficiais do Xbox/Xbox Wire e não
-aceitam fallback para qualquer outro jogo ou canal.
+Os IDs são os embeds das próprias páginas oficiais do Xbox Wire sobre E-Day.
+Não existe fallback para outro jogo, outro canal ou mídia genérica.
 """
 import rebuild_zero_gears as base
 
 OFFICIAL_XBOX_VIDEOS = {
-    "dFk4bL3a8I8": {
-        "role": "official_gameplay_reveal_trailer",
-        "evidence": "Gears of War: E-Day | Gameplay Reveal Trailer — canal oficial Xbox",
+    "cmawSe1PkPg": {
+        "role": "official_multiplayer_reveal_deep_dive",
+        "evidence": "Embed oficial da página Xbox Wire 'Gears of War: E-Day - Get an In-Depth Look at Multiplayer with New Trailer and Deep Dive'",
     },
-    "y85lNvF3kVQ": {
-        "role": "official_gameplay_demo",
-        "evidence": "Gears of War: E-Day | Gameplay Demo Reveal | Xbox Games Showcase 2026 — canal oficial Xbox",
+    "m8kSqrvBKoE": {
+        "role": "official_gameplay_reveal_deep_dive",
+        "evidence": "Embed oficial da página Xbox Wire 'Gears of War: E-Day Gameplay Reveal Deep Dive | Official Xbox Podcast'",
     },
 }
 
-# Troca SOMENTE os dois vídeos por IDs oficiais alternativos do mesmo jogo.
 base.MEDIA[0].update({
-    "url": "https://www.youtube.com/watch?v=dFk4bL3a8I8",
-    **OFFICIAL_XBOX_VIDEOS["dFk4bL3a8I8"],
+    "url": "https://www.youtube.com/watch?v=cmawSe1PkPg",
+    **OFFICIAL_XBOX_VIDEOS["cmawSe1PkPg"],
 })
 base.MEDIA[1].update({
-    "url": "https://www.youtube.com/watch?v=y85lNvF3kVQ",
-    **OFFICIAL_XBOX_VIDEOS["y85lNvF3kVQ"],
+    "url": "https://www.youtube.com/watch?v=m8kSqrvBKoE",
+    **OFFICIAL_XBOX_VIDEOS["m8kSqrvBKoE"],
 })
 
 
