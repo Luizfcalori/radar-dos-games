@@ -69,10 +69,10 @@ jobs:
           zone = ZoneInfo('America/Sao_Paulo')
           now = datetime.now(zone)
           slots = {
-              'master-youtube.json': time(18, 0),
-              'short-1-youtube.json': time(19, 0),
-              'short-2-youtube.json': time(21, 0),
-              'short-3-youtube.json': time(23, 0),
+              'master-youtube.json': time(10, 0),
+              'short-1-youtube.json': time(11, 0),
+              'short-2-youtube.json': time(13, 0),
+              'short-3-youtube.json': time(15, 0),
           }
           target_date = now.date()
           first = datetime.combine(target_date, slots['master-youtube.json'], tzinfo=zone)
