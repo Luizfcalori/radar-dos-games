@@ -1,0 +1,4 @@
+Dragon's Dogma 2: Dark Arisen
+run_date=2026-10-03
+publish=true
+rule=If YouTube media acquisition fails, continue through free official/public contextual asset fallbacks; do not use paid/credit tools.
