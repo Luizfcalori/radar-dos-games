@@ -1,4 +1,5 @@
 name: Radar dos Games - Star Wars Galactic Racer 2026-10-03
+# rerun after free-media acquisition fix
 on:
   push:
     paths:
