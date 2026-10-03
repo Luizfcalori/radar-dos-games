@@ -1,0 +1,74 @@
+name: Radar dos Games - Star Wars Galactic Racer 2026-10-03
+on:
+  push:
+    paths:
+      - '.github/workflows/run-now-2026-10-03-star-wars-galactic-racer.yml'
+permissions:
+  contents: write
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ferramentas gratuitas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+      - name: Validar intro oficial
+        run: test -s radar-dos-games-intro-oficial.mp4
+      - name: Preparar pauta Star Wars Galactic Racer
+        run: |
+          mkdir -p output
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source='https://www.starwars.com/news/star-wars-galactic-racer-reveal-trailer'
+          media=[
+            {'type':'video','url':'https://starwarsgalacticracer.com/media/','role':'official_press_kit_primary'},
+            {'type':'image','url':'https://starwarsgalacticracer.com/media/','role':'official_screenshots_keyart'},
+            {'type':'video','url':'https://www.starwars.com/news/star-wars-galactic-racer-reveal-trailer','role':'official_starwars_trailer'},
+            {'type':'video','url':'https://news.xbox.com/en-us/2026/06/23/star-wars-galactic-racer-turns-podracing-into-roguelite/','role':'official_xbox_gameplay'},
+            {'type':'video','url':'https://www.youtube.com/results?search_query=Star+Wars+Galactic+Racer+official+gameplay','role':'youtube_last_resort'}
+          ]
+          script='''Star Wars: Galactic Racer chega em 6 de outubro de 2026 e coloca velocidade, risco e estratégia no centro de uma nova história na galáxia. Depois da queda do Império, a Orla Exterior vira terreno para a Galactic League, um circuito clandestino em que pilotos disputam dinheiro, reputação e sobrevivência.\n\nO protagonista é Shade, um piloto solitário em busca de vingança e glória. A campanha mistura narrativa cinematográfica com uma estrutura baseada em tentativas, fazendo cada corrida e cada escolha de evolução influenciarem o caminho até o topo da liga.\n\nA variedade de veículos é um dos grandes destaques. Landspeeders apostam em peso e drift, speeder bikes entregam aceleração e velocidade, enquanto skim speeders exigem linhas precisas e curvas agressivas. O jogo também inclui podracers e confrontos físicos entre competidores.\n\nOs circuitos exploram locais marcantes de Star Wars. Jakku transforma o cemitério de Star Destroyers em pista, enquanto Tatooine recupera a sensação das corridas vistas em A Ameaça Fantasma. Há ainda novos ambientes, perigos e pistas espalhadas pela galáxia.\n\nAlém da campanha solo, Galactic Racer oferece disputas PvP, personalização e melhorias para os veículos. A combinação de classes diferentes na mesma corrida promete criar situações imprevisíveis e bastante espaço para estratégia.\n\nPara quem sentia falta de um jogo de corrida dedicado ao universo Star Wars, Galactic Racer chega com uma proposta diferente: sem Jedi e sem profecia. Aqui o que decide é pilotagem, estratégia e coragem para assumir riscos.\n\nO lançamento mundial está marcado para 6 de outubro no PlayStation 5, Xbox Series X e S e PC. Agora resta descobrir se Galactic Racer conseguirá transformar essa ideia em um novo clássico das corridas de Star Wars.\n\nE você, estava esperando a volta das corridas de Star Wars? Conta nos comentários e acompanhe o Radar dos Games para mais lançamentos e novidades.'''
+          Path('output/auto-script.txt').write_text(script,encoding='utf-8')
+          paras=[p for p in script.split('\n\n') if p.strip()]
+          titles=['A GALÁXIA VAI CORRER','SHADE E A GALACTIC LEAGUE','VEÍCULOS','PISTAS ICÔNICAS','CAMPANHA E PVP','SEM FORÇA. SÓ VELOCIDADE.','LANÇAMENTO 6 DE OUTUBRO','RADAR DOS GAMES']
+          scenes=[{'title':titles[i],'narration':paras[i],'media_indices':[]} for i in range(8)]
+          plan={'topic':'Star Wars: Galactic Racer','source':source,'release_date':'2026-10-06','minimum_assets':2,'media_policy':'official/contextual only; free fallbacks; press kit first; no paid tools','media':media,'scenes':scenes}
+          Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({'title':'Star Wars: Galactic Racer','source':source,'release_date':'2026-10-06'},ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Narracao Thalita
+        run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
+      - name: Midia oficial com fallbacks gratuitos
+        run: python src/media.py output/auto-media-plan.json
+      - name: Manifesto
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('output/auto-media-plan.json').read_text())
+          media=json.loads(Path('output/clips.json').read_text())
+          assets=media['assets']; ok=[int(a['index']) for a in assets]
+          assert len(ok)>=2
+          for i,s in enumerate(spec['scenes']):
+              picks=[ok[(i*4+j)%len(ok)] for j in range(min(4,len(ok)))]
+              s['media_indices']=list(dict.fromkeys(picks))
+          Path('output/render.json').write_text(json.dumps({'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'radar-dos-games-intro-oficial.mp4','scenes':spec['scenes'],'output':'output/master.mp4'},ensure_ascii=False,indent=2))
+          PY
+      - name: Render Master
+        run: python src/render.py output/render.json
+      - name: Gerar 3 Shorts
+        run: python src/shorts.py output/master.mp4
+      - name: Guardar pacote
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-star-wars-galactic-racer-2026-10-03-${{ github.run_id }}
+          path: output/
+          retention-days: 7
