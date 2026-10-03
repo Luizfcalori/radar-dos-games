@@ -1,0 +1,90 @@
+name: Export Star Wars Strict Review Files
+
+on:
+  push:
+    paths:
+      - '.github/workflows/export-star-wars-review-files.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar pacote STRICT do run 37137795933
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-star-wars-galactic-racer-STRICT-2026-10-03-37137795933
+          path: bundle
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37137795933
+
+      - name: Localizar e preparar arquivos finais
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p review
+          echo 'Arquivos MP4 encontrados:'
+          find bundle -type f -iname '*.mp4' -printf '%s %p\n' | sort -nr | head -30
+
+          MASTER=$(find bundle -type f -iname '*MASTER*.mp4' | head -1)
+          SHORT1=$(find bundle -type f \( -iname '*SHORT*1*.mp4' -o -iname '*SHORT_1*.mp4' \) | head -1)
+          SHORT2=$(find bundle -type f \( -iname '*SHORT*2*.mp4' -o -iname '*SHORT_2*.mp4' \) | head -1)
+          SHORT3=$(find bundle -type f \( -iname '*SHORT*3*.mp4' -o -iname '*SHORT_3*.mp4' \) | head -1)
+          test -n "$MASTER" && test -f "$MASTER"
+          test -n "$SHORT1" && test -f "$SHORT1"
+          test -n "$SHORT2" && test -f "$SHORT2"
+          test -n "$SHORT3" && test -f "$SHORT3"
+
+          MSIZE=$(stat -c%s "$MASTER")
+          # O conector do chat aceita no maximo 512 MiB por artifact.
+          # Mantemos o Master original quando ele cabe; senao criamos apenas uma copia de revisao,
+          # sem alterar o Master final guardado no run original.
+          if [ "$MSIZE" -lt 480000000 ]; then
+            cp "$MASTER" review/Star_Wars_Galactic_Racer_STRICT_MASTER.mp4
+          else
+            ffmpeg -y -v warning -i "$MASTER" \
+              -vf "scale=-2:720" -c:v libx264 -preset veryfast -crf 25 \
+              -c:a aac -b:a 160k -movflags +faststart \
+              review/Star_Wars_Galactic_Racer_STRICT_MASTER_REVIEW_720p.mp4
+          fi
+          cp "$SHORT1" review/Star_Wars_Galactic_Racer_STRICT_SHORT_1.mp4
+          cp "$SHORT2" review/Star_Wars_Galactic_Racer_STRICT_SHORT_2.mp4
+          cp "$SHORT3" review/Star_Wars_Galactic_Racer_STRICT_SHORT_3.mp4
+          ls -lh review
+
+      - name: Upload Master separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: star-wars-strict-master-review
+          path: review/*MASTER*.mp4
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload Short 1 separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: star-wars-strict-short-1
+          path: review/Star_Wars_Galactic_Racer_STRICT_SHORT_1.mp4
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload Short 2 separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: star-wars-strict-short-2
+          path: review/Star_Wars_Galactic_Racer_STRICT_SHORT_2.mp4
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload Short 3 separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: star-wars-strict-short-3
+          path: review/Star_Wars_Galactic_Racer_STRICT_SHORT_3.mp4
+          compression-level: 0
+          retention-days: 7
