@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Upload seguro para o YouTube. Exige OAuth refresh token nos Secrets."""
 import json, os, sys
+from datetime import datetime, timezone
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -42,6 +43,26 @@ def assert_radar_channel(cid,title):
         )
 
 
+def _scheduled_status(meta):
+    privacy=meta.get('privacy','public')
+    status={
+        'privacyStatus':privacy,
+        'selfDeclaredMadeForKids':False,
+        'containsSyntheticMedia':bool(meta.get('containsSyntheticMedia',True)),
+    }
+    publish_at=(meta.get('publishAt') or '').strip()
+    if publish_at:
+        if privacy != 'private':
+            raise RuntimeError('Agendamento nativo exige privacy=private.')
+        parsed=datetime.fromisoformat(publish_at.replace('Z','+00:00'))
+        if parsed.tzinfo is None:
+            raise RuntimeError('publishAt precisa conter fuso horario/UTC.')
+        if parsed.astimezone(timezone.utc) <= datetime.now(timezone.utc):
+            raise RuntimeError(f'publishAt precisa estar no futuro: {publish_at}')
+        status['publishAt']=publish_at
+    return status
+
+
 def upload(path,meta):
     yt=service()
     cid,title=channel_identity(yt)
@@ -53,11 +74,7 @@ def upload(path,meta):
             'tags':meta.get('tags',[]),
             'categoryId':'20',
         },
-        'status':{
-            'privacyStatus':meta.get('privacy','public'),
-            'selfDeclaredMadeForKids':False,
-            'containsSyntheticMedia':bool(meta.get('containsSyntheticMedia',True)),
-        },
+        'status':_scheduled_status(meta),
     }
     req=yt.videos().insert(
         part='snippet,status',
