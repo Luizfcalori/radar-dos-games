@@ -24,6 +24,10 @@ on:
 permissions:
   contents: write
 
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
 concurrency:
   group: radar-dos-games-daily
   cancel-in-progress: false
