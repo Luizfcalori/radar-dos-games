@@ -1,0 +1,173 @@
+name: Radar dos Games - Rebuild ZERO Gears E-Day
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".proof/rebuild-zero-gears.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  rebuild-zero:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ferramentas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+
+      - name: APAGAR qualquer saída anterior
+        run: |
+          rm -rf output
+          mkdir -p output
+          test ! -e output/master.mp4
+          test ! -e output/shorts
+
+      - name: Pesquisa e pacote editorial NOVOS
+        run: python src/rebuild_zero_gears.py
+
+      - name: Narração EXATA Thalita PT-BR
+        run: |
+          python src/voice_exact.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaNeural \
+            --segments-json output/voice-timings.json
+
+      - name: Baixar somente mídia verificada do MESMO jogo
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Bloqueio de mídia cruzada
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          plan=json.loads(Path('output/auto-media-plan.json').read_text(encoding='utf-8'))
+          got=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
+          expected={x['url']:x for x in plan['media']}
+          assets=got['assets']
+          assert len(assets)==len(plan['media'])==8, (len(assets), len(plan['media']), got.get('errors'))
+          assert sum(1 for a in assets if a['type']=='video')==2
+          for a in assets:
+              assert a['url'] in expected, a['url']
+              src=expected[a['url']]
+              assert src['verified_same_game'] is True
+              assert src['topic']=='Gears of War: E-Day'
+              assert a['role'].startswith('official_')
+          assert not got.get('errors'), got.get('errors')
+          print('MEDIA_GUARD_OK: 8/8 assets oficiais de Gears of War: E-Day; 2 vídeos + 6 imagens')
+          PY
+
+      - name: Montar manifesto ZERO
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('output/auto-media-plan.json').read_text(encoding='utf-8'))
+          media=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
+          manifest={
+              'assets':media['assets'],
+              'voice':'output/voice.mp3',
+              'voice_timings':'output/voice-timings.json',
+              'intro':'radar-dos-games-intro-oficial.mp4',
+              'scenes':spec['scenes'],
+              'output':'output/master.mp4',
+          }
+          Path('output/render.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Renderizar Master NOVO
+        run: python src/render.py output/render.json
+
+      - name: Gerar thumbnail NOVA
+        run: |
+          TITLE=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('output/master-youtube.json').read_text(encoding='utf-8'))['title'])
+          PY
+          )
+          python src/thumbnail.py output/master.mp4 "$TITLE" output/thumbnail.jpg
+
+      - name: Gerar 3 Shorts NOVOS
+        run: python src/shorts.py output/master.mp4
+
+      - name: QA final do zero
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+
+          def dur(p):
+              return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(p)],text=True).strip())
+
+          research=json.loads(Path('output/research-zero.json').read_text(encoding='utf-8'))
+          plan=json.loads(Path('output/auto-media-plan.json').read_text(encoding='utf-8'))
+          got=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
+          voice=json.loads(Path('output/voice-timings.json').read_text(encoding='utf-8'))
+          qa=json.loads(Path('output/qa.json').read_text(encoding='utf-8'))
+          script=Path('output/auto-script.txt').read_text(encoding='utf-8').strip()
+          paragraphs=[p.strip() for p in script.split('\n\n') if p.strip()]
+          spoken=[s['text'].strip() for s in voice['segments']]
+
+          assert research['status']=='VERIFIED_FROM_SCRATCH'
+          assert research['previous_artifacts_reused'] is False
+          assert plan['previous_artifacts_reused'] is False
+          assert research['topic']=='Gears of War: E-Day'
+          assert len(research['sources'])==4 and all(s['topic_match'] for s in research['sources'])
+          assert paragraphs==spoken, 'Narração não corresponde exatamente ao roteiro'
+          assert voice['voice']=='pt-BR-ThalitaNeural'
+          assert voice['source']=='verbatim_script'
+          assert len(got['assets'])==8 and not got['errors']
+          assert sum(1 for a in got['assets'] if a['type']=='video')==2
+          assert len(qa['scenes'])==8
+
+          seconds=dur(Path('output/master.mp4'))
+          assert 240 <= seconds <= 480, seconds
+          shorts=sorted(Path('output/shorts').glob('short_*.mp4'))
+          assert len(shorts)==3
+          assert all(dur(p)>=20 for p in shorts)
+          dims=subprocess.check_output(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=width,height','-of','csv=p=0:s=x','output/thumbnail.jpg'],text=True).strip()
+          assert dims=='1280x720'
+          assert 'se inscreva no Radar dos Games' in script
+          assert 'deixe o like' in script and 'ative o sininho' in script
+
+          proof={
+              'status':'APPROVED_FROM_ZERO',
+              'topic':'Gears of War: E-Day',
+              'master_seconds':round(seconds,2),
+              'sources_verified':len(research['sources']),
+              'assets_verified':len(got['assets']),
+              'videos_verified':sum(1 for a in got['assets'] if a['type']=='video'),
+              'images_verified':sum(1 for a in got['assets'] if a['type']=='image'),
+              'script_equals_spoken':paragraphs==spoken,
+              'thumbnail':dims,
+              'shorts':[{'file':p.name,'seconds':round(dur(p),2)} for p in shorts],
+              'previous_artifacts_reused':False,
+              'youtube_upload':False,
+          }
+          Path('output/PROVA-ZERO.json').write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(proof,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Guardar pacote NOVO
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-rebuild-zero-gears-${{ github.run_id }}
+          path: |
+            output/master.mp4
+            output/thumbnail.jpg
+            output/shorts/*.mp4
+            output/auto-script.txt
+            output/research-zero.json
+            output/auto-media-plan.json
+            output/clips.json
+            output/qa.json
+            output/PROVA-ZERO.json
+          retention-days: 7
