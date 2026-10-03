@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Upload seguro para o YouTube. Exige OAuth refresh token nos Secrets."""
-import json, os, sys
+import json
+import os
+import subprocess
+import sys
 from datetime import datetime, timezone
+from pathlib import Path
+
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -63,10 +68,44 @@ def _scheduled_status(meta):
     return status
 
 
+def _is_master(path: str) -> bool:
+    p = Path(path)
+    return p.name.lower().startswith('master') and 'shorts' not in {x.lower() for x in p.parts}
+
+
+def _prepare_master_thumbnail(video_path: str, meta: dict) -> Path | None:
+    if not _is_master(video_path):
+        return None
+    thumb = Path(meta.get('thumbnail') or 'output/thumbnail.jpg')
+    thumb.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        [sys.executable, 'src/thumbnail.py', video_path, meta['title'], str(thumb)],
+        check=True,
+    )
+    if not thumb.exists() or thumb.stat().st_size < 20_000:
+        raise RuntimeError('QUALITY_BLOCK: thumbnail do Master ausente ou inválida.')
+    return thumb
+
+
+def _set_thumbnail(yt, video_id: str, thumbnail: Path | None):
+    if thumbnail is None:
+        return None
+    response = yt.thumbnails().set(
+        videoId=video_id,
+        media_body=MediaFileUpload(str(thumbnail), mimetype='image/jpeg', resumable=False),
+    ).execute()
+    return response
+
+
 def upload(path,meta):
     yt=service()
     cid,title=channel_identity(yt)
     assert_radar_channel(cid,title)
+
+    # A capa é gerada antes do envio do Master; após o YouTube criar o ID,
+    # ela é aplicada imediatamente pelo endpoint oficial de thumbnails.
+    thumbnail = _prepare_master_thumbnail(path, meta)
+
     body={
         'snippet':{
             'title':meta['title'],
@@ -84,6 +123,13 @@ def upload(path,meta):
     resp=None
     while resp is None:
         _,resp=req.next_chunk()
+
+    thumb_resp = _set_thumbnail(yt, resp['id'], thumbnail)
+    if thumbnail is not None:
+        resp['_radarThumbnail'] = {
+            'path': str(thumbnail),
+            'applied': bool(thumb_resp),
+        }
     print(json.dumps(resp))
 
 
