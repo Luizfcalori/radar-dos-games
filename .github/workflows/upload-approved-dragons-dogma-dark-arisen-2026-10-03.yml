@@ -1,0 +1,246 @@
+name: Radar dos Games - Publicar Dragon's Dogma 2 Dark Arisen aprovado
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/upload-approved-dragons-dogma-dark-arisen-2026-10-03.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Baixar exatamente o pacote Dragon's Dogma 2 Dark Arisen aprovado
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-dragons-dogma-strict-v6-2026-10-03-37136746087
+          path: bundle
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37136746087
+
+      - name: Separar Master e 3 Shorts aprovados
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p approved/shorts
+          MASTER=$(find bundle -type f -name 'master.mp4' | head -1)
+          SHORT1=$(find bundle -type f -path '*/shorts/short_1.mp4' | head -1)
+          SHORT2=$(find bundle -type f -path '*/shorts/short_2.mp4' | head -1)
+          SHORT3=$(find bundle -type f -path '*/shorts/short_3.mp4' | head -1)
+          SELECTED=$(find bundle -type f -name 'selected.json' | head -1)
+          CLIPS=$(find bundle -type f -name 'clips.json' | head -1)
+          test -s "$MASTER" && test -s "$SHORT1" && test -s "$SHORT2" && test -s "$SHORT3"
+          test -s "$SELECTED" && test -s "$CLIPS"
+          cp "$MASTER" approved/master.mp4
+          cp "$SHORT1" approved/shorts/short_1.mp4
+          cp "$SHORT2" approved/shorts/short_2.mp4
+          cp "$SHORT3" approved/shorts/short_3.mp4
+          cp "$SELECTED" approved/selected.json
+          cp "$CLIPS" approved/clips.json
+          ls -lh approved/master.mp4 approved/shorts/*.mp4
+
+      - name: Validar pacote STRICT aprovado
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          selected=json.loads(Path('approved/selected.json').read_text(encoding='utf-8'))
+          clips=json.loads(Path('approved/clips.json').read_text(encoding='utf-8'))
+          assert selected['title']=="Dragon's Dogma 2: Dark Arisen", selected
+          assert int(selected['steam_app_id'])==2593290, selected
+          assets=[a for a in clips.get('assets',[]) if a.get('approved')]
+          videos=[a for a in assets if a.get('type')=='video']
+          images=[a for a in assets if a.get('type')=='image']
+          assert len(videos)>=2, len(videos)
+          assert len(images)>=6, len(images)
+          assert float(clips.get('unique_video_seconds',0))>=90, clips.get('unique_video_seconds')
+          allowed={'steam_exact_app_cdn','steam_exact_app_direct_stream','steam_exact_app_store_stream','steam_exact_app_screenshot'}
+          assert all(a.get('relevance_evidence') in allowed for a in assets), assets
+          print('PACOTE_DRAGONS_DOGMA_DARK_ARISEN_APROVADO_OK')
+          PY
+
+      - name: Gerar capa Radar usando screenshot oficial aprovada do pacote
+        run: |
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          from PIL import Image
+          clips=json.loads(Path('approved/clips.json').read_text(encoding='utf-8'))
+          candidates=[]
+          for a in clips.get('assets',[]):
+              if not a.get('approved') or a.get('type')!='image':
+                  continue
+              raw=Path(str(a.get('path') or ''))
+              possibilities=[Path('bundle')/raw, Path('bundle')/Path(*raw.parts[1:]) if raw.parts and raw.parts[0]=='output' else Path('bundle')/raw]
+              for p in possibilities:
+                  if not p.exists():
+                      matches=list(Path('bundle').rglob(raw.name)) if raw.name else []
+                      p=matches[0] if matches else p
+                  if p.exists() and p.is_file():
+                      try:
+                          with Image.open(p) as im:
+                              w,h=im.size
+                          if w>=640 and h>=360:
+                              candidates.append((w*h,p))
+                      except Exception:
+                          pass
+                      break
+          assert candidates, 'Nenhuma screenshot oficial aprovada encontrada no pacote'
+          _,src=max(candidates,key=lambda x:x[0])
+          shutil.copy2(src,'approved/official-cover-source.jpg')
+          print(f'OFFICIAL_COVER_SOURCE={src}')
+          PY
+          python src/thumbnail.py approved/master.mp4 "DRAGON'S DOGMA 2: DARK ARISEN" approved/thumbnail.jpg approved/official-cover-source.jpg
+          test -s approved/thumbnail.jpg
+
+      - name: Preparar metadados YouTube
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base={
+            'privacy':'public',
+            'containsSyntheticMedia':True,
+            'tags':["Dragon's Dogma 2","Dark Arisen","Dragon's Dogma 2 Dark Arisen","Capcom","RPG","video games","jogos","Radar dos Games"]
+          }
+          metas={
+            'master':{
+              **base,
+              'title':"Dragon’s Dogma 2: Dark Arisen — nova região, masmorras e tudo que muda",
+              'description':"Dragon’s Dogma 2: Dark Arisen expande o RPG de ação da Capcom com a região nevada de Norgan, novos desafios de masmorra, novidades para Arisen e Pawns e melhorias no jogo base. Neste Radar dos Games, reunimos os principais detalhes mostrados para a expansão.\n\nO vídeo usa somente materiais exatos de Dragon’s Dogma 2: Dark Arisen presentes no pacote STRICT aprovado.\n\nInscreva-se no Radar dos Games para acompanhar lançamentos, gameplays e novidades.\n\n#DragonsDogma2 #DarkArisen #Capcom #RadarDosGames"
+            },
+            'short1':{
+              **base,
+              'title':"Dragon’s Dogma 2: Dark Arisen | Conheça Norgan #Shorts",
+              'description':"A nova região nevada de Norgan é uma das grandes novidades de Dark Arisen. #DragonsDogma2 #DarkArisen #Shorts"
+            },
+            'short2':{
+              **base,
+              'title':"Dragon’s Dogma 2: Dark Arisen | 12 novos desafios #Shorts",
+              'description':"Dark Arisen adiciona novos desafios de masmorra ao mundo de Dragon’s Dogma 2. #DragonsDogma2 #Capcom #Shorts"
+            },
+            'short3':{
+              **base,
+              'title':"Dragon’s Dogma 2: Dark Arisen | O que muda para Arisen e Pawns #Shorts",
+              'description':"Arisen, Pawns, personalização e melhorias: o que muda em Dark Arisen. #DarkArisen #DragonsDogma2 #Shorts"
+            }
+          }
+          for key,meta in metas.items():
+              Path(f'approved/{key}.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Validar OAuth e canal Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/check_youtube.py
+
+      - name: Publicar Master com capa e publicar 3 Shorts
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from googleapiclient.http import MediaFileUpload
+          from src.youtube import service, channel_identity, assert_radar_channel, RADAR_CHANNEL_ID, _scheduled_status
+
+          yt=service()
+          cid,channel_title=channel_identity(yt)
+          assert_radar_channel(cid,channel_title)
+          items=[
+            ('master','approved/master.mp4','approved/master.json'),
+            ('short1','approved/shorts/short_1.mp4','approved/short1.json'),
+            ('short2','approved/shorts/short_2.mp4','approved/short2.json'),
+            ('short3','approved/shorts/short_3.mp4','approved/short3.json'),
+          ]
+          results=[]
+
+          def find_existing(title):
+              r=yt.search().list(part='snippet',channelId=RADAR_CHANNEL_ID,q=title,type='video',maxResults=10).execute()
+              for it in r.get('items',[]):
+                  sn=it.get('snippet',{})
+                  if sn.get('title','').strip().casefold()==title.strip().casefold():
+                      return it['id']['videoId']
+              return None
+
+          for key,path,meta_path in items:
+              meta=json.loads(Path(meta_path).read_text(encoding='utf-8'))
+              existing=find_existing(meta['title'])
+              if existing:
+                  print(f'SKIP_EXISTING {key}: {existing}')
+                  results.append({'key':key,'id':existing,'url':f'https://www.youtube.com/watch?v={existing}','existing':True})
+                  continue
+              body={'snippet':{'title':meta['title'],'description':meta['description'],'tags':meta.get('tags',[]),'categoryId':'20'},'status':_scheduled_status(meta)}
+              req=yt.videos().insert(part='snippet,status',body=body,media_body=MediaFileUpload(path,chunksize=-1,resumable=True))
+              resp=None
+              while resp is None:
+                  _,resp=req.next_chunk()
+              vid=resp['id']
+              thumb_applied=False
+              if key=='master':
+                  yt.thumbnails().set(videoId=vid,media_body=MediaFileUpload('approved/thumbnail.jpg',mimetype='image/jpeg',resumable=False)).execute()
+                  thumb_applied=True
+              print(f'PUBLICADO {key}: https://www.youtube.com/watch?v={vid}')
+              results.append({'key':key,'id':vid,'url':f'https://www.youtube.com/watch?v={vid}','existing':False,'thumbnail_applied':thumb_applied})
+          Path('approved/upload-results.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Confirmar os 4 videos no canal correto e publicos
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from src.youtube import service, assert_radar_channel, RADAR_CHANNEL_ID
+          rows=json.loads(Path('approved/upload-results.json').read_text(encoding='utf-8'))
+          assert len(rows)==4, rows
+          yt=service(); proof=[]
+          for row in rows:
+              r=yt.videos().list(part='snippet,status',id=row['id']).execute()
+              assert len(r.get('items',[]))==1, row
+              item=r['items'][0]; sn=item['snippet']; st=item['status']
+              assert_radar_channel(sn['channelId'],sn['channelTitle'])
+              assert sn['channelId']==RADAR_CHANNEL_ID
+              assert st['privacyStatus']=='public', st
+              proof.append({'key':row['key'],'id':row['id'],'url':row['url'],'title':sn['title'],'privacy':st['privacyStatus'],'channel':sn['channelTitle']})
+          Path('approved/publicacao-confirmada.json').write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(proof,ensure_ascii=False))
+          PY
+
+      - name: Guardar comprovantes e capa
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: comprovante-dragons-dogma-dark-arisen-youtube-${{ github.run_id }}
+          path: |
+            approved/upload-results.json
+            approved/publicacao-confirmada.json
+            approved/thumbnail.jpg
+            approved/thumbnail-policy.json
+            approved/selected.json
+            approved/*.json
+          if-no-files-found: ignore
+          retention-days: 7
