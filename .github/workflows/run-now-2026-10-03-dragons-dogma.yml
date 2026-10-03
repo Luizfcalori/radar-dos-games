@@ -1,5 +1,5 @@
 name: Radar dos Games - Dragon Dogma 2026-10-03
-# rerun 2026-10-03 dynamic scenes v4
+# strict exact-game media rebuild v5
 on:
   push:
     paths:
@@ -12,41 +12,47 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - name: Limpeza total
+        run: rm -rf output && mkdir -p output
       - name: Ferramentas gratuitas
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install -U yt-dlp
+          pip install -U yt-dlp gdown
       - name: Validar intro oficial
         run: test -s radar-dos-games-intro-oficial.mp4
-      - name: Preparar pauta Dragon Dogma com fontes oficiais diretas
+      - name: Preparar pauta e fontes EXATAS Dragon Dogma
         run: |
-          mkdir -p output
           python - <<'PY'
           import json
           from pathlib import Path
           source='https://www.capcom.co.jp/ir/english/news/html/e260610.html'
           official_site='https://www.dragonsdogma.com/2/pt-br/'
           media=[
-            {'type':'video','url':official_site,'role':'official_dragons_dogma_2_ptbr_site_priority'},
-            {'type':'video','url':'https://captown.capcom.com/en/theaters/dragonsdogma/57','role':'official_announcement_trailer'}
+            {'type':'video','steam_app_id':2593290,'role':'steam_exact_dark_arisen_trailers','max_assets':4,'min_duration':20},
+            {'type':'image','steam_app_id':2593290,'role':'steam_exact_dark_arisen_screenshots','max_assets':10},
+            {'type':'video','url':official_site,'role':'official_dragons_dogma_2_gameplay_only','max_assets':4,'min_duration':10,
+             'blocked_tokens':['intro.mp4','intro-sp.mp4','ptcl.mp4','logo','banner','store']}
           ]
-          script='''Dragon’s Dogma 2: Dark Arisen está a poucos dias do lançamento, marcado para 9 de outubro de 2026. A nova fase de Dragon’s Dogma 2 coloca novamente o Arisen no centro de uma aventura de fantasia, com foco em exploração, combate e a companhia dos Pawns.\n\nPara o Radar dos Games, o ponto principal é o que essa expansão pode representar para quem já terminou a campanha original: um motivo para voltar ao mundo do jogo, experimentar novas batalhas e revisitar as vocações com uma progressão renovada.\n\nO combate continua sendo a grande vitrine de Dragon’s Dogma 2. Monstros enormes, escalada durante as lutas e combinações entre Arisen e Pawns são exatamente o tipo de experiência que pode ganhar novo fôlego com conteúdo adicional.\n\nTambém vale observar o desempenho e as melhorias acumuladas desde o lançamento do jogo base. Para muita gente, estabilidade e qualidade de vida serão tão importantes quanto novas áreas, inimigos e equipamentos.\n\nA proximidade do lançamento coloca Dark Arisen entre os assuntos mais interessantes desta semana para fãs de RPG de ação. O Radar dos Games vai acompanhar as informações oficiais e separar novidade real de expectativa.\n\nE você: voltaria para Dragon’s Dogma 2 por uma grande expansão? Conta nos comentários e acompanhe o Radar dos Games para mais notícias e lançamentos.'''
+          script='''Dragon’s Dogma 2: Dark Arisen chega em 9 de outubro de 2026 e expande o RPG de ação da Capcom com uma nova região, novos desafios e conteúdo adicional para o Arisen e seus Pawns. A proposta é voltar ao mundo de Dragon’s Dogma 2 com novidades reais, sem perder o foco no combate e na exploração que definem o jogo.\n\nA expansão leva a aventura para Norgan, uma região nevada e abandonada ao norte. Esse novo cenário amplia a variedade visual e abre espaço para encontros, exploração e situações diferentes das áreas já conhecidas da campanha principal.\n\nDark Arisen também adiciona doze novos desafios de masmorra espalhados pelo mundo existente de Dragon’s Dogma 2. Isso reforça o lado de exploração e combate, dando mais motivos para revisitar áreas antigas com novos objetivos.\n\nO sistema de Pawns continua central. A expansão mantém a dinâmica entre o Arisen e seus companheiros enquanto adiciona novas opções de personalização, incluindo estilos de cabelo e tatuagens.\n\nA Capcom também anunciou atualizações gratuitas de qualidade de vida e desempenho. Melhorias de framerate, mais opções de salvamento e ajustes gerais são importantes para quem pretende voltar ao jogo ou começar agora.\n\nPara quem gosta de RPG de ação, o principal ponto é que Dark Arisen não é apenas um pacote visual: a proposta oficial combina nova história, nova região, novos desafios e melhorias no jogo base. O Radar dos Games vai continuar acompanhando as novidades oficiais até o lançamento.'''
           Path('output/auto-script.txt').write_text(script,encoding='utf-8')
           paras=[p for p in script.split('\n\n') if p.strip()]
-          titles=['LANÇAMENTO','DE VOLTA À AVENTURA','COMBATE','DESEMPENHO','O QUE ESPERAR','RADAR DOS GAMES']
-          scenes=[{'title':titles[i], 'narration':p, 'media_indices':[]} for i,p in enumerate(paras)]
-          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'minimum_assets':2,'media_policy':'official_only; prioritize_dragonsdogma_site; no_paid_tools; require_real_video','media':media,'scenes':scenes}
+          titles=['DARK ARISEN','REGIÃO DE NORGAN','12 NOVOS DESAFIOS','ARISEN E PAWNS','MELHORIAS','O QUE ESPERAR']
+          scenes=[{'title':titles[i],'narration':p,'media_indices':[]} for i,p in enumerate(paras)]
+          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,
+                'minimum_assets':8,'minimum_video_assets':2,'minimum_unique_video_seconds':90,'minimum_image_assets':4,
+                'media_policy':'exact_game_only; steam_exact_app_2593290; official_game_site_only; no_generic_capcom; no_logo_banner_store_intro; no_youtube_dependency',
+                'media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
-          Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'release_date':'2026-10-09'},ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'steam_app_id':2593290,'release_date':'2026-10-09'},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
       - name: Narracao Thalita
         run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
-      - name: Midia oficial com fallbacks gratuitos
+      - name: Midia EXATA do jogo
         run: python src/media.py output/auto-media-plan.json
-      - name: Manifesto dinamico alinhado a voz
+      - name: QA semantico e manifesto por cena
         run: |
           python - <<'PY'
           import json
@@ -54,23 +60,46 @@ jobs:
           spec=json.loads(Path('output/auto-media-plan.json').read_text())
           media=json.loads(Path('output/clips.json').read_text())
           timings=json.loads(Path('output/voice-timings.json').read_text())
-          assets=media['assets']; videos=[a for a in assets if a['type']=='video']; ok=[int(a['index']) for a in videos]
-          assert len(ok)>=2 and media.get('video_assets',0)>=2
-          n=len(timings) if isinstance(timings,list) else len(timings.get('segments',[]))
-          scenes=spec['scenes'][:n]
-          assert len(scenes)==n, f'cenas {len(scenes)} != voz {n}'
+          assets=[a for a in media['assets'] if a.get('approved')]
+          videos=[a for a in assets if a['type']=='video']
+          images=[a for a in assets if a['type']=='image']
+          assert len(videos)>=2, f'QUALITY_BLOCK videos={len(videos)}'
+          assert media.get('unique_video_seconds',0)>=90, f"QUALITY_BLOCK unique_video_seconds={media.get('unique_video_seconds')}"
+          assert len(images)>=4, f'QUALITY_BLOCK images={len(images)}'
+          banned=['capcom_town_store','store_banner','ogp_theater','modernwar','call-of-duty','xbox-logo','playstation-logo','intro.mp4','intro-sp.mp4','ptcl.mp4']
+          for a in assets:
+              low=(a.get('url','')+' '+a.get('role','')).lower()
+              hit=[x for x in banned if x in low]
+              assert not hit, f'QUALITY_BLOCK off_topic_asset {hit}: {a}'
+              assert a.get('relevance_evidence') in {'steam_exact_app_trailer','steam_exact_app_screenshot','official_page_discovery','direct_source'}, a
+          v=[int(a['index']) for a in videos]
+          im=[int(a['index']) for a in images]
+          n=len(timings.get('segments',[]));scenes=spec['scenes'][:n]
+          assert len(scenes)==n
           for i,s in enumerate(scenes):
-              s['media_indices']=[ok[i%len(ok)],ok[(i+1)%len(ok)]]
+              chosen=[]
+              # Sempre vídeo primeiro; 2 vídeos + 2 screenshots diferentes quando possível.
+              for off in range(min(2,len(v))): chosen.append(v[(i+off)%len(v)])
+              for off in range(min(2,len(im))): chosen.append(im[(i*2+off)%len(im)])
+              s['media_indices']=list(dict.fromkeys(chosen))
+              assert len(s['media_indices'])>=3, f'QUALITY_BLOCK pouca diversidade cena {i+1}'
           Path('output/render.json').write_text(json.dumps({'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'radar-dos-games-intro-oficial.mp4','scenes':scenes,'output':'output/master.mp4'},ensure_ascii=False,indent=2))
+          print(json.dumps({'approved_assets':len(assets),'videos':len(videos),'images':len(images),'unique_video_seconds':media.get('unique_video_seconds'),'scenes':len(scenes)},ensure_ascii=False))
           PY
       - name: Render Master
         run: python src/render.py output/render.json
       - name: Gerar 3 Shorts
         run: python src/shorts.py output/master.mp4
+      - name: Validar pacote final
+        run: |
+          test -s output/master.mp4
+          test -s output/shorts/short_1.mp4
+          test -s output/shorts/short_2.mp4
+          test -s output/shorts/short_3.mp4
       - name: Guardar pacote
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: radar-dragons-dogma-2026-10-03-${{ github.run_id }}
+          name: radar-dragons-dogma-strict-2026-10-03-${{ github.run_id }}
           path: output/
           retention-days: 7
