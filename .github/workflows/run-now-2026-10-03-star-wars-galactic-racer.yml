@@ -1,5 +1,5 @@
-name: Radar dos Games - Star Wars Galactic Racer 2026-10-03
-# rerun after free-media acquisition fix
+name: Radar dos Games - Star Wars Galactic Racer CLEAN 2026-10-03
+# CLEAN REBUILD: do not reuse prior master/shorts/assets
 on:
   push:
     paths:
@@ -12,6 +12,10 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - name: Limpeza total do trabalho anterior
+        run: |
+          rm -rf output
+          mkdir -p output
       - name: Ferramentas gratuitas
         run: |
           sudo apt-get update
@@ -21,55 +25,92 @@ jobs:
           pip install -U yt-dlp
       - name: Validar intro oficial
         run: test -s radar-dos-games-intro-oficial.mp4
-      - name: Preparar pauta Star Wars Galactic Racer
+      - name: Preparar pauta e midia EXCLUSIVA Galactic Racer
         run: |
-          mkdir -p output
           python - <<'PY'
           import json
           from pathlib import Path
-          source='https://www.starwars.com/news/star-wars-galactic-racer-reveal-trailer'
+          press='https://starwarsgalacticracer.com/media/'
+          # Somente paginas oficiais dedicadas ao Galactic Racer. Sem Xbox News,
+          # buscas genericas, logos de plataforma ou outros jogos.
           media=[
-            {'type':'video','url':'https://starwarsgalacticracer.com/media/','role':'official_press_kit_primary'},
-            {'type':'image','url':'https://starwarsgalacticracer.com/media/','role':'official_screenshots_keyart'},
-            {'type':'video','url':'https://www.starwars.com/news/star-wars-galactic-racer-reveal-trailer','role':'official_starwars_trailer'},
-            {'type':'video','url':'https://news.xbox.com/en-us/2026/06/23/star-wars-galactic-racer-turns-podracing-into-roguelite/','role':'official_xbox_gameplay'},
-            {'type':'video','url':'https://www.youtube.com/results?search_query=Star+Wars+Galactic+Racer+official+gameplay','role':'youtube_last_resort'}
+            {'type':'video','url':press,'role':'official_presskit_video_primary'},
+            {'type':'video','url':'https://starwarsgalacticracer.com/news/official-star-wars-galactic-racer-story-trailer/','role':'official_story_trailer'},
+            {'type':'image','url':press,'role':'official_galactic_racer_screenshots_only'}
           ]
-          script='''Star Wars: Galactic Racer chega em 6 de outubro de 2026 e coloca velocidade, risco e estratégia no centro de uma nova história na galáxia. Depois da queda do Império, a Orla Exterior vira terreno para a Galactic League, um circuito clandestino em que pilotos disputam dinheiro, reputação e sobrevivência.\n\nO protagonista é Shade, um piloto solitário em busca de vingança e glória. A campanha mistura narrativa cinematográfica com uma estrutura baseada em tentativas, fazendo cada corrida e cada escolha de evolução influenciarem o caminho até o topo da liga.\n\nA variedade de veículos é um dos grandes destaques. Landspeeders apostam em peso e drift, speeder bikes entregam aceleração e velocidade, enquanto skim speeders exigem linhas precisas e curvas agressivas. O jogo também inclui podracers e confrontos físicos entre competidores.\n\nOs circuitos exploram locais marcantes de Star Wars. Jakku transforma o cemitério de Star Destroyers em pista, enquanto Tatooine recupera a sensação das corridas vistas em A Ameaça Fantasma. Há ainda novos ambientes, perigos e pistas espalhadas pela galáxia.\n\nAlém da campanha solo, Galactic Racer oferece disputas PvP, personalização e melhorias para os veículos. A combinação de classes diferentes na mesma corrida promete criar situações imprevisíveis e bastante espaço para estratégia.\n\nPara quem sentia falta de um jogo de corrida dedicado ao universo Star Wars, Galactic Racer chega com uma proposta diferente: sem Jedi e sem profecia. Aqui o que decide é pilotagem, estratégia e coragem para assumir riscos.\n\nO lançamento mundial está marcado para 6 de outubro no PlayStation 5, Xbox Series X e S e PC. Agora resta descobrir se Galactic Racer conseguirá transformar essa ideia em um novo clássico das corridas de Star Wars.\n\nE você, estava esperando a volta das corridas de Star Wars? Conta nos comentários e acompanhe o Radar dos Games para mais lançamentos e novidades.'''
+          script='''Star Wars: Galactic Racer coloca velocidade, risco e estratégia no centro de uma nova disputa na galáxia. Depois da queda do Império, a Orla Exterior vira terreno para a Galactic League, um circuito clandestino em que pilotos disputam dinheiro, reputação e sobrevivência.\n\nO protagonista é Shade, um piloto solitário em busca de vingança e glória. A campanha combina narrativa cinematográfica com corridas em que evolução, escolha de veículo e desempenho mudam a jornada até o topo da liga.\n\nA variedade de máquinas é um dos destaques. Landspeeders apostam em peso e drift, speeder bikes entregam aceleração e velocidade, enquanto outros veículos exigem linhas precisas, domínio das curvas e coragem para correr no limite.\n\nOs circuitos exploram a identidade de Star Wars com cenários, destroços, desertos e pistas perigosas. O objetivo deste vídeo é mostrar o jogo em movimento: corridas, veículos e situações retiradas diretamente dos materiais oficiais de Galactic Racer.\n\nAlém da campanha, Galactic Racer aposta em competição, personalização e melhorias para os veículos. A combinação de classes e estilos diferentes promete corridas imprevisíveis e espaço para estratégia.\n\nAqui não é uma história sobre Jedi ou profecias. Galactic Racer quer colocar a pilotagem em primeiro plano, recuperando a energia das grandes corridas de Star Wars com uma identidade própria.\n\nO Radar dos Games está acompanhando o projeto e os materiais oficiais divulgados. O que importa agora é saber se a sensação de velocidade, variedade de pistas e progressão vão sustentar a experiência completa.\n\nE você, estava esperando um novo jogo de corrida de Star Wars? Conta nos comentários e acompanhe o Radar dos Games para mais lançamentos e novidades.'''
           Path('output/auto-script.txt').write_text(script,encoding='utf-8')
           paras=[p for p in script.split('\n\n') if p.strip()]
-          titles=['A GALÁXIA VAI CORRER','SHADE E A GALACTIC LEAGUE','VEÍCULOS','PISTAS ICÔNICAS','CAMPANHA E PVP','SEM FORÇA. SÓ VELOCIDADE.','LANÇAMENTO 6 DE OUTUBRO','RADAR DOS GAMES']
-          scenes=[{'title':titles[i],'narration':paras[i],'media_indices':[]} for i in range(8)]
-          plan={'topic':'Star Wars: Galactic Racer','source':source,'release_date':'2026-10-06','minimum_assets':2,'media_policy':'official/contextual only; free fallbacks; press kit first; no paid tools','media':media,'scenes':scenes}
+          titles=['A GALAXIA VAI CORRER','SHADE E A LIGA','VELOCIDADE E VEICULOS','PISTAS DE STAR WARS','COMPETICAO E EVOLUCAO','SEM JEDI. SO VELOCIDADE.','O QUE ESPERAR','RADAR DOS GAMES']
+          scenes=[{'title':titles[i],'narration':paras[i],'media_indices':[]} for i in range(len(paras))]
+          plan={'topic':'Star Wars: Galactic Racer','source':press,'minimum_assets':3,'media_policy':'STRICT_GALACTIC_RACER_ONLY; video_required; official_presskit_first; screenshots_support_only; reject_platform_logos; reject_other_games; no_paid_tools','media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
-          Path('output/selected.json').write_text(json.dumps({'title':'Star Wars: Galactic Racer','source':source,'release_date':'2026-10-06'},ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({'title':'Star Wars: Galactic Racer','source':press,'clean_rebuild':True},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
       - name: Narracao Thalita
         run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
-      - name: Midia oficial com fallbacks gratuitos
+      - name: Baixar somente material oficial Galactic Racer
         run: python src/media.py output/auto-media-plan.json
-      - name: Manifesto
+      - name: QA visual estrito antes do render
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          data=json.loads(Path('output/clips.json').read_text())
+          assets=data.get('assets',[])
+          if len(assets)<3:
+              raise SystemExit('QUALITY_BLOCK: menos de 3 assets oficiais do Galactic Racer')
+          videos=[]
+          for a in assets:
+              p=str(a.get('path','')).lower()
+              u=str(a.get('url','')).lower()
+              role=str(a.get('role','')).lower()
+              blob=' '.join([p,u,role])
+              if any(x in blob for x in ['modernwar','modern-warfare','callofduty','call-of-duty']):
+                  raise SystemExit('QUALITY_BLOCK: asset de outro jogo detectado')
+              if p.endswith(('.mp4','.webm','.mov','.mkv')):
+                  videos.append(a)
+          if not videos:
+              raise SystemExit('QUALITY_BLOCK: nenhum trailer/gameplay em video; slideshow proibido')
+          Path('output/visual-qa.json').write_text(json.dumps({'passed':True,'assets':len(assets),'video_assets':len(videos)},indent=2))
+          PY
+      - name: Manifesto com video prioritario
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           spec=json.loads(Path('output/auto-media-plan.json').read_text())
           media=json.loads(Path('output/clips.json').read_text())
-          assets=media['assets']; ok=[int(a['index']) for a in assets]
-          assert len(ok)>=2
+          assets=media['assets']
+          vids=[int(a['index']) for a in assets if str(a.get('path','')).lower().endswith(('.mp4','.webm','.mov','.mkv'))]
+          imgs=[int(a['index']) for a in assets if int(a['index']) not in vids]
+          assert vids, 'QUALITY_BLOCK: video oficial obrigatorio'
           for i,s in enumerate(spec['scenes']):
-              picks=[ok[(i*4+j)%len(ok)] for j in range(min(4,len(ok)))]
+              # Cada bloco começa por video real; imagem oficial apenas apoio.
+              picks=[vids[i%len(vids)]]
+              if len(vids)>1: picks.append(vids[(i+1)%len(vids)])
+              if imgs: picks.append(imgs[i%len(imgs)])
+              if len(vids)>2: picks.append(vids[(i+2)%len(vids)])
               s['media_indices']=list(dict.fromkeys(picks))
           Path('output/render.json').write_text(json.dumps({'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'radar-dos-games-intro-oficial.mp4','scenes':spec['scenes'],'output':'output/master.mp4'},ensure_ascii=False,indent=2))
           PY
-      - name: Render Master
+      - name: Render Master NOVO
         run: python src/render.py output/render.json
-      - name: Gerar 3 Shorts
+      - name: Gerar exatamente 3 Shorts NOVOS
         run: python src/shorts.py output/master.mp4
-      - name: Guardar pacote
+      - name: Validar exatamente 3 Shorts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          shorts=list(Path('output').glob('short*.mp4'))+list(Path('output').glob('shorts/*.mp4'))
+          uniq={str(x.resolve()) for x in shorts}
+          if len(uniq)!=3:
+              raise SystemExit(f'QUALITY_BLOCK: esperado exatamente 3 Shorts, encontrados {len(uniq)}')
+          PY
+      - name: Guardar pacote CLEAN
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: radar-star-wars-galactic-racer-2026-10-03-${{ github.run_id }}
+          name: radar-star-wars-galactic-racer-CLEAN-2026-10-03-${{ github.run_id }}
           path: output/
           retention-days: 7
