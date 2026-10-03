@@ -1,5 +1,5 @@
 name: Radar dos Games - Star Wars Galactic Racer CLEAN 2026-10-03
-# CLEAN REBUILD: do not reuse prior master/shorts/assets
+# CLEAN REBUILD v2: real official video required; never reuse rejected output
 on:
   push:
     paths:
@@ -31,8 +31,6 @@ jobs:
           import json
           from pathlib import Path
           press='https://starwarsgalacticracer.com/media/'
-          # Somente paginas oficiais dedicadas ao Galactic Racer. Sem Xbox News,
-          # buscas genericas, logos de plataforma ou outros jogos.
           media=[
             {'type':'video','url':press,'role':'official_presskit_video_primary'},
             {'type':'video','url':'https://starwarsgalacticracer.com/news/official-star-wars-galactic-racer-story-trailer/','role':'official_story_trailer'},
@@ -43,7 +41,7 @@ jobs:
           paras=[p for p in script.split('\n\n') if p.strip()]
           titles=['A GALAXIA VAI CORRER','SHADE E A LIGA','VELOCIDADE E VEICULOS','PISTAS DE STAR WARS','COMPETICAO E EVOLUCAO','SEM JEDI. SO VELOCIDADE.','O QUE ESPERAR','RADAR DOS GAMES']
           scenes=[{'title':titles[i],'narration':paras[i],'media_indices':[]} for i in range(len(paras))]
-          plan={'topic':'Star Wars: Galactic Racer','source':press,'minimum_assets':3,'media_policy':'STRICT_GALACTIC_RACER_ONLY; video_required; official_presskit_first; screenshots_support_only; reject_platform_logos; reject_other_games; no_paid_tools','media':media,'scenes':scenes}
+          plan={'topic':'Star Wars: Galactic Racer','source':press,'minimum_assets':3,'media_policy':'STRICT_GALACTIC_RACER_ONLY; minimum_two_real_videos; official_presskit_first; screenshots_support_only; reject_platform_logos; reject_other_games; no_paid_tools','media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
           Path('output/selected.json').write_text(json.dumps({'title':'Star Wars: Galactic Racer','source':press,'clean_rebuild':True},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
@@ -51,28 +49,30 @@ jobs:
         run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
       - name: Baixar somente material oficial Galactic Racer
         run: python src/media.py output/auto-media-plan.json
-      - name: QA visual estrito antes do render
+      - name: QA visual e de sincronismo antes do render
         run: |
           python - <<'PY'
-          import json, os
+          import json
           from pathlib import Path
           data=json.loads(Path('output/clips.json').read_text())
+          spec=json.loads(Path('output/auto-media-plan.json').read_text())
+          timing=json.loads(Path('output/voice-timings.json').read_text())
           assets=data.get('assets',[])
           if len(assets)<3:
               raise SystemExit('QUALITY_BLOCK: menos de 3 assets oficiais do Galactic Racer')
           videos=[]
           for a in assets:
-              p=str(a.get('path','')).lower()
-              u=str(a.get('url','')).lower()
-              role=str(a.get('role','')).lower()
-              blob=' '.join([p,u,role])
-              if any(x in blob for x in ['modernwar','modern-warfare','callofduty','call-of-duty']):
-                  raise SystemExit('QUALITY_BLOCK: asset de outro jogo detectado')
+              p=str(a.get('path','')).lower();u=str(a.get('url','')).lower();role=str(a.get('role','')).lower();blob=' '.join([p,u,role])
+              if any(x in blob for x in ['modernwar','modern-warfare','callofduty','call-of-duty','xbox-logo','playstation-logo']):
+                  raise SystemExit('QUALITY_BLOCK: asset irrelevante/de outro jogo detectado')
               if p.endswith(('.mp4','.webm','.mov','.mkv')):
                   videos.append(a)
-          if not videos:
-              raise SystemExit('QUALITY_BLOCK: nenhum trailer/gameplay em video; slideshow proibido')
-          Path('output/visual-qa.json').write_text(json.dumps({'passed':True,'assets':len(assets),'video_assets':len(videos)},indent=2))
+          if len(videos)<2:
+              raise SystemExit(f'QUALITY_BLOCK: apenas {len(videos)} video(s) oficial(is); minimo 2 para evitar slideshow')
+          segments=timing.get('segments',timing if isinstance(timing,list) else [])
+          if len(segments)!=len(spec['scenes']):
+              raise SystemExit(f'QUALITY_BLOCK: {len(segments)} blocos de voz para {len(spec["scenes"])} cenas')
+          Path('output/visual-qa.json').write_text(json.dumps({'passed':True,'assets':len(assets),'video_assets':len(videos),'voice_segments':len(segments)},indent=2))
           PY
       - name: Manifesto com video prioritario
         run: |
@@ -84,13 +84,11 @@ jobs:
           assets=media['assets']
           vids=[int(a['index']) for a in assets if str(a.get('path','')).lower().endswith(('.mp4','.webm','.mov','.mkv'))]
           imgs=[int(a['index']) for a in assets if int(a['index']) not in vids]
-          assert vids, 'QUALITY_BLOCK: video oficial obrigatorio'
+          assert len(vids)>=2, 'QUALITY_BLOCK: minimo 2 videos oficiais obrigatorios'
           for i,s in enumerate(spec['scenes']):
-              # Cada bloco começa por video real; imagem oficial apenas apoio.
-              picks=[vids[i%len(vids)]]
-              if len(vids)>1: picks.append(vids[(i+1)%len(vids)])
-              if imgs: picks.append(imgs[i%len(imgs)])
-              if len(vids)>2: picks.append(vids[(i+2)%len(vids)])
+              picks=[vids[i%len(vids)],vids[(i+1)%len(vids)]]
+              if len(vids)>2:picks.append(vids[(i+2)%len(vids)])
+              if imgs:picks.append(imgs[i%len(imgs)])
               s['media_indices']=list(dict.fromkeys(picks))
           Path('output/render.json').write_text(json.dumps({'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'radar-dos-games-intro-oficial.mp4','scenes':spec['scenes'],'output':'output/master.mp4'},ensure_ascii=False,indent=2))
           PY
