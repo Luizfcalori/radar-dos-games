@@ -1,3 +1,12 @@
 {
-  "videos": []
+  "videos": [
+    {
+      "content_id": "1e7917ddd81a55cc",
+      "title": "Gears of War: E-Day is Available in Early Access Today, Watch the Launch Gameplay Trailer",
+      "url": "https://news.xbox.com/en-us/2026/10/01/gears-of-war-e-day-early-access-launch-trailer-xbox/",
+      "published_at": "2026-10-03T02:30:00Z",
+      "scheduled": true,
+      "proof_real": true
+    }
+  ]
 }
