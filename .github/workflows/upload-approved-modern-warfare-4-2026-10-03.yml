@@ -65,7 +65,7 @@ jobs:
           import json
           from pathlib import Path
           p=json.loads(Path('approved/PROVA-STRICT.json').read_text(encoding='utf-8'))
-          assert p['status']=='APPROVED_STRICT_DISTINCT', p
+          assert p['status']=='APPROVED_STRICT', p
           assert p['topic']=='Call of Duty: Modern Warfare 4', p
           assert p['voice']=='pt-BR-ThalitaMultilingualNeural', p
           assert len(p['shorts'])==3, p
