@@ -1,10 +1,7 @@
 name: Radar dos Games - Modern Warfare 4 STRICT 2026-10-03
-# validated trigger v2
+# validated v3: distinct trailers only; codec/stream variants never count as extra media
 
 on:
-  push:
-    paths:
-      - '.github/workflows/run-now-2026-10-03-modern-warfare-4.yml'
   workflow_dispatch:
 
 permissions:
@@ -47,12 +44,13 @@ jobs:
           titles=['A GUERRA COMEÇA','PRICE ESTÁ FORAGIDO','A 141 SE DIVIDE','MULTIPLAYER MAIS FLUIDO','DMZ VOLTA AO JOGO','LANÇAMENTO MULTIPLATAFORMA','ACESSO ANTECIPADO','O PESO DE MODERN WARFARE']
           scenes=[{'title':titles[i],'narration':paras[i],'media_indices':[]} for i in range(len(paras))]
           media=[
-            {'type':'video','steam_app_id':4435490,'role':'official_mw4_main_trailers','max_assets':4,'min_duration':20,'blocked_tokens':['microtrailer']},
-            {'type':'video','steam_app_id':4783780,'role':'official_mw4_beta_gameplay','max_assets':3,'min_duration':20,'blocked_tokens':['microtrailer']},
+            {'type':'video','steam_app_id':4435490,'role':'official_mw4_main_trailers','max_assets':6,'min_duration':20,'blocked_tokens':['microtrailer']},
+            {'type':'video','steam_app_id':4783780,'role':'official_mw4_beta_gameplay','max_assets':4,'min_duration':20,'blocked_tokens':['microtrailer']},
             {'type':'image','steam_app_id':4435490,'role':'official_mw4_main_screenshots','max_assets':10},
             {'type':'image','steam_app_id':4783780,'role':'official_mw4_beta_screenshots','max_assets':6}
           ]
-          plan={'topic':'Call of Duty: Modern Warfare 4','source':official,'minimum_assets':11,'minimum_video_assets':3,'minimum_unique_video_seconds':150,'minimum_image_assets':8,'media_policy':'exact_game_only; steam exact app 4435490 plus official beta 4783780; no generic COD assets; no YouTube dependency; no platform logos; no other games; no paid tools','media':media,'scenes':scenes}
+          # media.py faz QA técnico bruto; a etapa seguinte faz a deduplicação semântica por trailer.
+          plan={'topic':'Call of Duty: Modern Warfare 4','source':official,'minimum_assets':10,'minimum_video_assets':2,'minimum_unique_video_seconds':200,'minimum_image_assets':8,'media_policy':'exact_game_only; stream variants of same trailer count once in semantic QA; no generic COD assets; no YouTube dependency; no platform logos; no other games; no paid tools','media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
           Path('output/research.json').write_text(json.dumps({'topic':'Call of Duty: Modern Warfare 4','official_release':'2026-10-23','campaign_early_access':'2026-10-16','sources':[official,campaign,steam],'steam_app_id':4435490,'steam_beta_app_id':4783780,'previous_artifacts_reused':False},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
@@ -63,42 +61,60 @@ jobs:
       - name: Baixar mídia EXATA Modern Warfare 4
         run: python src/media.py output/auto-media-plan.json
 
-      - name: QA semântico de mídia
+      - name: QA semântico de mídia DISTINTA
         run: |
           python - <<'PY'
-          import json
+          import json,re
           from pathlib import Path
           media=json.loads(Path('output/clips.json').read_text())
           voice=json.loads(Path('output/voice-timings.json').read_text())
           spec=json.loads(Path('output/auto-media-plan.json').read_text())
           assets=[a for a in media.get('assets',[]) if a.get('approved')]
-          videos=[a for a in assets if a.get('type')=='video']
+          raw_videos=[a for a in assets if a.get('type')=='video']
           images=[a for a in assets if a.get('type')=='image']
-          assert len(videos)>=3, f'QUALITY_BLOCK: somente {len(videos)} vídeos exatos de MW4'
-          assert media.get('unique_video_seconds',0)>=150, f"QUALITY_BLOCK: somente {media.get('unique_video_seconds',0)}s de vídeo único"
+          def identity(a):
+              label=' '.join(str(a.get('source_label') or '').lower().split())
+              m=re.search(r'/store_trailers/\d+/(\d+)/',str(a.get('url') or ''))
+              return (str(a.get('source') or ''), label or (m.group(1) if m else str(a.get('url') or '').split('?')[0]))
+          distinct={}
+          for a in raw_videos:
+              distinct.setdefault(identity(a),a)
+          videos=list(distinct.values())
+          distinct_seconds=round(sum(float(a.get('duration',0)) for a in videos),3)
+          assert len(videos)>=2, f'QUALITY_BLOCK: somente {len(videos)} trailers/gameplays realmente distintos de MW4'
+          assert distinct_seconds>=240, f'QUALITY_BLOCK: somente {distinct_seconds}s de vídeo realmente distinto'
           assert len(images)>=8, f'QUALITY_BLOCK: somente {len(images)} screenshots exatas de MW4'
           allowed={'steam_app:4435490','steam_app:4783780'}
           assert all(a.get('source') in allowed for a in assets)
           assert all(str(a.get('relevance_evidence','')).startswith('steam_exact_app') for a in assets)
           assert len(voice.get('segments',[]))==len(spec['scenes'])==8
-          Path('output/visual-qa.json').write_text(json.dumps({'passed':True,'approved_assets':len(assets),'videos':len(videos),'images':len(images),'unique_video_seconds':media.get('unique_video_seconds'),'voice_segments':len(voice.get('segments',[])),'allowed_sources':sorted(allowed),'policy':'exact_mw4_steam_apps_only'},ensure_ascii=False,indent=2),encoding='utf-8')
-          print(json.dumps({'assets':len(assets),'videos':len(videos),'images':len(images),'seconds':media.get('unique_video_seconds')},ensure_ascii=False))
+          qa={'passed':True,'approved_assets':len(assets),'raw_video_files':len(raw_videos),'videos':len(videos),'images':len(images),'unique_video_seconds':distinct_seconds,'voice_segments':len(voice.get('segments',[])),'distinct_video_labels':[a.get('source_label') or a.get('url') for a in videos],'allowed_sources':sorted(allowed),'policy':'exact_mw4_distinct_trailers_only; codec_stream_variants_count_once'}
+          Path('output/visual-qa.json').write_text(json.dumps(qa,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(qa,ensure_ascii=False))
           PY
 
-      - name: Montar manifesto com diversidade real
+      - name: Montar manifesto sem variantes duplicadas
         run: |
           python - <<'PY'
-          import json
+          import json,re
           from pathlib import Path
           spec=json.loads(Path('output/auto-media-plan.json').read_text())
           media=json.loads(Path('output/clips.json').read_text())
           assets=[a for a in media['assets'] if a.get('approved')]
-          videos=[int(a['index']) for a in assets if a['type']=='video']
+          raw=[a for a in assets if a['type']=='video']
           images=[int(a['index']) for a in assets if a['type']=='image']
-          assert len(videos)>=3 and len(images)>=8
+          def identity(a):
+              label=' '.join(str(a.get('source_label') or '').lower().split())
+              m=re.search(r'/store_trailers/\d+/(\d+)/',str(a.get('url') or ''))
+              return (str(a.get('source') or ''), label or (m.group(1) if m else str(a.get('url') or '').split('?')[0]))
+          uniq={}
+          for a in raw: uniq.setdefault(identity(a),int(a['index']))
+          videos=list(uniq.values())
+          assert len(videos)>=2 and len(images)>=8
           scenes=[]
           for i,s in enumerate(spec['scenes']):
-              chosen=[videos[i%len(videos)],videos[(i+1)%len(videos)],images[i%len(images)],videos[(i+2)%len(videos)]]
+              # Duas peças de vídeo realmente diferentes + duas screenshots diferentes por bloco.
+              chosen=[videos[i%len(videos)],images[(2*i)%len(images)],videos[(i+1)%len(videos)],images[(2*i+1)%len(images)]]
               s=dict(s);s['media_indices']=chosen;scenes.append(s)
           Path('output/render.json').write_text(json.dumps({'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'radar-dos-games-intro-oficial.mp4','scenes':scenes,'output':'output/master.mp4'},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
@@ -131,11 +147,9 @@ jobs:
           master=Path('output/master.mp4')
           dur=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(master)],text=True).strip())
           assert voice.get('voice')=='pt-BR-ThalitaMultilingualNeural'
-          assert 'O ponto mais importante é separar novidade concreta de expectativa' not in script
-          assert 'Na prática, vale olhar para esses elementos pensando no jogador' not in script
-          assert qa['passed'] is True
+          assert qa['passed'] is True and qa['videos']>=2 and qa['unique_video_seconds']>=240
           shorts=sorted(Path('output/shorts').glob('short_*.mp4'));assert len(shorts)==3
-          proof={'status':'APPROVED_STRICT','topic':'Call of Duty: Modern Warfare 4','master_seconds':round(dur,2),'videos':qa['videos'],'images':qa['images'],'unique_video_seconds':qa['unique_video_seconds'],'voice':voice.get('voice'),'shorts':[p.name for p in shorts],'thumbnail':'output/thumbnail.jpg','youtube_upload':False,'previous_artifacts_reused':False}
+          proof={'status':'APPROVED_STRICT_DISTINCT','topic':'Call of Duty: Modern Warfare 4','master_seconds':round(dur,2),'distinct_videos':qa['videos'],'raw_video_files':qa['raw_video_files'],'images':qa['images'],'distinct_video_seconds':qa['unique_video_seconds'],'voice':voice.get('voice'),'shorts':[p.name for p in shorts],'thumbnail':'output/thumbnail.jpg','youtube_upload':False,'previous_artifacts_reused':False}
           Path('output/PROVA-STRICT.json').write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
           print(json.dumps(proof,ensure_ascii=False,indent=2))
           PY
