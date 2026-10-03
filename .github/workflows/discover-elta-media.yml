@@ -13,37 +13,24 @@ jobs:
   discover:
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect exact official pages only
+      - name: Inspect PlayStation direct-video context
         run: |
           python - <<'PY'
           import html,re,urllib.request
-          pages=[
-            'https://blog.playstation.com/2026/10/01/martial-arts-meet-fluid-platforming-in-elta-defy-all-gods-with-a-free-ps5-demo-out-today/',
-            'https://www.focus-entmt.com/en/news/elta-defy-all-gods-set-to-launch-february-2-2027-free-demo-out-now-on-pc-playstation-5-and-xbox-series-xs',
-            'https://www.focus-entmt.com/en/news/elta-defy-all-gods-unveiled-at-opening-night-live-set-for-2027-release',
-          ]
-          req_headers={'User-Agent':'Mozilla/5.0'}
-          for page in pages:
-              print('\nPAGE',page)
-              req=urllib.request.Request(page,headers=req_headers)
-              raw=urllib.request.urlopen(req,timeout=30).read().decode('utf-8','ignore')
-              raw=html.unescape(raw).replace('\\/','/')
-              found=[]
-              patterns=[
-                r'https?://[^"\'<>\\ ]+?\.mp4(?:\?[^"\'<>\\ ]*)?',
-                r'https?://stream\.mux\.com/[^"\'<>\\ ]+',
-                r'https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+',
-                r'https?://i\.ytimg\.com/vi/[A-Za-z0-9_-]+/[^"\'<>\\ ]+',
-                r'https?://cdn\.focus-home\.com/[^"\'<>\\ ]+',
-              ]
-              for pattern in patterns:
-                  found.extend(re.findall(pattern,raw,re.I))
-              seen=[]
-              for u in found:
-                  u=u.rstrip('),]}')
-                  if u not in seen:
-                      seen.append(u)
-              for u in seen:
-                  print('MEDIA',u)
-              print('COUNT',len(seen))
+          page='https://blog.playstation.com/2026/10/01/martial-arts-meet-fluid-platforming-in-elta-defy-all-gods-with-a-free-ps5-demo-out-today/'
+          req=urllib.request.Request(page,headers={'User-Agent':'Mozilla/5.0'})
+          raw=urllib.request.urlopen(req,timeout=30).read().decode('utf-8','ignore')
+          raw=html.unescape(raw).replace('\\/','/')
+          urls=[]
+          for pattern in [r'https?://[^"\'<>\\ ]+?\.mp4(?:\?[^"\'<>\\ ]*)?', r'https?://stream\.mux\.com/[^"\'<>\\ ]+']:
+              urls.extend(re.findall(pattern,raw,re.I))
+          seen=[]
+          for u in urls:
+              u=u.rstrip('),]}')
+              if u in seen: continue
+              seen.append(u)
+              pos=raw.find(u)
+              context=re.sub(r'\s+',' ',raw[max(0,pos-800):pos+len(u)+800])
+              print('\nURL',u)
+              print('CONTEXT',context)
           PY
