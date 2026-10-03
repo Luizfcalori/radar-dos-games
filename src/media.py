@@ -61,18 +61,32 @@ def direct_video(url: str, dest: Path, referer=None) -> bool:
 
 
 def ytdlp(url: str, dest: Path) -> bool:
-    try:
-        subprocess.run(
-            [
-                "yt-dlp", "--no-playlist", "--retries", "1", "--fragment-retries", "1", "--socket-timeout", "15",
-                "-f", "b[height<=1080]/best", "--merge-output-format", "mp4", "-o", str(dest), url,
-            ],
-            check=True,
-        )
-        return valid_visual(dest)
-    except subprocess.CalledProcessError:
+    """Tenta clientes oficiais alternativos do YouTube antes de desistir.
+
+    Em runners de nuvem, o cliente web padrão pode cair em bot-check/age-gate.
+    Os clientes embedded/TV continuam apontando para o MESMO vídeo oficial; só mudam
+    a forma de solicitar o stream.
+    """
+    clients = ["tv_embedded", "web_embedded", "android_vr", "ios", "mweb"]
+    for client in clients:
         dest.unlink(missing_ok=True)
-        return False
+        try:
+            print(f"yt-dlp fallback client={client} url={url}")
+            subprocess.run(
+                [
+                    "yt-dlp", "--no-playlist", "--retries", "1", "--fragment-retries", "1", "--socket-timeout", "20",
+                    "--js-runtimes", "node",
+                    "--extractor-args", f"youtube:player_client={client}",
+                    "-f", "bv*[height<=1080]+ba/b[height<=1080]/best",
+                    "--merge-output-format", "mp4", "-o", str(dest), url,
+                ],
+                check=True,
+            )
+            if valid_visual(dest):
+                return True
+        except subprocess.CalledProcessError:
+            dest.unlink(missing_ok=True)
+    return False
 
 
 def savefrom(url: str, dest: Path) -> bool:
