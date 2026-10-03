@@ -32,7 +32,7 @@ jobs:
           test ! -e output/shorts
 
       - name: Pesquisa e roteiro NOVOS
-        run: python src/rebuild_zero_elta.py
+        run: python src/rebuild_zero_elta_mux.py
 
       - name: Narração EXATA Thalita PT-BR
         run: |
