@@ -1,0 +1,63 @@
+name: Export Dragon Strict Review Files
+on:
+  push:
+    paths:
+      - '.github/workflows/export-dragon-review-files.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar pacote refinado do run 37136746087
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-dragons-dogma-strict-v6-2026-10-03-37136746087
+          path: extracted
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37136746087
+          github-token: ${{ github.token }}
+      - name: Localizar arquivos finais
+        run: |
+          set -e
+          find extracted -type f -maxdepth 4 -print
+          MASTER=$(find extracted -type f -name 'master.mp4' | head -1)
+          S1=$(find extracted -type f -path '*/shorts/short_1.mp4' | head -1)
+          S2=$(find extracted -type f -path '*/shorts/short_2.mp4' | head -1)
+          S3=$(find extracted -type f -path '*/shorts/short_3.mp4' | head -1)
+          test -s "$MASTER" && test -s "$S1" && test -s "$S2" && test -s "$S3"
+          mkdir -p review
+          cp "$MASTER" review/Dragons_Dogma_2_STRICT_MASTER.mp4
+          cp "$S1" review/Dragons_Dogma_2_STRICT_SHORT_1.mp4
+          cp "$S2" review/Dragons_Dogma_2_STRICT_SHORT_2.mp4
+          cp "$S3" review/Dragons_Dogma_2_STRICT_SHORT_3.mp4
+          ls -lh review
+      - name: Upload Master separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragon-strict-master
+          path: review/Dragons_Dogma_2_STRICT_MASTER.mp4
+          compression-level: 0
+          retention-days: 7
+      - name: Upload Short 1 separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragon-strict-short-1
+          path: review/Dragons_Dogma_2_STRICT_SHORT_1.mp4
+          compression-level: 0
+          retention-days: 7
+      - name: Upload Short 2 separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragon-strict-short-2
+          path: review/Dragons_Dogma_2_STRICT_SHORT_2.mp4
+          compression-level: 0
+          retention-days: 7
+      - name: Upload Short 3 separado
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragon-strict-short-3
+          path: review/Dragons_Dogma_2_STRICT_SHORT_3.mp4
+          compression-level: 0
+          retention-days: 7
