@@ -20,13 +20,33 @@ jobs:
           pip install -U yt-dlp
       - name: Validar intro oficial
         run: test -s radar-dos-games-intro-oficial.mp4
-      - name: Pesquisa atual
-        run: python src/research.py
-      - name: Preparar Master Dragon Dogma
-        env:
-          RADAR_TOPIC: "Dragon's Dogma 2: Dark Arisen"
-          PUBLISH_PRIVACY: private
-        run: python src/auto_daily.py
+      - name: Preparar pauta oficial Dragon Dogma sem depender do feed
+        run: |
+          mkdir -p output
+          python - <<'PY'
+          import json, urllib.request, re, html
+          from pathlib import Path
+          url='https://store.captown.capcom.com/en/products/1686546-jp'
+          req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+          page=urllib.request.urlopen(req,timeout=30).read().decode('utf-8','ignore')
+          imgs=[]
+          for u in re.findall(r'https?[^\"\'<> ]+', page):
+              u=html.unescape(u).replace('\\/','/')
+              if any(x in u.lower() for x in ['.jpg','.jpeg','.png','.webp']) and ('capcom' in u.lower() or 'shopify' in u.lower()):
+                  u=u.split('?')[0]
+                  if u not in imgs: imgs.append(u)
+          # O trailer oficial fica na Capcom Town; media.py tenta yt-dlp e, se bloqueado, as imagens oficiais mantêm a produção.
+          media=[{'type':'video','url':'https://captown.capcom.com/en/theaters/dragonsdogma/57','role':'official_announcement_trailer'}]
+          media += [{'type':'image','url':u,'role':f'official_capcom_{i:02d}'} for i,u in enumerate(imgs[:16],1)]
+          script='''Dragon’s Dogma 2: Dark Arisen está a poucos dias do lançamento, marcado oficialmente para 9 de outubro de 2026. A expansão leva o Arisen para Norgan, uma região nevada e abandonada no extremo norte, onde uma nova história gira em torno de Eir e dos segredos do misterioso Fallen Dragon.\n\nAlém da nova região, a Capcom confirmou doze novos desafios de dungeon espalhados pelo mundo de Dragon’s Dogma 2. Essas áreas prometem equipamentos raros ligados a antigos Arisens e novos testes para quem já dominou o combate do jogo base.\n\nDark Arisen também amplia a progressão. Relíquias esquecidas encontradas em Norgan poderão liberar armas e habilidades poderosas, criando novos motivos para explorar e experimentar diferentes vocações ao lado dos Pawns.\n\nOutra novidade está na criação de personagens, com novos penteados e tatuagens para personalizar Arisen e Pawns. A Capcom também vem preparando atualizações gratuitas de qualidade de vida e desempenho para acompanhar essa nova fase do jogo.\n\nA proposta é clara: expandir Dragon’s Dogma 2 sem abandonar a liberdade que define a série. Norgan, novas histórias, doze dungeons e novos equipamentos formam o pacote que chega em 9 de outubro para PlayStation 5, Xbox Series X e S e PC, enquanto a edição completa também marca a chegada ao Nintendo Switch 2.\n\nAgora queremos saber: Dark Arisen é o conteúdo que faltava para você voltar a Dragon’s Dogma 2? Conta pra gente nos comentários e acompanhe o Radar dos Games para mais notícias, lançamentos e novidades do mundo dos games.'''
+          Path('output/auto-script.txt').write_text(script,encoding='utf-8')
+          scenes=[]
+          paras=[p for p in script.split('\n\n') if p.strip()]
+          for i in range(8): scenes.append({'title':['LANÇAMENTO','NORGAN','12 NOVAS DUNGEONS','NOVOS EQUIPAMENTOS','PERSONALIZAÇÃO','ATUALIZAÇÕES','O QUE ESPERAR','RADAR DOS GAMES'][i],'narration':paras[min(i,len(paras)-1)],'media_indices':[]})
+          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':url,'minimum_assets':2,'media_policy':'official_capcom_only; video_preferred; official_images_fallback','media':media,'scenes':scenes}
+          Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':url,'release_date':'2026-10-09','official_assets_planned':len(media)},ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
       - name: Narracao Thalita
         run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
       - name: Midia oficial com fallbacks gratuitos
