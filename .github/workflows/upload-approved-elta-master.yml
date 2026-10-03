@@ -1,0 +1,115 @@
+name: Radar dos Games - Publicar Master aprovado Elta
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".proof/upload-approved-elta-master.txt"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Baixar exatamente o pacote ZERO aprovado
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p approved
+          gh api repos/${{ github.repository }}/actions/artifacts/11263800838/zip > approved.zip
+          unzip -q approved.zip -d approved
+          test -f approved/master.mp4
+          test -f approved/thumbnail.jpg
+          test -f approved/PROVA-ZERO.json
+
+      - name: Validar que e o Master aprovado do zero
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('approved/PROVA-ZERO.json').read_text(encoding='utf-8'))
+          assert p['status']=='APPROVED_FROM_ZERO', p
+          assert p['topic']=='Elta: Defy All Gods', p
+          assert p['previous_artifacts_reused'] is False, p
+          assert p['assets_verified']==8 and p['videos_verified']==2 and p['images_verified']==6, p
+          print('PACOTE_APROVADO_OK:', json.dumps(p, ensure_ascii=False))
+          PY
+
+      - name: Preparar titulo descricao e hashtags em PT-BR
+        run: |
+          cat > approved/master-youtube.json <<'JSON'
+          {
+            "title": "Elta: Defy All Gods ganhou data e demo grátis — tudo o que já foi confirmado",
+            "description": "Elta: Defy All Gods chega em 2 de fevereiro de 2027 e já tem demo gratuita no PC, PlayStation 5 e Xbox Series X|S. Neste Radar dos Games, reunimos informações confirmadas sobre combate de artes marciais, exploração, plataforma, a parceria entre Victus e Elta, a demo e o lançamento.\n\nFontes oficiais: Focus Entertainment e PlayStation Blog.\n\nSe curtiu o vídeo, inscreva-se no Radar dos Games, deixe o like e ative o sininho para acompanhar os próximos lançamentos e novidades.\n\n#EltaDefyAllGods #AfterburnerStudios #FocusEntertainment #PS5 #XboxSeries",
+            "tags": ["Elta Defy All Gods", "Afterburner Studios", "Focus Entertainment", "PS5", "Xbox Series X|S", "PC Gaming", "Radar dos Games"],
+            "privacy": "public",
+            "containsSyntheticMedia": true,
+            "thumbnail": "approved/thumbnail.jpg"
+          }
+          JSON
+
+      - name: Validar OAuth e canal Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/check_youtube.py
+
+      - name: Publicar Master aprovado no YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        shell: bash
+        run: |
+          set -o pipefail
+          python src/youtube.py approved/master.mp4 approved/master-youtube.json | tee approved/upload-result.json
+
+      - name: Verificar video publicado no canal correto
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from src.youtube import service, assert_radar_channel, RADAR_CHANNEL_ID, RADAR_CHANNEL_TITLE
+          raw=Path('approved/upload-result.json').read_text(encoding='utf-8').strip().splitlines()[-1]
+          up=json.loads(raw)
+          vid=up['id']
+          yt=service()
+          r=yt.videos().list(part='snippet,status',id=vid).execute()
+          item=r['items'][0]
+          snippet=item['snippet']; status=item['status']
+          assert_radar_channel(snippet['channelId'], snippet['channelTitle'])
+          assert snippet['channelId']==RADAR_CHANNEL_ID
+          assert snippet['channelTitle']==RADAR_CHANNEL_TITLE
+          assert status['privacyStatus']=='public', status
+          out={'status':'PUBLICADO','video_id':vid,'url':f'https://www.youtube.com/watch?v={vid}','channel_id':snippet['channelId'],'channel_title':snippet['channelTitle'],'title':snippet['title'],'privacy':status['privacyStatus']}
+          Path('approved/publicacao-confirmada.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False))
+          PY
+
+      - name: Guardar comprovante
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: comprovante-publicacao-elta-${{ github.run_id }}
+          path: |
+            approved/upload-result.json
+            approved/publicacao-confirmada.json
+            approved/master-youtube.json
+          if-no-files-found: ignore
+          retention-days: 7
