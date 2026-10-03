@@ -1,4 +1,5 @@
 name: Radar dos Games - Dragon Dogma 2026-10-03
+# restart 2026-10-03 media-fix
 on:
   push:
     paths:
