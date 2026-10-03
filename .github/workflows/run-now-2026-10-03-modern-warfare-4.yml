@@ -1,0 +1,191 @@
+name: Radar dos Games - Modern Warfare 4 STRICT 2026-10-03
+
+on:
+  push:
+    paths:
+      - '.github/workflows/run-now-2026-10-03-modern-warfare-4.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Limpeza total
+        run: |
+          rm -rf output
+          mkdir -p output
+
+      - name: Ferramentas gratuitas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp gdown
+
+      - name: Validar intro oficial
+        run: test -s radar-dos-games-intro-oficial.mp4
+
+      - name: Preparar pauta e fontes EXATAS Modern Warfare 4
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          official='https://www.callofduty.com/br/pt/modernwarfare4'
+          campaign='https://www.callofduty.com/blog/2026/09/call-of-duty-modern-warfare-4-tokyo-games-show-campaign-trailer'
+          steam='https://store.steampowered.com/app/4435490/Call_of_Duty_Modern_Warfare_4/'
+
+          script='''Call of Duty: Modern Warfare 4 chega em 23 de outubro com uma campanha que muda o equilíbrio da série. A guerra explode na Península Coreana, enquanto John Price já não opera como o capitão protegido por uma estrutura militar. Ele está foragido, sendo caçado e tomando decisões cada vez mais pessoais. Esse contraste entre uma guerra aberta e uma operação clandestina é o ponto de partida para o novo Modern Warfare.\n\nNa campanha, o conflito não fica preso a um único front. A Activision já mostrou combates na Coreia, operações em ambientes urbanos e missões de infiltração em diferentes regiões. Ao mesmo tempo, o soldado sul-coreano Park Hyun Jun coloca o jogador no centro da invasão, enquanto Price segue outra trilha, tentando descobrir quem está por trás de uma ameaça capaz de ampliar ainda mais a guerra.\n\nA situação de Price também mexe com a própria Task Force 141. Ghost e Gaz não estão simplesmente seguindo o antigo comandante, e o trailer mais recente deixa claro que existe uma ruptura entre antigos aliados. Price chega ao ponto de trabalhar com Valeria Garza, uma personagem que antes ocupava o outro lado do conflito. Isso cria uma campanha menos previsível, com alianças desconfortáveis e interesses que não caminham na mesma direção.\n\nNo Multiplayer, a proposta continua sendo combate direto e preciso, mas com movimentação mais fluida e maior controle durante cada confronto. O beta oficial já mostrou esse foco na resposta rápida das armas, na leitura dos mapas e em decisões tomadas em poucos segundos. Para o Radar dos Games, o ponto mais interessante é observar se essa mobilidade consegue acelerar as partidas sem transformar todos os confrontos na mesma sequência de movimentos.\n\nModern Warfare 4 também mantém o DMZ como uma parte importante da experiência. A ideia continua baseada em entrar, cumprir objetivos, coletar recursos e decidir quando vale a pena extrair. Só que o risco cresce quando cada incursão pode terminar com perda do que foi conquistado. É um modo que funciona melhor quando tensão, recompensa e liberdade de escolha permanecem equilibradas.\n\nOutro detalhe importante é a quantidade de plataformas confirmadas. Modern Warfare 4 chega ao Xbox Series X e S, PlayStation 5, PC e Nintendo Switch 2. No PC, a Activision confirmou versões para Battle.net, Xbox no PC e Steam. Isso amplia bastante o alcance do lançamento e coloca ainda mais peso sobre desempenho, estabilidade e equilíbrio entre plataformas já nas primeiras semanas.\n\nA campanha terá acesso antecipado a partir de 16 de outubro para quem estiver dentro das condições de pré-venda informadas oficialmente. O lançamento completo acontece uma semana depois. Até lá, o que temos de mais confiável são justamente os trailers, gameplays e screenshots publicados pela Activision e pela página oficial do jogo na Steam. É esse material que estamos usando aqui, sem imagens genéricas de outros Call of Duty.\n\nModern Warfare 4 chega carregando uma responsabilidade grande: continuar uma das linhas mais conhecidas da franquia sem depender apenas do nome Modern Warfare. Se a campanha entregar o conflito prometido e Multiplayer e DMZ sustentarem variedade, outubro pode terminar com um dos lançamentos mais fortes do ano. Se você quer acompanhar esse lançamento com fonte oficial e sem enrolação, se inscreva no Radar dos Games e comenta qual modo você pretende jogar primeiro.'''
+
+          Path('output/auto-script.txt').write_text(script,encoding='utf-8')
+          paras=[p.strip() for p in script.split('\n\n') if p.strip()]
+          titles=[
+            'A GUERRA COMEÇA','PRICE ESTÁ FORAGIDO','A 141 SE DIVIDE','MULTIPLAYER MAIS FLUIDO',
+            'DMZ VOLTA AO JOGO','LANÇAMENTO MULTIPLATAFORMA','ACESSO ANTECIPADO','O PESO DE MODERN WARFARE'
+          ]
+          scenes=[{'title':titles[i],'narration':paras[i],'media_indices':[]} for i in range(len(paras))]
+
+          media=[
+            {'type':'video','steam_app_id':4435490,'role':'official_mw4_main_trailers','max_assets':4,'min_duration':20,'blocked_tokens':['microtrailer']},
+            {'type':'video','steam_app_id':4783780,'role':'official_mw4_beta_gameplay','max_assets':3,'min_duration':20,'blocked_tokens':['microtrailer']},
+            {'type':'image','steam_app_id':4435490,'role':'official_mw4_main_screenshots','max_assets':10},
+            {'type':'image','steam_app_id':4783780,'role':'official_mw4_beta_screenshots','max_assets':6}
+          ]
+
+          plan={
+            'topic':'Call of Duty: Modern Warfare 4',
+            'source':official,
+            'minimum_assets':11,
+            'minimum_video_assets':3,
+            'minimum_unique_video_seconds':150,
+            'minimum_image_assets':8,
+            'media_policy':'exact_game_only; steam exact app 4435490 plus official beta 4783780; no generic COD assets; no YouTube dependency; no platform logos; no other games; no paid tools',
+            'media':media,
+            'scenes':scenes
+          }
+          Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/research.json').write_text(json.dumps({
+            'topic':'Call of Duty: Modern Warfare 4',
+            'official_release':'2026-10-23',
+            'campaign_early_access':'2026-10-16',
+            'sources':[official,campaign,steam],
+            'steam_app_id':4435490,
+            'steam_beta_app_id':4783780,
+            'previous_artifacts_reused':False
+          },ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Narração Thalita Multilingual PT-BR
+        run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --segments-json output/voice-timings.json
+
+      - name: Baixar mídia EXATA Modern Warfare 4
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: QA semântico de mídia
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          media=json.loads(Path('output/clips.json').read_text())
+          voice=json.loads(Path('output/voice-timings.json').read_text())
+          spec=json.loads(Path('output/auto-media-plan.json').read_text())
+          assets=[a for a in media.get('assets',[]) if a.get('approved')]
+          videos=[a for a in assets if a.get('type')=='video']
+          images=[a for a in assets if a.get('type')=='image']
+          assert len(videos)>=3, f'QUALITY_BLOCK: somente {len(videos)} vídeos exatos de MW4'
+          assert media.get('unique_video_seconds',0)>=150, f"QUALITY_BLOCK: somente {media.get('unique_video_seconds',0)}s de vídeo único"
+          assert len(images)>=8, f'QUALITY_BLOCK: somente {len(images)} screenshots exatas de MW4'
+          allowed={'steam_app:4435490','steam_app:4783780'}
+          assert all(a.get('source') in allowed for a in assets), [(a.get('source'),a.get('url')) for a in assets]
+          assert all(str(a.get('relevance_evidence','')).startswith('steam_exact_app') for a in assets), [a.get('relevance_evidence') for a in assets]
+          assert len(voice.get('segments',[]))==len(spec['scenes'])==8
+          Path('output/visual-qa.json').write_text(json.dumps({
+            'passed':True,'approved_assets':len(assets),'videos':len(videos),'images':len(images),
+            'unique_video_seconds':media.get('unique_video_seconds'),'voice_segments':len(voice.get('segments',[])),
+            'allowed_sources':sorted(allowed),'policy':'exact_mw4_steam_apps_only'
+          },ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps({'assets':len(assets),'videos':len(videos),'images':len(images),'seconds':media.get('unique_video_seconds')},ensure_ascii=False))
+          PY
+
+      - name: Montar manifesto com diversidade real
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('output/auto-media-plan.json').read_text())
+          media=json.loads(Path('output/clips.json').read_text())
+          assets=[a for a in media['assets'] if a.get('approved')]
+          videos=[int(a['index']) for a in assets if a['type']=='video']
+          images=[int(a['index']) for a in assets if a['type']=='image']
+          assert len(videos)>=3 and len(images)>=8
+          scenes=[]
+          for i,s in enumerate(spec['scenes']):
+              # 3 vídeos + 1 screenshot por cena; ordem rotativa para reduzir repetição visual.
+              chosen=[videos[i%len(videos)], videos[(i+1)%len(videos)], images[i%len(images)], videos[(i+2)%len(videos)]]
+              s=dict(s)
+              s['media_indices']=chosen
+              scenes.append(s)
+          Path('output/render.json').write_text(json.dumps({
+            'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json',
+            'intro':'radar-dos-games-intro-oficial.mp4','scenes':scenes,'output':'output/master.mp4'
+          },ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Render Master STRICT
+        run: python src/render.py output/render.json
+
+      - name: Quality gate Master
+        run: python src/quality.py output/master.mp4
+
+      - name: Gerar thumbnail
+        run: python src/thumbnail.py output/master.mp4 'MODERN WARFARE 4: O QUE MUDA AGORA?' output/thumbnail.jpg
+
+      - name: Gerar exatamente 3 Shorts
+        run: python src/shorts.py output/master.mp4
+
+      - name: QA final pacote
+        run: |
+          python src/quality.py output/shorts/short_1.mp4 --short
+          python src/quality.py output/shorts/short_2.mp4 --short
+          python src/quality.py output/shorts/short_3.mp4 --short
+          test -s output/thumbnail.jpg
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          script=Path('output/auto-script.txt').read_text(encoding='utf-8')
+          voice=json.loads(Path('output/voice-timings.json').read_text())
+          qa=json.loads(Path('output/visual-qa.json').read_text())
+          master=Path('output/master.mp4')
+          dur=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(master)],text=True).strip())
+          assert voice.get('voice')=='pt-BR-ThalitaMultilingualNeural'
+          assert 'O ponto mais importante é separar novidade concreta de expectativa' not in script
+          assert 'Na prática, vale olhar para esses elementos pensando no jogador' not in script
+          assert qa['passed'] is True
+          shorts=sorted(Path('output/shorts').glob('short_*.mp4'))
+          assert len(shorts)==3
+          proof={
+            'status':'APPROVED_STRICT',
+            'topic':'Call of Duty: Modern Warfare 4',
+            'master_seconds':round(dur,2),
+            'videos':qa['videos'],'images':qa['images'],'unique_video_seconds':qa['unique_video_seconds'],
+            'voice':voice.get('voice'),'shorts':[p.name for p in shorts],
+            'thumbnail':'output/thumbnail.jpg','youtube_upload':False,'previous_artifacts_reused':False
+          }
+          Path('output/PROVA-STRICT.json').write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(proof,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Guardar pacote STRICT
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-modern-warfare-4-STRICT-2026-10-03-${{ github.run_id }}
+          path: output/
+          retention-days: 7
