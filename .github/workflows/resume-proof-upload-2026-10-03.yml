@@ -1,0 +1,149 @@
+name: Radar dos Games - Concluir Prova Real no YouTube
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/resume-proof-upload-2026-10-03.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: radar-proof-upload-2026-10-03
+  cancel-in-progress: false
+
+jobs:
+  publish-approved-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias do YouTube
+        run: python -m pip install -r requirements.txt
+
+      - name: Baixar pacote aprovado da prova real sem renderizar novamente
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-prova-real-37081605592
+          path: output
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 37081605592
+
+      - name: Validar pacote aprovado e agenda ainda futura
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          qa = json.loads(Path('output/final-qa.json').read_text(encoding='utf-8'))
+          assert qa.get('status') == 'APPROVED', qa
+          required = [
+              'output/master.mp4',
+              'output/shorts/short_1.mp4',
+              'output/shorts/short_2.mp4',
+              'output/shorts/short_3.mp4',
+              'output/master-youtube.json',
+              'output/short-1-youtube.json',
+              'output/short-2-youtube.json',
+              'output/short-3-youtube.json',
+          ]
+          for name in required:
+              p = Path(name)
+              assert p.exists() and p.stat().st_size > 0, name
+
+          now = datetime.now(timezone.utc)
+          schedule = {}
+          for name in ['master-youtube.json','short-1-youtube.json','short-2-youtube.json','short-3-youtube.json']:
+              meta = json.loads((Path('output') / name).read_text(encoding='utf-8'))
+              assert meta.get('privacy') == 'private', (name, meta.get('privacy'))
+              publish_at = meta.get('publishAt')
+              assert publish_at, name
+              dt = datetime.fromisoformat(publish_at.replace('Z','+00:00'))
+              assert dt > now, (name, publish_at, now.isoformat())
+              schedule[name] = publish_at
+          print(json.dumps({'qa': qa, 'schedule': schedule}, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Confirmar OAuth e canal Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/check_youtube.py
+
+      - name: Agendar Master no YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+
+      - name: Agendar Short 1 no YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+
+      - name: Agendar Short 2 no YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+
+      - name: Agendar Short 3 no YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Registrar pauta publicada para nao repetir amanha
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          selected = json.loads(Path('output/selected.json').read_text(encoding='utf-8'))
+          master_meta = json.loads(Path('output/master-youtube.json').read_text(encoding='utf-8'))
+          p = Path('data/published.json')
+          history = json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'videos': []}
+          videos = history.setdefault('videos', [])
+          cid = selected['content_id']
+          if not any(v.get('content_id') == cid for v in videos):
+              videos.append({
+                  'content_id': cid,
+                  'title': selected['title'],
+                  'url': selected['url'],
+                  'published_at': master_meta['publishAt'],
+                  'scheduled': True,
+                  'proof_real': True,
+              })
+          history['videos'] = videos[-200:]
+          p.write_text(json.dumps(history, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published.json
+          git diff --cached --quiet || git commit -m "bot: registrar pauta da prova real"
+          git push
+
+      - name: Guardar comprovantes do agendamento
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-prova-real-youtube-${{ github.run_id }}
+          path: |
+            output/final-qa.json
+            output/selected.json
+            output/*youtube*.json
+          retention-days: 7
