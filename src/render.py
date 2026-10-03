@@ -77,9 +77,74 @@ def ordered_scene_indices(indices, assets):
     return sorted(indices, key=lambda idx: 0 if is_video(assets[idx]) else 1)
 
 
+def diversified_scene_indices(raw_indices, assets, scene_no, previous_scene):
+    """Monta até 4 mídias distintas por cena e evita repetir o bloco anterior.
+
+    O primeiro asset contextual da cena é preservado. Os demais são preenchidos
+    com assets oficiais ainda não usados na cena anterior antes de aceitar repetição.
+    """
+    all_ids = sorted(assets)
+    if not all_ids:
+        return []
+
+    target = min(4, len(all_ids))
+    chosen = []
+
+    # Mantém ao menos uma mídia indicada pelo plano editorial.
+    for idx in raw_indices:
+        if idx in assets and idx not in chosen:
+            if not chosen or idx not in previous_scene:
+                chosen.append(idx)
+        if len(chosen) >= target:
+            return chosen
+
+    start = ((scene_no - 1) * target) % len(all_ids)
+    rotated = all_ids[start:] + all_ids[:start]
+
+    # Primeiro, assets que não apareceram na cena anterior.
+    for idx in rotated:
+        if idx not in chosen and idx not in previous_scene:
+            chosen.append(idx)
+            if len(chosen) >= target:
+                return chosen
+
+    # Só então aceita reutilização, quando o conjunto oficial é pequeno.
+    for idx in rotated:
+        if idx not in chosen:
+            chosen.append(idx)
+            if len(chosen) >= target:
+                break
+    return chosen
+
+
 def scene_sequence(indices, cuts=4):
-    """Cadência padrão: quatro cortes por bloco, ciclando a mídia disponível."""
+    """Cadência: até quatro cortes; sem repetir dentro da cena quando há mídia suficiente."""
+    if not indices:
+        return []
+    if len(indices) >= cuts:
+        return indices[:cuts]
     return [indices[i % len(indices)] for i in range(cuts)]
+
+
+def media_duration(path: Path) -> float:
+    try:
+        return float(
+            subprocess.check_output(
+                ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
+                text=True,
+            ).strip()
+        )
+    except Exception:
+        return 0.0
+
+
+def video_seek_offset(path: Path, piece_no: int, piece_duration: float) -> float:
+    """Usa trechos diferentes do mesmo gameplay em reutilizações futuras."""
+    total = media_duration(path)
+    max_seek = total - piece_duration - 0.75
+    if max_seek <= 1.0:
+        return 0.0
+    return round((piece_no * 7.37) % max_seek, 3)
 
 
 def render_piece(asset, duration: float, dest: Path, card=None, piece_no=0):
@@ -94,7 +159,11 @@ def render_piece(asset, duration: float, dest: Path, card=None, piece_no=0):
     if typ == "image" or path.suffix.lower() in IMAGE_EXTENSIONS:
         input_args = ["-loop", "1", "-i", str(path)]
     else:
-        input_args = ["-stream_loop", "-1", "-i", str(path)]
+        seek = video_seek_offset(path, piece_no, duration)
+        input_args = ["-stream_loop", "-1"]
+        if seek > 0:
+            input_args += ["-ss", f"{seek:.3f}"]
+        input_args += ["-i", str(path)]
 
     base = (
         f"[0:v]fps={FPS},split=2[bg0][fg0];"
@@ -180,6 +249,8 @@ def render(manifest_path):
     assets = asset_map(m.get("assets") or m.get("clips") or [])
     pieces = []
     qa_scenes = []
+    previous_scene = set()
+    global_piece_no = 0
 
     for scene_no, (timing, scene) in enumerate(zip(voice_segments, scenes), 1):
         duration = float(timing["duration"])
@@ -190,12 +261,16 @@ def render(manifest_path):
         if missing:
             raise RuntimeError(f"Cena {scene_no} aponta para assets ausentes: {missing}")
 
-        indices = ordered_scene_indices(raw_indices, assets)
+        diversified = diversified_scene_indices(raw_indices, assets, scene_no, previous_scene)
+        indices = ordered_scene_indices(diversified, assets)
         sequence = scene_sequence(indices, cuts=4)
+        if not sequence:
+            raise RuntimeError(f"Cena {scene_no} sem sequência de mídia")
         per_piece = duration / len(sequence)
         scene_piece_paths = []
 
         for j, idx in enumerate(sequence):
+            global_piece_no += 1
             piece_duration = duration - per_piece * j if j == len(sequence) - 1 else per_piece
             p = tmp / f"scene_{scene_no:02d}_{j+1:02d}.mp4"
             render_piece(
@@ -203,7 +278,7 @@ def render(manifest_path):
                 piece_duration,
                 p,
                 card={"title": scene.get("title", ""), "subtitle": scene.get("subtitle", "")} if j == 0 else None,
-                piece_no=scene_no + j,
+                piece_no=global_piece_no,
             )
             pieces.append(p)
             scene_piece_paths.append(str(p))
@@ -216,14 +291,17 @@ def render(manifest_path):
                 "voice_end": timing.get("end"),
                 "voice_duration": round(duration, 3),
                 "media_indices_original": raw_indices,
+                "media_indices_diversified": diversified,
                 "media_indices_priority": indices,
                 "sequence": sequence,
+                "distinct_assets_in_scene": len(set(sequence)),
                 "gameplay_first": any(is_video(assets[idx]) for idx in indices),
                 "title": scene.get("title"),
                 "subtitle": scene.get("subtitle"),
                 "pieces": scene_piece_paths,
             }
         )
+        previous_scene = set(sequence)
 
     concat_visuals = tmp / "visuals.txt"
     concat_visuals.write_text("".join(f"file '{p.resolve()}'\n" for p in pieces), encoding="utf-8")
@@ -257,12 +335,13 @@ def render(manifest_path):
     )
     qa = {
         "master": str(out),
-        "standard": "radar-dos-games-ace-combat-8-approved-v2-full-frame",
+        "standard": "radar-dos-games-ace-combat-8-approved-v3-diverse-media",
         "intro_source": str(intro),
         "intro_audio_preserved": True,
         "voice": timings.get("voice"),
         "semantic_timing_source": timings.get("source"),
         "framing_policy": "full_source_visible; blurred_background_fill; no_destructive_crop",
+        "media_diversity_policy": "four_distinct_assets_when_available; avoid_previous_scene; varied_video_seek",
         "scenes": qa_scenes,
         "card_style": {
             "x": CARD_X, "y": CARD_Y, "w": CARD_W, "h": CARD_H,
