@@ -100,7 +100,7 @@ def prepare_narration(text: str) -> str:
 async def synthesize_one(text: str, output: Path, voice: str):
     output.parent.mkdir(parents=True, exist_ok=True)
     # Ritmo natural e ligeiramente mais calmo que os testes iniciais.
-    communicate = edge_tts.Communicate(text, voice, rate="0%", pitch="+0Hz")
+    communicate = edge_tts.Communicate(text, voice, rate="+0%", pitch="+0Hz")
     await communicate.save(str(output))
 
 
