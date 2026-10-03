@@ -1,4 +1,5 @@
 name: Radar dos Games - Modern Warfare 4 STRICT 2026-10-03
+# validated trigger v2
 
 on:
   push:
