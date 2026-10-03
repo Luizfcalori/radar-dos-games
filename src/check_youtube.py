@@ -27,6 +27,17 @@ def verify_channel(yt, expected_id=RADAR_CHANNEL_ID):
     return cid, title
 
 
+def safe_refresh_reason(error):
+    """Return only Google's error code/description; never credentials or request data."""
+    code = "refresh_error"
+    description = "token recusado pelo Google"
+    for arg in getattr(error, "args", ()):
+        if isinstance(arg, dict):
+            code = str(arg.get("error") or code)
+            description = str(arg.get("error_description") or description)
+    return f"{code}: {description}"
+
+
 def main():
     missing = [name for name in REQUIRED if not os.environ.get(name, "").strip()]
     if missing:
@@ -41,8 +52,8 @@ def main():
         return 1
     try:
         cid, title = verify_channel(service())
-    except RefreshError:
-        print("OAuth recusado: token expirado/revogado ou cliente incompatível. Reautorize o canal.")
+    except RefreshError as error:
+        print("OAuth recusado: " + safe_refresh_reason(error) + ". Reautorize o canal.")
         return 1
     except HttpError as error:
         print(f"YouTube API recusou a consulta (HTTP {error.resp.status}). Verifique API habilitada, escopos e quota.")
