@@ -20,32 +20,28 @@ jobs:
           pip install -U yt-dlp
       - name: Validar intro oficial
         run: test -s radar-dos-games-intro-oficial.mp4
-      - name: Preparar pauta oficial Dragon Dogma sem depender do feed
+      - name: Preparar pauta Dragon Dogma com fontes oficiais diretas
         run: |
           mkdir -p output
           python - <<'PY'
-          import json, urllib.request, re, html
+          import json
           from pathlib import Path
-          url='https://store.captown.capcom.com/en/products/1686546-jp'
-          req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
-          page=urllib.request.urlopen(req,timeout=30).read().decode('utf-8','ignore')
-          imgs=[]
-          for u in re.findall(r'https?[^\"\'<> ]+', page):
-              u=html.unescape(u).replace('\\/','/')
-              if any(x in u.lower() for x in ['.jpg','.jpeg','.png','.webp']) and ('capcom' in u.lower() or 'shopify' in u.lower()):
-                  u=u.split('?')[0]
-                  if u not in imgs: imgs.append(u)
-          # O trailer oficial fica na Capcom Town; media.py tenta yt-dlp e, se bloqueado, as imagens oficiais mantêm a produção.
-          media=[{'type':'video','url':'https://captown.capcom.com/en/theaters/dragonsdogma/57','role':'official_announcement_trailer'}]
-          media += [{'type':'image','url':u,'role':f'official_capcom_{i:02d}'} for i,u in enumerate(imgs[:16],1)]
-          script='''Dragon’s Dogma 2: Dark Arisen está a poucos dias do lançamento, marcado oficialmente para 9 de outubro de 2026. A expansão leva o Arisen para Norgan, uma região nevada e abandonada no extremo norte, onde uma nova história gira em torno de Eir e dos segredos do misterioso Fallen Dragon.\n\nAlém da nova região, a Capcom confirmou doze novos desafios de dungeon espalhados pelo mundo de Dragon’s Dogma 2. Essas áreas prometem equipamentos raros ligados a antigos Arisens e novos testes para quem já dominou o combate do jogo base.\n\nDark Arisen também amplia a progressão. Relíquias esquecidas encontradas em Norgan poderão liberar armas e habilidades poderosas, criando novos motivos para explorar e experimentar diferentes vocações ao lado dos Pawns.\n\nOutra novidade está na criação de personagens, com novos penteados e tatuagens para personalizar Arisen e Pawns. A Capcom também vem preparando atualizações gratuitas de qualidade de vida e desempenho para acompanhar essa nova fase do jogo.\n\nA proposta é clara: expandir Dragon’s Dogma 2 sem abandonar a liberdade que define a série. Norgan, novas histórias, doze dungeons e novos equipamentos formam o pacote que chega em 9 de outubro para PlayStation 5, Xbox Series X e S e PC, enquanto a edição completa também marca a chegada ao Nintendo Switch 2.\n\nAgora queremos saber: Dark Arisen é o conteúdo que faltava para você voltar a Dragon’s Dogma 2? Conta pra gente nos comentários e acompanhe o Radar dos Games para mais notícias, lançamentos e novidades do mundo dos games.'''
+          source='https://www.capcom.co.jp/ir/english/news/html/e260610.html'
+          # Não raspar a loja Capcom: o runner recebeu HTTP 429. Usamos o anúncio oficial como fonte editorial
+          # e tentamos mídia oficial pública por rotas independentes; media.py possui fallbacks gratuitos.
+          media=[
+            {'type':'video','url':'https://captown.capcom.com/en/theaters/dragonsdogma/57','role':'official_announcement_trailer'},
+            {'type':'video','url':'https://www.youtube.com/@dragonsdogma','role':'official_dragons_dogma_channel'},
+            {'type':'video','url':'https://www.youtube.com/@capcom','role':'official_capcom_channel'}
+          ]
+          script='''Dragon’s Dogma 2: Dark Arisen está a poucos dias do lançamento, marcado para 9 de outubro de 2026. A nova fase de Dragon’s Dogma 2 coloca novamente o Arisen no centro de uma aventura de fantasia, com foco em exploração, combate e a companhia dos Pawns.\n\nPara o Radar dos Games, o ponto principal é o que essa expansão pode representar para quem já terminou a campanha original: um motivo para voltar ao mundo do jogo, experimentar novas batalhas e revisitar as vocações com uma progressão renovada.\n\nO combate continua sendo a grande vitrine de Dragon’s Dogma 2. Monstros enormes, escalada durante as lutas e combinações entre Arisen e Pawns são exatamente o tipo de experiência que pode ganhar novo fôlego com conteúdo adicional.\n\nTambém vale observar o desempenho e as melhorias acumuladas desde o lançamento do jogo base. Para muita gente, estabilidade e qualidade de vida serão tão importantes quanto novas áreas, inimigos e equipamentos.\n\nA proximidade do lançamento coloca Dark Arisen entre os assuntos mais interessantes desta semana para fãs de RPG de ação. O Radar dos Games vai acompanhar as informações oficiais e separar novidade real de expectativa.\n\nE você: voltaria para Dragon’s Dogma 2 por uma grande expansão? Conta nos comentários e acompanhe o Radar dos Games para mais notícias e lançamentos.'''
           Path('output/auto-script.txt').write_text(script,encoding='utf-8')
-          scenes=[]
           paras=[p for p in script.split('\n\n') if p.strip()]
-          for i in range(8): scenes.append({'title':['LANÇAMENTO','NORGAN','12 NOVAS DUNGEONS','NOVOS EQUIPAMENTOS','PERSONALIZAÇÃO','ATUALIZAÇÕES','O QUE ESPERAR','RADAR DOS GAMES'][i],'narration':paras[min(i,len(paras)-1)],'media_indices':[]})
-          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':url,'minimum_assets':2,'media_policy':'official_capcom_only; video_preferred; official_images_fallback','media':media,'scenes':scenes}
+          titles=['LANÇAMENTO','DE VOLTA À AVENTURA','COMBATE','PAWNS','DESEMPENHO','CONTEÚDO NOVO','O QUE ESPERAR','RADAR DOS GAMES']
+          scenes=[{'title':titles[i],'narration':paras[min(i,len(paras)-1)],'media_indices':[]} for i in range(8)]
+          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':source,'minimum_assets':2,'media_policy':'official_only; free_fallbacks; no_paid_tools','media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
-          Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':url,'release_date':'2026-10-09','official_assets_planned':len(media)},ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':source,'release_date':'2026-10-09'},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
       - name: Narracao Thalita
         run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
