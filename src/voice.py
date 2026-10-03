@@ -1,60 +1,50 @@
 #!/usr/bin/env python3
 """Narração PT-BR gratuita via edge-tts, com timings reais por parágrafo.
 
-Além de sintetizar a voz, este módulo faz uma última revisão editorial automática:
-- mantém exatamente a mesma quantidade de blocos/cenas;
-- amplia cada bloco para um Master mais completo;
-- remove linguagem interna de produção do texto narrado;
-- encerra sempre com CTA natural de inscrição, like e sino.
+Padrão editorial do Radar dos Games:
+- a voz NÃO acrescenta parágrafos genéricos para aumentar duração;
+- preserva o texto editorial específico de cada jogo;
+- remove repetições acidentais entre cenas;
+- limpa linguagem interna de produção;
+- varia o CTA de forma determinística entre vídeos;
+- mantém a quantidade de blocos/cenas do roteiro original.
 """
 import argparse
 import asyncio
+import hashlib
 import json
 import re
 import subprocess
+from difflib import SequenceMatcher
 from pathlib import Path
 
 import edge_tts
 
-VOICE = "pt-BR-AntonioNeural"
+VOICE = "pt-BR-ThalitaMultilingualNeural"
 
 
-EXPANSIONS = [
+CTA_OPTIONS = [
     (
-        "O ponto mais importante é separar novidade concreta de expectativa. Quando uma informação aparece em canal oficial, ela ganha peso, mas ainda vale observar exatamente o que foi confirmado, o que ficou para depois e o que não foi detalhado. "
-        "É essa diferença que evita transformar uma boa notícia em promessa que o próprio estúdio nunca fez."
+        "Se esse tipo de conteúdo te ajuda a acompanhar os lançamentos sem perder o que realmente importa, "
+        "se inscreva no Radar dos Games e ative o sininho. E conta nos comentários o que mais chamou sua atenção neste anúncio."
     ),
     (
-        "Na prática, vale olhar para esses elementos pensando no jogador: o que muda no conteúdo, na forma de jogar e no motivo para acompanhar esse lançamento ou atualização. "
-        "Mesmo quando o anúncio parece simples, detalhes de mecânica, campanha, progressão, combate ou estrutura podem mudar bastante a experiência final e merecem atenção."
+        "Quer continuar acompanhando novidades de games com contexto e fonte confiável? "
+        "Deixe o like, se inscreva no Radar dos Games e diga nos comentários qual detalhe deste jogo você quer ver mais de perto."
     ),
     (
-        "Outro cuidado é não preencher lacunas com rumor. Se a publicação não explica um ponto, o mais correto é tratar aquilo como informação ainda aberta. "
-        "Isso também ajuda a acompanhar futuras atualizações com clareza, porque fica fácil perceber o que realmente mudou entre o anúncio de hoje e as próximas comunicações oficiais."
+        "O Radar dos Games continua de olho nas próximas informações oficiais. "
+        "Se curtiu o vídeo, se inscreva no canal, deixe o like e comenta qual lançamento você quer ver por aqui na sequência."
     ),
     (
-        "Para quem acompanha o jogo em diferentes plataformas, esse detalhe faz diferença. Versão, disponibilidade, recursos específicos e possíveis diferenças entre edições podem alterar a decisão de compra ou de retorno ao game. "
-        "Por isso, o cenário fica mais claro quando plataforma e conteúdo confirmado são analisados juntos, sem assumir suporte que ainda não foi anunciado."
+        "Se você gosta de acompanhar cada novidade sem rumor tratado como fato, já sabe: "
+        "se inscreva no Radar dos Games, ative as notificações e compartilhe nos comentários sua expectativa para este jogo."
     ),
     (
-        "Também é importante ler qualquer data como o estado atual do planejamento. Desenvolvimento de jogos pode sofrer ajustes, então uma janela anunciada serve como referência até que a própria empresa publique algo diferente. "
-        "Se houver mudança, atraso, antecipação ou nova edição, o que vale passa a ser a atualização oficial mais recente."
-    ),
-    (
-        "Para quem já joga ou está pensando em entrar agora, a pergunta principal é simples: essa novidade muda alguma coisa relevante na experiência? "
-        "Pode ser um novo conteúdo, uma melhoria, uma expansão da história, um recurso extra ou apenas mais contexto sobre o projeto. O valor da notícia está justamente em entender esse impacto sem exagerar o anúncio."
-    ),
-    (
-        "O material oficial divulgado junto com a notícia ajuda a colocar tudo em contexto visual. Gameplay, trailer e imagens permitem conferir direção de arte, cenários, personagens e situações mostradas pela própria empresa. "
-        "Ainda assim, o que aparece na tela deve ser lido junto com o texto oficial, porque uma imagem isolada nem sempre explica como aquele elemento funciona no jogo completo."
+        "A cobertura continua assim que surgirem novas informações confirmadas. "
+        "Se inscreva no Radar dos Games, deixe o like e participa nos comentários com a sua leitura desse anúncio."
     ),
 ]
-
-
-CTA = (
-    "E esse foi o Radar dos Games de hoje. Se você curte notícias de games sem enrolação, com fonte oficial e contexto, se inscreva no canal, deixe o like neste vídeo e ative o sininho para não perder os próximos lançamentos e novidades. "
-    "E comenta aqui embaixo o que você achou desta notícia e qual jogo você quer ver no próximo Radar. A gente se encontra no próximo vídeo."
-)
 
 
 def _clean_internal_language(text: str) -> str:
@@ -73,33 +63,74 @@ def _clean_internal_language(text: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def _sentence_key(sentence: str) -> str:
+    value = sentence.lower()
+    value = re.sub(r"[^a-z0-9áàâãéêíóôõúüç ]+", " ", value)
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def _is_near_duplicate(key: str, previous: list[str]) -> bool:
+    """Bloqueia frases longas essencialmente iguais sem punir nomes repetidos do jogo."""
+    if len(key) < 45:
+        return key in previous
+    for old in previous:
+        if key == old:
+            return True
+        if len(old) >= 45 and SequenceMatcher(None, key, old).ratio() >= 0.91:
+            return True
+    return False
+
+
+def _dedupe_paragraphs(paragraphs: list[str]) -> list[str]:
+    seen: list[str] = []
+    cleaned: list[str] = []
+
+    for paragraph in paragraphs:
+        sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", paragraph) if s.strip()]
+        kept: list[str] = []
+        for sentence in sentences:
+            key = _sentence_key(sentence)
+            if not key or _is_near_duplicate(key, seen):
+                continue
+            kept.append(sentence)
+            seen.append(key)
+
+        # Preserva a estrutura por cenas. Em caso extremo, mantém o bloco original
+        # em vez de reduzir a quantidade de cenas do render.
+        cleaned.append(" ".join(kept).strip() or paragraph)
+
+    return cleaned
+
+
+def _choose_cta(seed_text: str) -> str:
+    digest = hashlib.sha256(seed_text.encode("utf-8")).digest()
+    return CTA_OPTIONS[digest[0] % len(CTA_OPTIONS)]
+
+
+def _already_has_cta(text: str) -> bool:
+    low = text.lower()
+    signals = ("se inscre", "inscreva", "deixe o like", "ativa o sininho", "ative o sininho")
+    return any(signal in low for signal in signals)
+
+
 def prepare_narration(text: str) -> str:
-    """Mantém o número de parágrafos, amplia o conteúdo e força um CTA final."""
+    """Limpa e desduplica o roteiro sem inserir texto genérico de preenchimento."""
     paragraphs = [_clean_internal_language(p.strip()) for p in text.split("\n\n") if p.strip()]
     if not paragraphs:
         raise RuntimeError("Nenhum bloco de narração encontrado")
 
-    polished = []
-    for i, paragraph in enumerate(paragraphs):
-        if i == len(paragraphs) - 1:
-            # O último bloco nunca fala de processo interno: fecha para o público.
-            game_match = re.search(r"(?i)radar dos games sobre\s+(.+?)(?:\.|$)", paragraph)
-            prefix = ""
-            if game_match:
-                game = game_match.group(1).strip(" .")
-                prefix = f"Para fechar, o principal sobre {game} é ficar com o que já foi confirmado oficialmente e acompanhar as próximas atualizações da empresa. "
-            polished.append(prefix + CTA)
-            continue
+    paragraphs = _dedupe_paragraphs(paragraphs)
 
-        extra = EXPANSIONS[i % len(EXPANSIONS)]
-        polished.append(f"{paragraph} {extra}")
+    # O encerramento mantém o texto específico do jogo. Só adiciona um CTA curto
+    # e variável quando o próprio roteiro ainda não trouxe chamada ao público.
+    if not _already_has_cta(paragraphs[-1]):
+        paragraphs[-1] = f"{paragraphs[-1]} {_choose_cta(text)}".strip()
 
-    return "\n\n".join(polished)
+    return "\n\n".join(paragraphs)
 
 
 async def synthesize_one(text: str, output: Path, voice: str):
     output.parent.mkdir(parents=True, exist_ok=True)
-    # Ritmo natural e ligeiramente mais calmo que os testes iniciais.
     communicate = edge_tts.Communicate(text, voice, rate="+0%", pitch="+0Hz")
     await communicate.save(str(output))
 
@@ -161,7 +192,7 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
         "segments": segments,
         "duration": round(duration(out), 3),
         "source": "paragraph_boundaries",
-        "editorial_revision": "expanded_master+no_internal_script+subscriber_cta",
+        "editorial_revision": "natural_script+cross_scene_dedupe+varied_cta+no_canned_expansion",
     }
     Path(segments_json).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"voice": voice, "segments": len(segments), "duration": payload["duration"]}, ensure_ascii=False))
@@ -176,6 +207,5 @@ if __name__ == "__main__":
     a = p.parse_args()
     text_path = Path(a.text_file)
     text = prepare_narration(text_path.read_text(encoding="utf-8"))
-    # O artefato de roteiro passa a refletir exatamente o que foi narrado.
     text_path.write_text(text + "\n", encoding="utf-8")
     asyncio.run(synthesize(text, a.output, a.voice, a.segments_json))
