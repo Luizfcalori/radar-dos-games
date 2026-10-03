@@ -1,13 +1,5 @@
 name: Radar Games Ace Combat Zero
 on:
-  push:
-    paths:
-      - '.github/workflows/render-now-2026-10-02.yml'
-      - 'src/media.py'
-      - 'src/render.py'
-      - 'src/voice.py'
-      - 'production/2026-10-02-ace-combat-zero/**'
-      - 'production/reference-masters/radar-intro-official.mp4'
   workflow_dispatch:
 permissions:
   contents: read
