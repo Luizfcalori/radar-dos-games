@@ -1,5 +1,5 @@
 name: Radar dos Games - Dragon Dogma 2026-10-03
-# clean restart 2026-10-03 after media-fix v2
+# rerun 2026-10-03 media discovery v3
 on:
   push:
     paths:
@@ -40,7 +40,7 @@ jobs:
           paras=[p for p in script.split('\n\n') if p.strip()]
           titles=['LANÇAMENTO','DE VOLTA À AVENTURA','COMBATE','PAWNS','DESEMPENHO','CONTEÚDO NOVO','O QUE ESPERAR','RADAR DOS GAMES']
           scenes=[{'title':titles[i],'narration':paras[min(i,len(paras)-1)],'media_indices':[]} for i in range(8)]
-          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'minimum_assets':2,'media_policy':'official_only; prioritize_dragonsdogma_site; free_fallbacks; no_paid_tools','media':media,'scenes':scenes}
+          plan={'topic':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'minimum_assets':2,'media_policy':'official_only; prioritize_dragonsdogma_site; free_fallbacks; no_paid_tools; require_real_video','media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
           Path('output/selected.json').write_text(json.dumps({'title':"Dragon's Dogma 2: Dark Arisen",'source':source,'official_site':official_site,'release_date':'2026-10-09'},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
@@ -56,7 +56,7 @@ jobs:
           spec=json.loads(Path('output/auto-media-plan.json').read_text())
           media=json.loads(Path('output/clips.json').read_text())
           assets=media['assets']; ok=[int(a['index']) for a in assets]
-          assert len(ok)>=2
+          assert len(ok)>=2 and media.get('video_assets',0)>=1
           for i,s in enumerate(spec['scenes']):
               a=ok[i%len(ok)]; b=ok[(i+1)%len(ok)]
               s['media_indices']=[a] if a==b else [a,b]
