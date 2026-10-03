@@ -8,7 +8,7 @@ on:
         required: false
         default: "AUTO"
       publish:
-        description: "Publicar no YouTube nesta execução manual"
+        description: "Enviar ao YouTube e deixar no agendamento nativo"
         required: false
         type: boolean
         default: false
@@ -54,8 +54,51 @@ jobs:
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
           RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
-          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'public' || 'unlisted' }}
+          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
+
+      - name: Aplicar agenda nativa do YouTube
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, time, timedelta, timezone
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          zone = ZoneInfo('America/Sao_Paulo')
+          now = datetime.now(zone)
+          slots = {
+              'master-youtube.json': time(18, 0),
+              'short-1-youtube.json': time(19, 0),
+              'short-2-youtube.json': time(21, 0),
+              'short-3-youtube.json': time(23, 0),
+          }
+          target_date = now.date()
+          first = datetime.combine(target_date, slots['master-youtube.json'], tzinfo=zone)
+          if first <= now + timedelta(minutes=30):
+              target_date += timedelta(days=1)
+
+          schedule = {}
+          for filename, local_time in slots.items():
+              local_dt = datetime.combine(target_date, local_time, tzinfo=zone)
+              publish_at = local_dt.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z')
+              path = Path('output') / filename
+              meta = json.loads(path.read_text(encoding='utf-8'))
+              meta['privacy'] = 'private'
+              meta['publishAt'] = publish_at
+              path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding='utf-8')
+              schedule[filename] = {
+                  'local': local_dt.isoformat(),
+                  'publishAt': publish_at,
+              }
+
+          selected_path = Path('output/selected.json')
+          selected = json.loads(selected_path.read_text(encoding='utf-8'))
+          selected['youtube_schedule'] = schedule
+          selected_path.write_text(json.dumps(selected, ensure_ascii=False, indent=2), encoding='utf-8')
+          print(json.dumps(schedule, ensure_ascii=False, indent=2))
+          PY
 
       - name: Criar narração Thalita PT-BR com timings semânticos
         run: |
@@ -144,7 +187,7 @@ jobs:
           YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/check_youtube.py
 
-      - name: Publicar Master automaticamente no agendamento
+      - name: Enviar Master para o agendamento nativo do YouTube
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
@@ -153,7 +196,7 @@ jobs:
           YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
 
-      - name: Publicar Short 1 automaticamente no agendamento
+      - name: Enviar Short 1 para o agendamento nativo do YouTube
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
@@ -162,7 +205,7 @@ jobs:
           YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
 
-      - name: Publicar Short 2 automaticamente no agendamento
+      - name: Enviar Short 2 para o agendamento nativo do YouTube
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
@@ -171,7 +214,7 @@ jobs:
           YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
 
-      - name: Publicar Short 3 automaticamente no agendamento
+      - name: Enviar Short 3 para o agendamento nativo do YouTube
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
@@ -180,7 +223,7 @@ jobs:
           YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
         run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
 
-      - name: Registrar pauta publicada para não repetir
+      - name: Registrar pauta agendada para não repetir
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
         run: |
           python - <<'PY'
@@ -188,16 +231,23 @@ jobs:
           from datetime import datetime, timezone
           from pathlib import Path
           selected = json.loads(Path("output/selected.json").read_text(encoding="utf-8"))
+          master_meta = json.loads(Path("output/master-youtube.json").read_text(encoding="utf-8"))
           p = Path("data/published.json")
           history = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"videos": []}
-          history.setdefault("videos", []).append({"content_id": selected["content_id"], "title": selected["title"], "url": selected["url"], "published_at": datetime.now(timezone.utc).isoformat()})
+          history.setdefault("videos", []).append({
+              "content_id": selected["content_id"],
+              "title": selected["title"],
+              "url": selected["url"],
+              "published_at": master_meta.get("publishAt") or datetime.now(timezone.utc).isoformat(),
+              "scheduled": bool(master_meta.get("publishAt")),
+          })
           history["videos"] = history["videos"][-200:]
           p.write_text(json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
           git config user.name "radar-dos-games-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/published.json
-          git diff --cached --quiet || git commit -m "bot: registrar pauta publicada"
+          git diff --cached --quiet || git commit -m "bot: registrar pauta agendada"
           git push
 
       - name: Guardar pacote final e diagnósticos
