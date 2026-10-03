@@ -1,5 +1,5 @@
 name: Radar dos Games - Star Wars Galactic Racer CLEAN 2026-10-03
-# CLEAN REBUILD v2: real official video required; never reuse rejected output
+# CLEAN REBUILD v3: direct official press-kit videos, no YouTube dependency
 on:
   push:
     paths:
@@ -22,7 +22,7 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-dejavu-core
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install -U yt-dlp
+          pip install -U yt-dlp gdown
       - name: Validar intro oficial
         run: test -s radar-dos-games-intro-oficial.mp4
       - name: Preparar pauta e midia EXCLUSIVA Galactic Racer
@@ -31,9 +31,12 @@ jobs:
           import json
           from pathlib import Path
           press='https://starwarsgalacticracer.com/media/'
+          # Links públicos do press kit oficial. Vídeos baixados diretamente do Google Drive oficial,
+          # eliminando a dependência do YouTube/anti-bot no runner.
           media=[
-            {'type':'video','url':press,'role':'official_presskit_video_primary'},
-            {'type':'video','url':'https://starwarsgalacticracer.com/news/official-star-wars-galactic-racer-story-trailer/','role':'official_story_trailer'},
+            {'type':'video','url':'https://drive.google.com/file/d/1SGa4yvXHEAAiRCvb8rMwjMADwYegHcsL/view?usp=drive_link','role':'official_release_date_reveal'},
+            {'type':'video','url':'https://drive.google.com/file/d/1R7LnTIQ8skZounI0u3uvpnNd916DSGtr/view?usp=drive_link','role':'official_gameplay_trailer'},
+            {'type':'video','url':'https://drive.google.com/file/d/181vKmDj2eEBnTfp6DXwagUE9J7P12RJ6/view?usp=drive_link','role':'official_reveal_trailer'},
             {'type':'image','url':press,'role':'official_galactic_racer_screenshots_only'}
           ]
           script='''Star Wars: Galactic Racer coloca velocidade, risco e estratégia no centro de uma nova disputa na galáxia. Depois da queda do Império, a Orla Exterior vira terreno para a Galactic League, um circuito clandestino em que pilotos disputam dinheiro, reputação e sobrevivência.\n\nO protagonista é Shade, um piloto solitário em busca de vingança e glória. A campanha combina narrativa cinematográfica com corridas em que evolução, escolha de veículo e desempenho mudam a jornada até o topo da liga.\n\nA variedade de máquinas é um dos destaques. Landspeeders apostam em peso e drift, speeder bikes entregam aceleração e velocidade, enquanto outros veículos exigem linhas precisas, domínio das curvas e coragem para correr no limite.\n\nOs circuitos exploram a identidade de Star Wars com cenários, destroços, desertos e pistas perigosas. O objetivo deste vídeo é mostrar o jogo em movimento: corridas, veículos e situações retiradas diretamente dos materiais oficiais de Galactic Racer.\n\nAlém da campanha, Galactic Racer aposta em competição, personalização e melhorias para os veículos. A combinação de classes e estilos diferentes promete corridas imprevisíveis e espaço para estratégia.\n\nAqui não é uma história sobre Jedi ou profecias. Galactic Racer quer colocar a pilotagem em primeiro plano, recuperando a energia das grandes corridas de Star Wars com uma identidade própria.\n\nO Radar dos Games está acompanhando o projeto e os materiais oficiais divulgados. O que importa agora é saber se a sensação de velocidade, variedade de pistas e progressão vão sustentar a experiência completa.\n\nE você, estava esperando um novo jogo de corrida de Star Wars? Conta nos comentários e acompanhe o Radar dos Games para mais lançamentos e novidades.'''
@@ -41,9 +44,9 @@ jobs:
           paras=[p for p in script.split('\n\n') if p.strip()]
           titles=['A GALAXIA VAI CORRER','SHADE E A LIGA','VELOCIDADE E VEICULOS','PISTAS DE STAR WARS','COMPETICAO E EVOLUCAO','SEM JEDI. SO VELOCIDADE.','O QUE ESPERAR','RADAR DOS GAMES']
           scenes=[{'title':titles[i],'narration':paras[i],'media_indices':[]} for i in range(len(paras))]
-          plan={'topic':'Star Wars: Galactic Racer','source':press,'minimum_assets':3,'media_policy':'STRICT_GALACTIC_RACER_ONLY; minimum_two_real_videos; official_presskit_first; screenshots_support_only; reject_platform_logos; reject_other_games; no_paid_tools','media':media,'scenes':scenes}
+          plan={'topic':'Star Wars: Galactic Racer','source':press,'minimum_assets':3,'media_policy':'STRICT_GALACTIC_RACER_ONLY; direct_official_presskit_videos; minimum_two_real_videos; screenshots_support_only; reject_platform_logos; reject_other_games; no_paid_tools','media':media,'scenes':scenes}
           Path('output/auto-media-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding='utf-8')
-          Path('output/selected.json').write_text(json.dumps({'title':'Star Wars: Galactic Racer','source':press,'clean_rebuild':True},ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({'title':'Star Wars: Galactic Racer','source':press,'clean_rebuild':True,'media_route':'official_presskit_google_drive'},ensure_ascii=False,indent=2),encoding='utf-8')
           PY
       - name: Narracao Thalita
         run: python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
