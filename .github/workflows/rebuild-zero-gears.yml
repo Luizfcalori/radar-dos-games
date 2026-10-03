@@ -32,7 +32,7 @@ jobs:
           test ! -e output/shorts
 
       - name: Pesquisa e pacote editorial NOVOS
-        run: python src/rebuild_zero_gears.py
+        run: python src/rebuild_zero_gears_alt.py
 
       - name: Narração EXATA Thalita PT-BR
         run: |
