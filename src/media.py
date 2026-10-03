@@ -20,14 +20,28 @@ def req(url,data=None,referer=None):
 
 def download(url,dest,referer=None):
     try:
-        with urllib.request.urlopen(req(url,referer=referer),timeout=20) as r,open(dest,'wb') as f:
-            f.write(r.read(120*1024*1024))
+        with urllib.request.urlopen(req(url,referer=referer),timeout=25) as r,open(dest,'wb') as f:
+            f.write(r.read(250*1024*1024))
         if probe_kind(dest):return True
     except Exception as e: print('download failed',url,e)
     dest.unlink(missing_ok=True);return False
 
+def gdrive_download(url,dest):
+    """Baixa arquivo público do Google Drive usando gdown; usado por press kits oficiais."""
+    try:
+        subprocess.run([sys.executable,'-m','gdown','--fuzzy',url,'-O',str(dest)],check=True,timeout=240)
+        if probe_kind(dest):return True
+    except Exception as e: print('gdrive fallback failed',url,e)
+    dest.unlink(missing_ok=True)
+    # Fallback simples para links públicos sem página de confirmação.
+    m=re.search(r'/file/d/([^/]+)',url) or re.search(r'[?&]id=([^&]+)',url)
+    if m:
+        direct='https://drive.google.com/uc?export=download&id='+m.group(1)
+        return download(direct,dest,'https://drive.google.com/')
+    return False
+
 def discover(page):
-    """Descobre arquivos de vídeo/imagem e embeds de vídeo em páginas oficiais."""
+    """Descobre arquivos de vídeo/imagem, Google Drive e embeds em páginas oficiais."""
     try:
         with urllib.request.urlopen(req(page),timeout=20) as r:text=r.read(8*1024*1024).decode('utf-8','ignore')
     except Exception as e: print('page discovery failed',page,e);return []
@@ -36,20 +50,19 @@ def discover(page):
     raws=[]
     raws += re.findall(r'(?:href|src|content|data-src|data-video|data-url|poster)=["\']([^"\']+)["\']',text,re.I)
     raws += re.findall(r'https?://[^"\'<>\\ ]+',text)
-    # YouTube embeds/watch URLs hidden in JSON/iframes.
     raws += ['https://www.youtube.com/watch?v='+v for v in re.findall(r'(?:youtube\.com/embed/|youtu\.be/)([A-Za-z0-9_-]{6,})',text,re.I)]
     for raw in raws:
         u=urllib.parse.urljoin(page,raw.strip())
         clean=u.lower().split('?')[0]
-        keep=clean.endswith(VIDEO_EXTS+IMAGE_EXTS) or 'youtube.com/watch' in u or 'youtu.be/' in u
+        is_drive='drive.google.com/file/d/' in u.lower()
+        keep=clean.endswith(VIDEO_EXTS+IMAGE_EXTS) or is_drive or 'youtube.com/watch' in u or 'youtu.be/' in u
         if keep and u not in vals:vals.append(u)
-    # Prioriza vídeo real/embeds antes de imagens.
-    vals.sort(key=lambda u:0 if (u.lower().split('?')[0].endswith(VIDEO_EXTS) or 'youtube.com/watch' in u or 'youtu.be/' in u) else 1)
-    return vals[:60]
+    # Press-kit Drive links são tratados como vídeo oficial e vêm antes do YouTube.
+    vals.sort(key=lambda u:0 if ('drive.google.com/file/d/' in u.lower() or u.lower().split('?')[0].endswith(VIDEO_EXTS)) else (1 if ('youtube.com/watch' in u or 'youtu.be/' in u) else 2))
+    return vals[:80]
 
 def ytdlp(url,dest):
     if 'youtube.com' not in url and 'youtu.be' not in url:return False
-    # Channel URLs are allowed: yt-dlp resolves the newest suitable video only.
     args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15','-f','bv*[height<=1080]+ba/b[height<=1080]/best','--merge-output-format','mp4','-o',str(dest),url]
     try:
         subprocess.run(args,check=True,timeout=90)
@@ -58,19 +71,26 @@ def ytdlp(url,dest):
 
 def main(path):
     spec=json.loads(Path(path).read_text(encoding='utf-8'));out=Path('output/media');out.mkdir(parents=True,exist_ok=True)
-    assets=[];errors=[];seq=0
+    assets=[];errors=[];seq=0;seen=set()
     for item in spec.get('media',[]):
-        url=item['url'];role=item.get('role','');candidates=[];low=url.lower().split('?')[0]
-        if low.endswith(VIDEO_EXTS+IMAGE_EXTS) or 'youtube.com' in url or 'youtu.be' in url:candidates=[url]
+        url=item['url'];role=item.get('role','');wanted=item.get('type','');candidates=[];low=url.lower().split('?')[0]
+        if low.endswith(VIDEO_EXTS+IMAGE_EXTS) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url:candidates=[url]
         else:candidates=discover(url)
-        candidates.sort(key=lambda u:0 if (u.lower().split('?')[0].endswith(VIDEO_EXTS) or 'youtube.com' in u or 'youtu.be' in u) else 1)
+        # Em itens declarados como vídeo, prioriza Drive/arquivo direto e deixa YouTube por último.
+        candidates.sort(key=lambda u:0 if ('drive.google.com/file/d/' in u.lower() or u.lower().split('?')[0].endswith(VIDEO_EXTS)) else (1 if ('youtube.com' in u or 'youtu.be' in u) else 2))
         got=0
-        for u in candidates[:18]:
-            seq+=1;clean=u.lower().split('?')[0];isimg=clean.endswith(IMAGE_EXTS)
+        for u in candidates[:24]:
+            if u in seen:continue
+            clean=u.lower().split('?')[0];isimg=clean.endswith(IMAGE_EXTS);isdrive='drive.google.com/file/d/' in u.lower()
+            if wanted=='video' and isimg:continue
+            if wanted=='image' and (isdrive or clean.endswith(VIDEO_EXTS) or 'youtube.com' in u or 'youtu.be' in u):continue
+            seq+=1
             dest=out/f'asset_{seq:02d}.{"jpg" if isimg else "mp4"}'
-            ok=ytdlp(u,dest) if ('youtube.com' in u or 'youtu.be' in u) else download(u,dest,url)
+            if isdrive:ok=gdrive_download(u,dest)
+            elif 'youtube.com' in u or 'youtu.be' in u:ok=ytdlp(u,dest)
+            else:ok=download(u,dest,url)
             if ok:
-                assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u});got+=1
+                seen.add(u);assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u});got+=1
                 if got>=4:break
         if not got:errors.append({'url':url,'error':'remote_media_unavailable_after_free_fallbacks'})
     minimum=int(spec.get('minimum_assets',2));videos=[a for a in assets if a['type']=='video']
