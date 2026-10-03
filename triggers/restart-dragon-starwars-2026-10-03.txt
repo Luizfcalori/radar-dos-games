@@ -1,0 +1,5 @@
+Restart requested 2026-10-03 after media.py fix 6de08bcd.
+Targets only:
+- Dragon's Dogma 2: Dark Arisen
+- Star Wars: Galactic Racer
+Use free media acquisition fallbacks and current main.
