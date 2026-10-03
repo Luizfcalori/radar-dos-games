@@ -1,5 +1,5 @@
 name: Radar dos Games - Star Wars Galactic Racer CLEAN 2026-10-03
-# CLEAN REBUILD v3: direct official press-kit videos, no YouTube dependency
+# CLEAN REBUILD v4: fixed Google Drive downloader; direct official press-kit videos
 on:
   push:
     paths:
@@ -31,8 +31,6 @@ jobs:
           import json
           from pathlib import Path
           press='https://starwarsgalacticracer.com/media/'
-          # Links públicos do press kit oficial. Vídeos baixados diretamente do Google Drive oficial,
-          # eliminando a dependência do YouTube/anti-bot no runner.
           media=[
             {'type':'video','url':'https://drive.google.com/file/d/1SGa4yvXHEAAiRCvb8rMwjMADwYegHcsL/view?usp=drive_link','role':'official_release_date_reveal'},
             {'type':'video','url':'https://drive.google.com/file/d/1R7LnTIQ8skZounI0u3uvpnNd916DSGtr/view?usp=drive_link','role':'official_gameplay_trailer'},
