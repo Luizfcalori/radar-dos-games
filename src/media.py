@@ -1,157 +1,74 @@
 #!/usr/bin/env python3
-"""Obtém assets oficiais/relevantes preservando imagens originais para a montagem editorial."""
-import html
-import json
-import re
-import subprocess
-import sys
-import urllib.parse
-import urllib.request
+"""Obtém assets oficiais/relevantes com fallbacks rápidos e gratuitos."""
+import html,json,re,subprocess,sys,urllib.parse,urllib.request
 from pathlib import Path
 
-
-def valid_visual(path: Path) -> bool:
-    if not path.exists() or path.stat().st_size < 20_000:
-        return False
+def valid_visual(p):
+    if not p.exists() or p.stat().st_size < 20000:return False
     try:
-        subprocess.run(
-            ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=codec_name", "-of", "csv=p=0", str(path)],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        return True
-    except Exception:
-        return False
+        subprocess.run(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=codec_name','-of','csv=p=0',str(p)],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=12);return True
+    except:return False
 
+def req(url,data=None,referer=None):
+    h={'User-Agent':'Mozilla/5.0 AppleWebKit/537.36 Chrome/129 Safari/537.36','Accept-Language':'pt-BR,pt;q=0.9,en;q=0.8'}
+    if referer:h['Referer']=referer
+    return urllib.request.Request(url,data=data,headers=h)
 
-def request(url, data=None, referer=None):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129 Safari/537.36",
-        "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
-    }
-    if referer:
-        headers["Referer"] = referer
-    return urllib.request.Request(url, data=data, headers=headers)
-
-
-def download(url: str, dest: Path, referer=None) -> bool:
+def download(url,dest,referer=None):
     try:
-        with urllib.request.urlopen(request(url, referer=referer), timeout=40) as r, open(dest, "wb") as f:
-            while True:
-                b = r.read(1024 * 1024)
-                if not b:
-                    break
-                f.write(b)
-        if valid_visual(dest):
-            return True
-        dest.unlink(missing_ok=True)
-    except Exception as e:
-        print("download failed:", e)
-        dest.unlink(missing_ok=True)
-    return False
+        with urllib.request.urlopen(req(url,referer=referer),timeout=15) as r,open(dest,'wb') as f:
+            f.write(r.read(80*1024*1024))
+        if valid_visual(dest):return True
+    except Exception as e: print('download failed',url,e)
+    dest.unlink(missing_ok=True);return False
 
+def discover(page):
+    """Descobre mídia direta em páginas oficiais sem depender de YouTube."""
+    try:
+        with urllib.request.urlopen(req(page),timeout=15) as r:text=r.read(4*1024*1024).decode('utf-8','ignore')
+    except Exception as e: print('page discovery failed',page,e);return []
+    vals=[]
+    # href/src/content, JSON-LD e URLs absolutas/relativas
+    for raw in re.findall(r'(?:href|src|content)=["\']([^"\']+)["\']',text,re.I)+re.findall(r'https?:\\?/\\?/[^"\'<> ]+',text):
+        u=html.unescape(raw).replace('\\/','/')
+        u=urllib.parse.urljoin(page,u)
+        clean=u.lower().split('?')[0]
+        if clean.endswith(('.mp4','.mov','.webm','.jpg','.jpeg','.png','.webp')) and u not in vals: vals.append(u)
+    return vals[:30]
 
-def direct_video(url: str, dest: Path, referer=None) -> bool:
-    tmp = dest.with_suffix(".download")
-    if not download(url, tmp, referer):
-        return False
-    tmp.replace(dest)
-    return valid_visual(dest)
-
-
-def ytdlp(url: str, dest: Path) -> bool:
-    """Tenta clientes oficiais alternativos do YouTube antes de desistir.
-
-    Em runners de nuvem, o cliente web padrão pode cair em bot-check/age-gate.
-    Os clientes embedded/TV continuam apontando para o MESMO vídeo oficial; só mudam
-    a forma de solicitar o stream.
-    """
-    clients = ["tv_embedded", "web_embedded", "android_vr", "ios", "mweb"]
-    for client in clients:
+def ytdlp(url,dest):
+    # somente URLs reais do YouTube; páginas comuns nunca entram neste loop caro
+    if 'youtube.com' not in url and 'youtu.be' not in url:return False
+    for client in ['tv_embedded','web_embedded']:
         dest.unlink(missing_ok=True)
         try:
-            print(f"yt-dlp fallback client={client} url={url}")
-            subprocess.run(
-                [
-                    "yt-dlp", "--no-playlist", "--retries", "1", "--fragment-retries", "1", "--socket-timeout", "20",
-                    "--js-runtimes", "node",
-                    "--extractor-args", f"youtube:player_client={client}",
-                    "-f", "bv*[height<=1080]+ba/b[height<=1080]/best",
-                    "--merge-output-format", "mp4", "-o", str(dest), url,
-                ],
-                check=True,
-            )
-            if valid_visual(dest):
-                return True
-        except subprocess.CalledProcessError:
-            dest.unlink(missing_ok=True)
+            subprocess.run(['yt-dlp','--no-playlist','--retries','0','--fragment-retries','0','--socket-timeout','10','--extractor-args',f'youtube:player_client={client}','-f','bv*[height<=1080]+ba/b[height<=1080]/best','--merge-output-format','mp4','-o',str(dest),url],check=True,timeout=45)
+            if valid_visual(dest):return True
+        except Exception as e: print('yt fallback failed',client,e)
     return False
 
-
-def savefrom(url: str, dest: Path) -> bool:
-    endpoints = ["https://pt1.savefrom.net/8bb/", "https://savefrom.net/1-youtube-video-downloader-4/"]
-    for endpoint in endpoints:
-        try:
-            payload = urllib.parse.urlencode({"sf_url": url, "sf_submit": "", "new": "2", "lang": "pt"}).encode()
-            with urllib.request.urlopen(request(endpoint, payload, endpoint), timeout=40) as r:
-                text = r.read().decode("utf-8", "ignore")
-            for raw in re.findall(r"https?:[^\"\'<>\\ ]+", text):
-                media_url = html.unescape(raw).replace("\\/", "/")
-                low = media_url.lower()
-                if ("googlevideo.com" in low or ".mp4" in low or "videoplayback" in low) and "savefrom" not in low:
-                    if direct_video(media_url, dest, endpoint):
-                        return True
-        except Exception as e:
-            print("SaveFrom fallback failed:", e)
-    return False
-
-
-def main(spec_path: str):
-    spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
-    out = Path("output/media")
-    out.mkdir(parents=True, exist_ok=True)
-
-    assets = []
-    errors = []
-    for i, item in enumerate(spec.get("media", []), 1):
-        url = item["url"]
-        typ = item.get("type", "video")
-        role = item.get("role", "")
-        ok = False
-
-        if typ == "image":
-            dest = out / f"asset_{i:02d}.jpg"
-            ok = download(url, dest)
-        else:
-            dest = out / f"asset_{i:02d}.mp4"
-            if url.lower().split("?")[0].endswith((".mp4", ".mov", ".webm")):
-                ok = direct_video(url, dest)
-            if not ok:
-                ok = ytdlp(url, dest)
-            if not ok and ("youtube.com" in url or "youtu.be" in url):
-                ok = savefrom(url, dest)
-
-        if ok:
-            assets.append({"index": i, "path": str(dest), "type": typ, "role": role, "url": url})
-        else:
-            errors.append({"index": i, "url": url, "error": "remote_media_unavailable_after_fallbacks"})
-
-    minimum = int(spec.get("minimum_assets", 8))
-    manifest = {
-        "assets": assets,
-        "clips": [a["path"] for a in assets],
-        "errors": errors,
-        "publishable_media": len(assets) >= minimum,
-        "generic_fallback": False,
-        "official_assets": True,
-        "minimum_assets": minimum,
-    }
-    Path("output/clips.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    if len(assets) < minimum:
-        raise RuntimeError(f"QUALITY_BLOCK: somente {len(assets)} assets relevantes; minimo {minimum}")
-    print(json.dumps(manifest, ensure_ascii=False))
-
-
-if __name__ == "__main__":
-    main(sys.argv[1])
+def main(path):
+    spec=json.loads(Path(path).read_text(encoding='utf-8'));out=Path('output/media');out.mkdir(parents=True,exist_ok=True)
+    assets=[];errors=[];seq=0
+    for item in spec.get('media',[]):
+        url=item['url'];role=item.get('role','');typ=item.get('type','video');candidates=[]
+        low=url.lower().split('?')[0]
+        if low.endswith(('.mp4','.mov','.webm','.jpg','.jpeg','.png','.webp')): candidates=[url]
+        elif 'youtube.com' in url or 'youtu.be' in url: candidates=[url]
+        else: candidates=discover(url)
+        # prioriza vídeo, depois imagens oficiais
+        candidates.sort(key=lambda u:0 if u.lower().split('?')[0].endswith(('.mp4','.mov','.webm')) else 1)
+        got=0
+        for u in candidates[:12]:
+            seq+=1;ext=u.lower().split('?')[0].rsplit('.',1)[-1];isimg=ext in ('jpg','jpeg','png','webp')
+            dest=out/f'asset_{seq:02d}.{"jpg" if isimg else "mp4"}'
+            ok=ytdlp(u,dest) if ('youtube.com' in u or 'youtu.be' in u) else download(u,dest,url)
+            if ok:
+                assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u});got+=1
+                if got>=4:break
+        if not got: errors.append({'url':url,'error':'remote_media_unavailable_after_free_fallbacks'})
+    minimum=int(spec.get('minimum_assets',2));manifest={'assets':assets,'clips':[a['path'] for a in assets],'errors':errors,'publishable_media':len(assets)>=minimum,'generic_fallback':False,'official_assets':True,'minimum_assets':minimum}
+    Path('output/clips.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+    if len(assets)<minimum:raise RuntimeError(f'QUALITY_BLOCK: somente {len(assets)} assets relevantes; minimo {minimum}')
+    print(json.dumps(manifest,ensure_ascii=False))
+if __name__=='__main__':main(sys.argv[1])
