@@ -1,0 +1,138 @@
+name: Radar dos Games - Prova Melhoria Video
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".proof/prova-melhoria-video.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  prova:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ferramentas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+
+      - name: Pesquisar pauta atual
+        run: python src/research.py
+
+      - name: Escolher pauta e roteiro
+        env:
+          RADAR_TOPIC: AUTO
+          PUBLISH_PRIVACY: unlisted
+        run: python src/auto_daily.py
+
+      - name: Narracao final Thalita PT-BR
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaNeural \
+            --segments-json output/voice-timings.json
+
+      - name: Baixar midias oficiais
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Montar manifesto
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('output/auto-media-plan.json').read_text(encoding='utf-8'))
+          media=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
+          assets=media['assets']
+          ok=[int(a['index']) for a in assets]
+          assert len(ok)>=4, f'midias insuficientes para prova de diversidade: {len(ok)}'
+          scenes=spec['scenes']
+          for i,scene in enumerate(scenes):
+              a=ok[i % len(ok)]
+              b=ok[(i+1) % len(ok)]
+              scene['media_indices']=[a] if a==b else [a,b]
+          manifest={
+              'assets':assets,
+              'voice':'output/voice.mp3',
+              'voice_timings':'output/voice-timings.json',
+              'intro':'radar-dos-games-intro-oficial.mp4',
+              'scenes':scenes,
+              'output':'output/master.mp4',
+          }
+          Path('output/render.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Renderizar Master melhorado
+        run: python src/render.py output/render.json
+
+      - name: Gerar thumbnail profissional
+        run: |
+          TITLE=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('output/master-youtube.json').read_text(encoding='utf-8'))['title'])
+          PY
+          )
+          python src/thumbnail.py output/master.mp4 "$TITLE" output/thumbnail.jpg
+
+      - name: Gerar 3 Shorts
+        run: python src/shorts.py output/master.mp4
+
+      - name: Quality gate novo padrao
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+
+          def dur(p):
+              return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(p)],text=True).strip())
+
+          master=Path('output/master.mp4')
+          thumb=Path('output/thumbnail.jpg')
+          script=Path('output/auto-script.txt').read_text(encoding='utf-8').lower()
+          qa=json.loads(Path('output/qa.json').read_text(encoding='utf-8'))
+          voice=json.loads(Path('output/voice-timings.json').read_text(encoding='utf-8'))
+
+          seconds=dur(master)
+          assert 210 <= seconds <= 420, f'duracao fora do novo padrao: {seconds}'
+          assert 'se inscreva' in script and 'deixe o like' in script and 'ative o sininho' in script
+          assert 'pipeline' not in script
+          assert thumb.exists() and thumb.stat().st_size > 20000
+          dims=subprocess.check_output(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=width,height','-of','csv=p=0:s=x',str(thumb)],text=True).strip()
+          assert dims=='1280x720', dims
+          assert qa.get('media_diversity_policy')
+          scenes=qa['scenes']
+          assert all(s['distinct_assets_in_scene'] >= 4 for s in scenes), [s['distinct_assets_in_scene'] for s in scenes]
+          assert voice.get('editorial_revision') == 'expanded_master+no_internal_script+subscriber_cta'
+          Path('output/prova-melhoria.json').write_text(json.dumps({
+              'status':'APPROVED',
+              'master_seconds':round(seconds,2),
+              'thumbnail':dims,
+              'scenes':len(scenes),
+              'distinct_assets_per_scene':[s['distinct_assets_in_scene'] for s in scenes],
+              'voice_seconds':voice['duration'],
+              'cta_ok':True,
+          },ensure_ascii=False,indent=2),encoding='utf-8')
+          print(Path('output/prova-melhoria.json').read_text())
+          PY
+
+      - name: Guardar prova
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-prova-melhoria-${{ github.run_id }}
+          path: |
+            output/master.mp4
+            output/thumbnail.jpg
+            output/auto-script.txt
+            output/voice-timings.json
+            output/qa.json
+            output/prova-melhoria.json
+            output/shorts/*.mp4
+          retention-days: 7
