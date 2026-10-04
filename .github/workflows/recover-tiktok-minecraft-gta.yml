@@ -1,0 +1,270 @@
+name: Radar TikTok - Recover Minecraft and GTA Shorts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/recover-tiktok-minecraft-gta.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Prepare tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests yt-dlp
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg unzip
+          mkdir -p recovered
+
+      - name: Recover originals from historical Actions artifacts
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, re, io, json, zipfile, shutil, tempfile
+          from pathlib import Path
+          import requests
+
+          repo=os.environ['REPO']; token=os.environ['GH_TOKEN']
+          H={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}
+          targets={
+            'minecraft': [
+              ('Lc3BXMSZanU','MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT'),
+              ('S-Kw8W24bzM','O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT'),
+              ('hjCBW6wopN8','THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK'),
+            ],
+            'gta': [
+              ('DFMjasmIOSw','GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀'),
+              ('t-KVaCwbrbA','Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6'),
+              ('dvu_iLOeRds','Vice City é só o COMEÇO em GTA 6! Conheça Leonida'),
+            ],
+          }
+          out=Path('recovered'); out.mkdir(exist_ok=True)
+          found={}
+          artifacts=[]
+          page=1
+          while page<=10:
+            u=f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100&page={page}'
+            r=requests.get(u,headers=H,timeout=30); r.raise_for_status()
+            batch=r.json().get('artifacts',[])
+            if not batch: break
+            artifacts += batch
+            if len(batch)<100: break
+            page+=1
+          # Prioritize historical video bundles from the production period.
+          cand=[]
+          for a in artifacts:
+            if a.get('expired'): continue
+            created=a.get('created_at','')
+            if not ('2026-09-27' <= created[:10] <= '2026-10-03'): continue
+            name=(a.get('name') or '').lower()
+            if not any(k in name for k in ('video','short','radar-games')): continue
+            if int(a.get('size_in_bytes') or 0) > 650_000_000: continue
+            cand.append(a)
+          cand.sort(key=lambda a:a.get('created_at',''), reverse=True)
+          print('candidate artifacts:',len(cand))
+
+          def text_blob(root):
+            chunks=[]
+            for p in root.rglob('*'):
+              if not p.is_file() or p.stat().st_size>3_000_000: continue
+              if p.suffix.lower() not in {'.json','.txt','.md','.yml','.yaml','.csv','.log'}: continue
+              try: chunks.append(p.read_text(errors='ignore').lower())
+              except: pass
+            return '\n'.join(chunks)
+
+          def numbered_shorts(root):
+            vids=[]
+            for p in root.rglob('*.mp4'):
+              s=str(p).lower()
+              if 'short' not in s: continue
+              m=re.search(r'short(?:s)?[_ -]?(\d+)', p.name.lower())
+              n=int(m.group(1)) if m else 99
+              vids.append((n,p))
+            vids.sort(key=lambda x:(x[0],str(x[1])))
+            # dedupe same short number, prefer explicit shorts folder and larger valid file
+            chosen=[]; used=set()
+            for n,p in vids:
+              if n in used or n==99: continue
+              used.add(n); chosen.append((n,p))
+            return chosen
+
+          for a in cand:
+            if len(found)>=6: break
+            try:
+              z=requests.get(a['archive_download_url'],headers=H,timeout=120)
+              if z.status_code!=200: continue
+              with tempfile.TemporaryDirectory() as td:
+                root=Path(td)
+                try:
+                  zipfile.ZipFile(io.BytesIO(z.content)).extractall(root)
+                except Exception:
+                  continue
+                blob=text_blob(root)
+                topic=None
+                if ('the sift' in blob or 'minecraft' in blob) and not all(x[0] in found for x in targets['minecraft']): topic='minecraft'
+                if ('gta 6' in blob or 'grand theft auto' in blob or 'leonida' in blob or 'jason' in blob and 'lucia' in blob) and not all(x[0] in found for x in targets['gta']): topic='gta'
+                if not topic: continue
+                shorts=numbered_shorts(root)
+                if len(shorts)<3:
+                  print('topic hit but fewer than 3 shorts:',a['id'],a['name'],topic,len(shorts)); continue
+                print('artifact topic hit:',a['id'],a['name'],topic)
+                for (yt,title),(num,p) in zip(targets[topic], shorts[:3]):
+                  dest=out/f'yt-{yt}.mp4'
+                  if dest.exists(): continue
+                  shutil.copy2(p,dest)
+                  if dest.stat().st_size>100_000:
+                    found[yt]={'source':'artifact','artifact_id':a['id'],'artifact_name':a['name'],'path':str(dest)}
+                  else:
+                    dest.unlink(missing_ok=True)
+            except Exception as e:
+              print('artifact error',a.get('id'),e)
+          Path('recovered/artifact_recovery.json').write_text(json.dumps(found,ensure_ascii=False,indent=2))
+          print('artifact recovered:',sorted(found))
+          PY
+
+      - name: Fallback - recover exact Shorts from YouTube
+        shell: bash
+        continue-on-error: true
+        run: |
+          set +e
+          IDS=(hjCBW6wopN8 S-Kw8W24bzM Lc3BXMSZanU dvu_iLOeRds t-KVaCwbrbA DFMjasmIOSw)
+          for id in "${IDS[@]}"; do
+            [ -s "recovered/yt-${id}.mp4" ] && continue
+            echo "YouTube fallback: $id"
+            yt-dlp \
+              --no-playlist --retries 3 --fragment-retries 3 \
+              --extractor-args "youtube:player_client=android_vr,web_safari,web" \
+              -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
+              --merge-output-format mp4 \
+              -o "recovered/yt-${id}.%(ext)s" \
+              "https://www.youtube.com/shorts/${id}" || true
+            # normalize a merged non-mp4 result if needed
+            f=$(find recovered -maxdepth 1 -type f -name "yt-${id}.*" ! -name '*.json' | head -1)
+            if [ -n "$f" ] && [ "$f" != "recovered/yt-${id}.mp4" ]; then
+              ffmpeg -y -loglevel error -i "$f" -c copy "recovered/yt-${id}.mp4" || ffmpeg -y -loglevel error -i "$f" -c:v libx264 -c:a aac "recovered/yt-${id}.mp4" || true
+            fi
+          done
+          exit 0
+
+      - name: Validate recovered files
+        id: validate
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          ids=['hjCBW6wopN8','S-Kw8W24bzM','Lc3BXMSZanU','dvu_iLOeRds','t-KVaCwbrbA','DFMjasmIOSw']
+          ok=[]; bad=[]
+          for i in ids:
+            p=Path(f'recovered/yt-{i}.mp4')
+            if not p.exists() or p.stat().st_size<100_000:
+              bad.append(i); continue
+            r=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','default=nw=1:nk=1',str(p)],capture_output=True,text=True)
+            try: dur=float(r.stdout.strip())
+            except: dur=0
+            if dur>=3: ok.append({'id':i,'size':p.stat().st_size,'duration':dur})
+            else: bad.append(i)
+          Path('recovered/validation.json').write_text(json.dumps({'ok':ok,'missing':bad},indent=2))
+          print(json.dumps({'ok':ok,'missing':bad},indent=2))
+          PY
+
+      - name: Upload recovered originals to release
+        shell: bash
+        run: |
+          gh release view tiktok-youtube-shorts >/dev/null 2>&1 || gh release create tiktok-youtube-shorts --title "TikTok Helper - YouTube Shorts Originals" --notes "Original Shorts recovered for Radar TikTok Helper"
+          shopt -s nullglob
+          for f in recovered/yt-*.mp4; do
+            [ -s "$f" ] || continue
+            gh release upload tiktok-youtube-shorts "$f" --clobber
+          done
+
+      - name: Merge recovered Shorts into TikTok queue and refresh report
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          from datetime import datetime, timezone
+          repo='Luizfcalori/radar-dos-games'
+          items=[
+            ('hjCBW6wopN8','THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK'),
+            ('S-Kw8W24bzM','O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT'),
+            ('Lc3BXMSZanU','MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT'),
+            ('dvu_iLOeRds','Vice City é só o COMEÇO em GTA 6! Conheça Leonida'),
+            ('t-KVaCwbrbA','Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6'),
+            ('DFMjasmIOSw','GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀'),
+          ]
+          qpath=Path('data/tiktok_queue.json'); q=json.loads(qpath.read_text())
+          arr=q.setdefault('items',[]); byyt={x.get('youtube_id'):x for x in arr if x.get('youtube_id')}
+          now=datetime.now(timezone.utc).isoformat()
+          def hashtags(title):
+            base=[]
+            if 'MINECRAFT' in title.upper() or 'SIFT' in title.upper(): base=['#Minecraft','#TheSift']
+            if 'GTA 6' in title.upper() or 'VICE CITY' in title.upper() or 'JASON' in title.upper(): base=['#GTA6','#RockstarGames']
+            return ' '.join(base+['#RadarDosGames','#Games','#Gaming','#TikTokGames'])
+          recovered=[]
+          for yt,title in items:
+            f=Path(f'recovered/yt-{yt}.mp4')
+            if not f.exists() or f.stat().st_size<100_000: continue
+            media=f'https://github.com/{repo}/releases/download/tiktok-youtube-shorts/yt-{yt}.mp4'
+            obj=byyt.get(yt)
+            if obj is None:
+              obj={'id':f'yt-{yt}'}; arr.append(obj)
+            obj.update({
+              'title':title,
+              'media_url':media,
+              'thumbnail_url':f'https://i.ytimg.com/vi/{yt}/hqdefault.jpg',
+              'post_text':f'{title}\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n{hashtags(title)}',
+              'status':'approved',
+              'youtube_id':yt,
+              'youtube_url':f'https://www.youtube.com/shorts/{yt}',
+              'youtube_published_at':obj.get('youtube_published_at'),
+              'source':'youtube_channel_recovered_original',
+              'recovered_at':now,
+            })
+            recovered.append(yt)
+          q['version']=max(2,int(q.get('version',1))); q['updated_at']=now
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n')
+
+          total=28
+          ready=sum(1 for x in arr if x.get('youtube_id') and x.get('media_url') and x.get('status') in ('approved','ready_for_tiktok'))
+          missing=[{'youtube_id':yt,'title':title,'reason':'original_media_not_recovered_yet'} for yt,title in items if not any(x.get('youtube_id')==yt and x.get('media_url') for x in arr)]
+          report={'recovered_count':ready,'ready_for_tiktok':ready,'total_discovered':total,'remaining_count':len(missing),'remaining':missing,'last_recovery_at':now,'recovered_this_run':recovered}
+          Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Commit queue/report updates
+        shell: bash
+        run: |
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json data/tiktok_backfill_report.json
+          if git diff --cached --quiet; then
+            echo "No queue changes to commit"
+          else
+            git commit -m "bot: recover Minecraft and GTA Shorts for TikTok"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Recovery summary
+        if: always()
+        run: |
+          echo '### TikTok recovery result' >> "$GITHUB_STEP_SUMMARY"
+          cat recovered/validation.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          cat data/tiktok_backfill_report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
