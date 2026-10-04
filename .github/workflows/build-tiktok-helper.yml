@@ -89,6 +89,20 @@ jobs:
           path: releases/radar-games-tiktok-helper-v1.apk
           retention-days: 30
 
+      - name: Publish APK as easy-download release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="tiktok-helper-latest"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "Radar dos Games — TikTok Helper" \
+              --notes "APK de teste do Radar dos Games para sincronizar Shorts aprovados, copiar a legenda e abrir o TikTok para publicação manual."
+          fi
+          gh release upload "$TAG" releases/radar-games-tiktok-helper-v1.apk --clobber
+
       - name: Publish APK in repository
         shell: bash
         run: |
