@@ -1,0 +1,183 @@
+name: Radar TikTok - Importar Shorts Star Wars aprovados
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-star-wars-approved-to-tiktok-test.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: radar-tiktok-star-wars-test-import
+  cancel-in-progress: false
+
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Liberar espaco do runner
+        shell: bash
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc || true
+          df -h
+
+      - name: Baixar pacote Star Wars STRICT aprovado
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-star-wars-galactic-racer-STRICT-2026-10-03-37137795933
+          path: bundle
+          github-token: ${{ github.token }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37137795933
+
+      - name: Separar os 3 Shorts aprovados e gerar previews
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-upload
+
+          SHORT1="$(find bundle -type f -iname 'short_1.mp4' -print -quit)"
+          SHORT2="$(find bundle -type f -iname 'short_2.mp4' -print -quit)"
+          SHORT3="$(find bundle -type f -iname 'short_3.mp4' -print -quit)"
+          test -n "$SHORT1" && test -s "$SHORT1"
+          test -n "$SHORT2" && test -s "$SHORT2"
+          test -n "$SHORT3" && test -s "$SHORT3"
+
+          cp "$SHORT1" tiktok-upload/star-wars-galactic-racer-short-1.mp4
+          cp "$SHORT2" tiktok-upload/star-wars-galactic-racer-short-2.mp4
+          cp "$SHORT3" tiktok-upload/star-wars-galactic-racer-short-3.mp4
+
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+
+          for N in 1 2 3; do
+            ffmpeg -hide_banner -loglevel error -y \
+              -ss 1 \
+              -i "tiktok-upload/star-wars-galactic-racer-short-${N}.mp4" \
+              -frames:v 1 -vf "scale=720:-2" \
+              "tiktok-upload/star-wars-galactic-racer-short-${N}.jpg"
+          done
+
+          ls -lh tiktok-upload/
+
+      - name: Publicar MP4s e previews em armazenamento estavel
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="tiktok-approved-assets"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "Radar dos Games - Shorts aprovados para TikTok" \
+              --notes "Arquivos aprovados usados pelo Radar TikTok Helper. A publicacao final no TikTok continua manual."
+          fi
+          gh release upload "$TAG" tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+
+      - name: Colocar os 3 Shorts na fila do app
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          queue_path = Path('data/tiktok_queue.json')
+          if queue_path.exists():
+              queue = json.loads(queue_path.read_text(encoding='utf-8'))
+          else:
+              queue = {'version': 1, 'items': []}
+
+          base = 'https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+          now = datetime.now(timezone.utc).isoformat()
+
+          items = [
+              {
+                  'id': 'star-wars-galactic-racer-approved-short-1',
+                  'title': 'Star Wars: Galactic Racer | A galáxia vai correr',
+                  'media_url': f'{base}/star-wars-galactic-racer-short-1.mp4',
+                  'thumbnail_url': f'{base}/star-wars-galactic-racer-short-1.jpg',
+                  'post_text': 'Star Wars: Galactic Racer | A galáxia vai correr\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #StarWarsGalacticRacer #RadarDosGames #Games #Gaming #TikTokGames',
+                  'status': 'approved',
+                  'source_run_id': 37137795933,
+                  'short_number': 1,
+                  'approved_at': now,
+              },
+              {
+                  'id': 'star-wars-galactic-racer-approved-short-2',
+                  'title': 'Galactic Racer | Competição e evolução em alta velocidade',
+                  'media_url': f'{base}/star-wars-galactic-racer-short-2.mp4',
+                  'thumbnail_url': f'{base}/star-wars-galactic-racer-short-2.jpg',
+                  'post_text': 'Galactic Racer | Competição e evolução em alta velocidade\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #StarWarsGalacticRacer #RadarDosGames #Games #Gaming #TikTokGames',
+                  'status': 'approved',
+                  'source_run_id': 37137795933,
+                  'short_number': 2,
+                  'approved_at': now,
+              },
+              {
+                  'id': 'star-wars-galactic-racer-approved-short-3',
+                  'title': 'Star Wars voltou às grandes corridas? | Galactic Racer',
+                  'media_url': f'{base}/star-wars-galactic-racer-short-3.mp4',
+                  'thumbnail_url': f'{base}/star-wars-galactic-racer-short-3.jpg',
+                  'post_text': 'Star Wars voltou às grandes corridas? | Galactic Racer\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #StarWarsGalacticRacer #RadarDosGames #Games #Gaming #TikTokGames',
+                  'status': 'approved',
+                  'source_run_id': 37137795933,
+                  'short_number': 3,
+                  'approved_at': now,
+              },
+          ]
+
+          ids = {x['id'] for x in items}
+          old = [x for x in (queue.get('items') or []) if x.get('id') not in ids]
+          queue['version'] = 1
+          queue['updated_at'] = now
+          queue['items'] = items + old
+          queue_path.parent.mkdir(parents=True, exist_ok=True)
+          queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({'queued': len(items), 'total': len(queue['items'])}, ensure_ascii=False))
+          PY
+
+      - name: Salvar fila no main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase origin main
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "Fila ja estava atualizada."
+            exit 0
+          fi
+          git commit -m "bot: queue approved Star Wars Shorts for TikTok test"
+          git push origin main
+
+      - name: Confirmar fila
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          q = json.loads(Path('data/tiktok_queue.json').read_text(encoding='utf-8'))
+          rows = [x for x in q.get('items', []) if str(x.get('id', '')).startswith('star-wars-galactic-racer-approved-short-')]
+          assert len(rows) == 3, rows
+          assert all(x.get('status') == 'approved' for x in rows), rows
+          print('OK: 3 Shorts Star Wars aprovados na fila do TikTok Helper')
+          for x in rows:
+              print(x['id'], x['title'], x['media_url'])
+          PY
