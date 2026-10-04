@@ -1,0 +1,359 @@
+name: Radar TikTok - Sync YouTube Shorts
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/sync-youtube-shorts-to-tiktok.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar-tiktok-youtube-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt yt-dlp
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Discover exact Shorts tab from Radar dos Games
+        id: discover
+        shell: bash
+        run: |
+          set -uo pipefail
+          CHANNEL='https://www.youtube.com/@Radardosgamesbr/shorts'
+          rm -f /tmp/youtube-shorts-flat.json
+          if yt-dlp --flat-playlist --dump-single-json --no-warnings "$CHANNEL" > /tmp/youtube-shorts-flat.json; then
+            COUNT=$(python - <<'PY'
+          import json
+          p='/tmp/youtube-shorts-flat.json'
+          d=json.load(open(p,encoding='utf-8'))
+          print(len(d.get('entries') or []))
+          PY
+          )
+            if [[ "$COUNT" -gt 0 ]]; then
+              echo "mode=shorts_tab" >> "$GITHUB_OUTPUT"
+              echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          echo "mode=oauth_fallback" >> "$GITHUB_OUTPUT"
+          echo "count=0" >> "$GITHUB_OUTPUT"
+          echo '{"entries":[]}' > /tmp/youtube-shorts-flat.json
+
+      - name: Fallback discovery through official YouTube API
+        if: steps.discover.outputs.mode == 'oauth_fallback'
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, re
+          from src.youtube import service, channel_identity, assert_radar_channel
+
+          def seconds(value):
+              m=re.fullmatch(r'P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?', value or '')
+              if not m:
+                  return 10**9
+              d,h,mi,s=[int(x or 0) for x in m.groups()]
+              return d*86400+h*3600+mi*60+s
+
+          yt=service()
+          cid,title=channel_identity(yt)
+          assert_radar_channel(cid,title)
+          ch=yt.channels().list(part='contentDetails',id=cid).execute()['items'][0]
+          uploads=ch['contentDetails']['relatedPlaylists']['uploads']
+          ids=[]
+          token=None
+          while True:
+              r=yt.playlistItems().list(part='contentDetails',playlistId=uploads,maxResults=50,pageToken=token).execute()
+              ids += [x['contentDetails']['videoId'] for x in r.get('items',[])]
+              token=r.get('nextPageToken')
+              if not token:
+                  break
+
+          entries=[]
+          for start in range(0,len(ids),50):
+              r=yt.videos().list(part='snippet,contentDetails,status',id=','.join(ids[start:start+50])).execute()
+              for item in r.get('items',[]):
+                  sn=item.get('snippet',{})
+                  text=(sn.get('title','')+' '+sn.get('description','')).lower()
+                  dur=seconds(item.get('contentDetails',{}).get('duration'))
+                  # Fallback only: our Masters are longer; Shorts are <= 3 min and normally carry #Shorts.
+                  if item.get('status',{}).get('privacyStatus') != 'public':
+                      continue
+                  if dur <= 180 and ('#shorts' in text or dur <= 65):
+                      entries.append({
+                          'id':item['id'],
+                          'title':sn.get('title',''),
+                          'description':sn.get('description',''),
+                          'timestamp':sn.get('publishedAt'),
+                          'duration':dur,
+                      })
+          json.dump({'entries':entries},open('/tmp/youtube-shorts-flat.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
+          print('FALLBACK_SHORTS',len(entries))
+          PY
+
+      - name: Build sync plan and match already mirrored originals
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, re, unicodedata
+          from pathlib import Path
+
+          scan=json.load(open('/tmp/youtube-shorts-flat.json',encoding='utf-8'))
+          queue_path=Path('data/tiktok_queue.json')
+          queue=json.loads(queue_path.read_text(encoding='utf-8')) if queue_path.exists() else {'version':1,'items':[]}
+          old=queue.get('items') or []
+
+          def norm(s):
+              s=re.sub(r'(?i)#shorts?\b','',str(s or ''))
+              s=unicodedata.normalize('NFKD',s).encode('ascii','ignore').decode().lower()
+              s=re.sub(r'[^a-z0-9]+',' ',s)
+              return ' '.join(s.split())
+
+          by_yid={str(x.get('youtube_id')):x for x in old if x.get('youtube_id')}
+          by_title={norm(x.get('title')):x for x in old if norm(x.get('title'))}
+          plan=[]
+          seen=set()
+          for e in scan.get('entries') or []:
+              vid=str(e.get('id') or e.get('url') or '').strip()
+              if not vid or vid in seen:
+                  continue
+              seen.add(vid)
+              title=str(e.get('title') or '').strip() or f'Radar dos Games Short {vid}'
+              match=by_yid.get(vid) or by_title.get(norm(title))
+              plan.append({
+                  'youtube_id':vid,
+                  'youtube_url':f'https://www.youtube.com/shorts/{vid}',
+                  'title':title,
+                  'description':str(e.get('description') or ''),
+                  'published_at':e.get('timestamp') or e.get('upload_date') or None,
+                  'thumbnail_url':e.get('thumbnail') or f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg',
+                  'matched_queue_id':match.get('id') if match else None,
+                  'existing_media_url':match.get('media_url') if match else None,
+                  'existing_post_text':match.get('post_text') if match else None,
+              })
+          Path('/tmp/tiktok-sync-plan.json').write_text(json.dumps({'items':plan},ensure_ascii=False,indent=2),encoding='utf-8')
+          print('DISCOVERED_SHORTS',len(plan))
+          print('ALREADY_WITH_ORIGINAL',sum(bool(x.get('existing_media_url')) for x in plan))
+          print('NEED_MEDIA',sum(not bool(x.get('existing_media_url')) for x in plan))
+          PY
+
+      - name: Mirror missing Shorts from our own YouTube channel
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p /tmp/yt-mirror
+          python - <<'PY' > /tmp/missing-youtube-ids.txt
+          import json
+          p=json.load(open('/tmp/tiktok-sync-plan.json',encoding='utf-8'))
+          for x in p.get('items',[]):
+              if not x.get('existing_media_url'):
+                  print(x['youtube_id'])
+          PY
+
+          while IFS= read -r VID; do
+            [[ -z "$VID" ]] && continue
+            echo "MIRROR $VID"
+            rm -f "/tmp/yt-mirror/yt-${VID}."*
+            if yt-dlp \
+              --no-playlist \
+              --no-warnings \
+              --retries 3 \
+              --fragment-retries 3 \
+              -f 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/b' \
+              --merge-output-format mp4 \
+              -o "/tmp/yt-mirror/yt-${VID}.%(ext)s" \
+              "https://www.youtube.com/shorts/${VID}"; then
+              FILE=$(find /tmp/yt-mirror -maxdepth 1 -type f -name "yt-${VID}.*" | head -1)
+              if [[ -n "$FILE" && -s "$FILE" ]]; then
+                if [[ "$FILE" != "/tmp/yt-mirror/yt-${VID}.mp4" ]]; then
+                  ffmpeg -hide_banner -loglevel error -y -i "$FILE" -c copy "/tmp/yt-mirror/yt-${VID}.mp4" || \
+                  ffmpeg -hide_banner -loglevel error -y -i "$FILE" -c:v libx264 -preset veryfast -crf 20 -c:a aac -b:a 160k "/tmp/yt-mirror/yt-${VID}.mp4"
+                fi
+              fi
+            else
+              echo "DOWNLOAD_FAILED $VID"
+            fi
+          done < /tmp/missing-youtube-ids.txt
+
+          echo 'MIRRORED_FILES'
+          find /tmp/yt-mirror -maxdepth 1 -type f -name '*.mp4' -printf '%f %s bytes\n' || true
+
+      - name: Publish mirrored originals to stable release storage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG='tiktok-youtube-shorts'
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title 'Radar dos Games - YouTube Shorts mirror' \
+              --notes 'Cópias dos Shorts do próprio canal Radar dos Games usadas pelo TikTok Helper para publicação manual.'
+          fi
+          shopt -s nullglob
+          FILES=(/tmp/yt-mirror/*.mp4)
+          if (( ${#FILES[@]} )); then
+            gh release upload "$TAG" "${FILES[@]}" --clobber
+          else
+            echo 'No new MP4 to upload.'
+          fi
+
+      - name: Merge every discovered Short into TikTok queue
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, re, unicodedata
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          plan=json.load(open('/tmp/tiktok-sync-plan.json',encoding='utf-8')).get('items',[])
+          queue_path=Path('data/tiktok_queue.json')
+          queue=json.loads(queue_path.read_text(encoding='utf-8')) if queue_path.exists() else {'version':1,'items':[]}
+          old=queue.get('items') or []
+          old_by_id={str(x.get('id')):x for x in old if x.get('id')}
+          repo=__import__('os').environ['REPOSITORY']
+          release='tiktok-youtube-shorts'
+
+          def norm(s):
+              s=re.sub(r'(?i)#shorts?\b','',str(s or ''))
+              s=unicodedata.normalize('NFKD',s).encode('ascii','ignore').decode().lower()
+              s=re.sub(r'[^a-z0-9]+',' ',s)
+              return ' '.join(s.split())
+
+          def clean_title(s):
+              s=re.sub(r'(?i)#shorts?\b','',str(s or ''))
+              return re.sub(r'\s+',' ',s).strip(' -|') or 'Radar dos Games'
+
+          def hashtags(title,description):
+              candidates=re.findall(r'#([\wÀ-ÿ]+)',description or '',flags=re.UNICODE)
+              words=re.findall(r'[A-Za-zÀ-ÿ0-9]{4,}',title or '')
+              stop={'para','como','mais','esse','essa','sobre','games','game','radar','shorts','short','dos'}
+              candidates += [w for w in words if w.lower() not in stop]
+              out=[]; seen=set()
+              for raw in candidates:
+                  tag='#'+re.sub(r'[^\w]','',raw,flags=re.UNICODE)
+                  key=unicodedata.normalize('NFKD',tag).encode('ascii','ignore').decode().lower()
+                  if len(tag)<=1 or key in seen:
+                      continue
+                  seen.add(key); out.append(tag)
+                  if len(out)>=4:
+                      break
+              for tag in ['#RadarDosGames','#Games','#Gaming','#TikTokGames']:
+                  if tag.lower() not in {x.lower() for x in out}:
+                      out.append(tag)
+              return out
+
+          used_old_ids=set()
+          merged=[]
+          waiting=[]
+          now=datetime.now(timezone.utc).isoformat()
+          for p in plan:
+              vid=p['youtube_id']
+              matched_id=p.get('matched_queue_id')
+              base=dict(old_by_id.get(str(matched_id),{})) if matched_id else {}
+              media=(p.get('existing_media_url') or '').strip()
+              mirrored=Path(f'/tmp/yt-mirror/yt-{vid}.mp4')
+              if not media and mirrored.exists() and mirrored.stat().st_size>0:
+                  media=f'https://github.com/{repo}/releases/download/{release}/yt-{vid}.mp4'
+
+              title=clean_title(p.get('title'))
+              post=base.get('post_text') or p.get('existing_post_text')
+              if not post:
+                  post=(f'{title}\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n' + ' '.join(hashtags(title,p.get('description',''))))
+
+              entry={
+                  **base,
+                  'id':base.get('id') or f'yt-{vid}',
+                  'title':title,
+                  'media_url':media,
+                  'thumbnail_url':base.get('thumbnail_url') or p.get('thumbnail_url') or f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg',
+                  'post_text':post,
+                  'status':'approved' if media else 'waiting_media',
+                  'youtube_id':vid,
+                  'youtube_url':p['youtube_url'],
+                  'youtube_published_at':p.get('published_at'),
+                  'source':'youtube_channel',
+                  'synced_at':now,
+              }
+              merged.append(entry)
+              if base.get('id'):
+                  used_old_ids.add(str(base['id']))
+              if not media:
+                  waiting.append({'youtube_id':vid,'title':title,'reason':'media_not_mirrored_yet'})
+
+          # Preserve legacy/manual queue rows that are not represented by the current Shorts tab.
+          for row in old:
+              rid=str(row.get('id') or '')
+              if rid and rid not in used_old_ids and not row.get('youtube_id'):
+                  merged.append(row)
+
+          queue['version']=2
+          queue['source_channel']='https://www.youtube.com/@Radardosgamesbr/shorts'
+          queue['updated_at']=now
+          queue['items']=merged[:200]
+          queue_path.parent.mkdir(parents=True,exist_ok=True)
+          queue_path.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          index={
+              'channel':'https://www.youtube.com/@Radardosgamesbr',
+              'shorts_url':'https://www.youtube.com/@Radardosgamesbr/shorts',
+              'updated_at':now,
+              'total_discovered':len(plan),
+              'ready_for_tiktok':sum(1 for x in merged if x.get('source')=='youtube_channel' and x.get('status')=='approved'),
+              'waiting_media':waiting,
+              'items':[{k:p.get(k) for k in ('youtube_id','youtube_url','title','published_at')} for p in plan],
+          }
+          Path('data/youtube_shorts_index.json').write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({
+              'discovered':len(plan),
+              'ready':index['ready_for_tiktok'],
+              'waiting_media':len(waiting),
+              'queue_total':len(queue['items'])
+          },ensure_ascii=False))
+          PY
+
+      - name: Commit synchronized queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'radar-tiktok-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git pull --rebase origin main
+          git add data/tiktok_queue.json data/youtube_shorts_index.json
+          if git diff --cached --quiet; then
+            echo 'Queue already synchronized.'
+            exit 0
+          fi
+          git commit -m 'bot: sync YouTube Shorts into TikTok Helper'
+          git push origin main
