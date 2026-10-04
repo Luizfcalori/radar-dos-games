@@ -159,10 +159,22 @@ jobs:
           ok = [int(a["index"]) for a in assets]
           assert len(ok) >= 6, ok
           scenes = spec["scenes"]
-          for i, scene in enumerate(scenes):
-              a = ok[i % len(ok)]
-              b = ok[(i + 1) % len(ok)]
-              scene["media_indices"] = [a] if a == b else [a, b]
+          # Mapeamento editorial validado visualmente. Evita imagens laterais da página
+          # que pertencem a outros conteúdos, mesmo sendo hospedadas pelo PlayStation Blog.
+          preferred = [
+              [3, 4],   # Wolverine + Ghost / abertura
+              [4, 5],   # Ghost + comparação QSSR
+              [5, 7],   # comparação + thumbnail oficial Wolverine
+              [7, 8],   # comparações oficiais incorporadas na matéria
+              [8, 9],   # Ghost/Wolverine + contexto PlayStation
+              [9, 10],  # PS5 / ecossistema
+              [10, 11], # imagens diretamente relacionadas ao anúncio
+              [3, 7],   # encerra com Wolverine/QSSR; não usa assets periféricos
+          ]
+          available = set(ok)
+          assert all(all(x in available for x in pair) for pair in preferred), (ok, preferred)
+          for scene, pair in zip(scenes, preferred):
+              scene["media_indices"] = pair
           manifest = {
               "assets": assets,
               "voice": "output/voice.mp3",
@@ -206,6 +218,7 @@ jobs:
           assert qa["voice"] == "pt-BR-ThalitaNeural"
           assert qa["semantic_timing_source"] == "paragraph_boundaries"
           assert len(qa["scenes"]) == 8
+          assert qa["scenes"][7]["media_indices_explicit"] == [3, 7]
           shorts = sorted(glob.glob("output/shorts/short_*.mp4"))
           assert len(shorts) == 3, shorts
           report = []
