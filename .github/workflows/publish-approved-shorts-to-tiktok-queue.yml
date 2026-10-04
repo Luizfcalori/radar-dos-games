@@ -1,0 +1,259 @@
+name: Radar TikTok - Queue Approved Shorts
+
+on:
+  workflow_run:
+    workflows:
+      - "Radar dos Games - Daily Auto Master + 3 Shorts"
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: radar-tiktok-approved-queue
+  cancel-in-progress: false
+
+jobs:
+  queue:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      (github.event.workflow_run.event == 'schedule' || github.event.workflow_run.event == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download final production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-${{ github.event.workflow_run.id }}
+          path: bundle
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Confirm that the 3 Shorts were actually approved for publishing
+        id: approved
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESULT_1="$(find bundle -type f -name 'youtube-short-1-result.json' -print -quit)"
+          RESULT_2="$(find bundle -type f -name 'youtube-short-2-result.json' -print -quit)"
+          RESULT_3="$(find bundle -type f -name 'youtube-short-3-result.json' -print -quit)"
+
+          if [[ -z "$RESULT_1" || -z "$RESULT_2" || -z "$RESULT_3" ]]; then
+            echo "publishable=false" >> "$GITHUB_OUTPUT"
+            echo "This was a render/test run only. Nothing will be sent to the TikTok helper queue."
+            exit 0
+          fi
+
+          BASE="$(dirname "$RESULT_1")"
+          test -s "$BASE/shorts/short_1.mp4"
+          test -s "$BASE/shorts/short_2.mp4"
+          test -s "$BASE/shorts/short_3.mp4"
+          test -s "$BASE/short-1-youtube.json"
+          test -s "$BASE/short-2-youtube.json"
+          test -s "$BASE/short-3-youtube.json"
+
+          echo "publishable=true" >> "$GITHUB_OUTPUT"
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare TikTok assets, thumbnails and captions
+        if: steps.approved.outputs.publishable == 'true'
+        env:
+          BASE: ${{ steps.approved.outputs.base }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-upload
+
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+
+          for N in 1 2 3; do
+            SRC="$BASE/shorts/short_${N}.mp4"
+            VIDEO="${SOURCE_RUN_ID}-short-${N}.mp4"
+            THUMB="${SOURCE_RUN_ID}-short-${N}.jpg"
+            cp "$SRC" "tiktok-upload/$VIDEO"
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "$SRC" \
+              -frames:v 1 -vf "scale=720:-2" "tiktok-upload/$THUMB"
+          done
+
+          python - <<'PY'
+          import json
+          import os
+          import re
+          import unicodedata
+          from pathlib import Path
+
+          base = Path(os.environ['BASE'])
+          run_id = os.environ['SOURCE_RUN_ID']
+
+          def clean_title(value):
+              text = re.sub(r'(?i)#shorts?\b', '', str(value or ''))
+              text = re.sub(r'\s+', ' ', text).strip(' -|')
+              return text or 'Radar dos Games'
+
+          def hashtag(value):
+              value = str(value or '').strip().lstrip('#')
+              value = re.sub(r'[^\w]', '', value, flags=re.UNICODE)
+              return f'#{value}' if value else ''
+
+          entries = []
+          for n in (1, 2, 3):
+              meta_path = base / f'short-{n}-youtube.json'
+              meta = json.loads(meta_path.read_text(encoding='utf-8'))
+
+              title = clean_title(meta.get('title'))
+              description = str(meta.get('description') or '').strip()
+
+              dynamic = []
+              for found in re.findall(r'#([\wÀ-ÿ]+)', description, flags=re.UNICODE):
+                  tag = hashtag(found)
+                  if tag and tag.lower() not in {'#shorts', '#youtubeshorts'}:
+                      dynamic.append(tag)
+
+              tags = meta.get('tags') or []
+              if isinstance(tags, str):
+                  tags = [x.strip() for x in tags.split(',') if x.strip()]
+              for raw in tags:
+                  tag = hashtag(raw)
+                  if tag:
+                      dynamic.append(tag)
+
+              topic_words = re.findall(r'[A-Za-zÀ-ÿ0-9]{4,}', title)
+              stop = {'para','como','mais','esse','essa','sobre','games','game','radar','shorts','short'}
+              for word in topic_words:
+                  if word.lower() in stop:
+                      continue
+                  tag = hashtag(word)
+                  if tag:
+                      dynamic.append(tag)
+
+              chosen = []
+              seen = set()
+              for tag in dynamic:
+                  key = unicodedata.normalize('NFKD', tag).encode('ascii', 'ignore').decode().lower()
+                  if not key or key in seen:
+                      continue
+                  seen.add(key)
+                  chosen.append(tag)
+                  if len(chosen) >= 4:
+                      break
+
+              generic = ['#RadarDosGames', '#Games', '#Gaming', '#TikTokGames']
+              hashtags = chosen + [x for x in generic if x.lower() not in {y.lower() for y in chosen}]
+
+              post_text = (
+                  f'{title}\n\n'
+                  '🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'
+                  + ' '.join(hashtags)
+              )
+
+              entries.append({
+                  'id': f'{run_id}-short-{n}',
+                  'title': title,
+                  'post_text': post_text,
+                  'video_asset': f'{run_id}-short-{n}.mp4',
+                  'thumbnail_asset': f'{run_id}-short-{n}.jpg',
+                  'status': 'approved',
+                  'source_run_id': int(run_id),
+                  'short_number': n,
+              })
+
+          Path('tiktok-upload/manifest.json').write_text(
+              json.dumps({'items': entries}, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8'
+          )
+          print(json.dumps({'prepared': len(entries), 'run_id': run_id}, ensure_ascii=False))
+          PY
+
+      - name: Publish approved MP4s to stable public release storage
+        if: steps.approved.outputs.publishable == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="tiktok-approved-assets"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "Radar dos Games - Shorts aprovados para TikTok" \
+              --notes "Arquivos aprovados usados pelo Radar TikTok Helper. A publicação final no TikTok continua manual."
+          fi
+          gh release upload "$TAG" tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+
+      - name: Update TikTok Helper queue
+        if: steps.approved.outputs.publishable == 'true'
+        env:
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_TAG: tiktok-approved-assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          queue_path = Path('data/tiktok_queue.json')
+          queue = json.loads(queue_path.read_text(encoding='utf-8')) if queue_path.exists() else {'version': 1, 'items': []}
+          manifest = json.loads(Path('tiktok-upload/manifest.json').read_text(encoding='utf-8'))
+          repo = os.environ['REPOSITORY']
+          tag = os.environ['RELEASE_TAG']
+          base_url = f'https://github.com/{repo}/releases/download/{tag}'
+
+          old = queue.get('items') or []
+          old_by_id = {str(x.get('id')): x for x in old if x.get('id')}
+          new_items = []
+
+          for item in manifest.get('items', []):
+              entry = {
+                  'id': item['id'],
+                  'title': item['title'],
+                  'media_url': f"{base_url}/{item['video_asset']}",
+                  'thumbnail_url': f"{base_url}/{item['thumbnail_asset']}",
+                  'post_text': item['post_text'],
+                  'status': 'approved',
+                  'source_run_id': item['source_run_id'],
+                  'short_number': item['short_number'],
+                  'approved_at': datetime.now(timezone.utc).isoformat(),
+              }
+              new_items.append(entry)
+              old_by_id.pop(entry['id'], None)
+
+          remaining = [x for x in old if str(x.get('id')) in old_by_id]
+          queue['version'] = 1
+          queue['updated_at'] = datetime.now(timezone.utc).isoformat()
+          queue['items'] = (new_items + remaining)[:120]
+          queue_path.parent.mkdir(parents=True, exist_ok=True)
+          queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({'queue_items': len(queue['items']), 'added_or_refreshed': len(new_items)}, ensure_ascii=False))
+          PY
+
+      - name: Commit queue update
+        if: steps.approved.outputs.publishable == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase origin main
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "TikTok queue already up to date."
+            exit 0
+          fi
+          git commit -m "bot: add approved Shorts to TikTok queue"
+          git push origin main
