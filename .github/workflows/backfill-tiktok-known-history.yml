@@ -1,0 +1,172 @@
+name: Radar TikTok - Backfill Historical Shorts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/backfill-tiktok-known-history.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: radar-tiktok-history-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Recover exact historical MP4s from retained artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p recovered tmpart
+
+          fetch_artifact() {
+            local id="$1" dest="$2"
+            echo "Downloading artifact $id -> $dest"
+            rm -rf "$dest" "$dest.zip"
+            mkdir -p "$dest"
+            gh api "repos/$REPO/actions/artifacts/$id/zip" > "$dest.zip"
+            unzip -q "$dest.zip" -d "$dest"
+          }
+
+          copy_match() {
+            local src="$1" yid="$2"
+            test -s "$src"
+            cp "$src" "recovered/yt-$yid.mp4"
+            echo "RECOVERED $yid $(stat -c%s "recovered/yt-$yid.mp4")"
+          }
+
+          # QSSR / PS5 — metadata in this exact bundle identifies short 1/2/3.
+          fetch_artifact 11305617460 tmpart/qssr
+          copy_match tmpart/qssr/shorts/short_1.mp4 9XJfF2fMTZ8
+          copy_match tmpart/qssr/shorts/short_2.mp4 Ec5DOnNEmsQ
+          copy_match tmpart/qssr/shorts/short_3.mp4 _FRcK8AnIoI
+
+          # TOP 10 approved render — first two currently published Shorts.
+          fetch_artifact 11306797430 tmpart/top10
+          copy_match tmpart/top10/shorts/short_1.mp4 xZvU-U2lBOg
+          copy_match tmpart/top10/shorts/short_2.mp4 G7uUZh_dcmE
+
+          # Modern Warfare 4 STRICT — one exact Short per retained artifact.
+          fetch_artifact 11281008483 tmpart/mw1
+          copy_match "$(find tmpart/mw1 -type f -name '*.mp4' -print -quit)" 2NyCeNUZj4g
+          fetch_artifact 11281043411 tmpart/mw2
+          copy_match "$(find tmpart/mw2 -type f -name '*.mp4' -print -quit)" rwld0AShJ8c
+          fetch_artifact 11281352493 tmpart/mw3
+          copy_match "$(find tmpart/mw3 -type f -name '*.mp4' -print -quit)" t7rOGU817fs
+
+          # Dragon's Dogma 2: Dark Arisen — Short 1 = Norgan.
+          fetch_artifact 11279591954 tmpart/dragon1
+          copy_match "$(find tmpart/dragon1 -type f -name '*.mp4' -print -quit)" deg5A2eYoRA
+
+          # ELTA ZERO approved package — short order verified by its own visual cards.
+          fetch_artifact 11263800838 tmpart/elta
+          copy_match tmpart/elta/shorts/short_1.mp4 akvK2Vmy8qE
+          copy_match tmpart/elta/shorts/short_2.mp4 Mn6IZn2nPYM
+          copy_match tmpart/elta/shorts/short_3.mp4 FrS_CuyvCxo
+
+          # Ace Combat recovered approved 3-Short package.
+          fetch_artifact 11256577220 tmpart/ace
+          copy_match tmpart/ace/shorts/short_1.mp4 qF_J0S_Ro24
+          copy_match tmpart/ace/shorts/short_2.mp4 iRGjt-366xQ
+          copy_match tmpart/ace/shorts/short_3.mp4 PTKLCEgdxTo
+
+          # Gears E-Day approved corrected package.
+          fetch_artifact 11253592473 tmpart/gears
+          copy_match tmpart/gears/shorts/short_1.mp4 krjnB6c0KvE
+          copy_match tmpart/gears/shorts/short_2.mp4 rDT12IWkDE8
+          copy_match tmpart/gears/shorts/short_3.mp4 9QmthjXQgq4
+
+          ls -lh recovered/
+
+      - name: Publish recovered originals to stable release storage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG='tiktok-youtube-shorts'
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --title 'Radar dos Games - Shorts para TikTok' --notes 'Originais recuperados para publicação manual no TikTok Helper.'
+          fi
+          gh release upload "$TAG" recovered/*.mp4 --clobber
+
+      - name: Mark recovered YouTube Shorts ready in TikTok queue
+        env:
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          qpath=Path('data/tiktok_queue.json')
+          ipath=Path('data/youtube_shorts_index.json')
+          queue=json.loads(qpath.read_text(encoding='utf-8'))
+          index=json.loads(ipath.read_text(encoding='utf-8'))
+          repo=os.environ['REPO']
+          ready_ids={p.stem.removeprefix('yt-') for p in Path('recovered').glob('yt-*.mp4')}
+          base=f'https://github.com/{repo}/releases/download/tiktok-youtube-shorts'
+          changed=[]
+          for item in queue.get('items',[]):
+              yid=str(item.get('youtube_id') or '')
+              if yid in ready_ids:
+                  item['media_url']=f'{base}/yt-{yid}.mp4'
+                  item['status']='approved'
+                  item['source']='youtube_channel_recovered_original'
+                  item['recovered_at']=datetime.now(timezone.utc).isoformat()
+                  changed.append(yid)
+
+          waiting=[]
+          for item in queue.get('items',[]):
+              if item.get('source','').startswith('youtube_channel') and item.get('status')!='approved':
+                  waiting.append({'youtube_id':item.get('youtube_id'),'title':item.get('title'),'reason':'original_media_not_recovered_yet'})
+
+          queue['updated_at']=datetime.now(timezone.utc).isoformat()
+          qpath.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          indexed={str(x.get('youtube_id')):x for x in index.get('items',[])}
+          for yid in changed:
+              if yid in indexed: indexed[yid]['status']='approved'
+          index['ready_for_tiktok']=sum(1 for x in index.get('items',[]) if x.get('status')=='approved')
+          index['waiting_media']=waiting
+          index['updated_at']=datetime.now(timezone.utc).isoformat()
+          ipath.write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          report={
+            'recovered_count':len(changed),
+            'ready_for_tiktok':index['ready_for_tiktok'],
+            'total_discovered':index.get('total_discovered'),
+            'remaining_count':len(waiting),
+            'recovered_youtube_ids':sorted(changed),
+            'remaining':waiting,
+          }
+          Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,ensure_ascii=False))
+          PY
+
+      - name: Commit queue and report
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'radar-tiktok-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data/tiktok_queue.json data/youtube_shorts_index.json data/tiktok_backfill_report.json
+          git commit -m 'bot: backfill historical Shorts for TikTok Helper' || exit 0
+          git pull --rebase origin main
+          git push origin main
