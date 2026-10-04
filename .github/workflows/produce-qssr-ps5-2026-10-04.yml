@@ -43,13 +43,109 @@ jobs:
           PUBLISH_PRIVACY: unlisted
         run: python src/auto_daily.py
 
+      - name: Aplicar roteiro editorial PT-BR e mídia oficial QSSR
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          script = """A Sony confirmou uma novidade importante para quem joga no PS5 padrão: o console vai receber o QSSR, sigla para Quick Spectral Super Resolution. Na prática, é uma nova tecnologia de upscaling por inteligência artificial criada para melhorar nitidez, detalhes finos e estabilidade de imagem sem exigir o hardware dedicado do PS5 Pro. E o mais interessante é que os primeiros jogos já foram anunciados.
+
+          Para entender por que isso importa, vale lembrar do PSSR, o PlayStation Spectral Super Resolution usado no PS5 Pro. Essa tecnologia analisa a imagem do jogo pixel por pixel e usa inteligência artificial para reconstruir uma imagem mais limpa e detalhada. O problema é que o PSSR exige mais capacidade de processamento. Por isso, até agora, a Sony não conseguia levar a mesma abordagem ao PS5 base.
+
+          O QSSR nasce justamente para resolver essa limitação. Segundo a própria Sony, ele veio do Project Amethyst, a colaboração da empresa com a AMD para desenvolver soluções de inteligência artificial aplicadas a gráficos. A nova biblioteca usa uma arquitetura de rede neural simplificada e uma implementação ajustada manualmente para aproveitar melhor o desempenho disponível no PS5 padrão.
+
+          Isso não significa que o PS5 comum virou um PS5 Pro. A Sony deixa claro que o PSSR continua sendo a solução mais avançada no modelo Pro. O objetivo do QSSR é entregar parte desses benefícios no console base, com ganhos principalmente em riqueza de detalhes e estabilidade temporal. Em cenas cheias de movimento, vegetação, cabelo, partículas ou linhas finas, esse tipo de reconstrução pode fazer uma diferença visível na clareza final.
+
+          Os dois primeiros jogos a receber o recurso são Marvel's Wolverine e Ghost of Yōtei. A Sony informou que ambos estão sendo atualizados para oferecer o QSSR como uma opção gráfica adicional no PS5. A Insomniac destacou mais clareza em nível de pixel e maior estabilidade nos cenários de Wolverine, enquanto a Sucker Punch chamou atenção para detalhes finos de personagens e ambientes em Ghost of Yōtei.
+
+          Outro ponto importante é que isso não deve ficar preso a apenas esses dois títulos. A Sony confirmou que o QSSR será disponibilizado amplamente para todos os desenvolvedores de PlayStation. Isso abre espaço para que mais jogos adotem a tecnologia no futuro, principalmente títulos que hoje precisam escolher entre resolução, estabilidade e desempenho usando métodos tradicionais de reconstrução de imagem.
+
+          Para o jogador, o impacto real vai depender de cada implementação. QSSR não aumenta sozinho a potência bruta do console e não substitui otimização. Mas ele oferece aos estúdios uma ferramenta nova para reconstruir uma imagem de melhor qualidade a partir de uma resolução interna menor. Se for bem utilizado, isso pode significar modos de desempenho mais nítidos, menos serrilhado e uma imagem mais estável sem sacrificar tantos quadros por segundo.
+
+          Resumindo: o PS5 padrão acaba de ganhar uma nova camada de vida útil com inteligência artificial aplicada aos gráficos. Wolverine e Ghost of Yōtei serão a primeira vitrine, mas o ponto maior é a abertura da biblioteca para outros estúdios. Agora o que vale acompanhar é quais jogos vão adotar QSSR em seguida e quanto dessa melhoria vai aparecer na prática. Se curtiu o Radar dos Games, se inscreva no canal e conta nos comentários qual jogo você gostaria de ver recebendo QSSR."""
+          script = "\n\n".join(line.strip() for line in script.split("\n\n")) + "\n"
+          Path("output/auto-script.txt").write_text(script, encoding="utf-8")
+
+          plan_path = Path("output/auto-media-plan.json")
+          plan = json.loads(plan_path.read_text(encoding="utf-8"))
+          official_article = "https://blog.playstation.com/2026/10/01/ai-upscaling-is-coming-to-ps5/"
+          videos = [
+              {
+                  "type": "video",
+                  "url": "https://www.youtube.com/watch?v=RcFYsDKbAIk",
+                  "role": "official_qssr_wolverine",
+                  "source_proof": official_article,
+                  "relevance_evidence": "embedded_on_official_playstation_qssr_article",
+                  "source_label": "PlayStation Blog QSSR"
+              },
+              {
+                  "type": "video",
+                  "url": "https://www.youtube.com/watch?v=E929-XwrS_Q",
+                  "role": "official_qssr_yotei",
+                  "source_proof": official_article,
+                  "relevance_evidence": "embedded_on_official_playstation_qssr_article",
+                  "source_label": "PlayStation Blog QSSR"
+              }
+          ]
+          plan["topic"] = "QSSR no PS5: Sony leva upscaling por IA ao console base"
+          plan["minimum_assets"] = 6
+          plan["minimum_video_assets"] = 0
+          plan["minimum_image_assets"] = 6
+          plan["minimum_unique_video_seconds"] = 0
+          plan["media"] = videos + plan.get("media", [])
+          scene_titles = [
+              ("QSSR CHEGA AO PS5", "UPSCALING POR IA NO CONSOLE BASE"),
+              ("POR QUE ISSO IMPORTA", "DO PSSR DO PS5 PRO AO NOVO QSSR"),
+              ("COMO A SONY CONSEGUIU", "PROJECT AMETHYST + AMD"),
+              ("PS5 NÃO VIROU UM PRO", "MAS A QUALIDADE DE IMAGEM PODE SUBIR"),
+              ("OS PRIMEIROS JOGOS", "WOLVERINE E GHOST OF YŌTEI"),
+              ("NÃO VAI PARAR EM DOIS", "QSSR SERÁ ABERTO A DESENVOLVEDORES"),
+              ("O QUE MUDA NA PRÁTICA", "MAIS NITIDEZ E ESTABILIDADE"),
+              ("O FUTURO DO PS5", "QUAIS JOGOS VÃO ADOTAR QSSR?")
+          ]
+          for scene, (title, subtitle) in zip(plan.get("scenes", []), scene_titles):
+              scene["title"] = title
+              scene["subtitle"] = subtitle
+          plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
+
+          selected_path = Path("output/selected.json")
+          selected = json.loads(selected_path.read_text(encoding="utf-8"))
+          selected["editorial_title_ptbr"] = "QSSR no PS5: Sony leva upscaling por IA ao console base"
+          selected_path.write_text(json.dumps(selected, ensure_ascii=False, indent=2), encoding="utf-8")
+
+          source_br = "https://blog.br.playstation.com/2026/10/01/upscaling-com-ia-chega-em-breve-para-ps5/"
+          master = {
+              "title": "QSSR no PS5: Sony leva upscaling por IA ao console base",
+              "description": "🎮 A Sony confirmou o QSSR para o PS5 padrão: uma nova solução de upscaling por IA criada a partir do Project Amethyst com a AMD. Marvel's Wolverine e Ghost of Yōtei serão os primeiros jogos, e a biblioteca será disponibilizada a outros desenvolvedores de PlayStation.\n\n🔎 Fonte oficial: " + source_br + "\n\n#RadarDosGames #PS5 #QSSR #PlayStation #Wolverine #GhostOfYotei",
+              "tags": ["Radar dos Games", "PS5", "QSSR", "PlayStation", "upscaling IA", "PSSR", "Marvel's Wolverine", "Ghost of Yotei", "AMD", "Project Amethyst"],
+              "privacy": "unlisted",
+              "containsSyntheticMedia": False
+          }
+          Path("output/master-youtube.json").write_text(json.dumps(master, ensure_ascii=False, indent=2), encoding="utf-8")
+          short_titles = [
+              "QSSR: o PS5 ganhou upscaling por IA #Shorts",
+              "Wolverine e Ghost of Yōtei estreiam QSSR #Shorts",
+              "QSSR pode melhorar muitos jogos no PS5 #Shorts"
+          ]
+          for i, title in enumerate(short_titles, 1):
+              meta = {
+                  "title": title,
+                  "description": "QSSR chegou ao PS5 padrão. Veja o que a Sony confirmou oficialmente e por que essa tecnologia pode melhorar a qualidade de imagem dos jogos.\n\nFonte oficial: " + source_br + "\n\n#RadarDosGames #PS5 #QSSR #Shorts",
+                  "tags": ["Radar dos Games", "PS5", "QSSR", "PlayStation", "Shorts"],
+                  "privacy": "unlisted",
+                  "containsSyntheticMedia": False
+              }
+              Path(f"output/short-{i}-youtube.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
       - name: Criar narração Thalita PT-BR com timings semânticos
         run: |
           python src/voice.py output/auto-script.txt output/voice.mp3 \
             --voice pt-BR-ThalitaNeural \
             --segments-json output/voice-timings.json
 
-      - name: Baixar mídia oficial/contextual
+      - name: Baixar mídia oficial/contextual com fallback de imagens
         run: python src/media.py output/auto-media-plan.json
 
       - name: Montar manifesto apenas com mídias validadas
@@ -61,7 +157,7 @@ jobs:
           media = json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
           assets = media["assets"]
           ok = [int(a["index"]) for a in assets]
-          assert len(ok) >= 2, ok
+          assert len(ok) >= 6, ok
           scenes = spec["scenes"]
           for i, scene in enumerate(scenes):
               a = ok[i % len(ok)]
