@@ -1,0 +1,80 @@
+name: Radar TikTok - Recover Gears Top10 Short
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/backfill-tiktok-gears-top10.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Recover exact published Top10 Gears Short
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p bundle recovered
+          gh api "repos/$REPO/actions/artifacts/11306797430/zip" > bundle.zip
+          unzip -q bundle.zip -d bundle
+          test -s bundle/shorts/short_3.mp4
+          cp bundle/shorts/short_3.mp4 recovered/yt-BhTKkDjhTnc.mp4
+          echo "RECOVERED BhTKkDjhTnc $(stat -c%s recovered/yt-BhTKkDjhTnc.mp4)"
+
+      - name: Publish recovered original
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload tiktok-youtube-shorts recovered/yt-BhTKkDjhTnc.mp4 --clobber
+
+      - name: Update queue and report
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          yid='BhTKkDjhTnc'
+          now=datetime.now(timezone.utc).isoformat()
+          qpath=Path('data/tiktok_queue.json'); ipath=Path('data/youtube_shorts_index.json')
+          q=json.loads(qpath.read_text(encoding='utf-8')); idx=json.loads(ipath.read_text(encoding='utf-8'))
+          url=f"https://github.com/{os.environ['REPO']}/releases/download/tiktok-youtube-shorts/yt-{yid}.mp4"
+          found=False
+          for x in q.get('items',[]):
+              if str(x.get('youtube_id'))==yid:
+                  x['media_url']=url; x['status']='approved'; x['source']='youtube_channel_recovered_original'; x['recovered_at']=now; found=True
+          if not found: raise SystemExit('Queue row not found for '+yid)
+          for x in idx.get('items',[]):
+              if str(x.get('youtube_id'))==yid: x['status']='approved'
+          waiting=[{'youtube_id':x.get('youtube_id'),'title':x.get('title'),'reason':'original_media_not_recovered_yet'} for x in q.get('items',[]) if x.get('source','').startswith('youtube_channel') and x.get('status')!='approved']
+          q['updated_at']=now; idx['updated_at']=now
+          idx['ready_for_tiktok']=sum(1 for x in idx.get('items',[]) if x.get('status')=='approved'); idx['waiting_media']=waiting
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          ipath.write_text(json.dumps(idx,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          report={'recovered_count':22,'ready_for_tiktok':idx['ready_for_tiktok'],'total_discovered':idx.get('total_discovered'),'remaining_count':len(waiting),'remaining':waiting}
+          Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,ensure_ascii=False))
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name 'radar-tiktok-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data/tiktok_queue.json data/youtube_shorts_index.json data/tiktok_backfill_report.json
+          git commit -m 'bot: recover remaining Gears Top10 Short for TikTok' || exit 0
+          git pull --rebase origin main
+          git push origin main
