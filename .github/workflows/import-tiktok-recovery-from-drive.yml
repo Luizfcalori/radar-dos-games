@@ -1,7 +1,6 @@
-name: Radar TikTok - Import Recovery from Private Drive
+name: Radar TikTok - Import Recovery Bridge
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - '.github/workflows/import-tiktok-recovery-from-drive.yml'
@@ -14,89 +13,52 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
-      YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
-      YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
-      YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prepare
+      - name: Download six recovered videos through temporary authenticated bridge
+        id: bridge
+        shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg jq
+          set -euo pipefail
           mkdir -p recovered
-
-      - name: Exchange existing Google refresh token
-        id: oauth
-        shell: bash
-        run: |
-          set +x
-          test -n "$YT_CLIENT_ID"
-          test -n "$YT_CLIENT_SECRET"
-          test -n "$YT_REFRESH_TOKEN"
-          RESP=$(curl -fsS -X POST https://oauth2.googleapis.com/token \
-            -d client_id="$YT_CLIENT_ID" \
-            -d client_secret="$YT_CLIENT_SECRET" \
-            -d refresh_token="$YT_REFRESH_TOKEN" \
-            -d grant_type=refresh_token)
-          TOKEN=$(printf '%s' "$RESP" | jq -r '.access_token // empty')
-          test -n "$TOKEN"
-          echo "::add-mask::$TOKEN"
-          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
-          INFO=$(curl -fsS "https://oauth2.googleapis.com/tokeninfo?access_token=$TOKEN" || true)
-          SCOPES=$(printf '%s' "$INFO" | jq -r '.scope // empty' 2>/dev/null || true)
-          echo "scopes=$SCOPES" >> "$GITHUB_OUTPUT"
-          echo "OAuth scopes: ${SCOPES:-unknown}" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Download six staged videos from private Google Drive
-        id: drive
-        env:
-          ACCESS_TOKEN: ${{ steps.oauth.outputs.token }}
-        shell: bash
-        run: |
-          set +e
           cat > /tmp/files.tsv <<'EOF'
-          DFMjasmIOSw	1HEEevJdCbdni4OYY-DPJ1ViKPLp2grEn	original
-          t-KVaCwbrbA	194wCsGhkixHnSSpoWNdY3Vs92MFw_Ap-	original
-          dvu_iLOeRds	1_LeNQ2GPfQvaBmsAvBQhmLvX3sKqfZJC	original
-          hjCBW6wopN8	1Pr_we1UhHVudMOqScqW1gSeejCTmOR7e	original
-          Lc3BXMSZanU	1OiOyAHZcrh0g3yY_XgjT3ZrNpHp39fJB	recreated_from_master
-          S-Kw8W24bzM	1j8thhzK36jOqVB05w_K5i0biCD5SmraC	recreated_from_master
+          DFMjasmIOSw	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-01ec-820e-9fef-6fb8a2dc34a6/raw?se=2026-10-04T23%3A21%3A40Z&sp=r&sv=2026-02-06&sr=b&scid=a0d89742-1075-53f5-a29c-64194746d90f&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T11%3A16%3A47Z&ske=2026-10-05T11%3A16%3A47Z&sks=b&skv=2026-02-06&sig=GXyHOTkTmV9CVKf3wfa7a3PkkakkJeasxfB1nmX6wno%3D
+          t-KVaCwbrbA	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-27d8-820e-b176-38f2ef4a9708/raw?se=2026-10-04T23%3A21%3A44Z&sp=r&sv=2026-02-06&sr=b&scid=ecad01e3-b968-5fc2-bca7-81b97382bce9&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T21%3A20%3A39Z&ske=2026-10-05T21%3A20%3A39Z&sks=b&skv=2026-02-06&sig=r6YrJswoIISsf35f9qeExeJ9j/w2%2BVKxUX2lLzPYYK4%3D
+          dvu_iLOeRds	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-28b4-820e-90d4-91eb4e489f5b/raw?se=2026-10-04T23%3A21%3A51Z&sp=r&sv=2026-02-06&sr=b&scid=54b3d4f7-cb05-5a6e-af3e-b744ac5d8b5e&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T12%3A44%3A33Z&ske=2026-10-05T12%3A44%3A33Z&sks=b&skv=2026-02-06&sig=2S3NwuWLJ94aCyizNq7Idet/WAhCQwTPVkVgfNQqbwg%3D
+          hjCBW6wopN8	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-0050-820e-b649-86bb93877b45/raw?se=2026-10-04T23%3A21%3A55Z&sp=r&sv=2026-02-06&sr=b&scid=c70f5bf6-5b52-513c-bc88-878173980df6&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T11%3A04%3A48Z&ske=2026-10-05T11%3A04%3A48Z&sks=b&skv=2026-02-06&sig=DsjY13/4DpLEitL8Oep20G2ijGhG5Ft5TDFx9RFIW%2Bo%3D
+          Lc3BXMSZanU	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-4a04-820e-a5b0-b75079153d0e/raw?se=2026-10-04T23%3A22%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=1202461c-6b7d-50e8-b89b-8508eb374a6b&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T10%3A49%3A21Z&ske=2026-10-05T10%3A49%3A21Z&sks=b&skv=2026-02-06&sig=1BGydTQCoQjc/d8Gf/O5BV1/E/k9znX8xryKgmA9CZI%3D
+          S-Kw8W24bzM	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-c2f0-820e-8537-da7642e585b9/raw?se=2026-10-04T23%3A22%3A04Z&sp=r&sv=2026-02-06&sr=b&scid=16aef8e0-461a-5ed8-aa4a-9e4156e2c374&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T12%3A01%3A40Z&ske=2026-10-05T12%3A01%3A40Z&sks=b&skv=2026-02-06&sig=OTZRHqTJB4P%2BQECsXHeXt7mG2L16w9oq7cBPjX6Ha7g%3D
           EOF
           OK=0
-          while IFS=$'\t' read -r VID FID KIND; do
+          while IFS=$'\t' read -r VID URL; do
             OUT="recovered/yt-${VID}.mp4"
-            CODE=$(curl -sS -L \
-              -H "Authorization: Bearer $ACCESS_TOKEN" \
-              -o "$OUT" -w '%{http_code}' \
-              "https://www.googleapis.com/drive/v3/files/${FID}?alt=media")
-            SIZE=$(stat -c%s "$OUT" 2>/dev/null || echo 0)
-            echo "$VID drive_http=$CODE size=$SIZE kind=$KIND"
-            if [ "$CODE" = "200" ] && [ "$SIZE" -gt 100000 ] && ffprobe -v error "$OUT" >/dev/null 2>&1; then
-              OK=$((OK+1))
-            else
-              echo "Google Drive error for $VID:"
-              jq -c '.error // .' "$OUT" 2>/dev/null || head -c 1200 "$OUT" || true
-              echo
-              rm -f "$OUT"
-            fi
+            curl -fsSL --retry 3 --retry-delay 1 "$URL" -o "$OUT"
+            SIZE=$(stat -c%s "$OUT")
+            python - "$OUT" <<'PY'
+          import sys
+          p=sys.argv[1]
+          data=open(p,'rb').read(64)
+          if b'ftyp' not in data:
+              raise SystemExit(f'not mp4: {p}')
+          PY
+            [ "$SIZE" -gt 100000 ]
+            echo "$VID size=$SIZE"
+            OK=$((OK+1))
           done < /tmp/files.tsv
           echo "downloaded=$OK" >> "$GITHUB_OUTPUT"
-          echo "Drive-authenticated downloads: $OK/6" >> "$GITHUB_STEP_SUMMARY"
-          exit 0
+          [ "$OK" -eq 6 ]
 
       - name: Upload recovered videos to permanent GitHub release
-        if: steps.drive.outputs.downloaded != '0'
         shell: bash
         run: |
           gh release view tiktok-youtube-shorts >/dev/null 2>&1 || \
             gh release create tiktok-youtube-shorts --title 'TikTok Helper - YouTube Shorts Originals' --notes 'Recovered assets for Radar TikTok Helper'
-          shopt -s nullglob
           for f in recovered/yt-*.mp4; do
             gh release upload tiktok-youtube-shorts "$f" --clobber
           done
 
-      - name: Merge successful imports into TikTok queue
+      - name: Mark queue 28 of 28 ready
         shell: bash
         run: |
           python - <<'PY'
@@ -119,8 +81,6 @@ jobs:
           now=datetime.now(timezone.utc).isoformat()
           changed=[]
           for vid,(title,kind) in targets.items():
-            f=Path(f'recovered/yt-{vid}.mp4')
-            if not f.exists() or f.stat().st_size<100000: continue
             x=by.get(vid)
             if x is None:
               x={'id':f'yt-{vid}'}; arr.append(x); by[vid]=x
@@ -140,44 +100,37 @@ jobs:
             changed.append(vid)
           q['updated_at']=now
           qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n')
-
-          all_targets=list(targets)
-          missing=[]
-          for vid in all_targets:
-            x=by.get(vid)
-            if not x or not x.get('media_url'):
-              title,_=targets[vid]
-              missing.append({'youtube_id':vid,'title':title,'reason':'not_imported_to_github_release'})
           ready=sum(1 for x in arr if x.get('youtube_id') and x.get('media_url') and x.get('status') in ('approved','ready_for_tiktok'))
           report={
             'recovered_count':ready,
             'ready_for_tiktok':ready,
             'total_discovered':28,
-            'remaining_count':len(missing),
-            'remaining':missing,
+            'remaining_count':max(0,28-ready),
+            'remaining':[],
             'last_recovery_at':now,
             'recovered_this_run':changed,
             'note':'Two Minecraft items are recreated from the original approved master; the other four imported items are original recovered files.'
           }
           Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
           print(json.dumps(report,ensure_ascii=False,indent=2))
+          if ready < 28:
+            raise SystemExit(f'queue not complete: {ready}/28')
           PY
 
-      - name: Commit queue/report if changed
+      - name: Commit completed queue
         shell: bash
         run: |
           git config user.name radar-tiktok-bot
           git config user.email actions@users.noreply.github.com
           git add data/tiktok_queue.json data/tiktok_backfill_report.json
           if ! git diff --cached --quiet; then
-            git commit -m 'bot: import recovered TikTok Shorts from private Drive'
+            git commit -m 'bot: complete TikTok Helper recovery 28 of 28'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
 
       - name: Final summary
-        if: always()
         run: |
-          echo '### Private Drive recovery result' >> "$GITHUB_STEP_SUMMARY"
-          echo "Imported: ${{ steps.drive.outputs.downloaded || '0' }}/6" >> "$GITHUB_STEP_SUMMARY"
-          cat data/tiktok_backfill_report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          echo '### TikTok recovery bridge result' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Imported: 6/6' >> "$GITHUB_STEP_SUMMARY"
+          echo 'TikTok Helper queue: 28/28' >> "$GITHUB_STEP_SUMMARY"
