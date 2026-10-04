@@ -1,136 +1,86 @@
-name: Radar TikTok - Import Recovery Bridge
+name: Radar TikTok - Verify Recovery
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - '.github/workflows/import-tiktok-recovery-from-drive.yml'
+      - 'data/tiktok_queue.json'
+      - 'data/tiktok_backfill_report.json'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  import:
+  verify:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download six recovered videos through temporary authenticated bridge
-        id: bridge
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p recovered
-          cat > /tmp/files.tsv <<'EOF'
-          DFMjasmIOSw	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-01ec-820e-9fef-6fb8a2dc34a6/raw?se=2026-10-04T23%3A21%3A40Z&sp=r&sv=2026-02-06&sr=b&scid=a0d89742-1075-53f5-a29c-64194746d90f&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T11%3A16%3A47Z&ske=2026-10-05T11%3A16%3A47Z&sks=b&skv=2026-02-06&sig=GXyHOTkTmV9CVKf3wfa7a3PkkakkJeasxfB1nmX6wno%3D
-          t-KVaCwbrbA	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-27d8-820e-b176-38f2ef4a9708/raw?se=2026-10-04T23%3A21%3A44Z&sp=r&sv=2026-02-06&sr=b&scid=ecad01e3-b968-5fc2-bca7-81b97382bce9&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T21%3A20%3A39Z&ske=2026-10-05T21%3A20%3A39Z&sks=b&skv=2026-02-06&sig=r6YrJswoIISsf35f9qeExeJ9j/w2%2BVKxUX2lLzPYYK4%3D
-          dvu_iLOeRds	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-28b4-820e-90d4-91eb4e489f5b/raw?se=2026-10-04T23%3A21%3A51Z&sp=r&sv=2026-02-06&sr=b&scid=54b3d4f7-cb05-5a6e-af3e-b744ac5d8b5e&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T12%3A44%3A33Z&ske=2026-10-05T12%3A44%3A33Z&sks=b&skv=2026-02-06&sig=2S3NwuWLJ94aCyizNq7Idet/WAhCQwTPVkVgfNQqbwg%3D
-          hjCBW6wopN8	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-0050-820e-b649-86bb93877b45/raw?se=2026-10-04T23%3A21%3A55Z&sp=r&sv=2026-02-06&sr=b&scid=c70f5bf6-5b52-513c-bc88-878173980df6&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T11%3A04%3A48Z&ske=2026-10-05T11%3A04%3A48Z&sks=b&skv=2026-02-06&sig=DsjY13/4DpLEitL8Oep20G2ijGhG5Ft5TDFx9RFIW%2Bo%3D
-          Lc3BXMSZanU	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-4a04-820e-a5b0-b75079153d0e/raw?se=2026-10-04T23%3A22%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=1202461c-6b7d-50e8-b89b-8508eb374a6b&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T10%3A49%3A21Z&ske=2026-10-05T10%3A49%3A21Z&sks=b&skv=2026-02-06&sig=1BGydTQCoQjc/d8Gf/O5BV1/E/k9znX8xryKgmA9CZI%3D
-          S-Kw8W24bzM	https://sdmntprbrazilsouth.oaiusercontent.com/files/00000000-c2f0-820e-8537-da7642e585b9/raw?se=2026-10-04T23%3A22%3A04Z&sp=r&sv=2026-02-06&sr=b&scid=16aef8e0-461a-5ed8-aa4a-9e4156e2c374&skoid=33096a49-a96b-4506-9fc4-04a7517f8175&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T12%3A01%3A40Z&ske=2026-10-05T12%3A01%3A40Z&sks=b&skv=2026-02-06&sig=OTZRHqTJB4P%2BQECsXHeXt7mG2L16w9oq7cBPjX6Ha7g%3D
-          EOF
-          OK=0
-          while IFS=$'\t' read -r VID URL; do
-            OUT="recovered/yt-${VID}.mp4"
-            curl -fsSL --retry 3 --retry-delay 1 "$URL" -o "$OUT"
-            SIZE=$(stat -c%s "$OUT")
-            python - "$OUT" <<'PY'
-          import sys
-          p=sys.argv[1]
-          data=open(p,'rb').read(64)
-          if b'ftyp' not in data:
-              raise SystemExit(f'not mp4: {p}')
-          PY
-            [ "$SIZE" -gt 100000 ]
-            echo "$VID size=$SIZE"
-            OK=$((OK+1))
-          done < /tmp/files.tsv
-          echo "downloaded=$OK" >> "$GITHUB_OUTPUT"
-          [ "$OK" -eq 6 ]
-
-      - name: Upload recovered videos to permanent GitHub release
-        shell: bash
-        run: |
-          gh release view tiktok-youtube-shorts >/dev/null 2>&1 || \
-            gh release create tiktok-youtube-shorts --title 'TikTok Helper - YouTube Shorts Originals' --notes 'Recovered assets for Radar TikTok Helper'
-          for f in recovered/yt-*.mp4; do
-            gh release upload tiktok-youtube-shorts "$f" --clobber
-          done
-
-      - name: Mark queue 28 of 28 ready
+      - name: Verify recovery report and TikTok queue
         shell: bash
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          from datetime import datetime, timezone
 
-          targets={
-            'DFMjasmIOSw':('GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀','original'),
-            't-KVaCwbrbA':('Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6','original'),
-            'dvu_iLOeRds':('Vice City é só o COMEÇO em GTA 6! Conheça Leonida','original'),
-            'hjCBW6wopN8':('THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK','original'),
-            'Lc3BXMSZanU':('MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT','recreated_from_master'),
-            'S-Kw8W24bzM':('O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT','recreated_from_master'),
-          }
-          qpath=Path('data/tiktok_queue.json')
-          q=json.loads(qpath.read_text())
-          arr=q.setdefault('items',[])
-          by={x.get('youtube_id'):x for x in arr if x.get('youtube_id')}
-          now=datetime.now(timezone.utc).isoformat()
-          changed=[]
-          for vid,(title,kind) in targets.items():
-            x=by.get(vid)
-            if x is None:
-              x={'id':f'yt-{vid}'}; arr.append(x); by[vid]=x
-            tags=(['#Minecraft','#TheSift'] if ('MINECRAFT' in title.upper() or 'SIFT' in title.upper()) else ['#GTA6','#RockstarGames'])
-            tags += ['#RadarDosGames','#Games','#Gaming','#TikTokGames']
-            x.update({
-              'title':title,
-              'media_url':f'https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-youtube-shorts/yt-{vid}.mp4',
-              'thumbnail_url':f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg',
-              'post_text':title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(tags),
-              'status':'approved',
-              'youtube_id':vid,
-              'youtube_url':f'https://www.youtube.com/shorts/{vid}',
-              'source':'drive_recovered_original' if kind=='original' else 'recreated_from_original_master',
-              'recovered_at':now,
-            })
-            changed.append(vid)
-          q['updated_at']=now
-          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n')
-          ready=sum(1 for x in arr if x.get('youtube_id') and x.get('media_url') and x.get('status') in ('approved','ready_for_tiktok'))
-          report={
-            'recovered_count':ready,
-            'ready_for_tiktok':ready,
-            'total_discovered':28,
-            'remaining_count':max(0,28-ready),
-            'remaining':[],
-            'last_recovery_at':now,
-            'recovered_this_run':changed,
-            'note':'Two Minecraft items are recreated from the original approved master; the other four imported items are original recovered files.'
-          }
-          Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
-          print(json.dumps(report,ensure_ascii=False,indent=2))
-          if ready < 28:
-            raise SystemExit(f'queue not complete: {ready}/28')
+          ids = [
+              'DFMjasmIOSw',
+              't-KVaCwbrbA',
+              'dvu_iLOeRds',
+              'hjCBW6wopN8',
+              'Lc3BXMSZanU',
+              'S-Kw8W24bzM',
+          ]
+
+          report = json.loads(Path('data/tiktok_backfill_report.json').read_text())
+          assert report.get('total_discovered') == 28, report
+          assert report.get('recovered_count') == 28, report
+          assert report.get('ready_for_tiktok') == 28, report
+          assert report.get('remaining_count') == 0, report
+          assert report.get('remaining') == [], report
+
+          queue = json.loads(Path('data/tiktok_queue.json').read_text())
+          items = queue.get('items', [])
+          by_id = {item.get('youtube_id'): item for item in items if item.get('youtube_id')}
+
+          ready = [
+              item for item in items
+              if item.get('youtube_id')
+              and item.get('media_url')
+              and item.get('status') in ('approved', 'ready_for_tiktok')
+          ]
+          assert len(ready) >= 28, f'only {len(ready)} ready items'
+
+          for video_id in ids:
+              item = by_id.get(video_id)
+              assert item, f'missing queue item {video_id}'
+              assert item.get('status') in ('approved', 'ready_for_tiktok'), item
+              expected = f'https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-youtube-shorts/yt-{video_id}.mp4'
+              assert item.get('media_url') == expected, item
+              text = item.get('post_text', '')
+              assert text.strip(), f'missing post_text {video_id}'
+              assert '#RadarDosGames' in text and '#TikTokGames' in text, f'missing hashtags {video_id}'
+
+          print('TikTok Helper queue verified: 28/28 ready; six recovered items have MP4 URLs, captions and hashtags.')
           PY
 
-      - name: Commit completed queue
+      - name: Verify six permanent GitHub Release assets
         shell: bash
         run: |
-          git config user.name radar-tiktok-bot
-          git config user.email actions@users.noreply.github.com
-          git add data/tiktok_queue.json data/tiktok_backfill_report.json
-          if ! git diff --cached --quiet; then
-            git commit -m 'bot: complete TikTok Helper recovery 28 of 28'
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
+          set -euo pipefail
+          gh release view tiktok-youtube-shorts --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' > /tmp/assets.txt
+          for id in DFMjasmIOSw t-KVaCwbrbA dvu_iLOeRds hjCBW6wopN8 Lc3BXMSZanU S-Kw8W24bzM; do
+            grep -Fx "yt-${id}.mp4" /tmp/assets.txt >/dev/null
+          done
+          echo 'All six recovered MP4 assets exist in the permanent GitHub Release.'
 
-      - name: Final summary
+      - name: Summary
         run: |
-          echo '### TikTok recovery bridge result' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Imported: 6/6' >> "$GITHUB_STEP_SUMMARY"
-          echo 'TikTok Helper queue: 28/28' >> "$GITHUB_STEP_SUMMARY"
+          echo '### Radar TikTok Helper recovery verification' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Queue: **28/28 ready**' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Remaining: **0**' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Recovered MP4 assets checked: **6/6**' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Captions/hashtags checked for recovered items: **6/6**' >> "$GITHUB_STEP_SUMMARY"
