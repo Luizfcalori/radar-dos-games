@@ -1,41 +1,17 @@
 {
-  "recovered_count": 22,
-  "ready_for_tiktok": 22,
+  "recovered_count": 28,
+  "ready_for_tiktok": 28,
   "total_discovered": 28,
-  "remaining_count": 6,
-  "remaining": [
-    {
-      "youtube_id": "DFMjasmIOSw",
-      "title": "GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀",
-      "reason": "not_imported_to_github_release"
-    },
-    {
-      "youtube_id": "t-KVaCwbrbA",
-      "title": "Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6",
-      "reason": "not_imported_to_github_release"
-    },
-    {
-      "youtube_id": "dvu_iLOeRds",
-      "title": "Vice City é só o COMEÇO em GTA 6! Conheça Leonida",
-      "reason": "not_imported_to_github_release"
-    },
-    {
-      "youtube_id": "hjCBW6wopN8",
-      "title": "THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK",
-      "reason": "not_imported_to_github_release"
-    },
-    {
-      "youtube_id": "Lc3BXMSZanU",
-      "title": "MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT",
-      "reason": "not_imported_to_github_release"
-    },
-    {
-      "youtube_id": "S-Kw8W24bzM",
-      "title": "O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT",
-      "reason": "not_imported_to_github_release"
-    }
+  "remaining_count": 0,
+  "remaining": [],
+  "last_recovery_at": "2026-10-04T23:18:14.291380+00:00",
+  "recovered_this_run": [
+    "DFMjasmIOSw",
+    "t-KVaCwbrbA",
+    "dvu_iLOeRds",
+    "hjCBW6wopN8",
+    "Lc3BXMSZanU",
+    "S-Kw8W24bzM"
   ],
-  "last_recovery_at": "2026-10-04T23:14:44.306390+00:00",
-  "recovered_this_run": [],
   "note": "Two Minecraft items are recreated from the original approved master; the other four imported items are original recovered files."
 }
