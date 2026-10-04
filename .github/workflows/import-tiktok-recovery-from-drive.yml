@@ -1,0 +1,176 @@
+name: Radar TikTok - Import Recovery from Private Drive
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-tiktok-recovery-from-drive.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+      YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+      YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg jq
+          mkdir -p recovered
+
+      - name: Exchange existing Google refresh token
+        id: oauth
+        shell: bash
+        run: |
+          set +x
+          test -n "$YT_CLIENT_ID"
+          test -n "$YT_CLIENT_SECRET"
+          test -n "$YT_REFRESH_TOKEN"
+          RESP=$(curl -fsS -X POST https://oauth2.googleapis.com/token \
+            -d client_id="$YT_CLIENT_ID" \
+            -d client_secret="$YT_CLIENT_SECRET" \
+            -d refresh_token="$YT_REFRESH_TOKEN" \
+            -d grant_type=refresh_token)
+          TOKEN=$(printf '%s' "$RESP" | jq -r '.access_token // empty')
+          test -n "$TOKEN"
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Download six staged videos from private Google Drive
+        id: drive
+        env:
+          ACCESS_TOKEN: ${{ steps.oauth.outputs.token }}
+        shell: bash
+        run: |
+          set +e
+          cat > /tmp/files.tsv <<'EOF'
+          DFMjasmIOSw	1HEEevJdCbdni4OYY-DPJ1ViKPLp2grEn	original
+          t-KVaCwbrbA	194wCsGhkixHnSSpoWNdY3Vs92MFw_Ap-	original
+          dvu_iLOeRds	1_LeNQ2GPfQvaBmsAvBQhmLvX3sKqfZJC	original
+          hjCBW6wopN8	1Pr_we1UhHVudMOqScqW1gSeejCTmOR7e	original
+          Lc3BXMSZanU	1OiOyAHZcrh0g3yY_XgjT3ZrNpHp39fJB	recreated_from_master
+          S-Kw8W24bzM	1j8thhzK36jOqVB05w_K5i0biCD5SmraC	recreated_from_master
+          EOF
+          OK=0
+          while IFS=$'\t' read -r VID FID KIND; do
+            OUT="recovered/yt-${VID}.mp4"
+            CODE=$(curl -sS -L \
+              -H "Authorization: Bearer $ACCESS_TOKEN" \
+              -o "$OUT" -w '%{http_code}' \
+              "https://www.googleapis.com/drive/v3/files/${FID}?alt=media")
+            SIZE=$(stat -c%s "$OUT" 2>/dev/null || echo 0)
+            echo "$VID drive_http=$CODE size=$SIZE kind=$KIND"
+            if [ "$CODE" = "200" ] && [ "$SIZE" -gt 100000 ] && ffprobe -v error "$OUT" >/dev/null 2>&1; then
+              OK=$((OK+1))
+            else
+              rm -f "$OUT"
+            fi
+          done < /tmp/files.tsv
+          echo "downloaded=$OK" >> "$GITHUB_OUTPUT"
+          echo "Drive-authenticated downloads: $OK/6" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+
+      - name: Upload recovered videos to permanent GitHub release
+        if: steps.drive.outputs.downloaded != '0'
+        shell: bash
+        run: |
+          gh release view tiktok-youtube-shorts >/dev/null 2>&1 || \
+            gh release create tiktok-youtube-shorts --title 'TikTok Helper - YouTube Shorts Originals' --notes 'Recovered assets for Radar TikTok Helper'
+          shopt -s nullglob
+          for f in recovered/yt-*.mp4; do
+            gh release upload tiktok-youtube-shorts "$f" --clobber
+          done
+
+      - name: Merge successful imports into TikTok queue
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          targets={
+            'DFMjasmIOSw':('GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀','original'),
+            't-KVaCwbrbA':('Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6','original'),
+            'dvu_iLOeRds':('Vice City é só o COMEÇO em GTA 6! Conheça Leonida','original'),
+            'hjCBW6wopN8':('THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK','original'),
+            'Lc3BXMSZanU':('MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT','recreated_from_master'),
+            'S-Kw8W24bzM':('O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT','recreated_from_master'),
+          }
+          qpath=Path('data/tiktok_queue.json')
+          q=json.loads(qpath.read_text())
+          arr=q.setdefault('items',[])
+          by={x.get('youtube_id'):x for x in arr if x.get('youtube_id')}
+          now=datetime.now(timezone.utc).isoformat()
+          changed=[]
+          for vid,(title,kind) in targets.items():
+            f=Path(f'recovered/yt-{vid}.mp4')
+            if not f.exists() or f.stat().st_size<100000: continue
+            x=by.get(vid)
+            if x is None:
+              x={'id':f'yt-{vid}'}; arr.append(x); by[vid]=x
+            tags=(['#Minecraft','#TheSift'] if ('MINECRAFT' in title.upper() or 'SIFT' in title.upper()) else ['#GTA6','#RockstarGames'])
+            tags += ['#RadarDosGames','#Games','#Gaming','#TikTokGames']
+            x.update({
+              'title':title,
+              'media_url':f'https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-youtube-shorts/yt-{vid}.mp4',
+              'thumbnail_url':f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg',
+              'post_text':title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(tags),
+              'status':'approved',
+              'youtube_id':vid,
+              'youtube_url':f'https://www.youtube.com/shorts/{vid}',
+              'source':'drive_recovered_original' if kind=='original' else 'recreated_from_original_master',
+              'recovered_at':now,
+            })
+            changed.append(vid)
+          q['updated_at']=now
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n')
+
+          all_targets=list(targets)
+          missing=[]
+          for vid in all_targets:
+            x=by.get(vid)
+            if not x or not x.get('media_url'):
+              title,_=targets[vid]
+              missing.append({'youtube_id':vid,'title':title,'reason':'not_imported_to_github_release'})
+          ready=sum(1 for x in arr if x.get('youtube_id') and x.get('media_url') and x.get('status') in ('approved','ready_for_tiktok'))
+          report={
+            'recovered_count':ready,
+            'ready_for_tiktok':ready,
+            'total_discovered':28,
+            'remaining_count':len(missing),
+            'remaining':missing,
+            'last_recovery_at':now,
+            'recovered_this_run':changed,
+            'note':'Two Minecraft items are recreated from the original approved master; the other four imported items are original recovered files.'
+          }
+          Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Commit queue/report if changed
+        shell: bash
+        run: |
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json data/tiktok_backfill_report.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'bot: import recovered TikTok Shorts from private Drive'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Final summary
+        if: always()
+        run: |
+          echo '### Private Drive recovery result' >> "$GITHUB_STEP_SUMMARY"
+          echo "Imported: ${{ steps.drive.outputs.downloaded || '0' }}/6" >> "$GITHUB_STEP_SUMMARY"
+          cat data/tiktok_backfill_report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
