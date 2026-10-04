@@ -1,5 +1,39 @@
 {
   "version": 1,
-  "updated_at": "2026-10-04T20:45:00Z",
-  "items": []
+  "updated_at": "2026-10-04T21:04:13Z",
+  "items": [
+    {
+      "id": "star-wars-galactic-racer-approved-short-1",
+      "title": "Star Wars: Galactic Racer | A galáxia vai correr",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-short-1.jpg",
+      "post_text": "Star Wars: Galactic Racer | A galáxia vai correr\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #StarWarsGalacticRacer #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "approved",
+      "source_run_id": 37137795933,
+      "short_number": 1,
+      "approved_at": "2026-10-04T21:04:13Z"
+    },
+    {
+      "id": "star-wars-galactic-racer-approved-short-2",
+      "title": "Galactic Racer | Competição e evolução em alta velocidade",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-short-2.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-short-2.jpg",
+      "post_text": "Galactic Racer | Competição e evolução em alta velocidade\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #StarWarsGalacticRacer #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "approved",
+      "source_run_id": 37137795933,
+      "short_number": 2,
+      "approved_at": "2026-10-04T21:04:13Z"
+    },
+    {
+      "id": "star-wars-galactic-racer-approved-short-3",
+      "title": "Star Wars voltou às grandes corridas? | Galactic Racer",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-short-3.jpg",
+      "post_text": "Star Wars voltou às grandes corridas? | Galactic Racer\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #StarWarsGalacticRacer #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "approved",
+      "source_run_id": 37137795933,
+      "short_number": 3,
+      "approved_at": "2026-10-04T21:04:13Z"
+    }
+  ]
 }
