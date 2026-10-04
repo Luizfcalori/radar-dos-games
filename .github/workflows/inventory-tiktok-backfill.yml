@@ -1,0 +1,81 @@
+name: Radar TikTok - Inventory Historical Shorts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inventory-tiktok-backfill.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Inventory non-expired Actions artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+
+          repo=os.environ['REPO']
+          rows=[]
+          page=1
+          while True:
+              raw=subprocess.check_output([
+                  'gh','api',f'repos/{repo}/actions/artifacts?per_page=100&page={page}'
+              ],text=True)
+              data=json.loads(raw)
+              arts=data.get('artifacts') or []
+              if not arts:
+                  break
+              for a in arts:
+                  if a.get('expired'):
+                      continue
+                  run=a.get('workflow_run') or {}
+                  rows.append({
+                      'id':a.get('id'),
+                      'name':a.get('name'),
+                      'size_in_bytes':a.get('size_in_bytes'),
+                      'created_at':a.get('created_at'),
+                      'expires_at':a.get('expires_at'),
+                      'run_id':run.get('id'),
+                      'run_number':run.get('run_number'),
+                      'head_sha':run.get('head_sha'),
+                  })
+              if len(arts)<100:
+                  break
+              page+=1
+          rows.sort(key=lambda x:x.get('created_at') or '',reverse=True)
+          Path('data/backfill_artifact_inventory.json').write_text(
+              json.dumps({'count':len(rows),'artifacts':rows},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('NON_EXPIRED_ARTIFACTS',len(rows))
+          for x in rows:
+              print(x['id'],x['run_id'],x['size_in_bytes'],x['name'])
+          PY
+
+      - name: Commit inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'radar-tiktok-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data/backfill_artifact_inventory.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'bot: inventory historical video artifacts'
+          git pull --rebase origin main
+          git push origin main
