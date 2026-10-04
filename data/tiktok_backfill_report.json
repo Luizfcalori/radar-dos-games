@@ -1,0 +1,63 @@
+{
+  "recovered_count": 18,
+  "ready_for_tiktok": 21,
+  "total_discovered": 28,
+  "remaining_count": 7,
+  "recovered_youtube_ids": [
+    "2NyCeNUZj4g",
+    "9QmthjXQgq4",
+    "9XJfF2fMTZ8",
+    "Ec5DOnNEmsQ",
+    "FrS_CuyvCxo",
+    "G7uUZh_dcmE",
+    "Mn6IZn2nPYM",
+    "PTKLCEgdxTo",
+    "_FRcK8AnIoI",
+    "akvK2Vmy8qE",
+    "deg5A2eYoRA",
+    "iRGjt-366xQ",
+    "krjnB6c0KvE",
+    "qF_J0S_Ro24",
+    "rDT12IWkDE8",
+    "rwld0AShJ8c",
+    "t7rOGU817fs",
+    "xZvU-U2lBOg"
+  ],
+  "remaining": [
+    {
+      "youtube_id": "BhTKkDjhTnc",
+      "title": "Gears of War: E-Day já começou",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "hjCBW6wopN8",
+      "title": "THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "S-Kw8W24bzM",
+      "title": "O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "Lc3BXMSZanU",
+      "title": "MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "dvu_iLOeRds",
+      "title": "Vice City é só o COMEÇO em GTA 6! Conheça Leonida",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "t-KVaCwbrbA",
+      "title": "Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "DFMjasmIOSw",
+      "title": "GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀",
+      "reason": "original_media_not_recovered_yet"
+    }
+  ]
+}
