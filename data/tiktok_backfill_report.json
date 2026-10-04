@@ -1,34 +1,9 @@
 {
-  "recovered_count": 18,
-  "ready_for_tiktok": 21,
+  "recovered_count": 22,
+  "ready_for_tiktok": 22,
   "total_discovered": 28,
-  "remaining_count": 7,
-  "recovered_youtube_ids": [
-    "2NyCeNUZj4g",
-    "9QmthjXQgq4",
-    "9XJfF2fMTZ8",
-    "Ec5DOnNEmsQ",
-    "FrS_CuyvCxo",
-    "G7uUZh_dcmE",
-    "Mn6IZn2nPYM",
-    "PTKLCEgdxTo",
-    "_FRcK8AnIoI",
-    "akvK2Vmy8qE",
-    "deg5A2eYoRA",
-    "iRGjt-366xQ",
-    "krjnB6c0KvE",
-    "qF_J0S_Ro24",
-    "rDT12IWkDE8",
-    "rwld0AShJ8c",
-    "t7rOGU817fs",
-    "xZvU-U2lBOg"
-  ],
+  "remaining_count": 6,
   "remaining": [
-    {
-      "youtube_id": "BhTKkDjhTnc",
-      "title": "Gears of War: E-Day já começou",
-      "reason": "original_media_not_recovered_yet"
-    },
     {
       "youtube_id": "hjCBW6wopN8",
       "title": "THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK",

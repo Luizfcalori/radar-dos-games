@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-04T22:09:09.191187+00:00",
+  "updated_at": "2026-10-04T22:10:30.580704+00:00",
   "items": [
     {
       "id": "yt-G7uUZh_dcmE",
@@ -264,15 +264,16 @@
     {
       "id": "yt-BhTKkDjhTnc",
       "title": "Gears of War: E-Day já começou",
-      "media_url": "",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-youtube-shorts/yt-BhTKkDjhTnc.mp4",
       "thumbnail_url": "https://i.ytimg.com/vi/BhTKkDjhTnc/hqdefault.jpg",
       "post_text": "Gears of War: E-Day já começou\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#Gears #começou #RadarDosGames #Games #Gaming #TikTokGames",
-      "status": "waiting_media",
+      "status": "approved",
       "youtube_id": "BhTKkDjhTnc",
       "youtube_url": "https://www.youtube.com/shorts/BhTKkDjhTnc",
       "youtube_published_at": null,
-      "source": "youtube_channel",
-      "synced_at": "2026-10-04T21:49:04.366835+00:00"
+      "source": "youtube_channel_recovered_original",
+      "synced_at": "2026-10-04T21:49:04.366835+00:00",
+      "recovered_at": "2026-10-04T22:10:30.580704+00:00"
     },
     {
       "id": "yt-hjCBW6wopN8",
