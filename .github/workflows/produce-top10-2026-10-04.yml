@@ -1,0 +1,309 @@
+name: Radar dos Games - Top 10 Games de Hoje
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/produce-top10-2026-10-04.yml"
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ferramentas gratuitas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+
+      - name: Validar intro oficial permanente
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: Montar Top 10 editorial e plano de mídia
+        run: |
+          mkdir -p output
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          items = [
+            {
+              "rank": 10,
+              "role": "tf2_scream_fortress",
+              "title": "TEAM FORTRESS 2: HALLOWEEN COMEÇOU",
+              "subtitle": "SCREAM FORTRESS XVIII JÁ ESTÁ NO AR",
+              "source": "https://store.steampowered.com/oldnews/?appids=440&feed=steam_community_announcements&headlines=0",
+              "text": "Na décima posição, Team Fortress 2 voltou a chamar atenção com o Scream Fortress XVIII. O evento de Halloween já está disponível e traz cinco mapas criados pela comunidade, uma nova caixa com vinte e três itens cosméticos, cinco novos taunts e vinte e um efeitos Unusual. É aquele tipo de atualização sazonal que sempre ressuscita o movimento do jogo e, em 2026, mostra de novo como TF2 continua vivo mesmo depois de tantos anos. Para quem gosta de eventos de Halloween, é uma das atualizações mais divertidas desta semana."
+            },
+            {
+              "rank": 9,
+              "role": "ps_plus_october",
+              "title": "PS PLUS DE OUTUBRO",
+              "subtitle": "F1 25, HUNT E EARTH DEFENSE FORCE",
+              "source": "https://blog.playstation.com/2026/09/30/playstation-plus-monthly-games-for-october-f1-25-hunt-showdown-1896-earth-defense-force-world-brothers-2/",
+              "text": "Na nona posição, a Sony confirmou os jogos mensais do PlayStation Plus para outubro. A seleção inclui F1 25, Hunt: Showdown 1896 e Earth Defense Force: World Brothers 2. É uma lista bem variada: corrida para quem quer velocidade, extração e combate tenso em Hunt, e ação cooperativa mais leve no universo de Earth Defense Force. Como esses jogos entram na rotação mensal, vale para quem já assina o serviço e estava procurando algo novo sem comprar outro título agora no começo do mês."
+            },
+            {
+              "rank": 8,
+              "role": "kingdom_hearts_switch2",
+              "title": "KINGDOM HEARTS NO SWITCH 2",
+              "subtitle": "A COLEÇÃO I A III CHEGA EM 8 DE OUTUBRO",
+              "source": "https://press.na.square-enix.com/SQUARE-ENIX-UNVEILS-NEW-KINGDOM-HEARTS-ANNOUNCEMENTS-DURING-NINTENDO-D",
+              "text": "Na oitava posição, Kingdom Hearts Collection de I a III está chegando ao Nintendo Switch 2 no dia oito de outubro. A coleção reúne HD 1.5 mais 2.5 ReMIX, HD 2.8 Final Chapter Prologue e Kingdom Hearts III com Re Mind. Para o Switch 2, o ponto mais importante é ter a saga principal reunida em uma versão nativa da nova plataforma, em vez de depender apenas da experiência em nuvem das versões anteriores. Para quem quer começar Kingdom Hearts ou revisitar a série antes do quarto jogo, esse lançamento chega em uma ótima hora."
+            },
+            {
+              "rank": 7,
+              "role": "cod_mw4",
+              "title": "MODERN WARFARE 4 SE APROXIMA",
+              "subtitle": "NOVO CALL OF DUTY CHEGA EM 23 DE OUTUBRO",
+              "source": "https://www.callofduty.com/br/pt/modernwarfare4",
+              "text": "Na sétima posição, Call of Duty: Modern Warfare 4 entra de vez no radar de outubro. O lançamento está marcado para vinte e três de outubro e a campanha coloca uma guerra de grande escala na Península Coreana, enquanto o Capitão Price trava sua própria batalha nas sombras. O jogo está confirmado para PlayStation 5, Xbox Series, PC e Nintendo Switch 2. Call of Duty sempre domina a conversa quando se aproxima do lançamento, e com poucas semanas restantes a tendência é vermos cada vez mais detalhes de campanha, multiplayer e conteúdo de lançamento."
+            },
+            {
+              "rank": 6,
+              "role": "ghost_yotei_complete",
+              "title": "GHOST OF YŌTEI COMPLETE EDITION",
+              "subtitle": "EDIÇÃO COMPLETA JÁ CHEGOU AO PS5",
+              "source": "https://blog.playstation.com/2026/08/12/ghost-of-yotei-complete-edition-comes-to-ps5-october-1/",
+              "text": "Na sexta posição, Ghost of Yōtei Complete Edition chegou ao PlayStation 5 em primeiro de outubro. A nova edição reúne o jogo e conteúdos adicionais em um pacote único e recoloca o título em destaque justamente na mesma semana em que a Sony anunciou o QSSR. Isso torna Ghost of Yōtei uma vitrine importante para o hardware atual do PS5, porque além do conteúdo completo ele também está entre os primeiros títulos escolhidos para demonstrar a nova tecnologia de reconstrução de imagem por inteligência artificial."
+            },
+            {
+              "rank": 5,
+              "role": "dragons_dogma_dark_arisen",
+              "title": "DRAGON'S DOGMA 2: DARK ARISEN",
+              "subtitle": "EXPANSÃO CHEGA EM 9 DE OUTUBRO",
+              "source": "https://www.capcom.co.jp/ir/english/news/html/e260610.html",
+              "text": "Na quinta posição, Dragon's Dogma 2: Dark Arisen está a poucos dias do lançamento, marcado para nove de outubro. A Capcom descreve o projeto como uma expansão paga que adiciona uma nova história e mais conteúdo ao RPG de ação lançado em 2024. A empresa também promete melhorias de acessibilidade e experiência com base no feedback dos jogadores. Outra novidade importante é a chegada ao Nintendo Switch 2, onde o jogo base e a expansão serão oferecidos juntos. Para fãs de RPG de mundo aberto, é um dos lançamentos mais fortes da próxima semana."
+            },
+            {
+              "rank": 4,
+              "role": "star_wars_galactic_racer",
+              "title": "STAR WARS: GALACTIC RACER",
+              "subtitle": "CORRIDAS COMEÇAM EM 6 DE OUTUBRO",
+              "source": "https://starwarsgalacticracer.com/news/official-gameplay-trailer/",
+              "text": "Na quarta posição, Star Wars: Galactic Racer está praticamente na largada. O jogo chega no dia seis de outubro para PlayStation 5, Xbox Series e PC. A proposta mergulha na cena de corridas clandestinas da galáxia, com landspeeders, speeder bikes, skim speeders e podracers. A campanha acompanha Shade, enquanto o multiplayer coloca os jogadores frente a frente por supremacia nas pistas. É uma combinação diferente dentro de Star Wars e chega com uma proposta clara: nada de Força ou profecia, aqui o foco é velocidade, estratégia e habilidade ao volante."
+            },
+            {
+              "rank": 3,
+              "role": "ace_combat_8",
+              "title": "ACE COMBAT 8 JÁ DECOLOU",
+              "subtitle": "WINGS OF THEVE CHEGOU EM 2 DE OUTUBRO",
+              "source": "https://www.bandainamcoent.com/news/ace-combat-8-wings-of-theve-takes-flight-today",
+              "text": "Na terceira posição, Ace Combat 8: Wings of Theve já está disponível. O novo capítulo foi lançado em dois de outubro para PlayStation 5, Xbox Series e PC e marca o retorno da linha principal da franquia depois de anos. O jogo aposta em combates aéreos cinematográficos, nuvens volumétricas e clima capaz de influenciar as missões. Também amplia bastante o online, com modos cooperativos e PvPvE. Depois de tanta expectativa, o foco agora muda para a recepção dos jogadores, desempenho e o quanto a Bandai Namco conseguiu evoluir a fórmula de Ace Combat."
+            },
+            {
+              "rank": 2,
+              "role": "qssr_ps5",
+              "title": "PS5 GANHA UPSCALING POR IA",
+              "subtitle": "QSSR CHEGA AO CONSOLE BASE",
+              "source": "https://blog.playstation.com/2026/10/01/ai-upscaling-is-coming-to-ps5/",
+              "text": "Na segunda posição, uma das notícias mais importantes da semana para quem joga no PS5: a Sony anunciou o QSSR, Quick Spectral Super Resolution. A tecnologia leva upscaling guiado por inteligência artificial ao PS5 padrão, usando uma arquitetura mais leve derivada do trabalho do Project Amethyst com a AMD. Marvel's Wolverine e Ghost of Yōtei são os primeiros jogos confirmados. A Sony também pretende disponibilizar a biblioteca a outros desenvolvedores. O PS5 comum não vira um PS5 Pro, mas ganha uma ferramenta nova para melhorar nitidez e estabilidade sem exigir o mesmo custo computacional do PSSR."
+            },
+            {
+              "rank": 1,
+              "role": "gears_eday",
+              "title": "GEARS OF WAR: E-DAY É O #1",
+              "subtitle": "EARLY ACCESS JÁ COMEÇOU",
+              "source": "https://news.xbox.com/en-us/2026/10/01/gears-of-war-e-day-early-access-launch-trailer-xbox/",
+              "text": "E na primeira posição está Gears of War: E-Day. O acesso antecipado começou em primeiro de outubro para jogadores elegíveis e o lançamento mundial acontece em seis de outubro. A Coalition trouxe um novo trailer de gameplay para marcar a chegada, enquanto o jogo volta ao passado para contar o Emergence Day, com Marcus Fenix e Dominic Santiago enfrentando o início da invasão Locust. Além da campanha, o pacote inclui multiplayer e Horde Siege. Entre franquia histórica, lançamento iminente e Game Pass no primeiro dia, Gears é hoje o assunto com maior peso no calendário de Xbox. Qual desses dez você quer ver em um vídeo completo?"
+            }
+          ]
+
+          script = "\n\n".join(x["text"] for x in items) + "\n"
+          Path("output/auto-script.txt").write_text(script, encoding="utf-8")
+
+          media = []
+          scenes = []
+          blocked = ["avatar", "author", "profile", "headshot", "newsletter", "podcast", "logo", "icon", "header", "footer"]
+          for item in items:
+              source = item["source"]
+              role = item["role"]
+              media.append({
+                  "type": "video",
+                  "url": source,
+                  "role": role,
+                  "max_assets": 1,
+                  "min_duration": 6,
+                  "source_proof": source,
+                  "relevance_evidence": "official_topic_page_embedded_video",
+                  "blocked_tokens": blocked
+              })
+              media.append({
+                  "type": "image",
+                  "url": source,
+                  "role": role,
+                  "max_assets": 2,
+                  "allow_images_from_page": True,
+                  "source_proof": source,
+                  "relevance_evidence": "official_topic_page_image",
+                  "blocked_tokens": blocked
+              })
+              scenes.append({
+                  "rank": item["rank"],
+                  "role": role,
+                  "title": f"#{item['rank']}  {item['title']}",
+                  "subtitle": item["subtitle"],
+                  "media_indices": []
+              })
+
+          plan = {
+              "topic": "Top 10 Games de Hoje - 4 de outubro de 2026",
+              "minimum_assets": 10,
+              "minimum_video_assets": 0,
+              "minimum_unique_video_seconds": 0,
+              "minimum_image_assets": 10,
+              "media": media,
+              "scenes": scenes
+          }
+          Path("output/auto-media-plan.json").write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
+          Path("output/selected.json").write_text(json.dumps({
+              "editorial_title_ptbr": "Top 10 Games de Hoje: as maiores notícias de 4 de outubro",
+              "format": "top10_daily",
+              "items": [{"rank": x["rank"], "title": x["title"], "source": x["source"]} for x in items]
+          }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+          master_meta = {
+              "title": "TOP 10 GAMES DE HOJE: as maiores notícias do dia!",
+              "description": "🎮 O Radar dos Games reúne em um único vídeo os 10 assuntos mais fortes do momento: Gears of War: E-Day, QSSR no PS5, Ace Combat 8, Star Wars: Galactic Racer, Dragon's Dogma 2: Dark Arisen e muito mais.\n\n#RadarDosGames #Games #PS5 #Xbox #NintendoSwitch2 #PCGaming",
+              "tags": ["Radar dos Games", "games", "noticias games", "top 10 games", "Gears of War E-Day", "PS5", "QSSR", "Ace Combat 8", "Star Wars Galactic Racer", "Dragon's Dogma 2"],
+              "privacy": "unlisted",
+              "containsSyntheticMedia": False
+          }
+          Path("output/master-youtube.json").write_text(json.dumps(master_meta, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Criar narração Thalita PT-BR
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaNeural \
+            --segments-json output/voice-timings.json
+
+      - name: Baixar mídia oficial por pauta
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Montar manifesto com mídia casada por assunto
+        run: |
+          python - <<'PY'
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+
+          spec = json.loads(Path("output/auto-media-plan.json").read_text(encoding="utf-8"))
+          media = json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
+          assets = media["assets"]
+          by_role = defaultdict(list)
+          for a in assets:
+              by_role[a.get("role", "")].append(int(a["index"]))
+
+          scenes = spec["scenes"]
+          missing = []
+          for scene in scenes:
+              role = scene["role"]
+              ids = by_role.get(role, [])
+              if not ids:
+                  missing.append(role)
+              scene["media_indices"] = ids[:3]
+          if missing:
+              raise RuntimeError("QUALITY_BLOCK: pautas sem mídia contextual: " + ", ".join(missing))
+
+          manifest = {
+              "assets": assets,
+              "voice": "output/voice.mp3",
+              "voice_timings": "output/voice-timings.json",
+              "intro": "radar-dos-games-intro-oficial.mp4",
+              "scenes": scenes,
+              "output": "output/master.mp4"
+          }
+          Path("output/render.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Renderizar Master Top 10
+        run: python src/render.py output/render.json
+
+      - name: Criar capa Top 10
+        run: python src/thumbnail.py output/master.mp4 'TOP 10 GAMES DE HOJE!' output/thumbnail.jpg
+
+      - name: Gerar 3 Shorts derivados
+        run: python src/shorts.py output/master.mp4
+
+      - name: Quality gate Master + Shorts
+        run: |
+          python - <<'PY'
+          import glob, json, subprocess
+          from pathlib import Path
+
+          def probe(path):
+              return json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(path)], text=True))
+
+          master = Path("output/master.mp4")
+          assert master.exists() and master.stat().st_size > 5_000_000
+          m = probe(master)
+          md = float(m["format"]["duration"])
+          mv = next(x for x in m["streams"] if x["codec_type"] == "video")
+          assert 300 <= md <= 900, md
+          assert (int(mv["width"]), int(mv["height"])) == (1920, 1080)
+          assert any(x["codec_type"] == "audio" for x in m["streams"])
+
+          qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
+          assert qa["card_style"]["shadow_attached_to_text"] is True
+          assert qa["framing_policy"] == "full_source_visible; blurred_background_fill; no_destructive_crop"
+          assert qa["voice"] == "pt-BR-ThalitaNeural"
+          assert len(qa["scenes"]) == 10
+          assert all(s["all_assets_explicit"] for s in qa["scenes"])
+
+          shorts = sorted(glob.glob("output/shorts/short_*.mp4"))
+          assert len(shorts) == 3, shorts
+          report = []
+          for path in shorts:
+              p = probe(path)
+              d = float(p["format"]["duration"])
+              v = next(x for x in p["streams"] if x["codec_type"] == "video")
+              assert (int(v["width"]), int(v["height"])) == (1080, 1920)
+              assert 10 <= d <= 65
+              assert any(x["codec_type"] == "audio" for x in p["streams"])
+              report.append({"file": path, "seconds": round(d,2)})
+
+          Path("output/final-qa.json").write_text(json.dumps({
+              "master_seconds": round(md,2),
+              "master": "1920x1080@30",
+              "scenes": 10,
+              "shorts": report,
+              "status": "APPROVED"
+          }, indent=2), encoding="utf-8")
+          print(Path("output/final-qa.json").read_text())
+          PY
+
+      - name: Guardar pacote final
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-top10-2026-10-04-${{ github.run_id }}
+          path: |
+            output/selected.json
+            output/auto-script.txt
+            output/auto-media-plan.json
+            output/clips.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/master.mp4
+            output/thumbnail.jpg
+            output/qa.json
+            output/final-qa.json
+            output/shorts/*.mp4
+            output/*youtube*.json
+          retention-days: 7
