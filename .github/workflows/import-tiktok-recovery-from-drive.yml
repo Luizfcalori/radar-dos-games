@@ -43,6 +43,10 @@ jobs:
           test -n "$TOKEN"
           echo "::add-mask::$TOKEN"
           echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+          INFO=$(curl -fsS "https://oauth2.googleapis.com/tokeninfo?access_token=$TOKEN" || true)
+          SCOPES=$(printf '%s' "$INFO" | jq -r '.scope // empty' 2>/dev/null || true)
+          echo "scopes=$SCOPES" >> "$GITHUB_OUTPUT"
+          echo "OAuth scopes: ${SCOPES:-unknown}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Download six staged videos from private Google Drive
         id: drive
@@ -71,6 +75,9 @@ jobs:
             if [ "$CODE" = "200" ] && [ "$SIZE" -gt 100000 ] && ffprobe -v error "$OUT" >/dev/null 2>&1; then
               OK=$((OK+1))
             else
+              echo "Google Drive error for $VID:"
+              jq -c '.error // .' "$OUT" 2>/dev/null || head -c 1200 "$OUT" || true
+              echo
               rm -f "$OUT"
             fi
           done < /tmp/files.tsv
