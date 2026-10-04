@@ -1,0 +1,218 @@
+name: Radar TikTok - Recover Missing Shorts via Active Cobalt Instances
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/recover-tiktok-public-cobalt.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare
+        run: |
+          python -m pip install --upgrade requests
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          mkdir -p recovered
+
+      - name: Discover active Cobalt instances and recover exact IDs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, subprocess, time
+          from pathlib import Path
+          import requests
+
+          targets=[
+            ('hjCBW6wopN8','THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK'),
+            ('S-Kw8W24bzM','O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT'),
+            ('Lc3BXMSZanU','MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT'),
+            ('dvu_iLOeRds','Vice City é só o COMEÇO em GTA 6! Conheça Leonida'),
+            ('t-KVaCwbrbA','Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6'),
+            ('DFMjasmIOSw','GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀'),
+          ]
+          out=Path('recovered'); out.mkdir(exist_ok=True)
+          s=requests.Session()
+          s.headers.update({'User-Agent':'Mozilla/5.0 RadarDosGamesRecovery/1.0','Accept':'application/json'})
+
+          sources=[
+            'https://instances.cobalt.best/api/instances.json',
+            'https://instances.cobalt.best/instances.json',
+          ]
+          raw=None
+          for u in sources:
+            try:
+              r=s.get(u,timeout=20)
+              print('instance-list',u,r.status_code,r.text[:300])
+              if r.ok:
+                raw=r.json(); break
+            except Exception as e: print('instance-list-error',u,e)
+
+          urls=[]
+          def walk(x):
+            if isinstance(x,dict):
+              for k,v in x.items():
+                if isinstance(v,str) and v.startswith('http') and ('url' in k.lower() or 'api' in k.lower() or 'instance' in k.lower()): urls.append(v)
+                else: walk(v)
+            elif isinstance(x,list):
+              for v in x: walk(v)
+            elif isinstance(x,str) and x.startswith('http'):
+              urls.append(x)
+          if raw is not None: walk(raw)
+          # preserve order, normalize
+          seen=set(); instances=[]
+          for u in urls:
+            u=u.strip().rstrip('/')+'/'
+            if u in seen: continue
+            seen.add(u)
+            if any(bad in u for bad in ('localhost','127.0.0.1')): continue
+            instances.append(u)
+          print('discovered instances:',len(instances))
+          print('\n'.join(instances[:40]))
+
+          # Keep only responsive Cobalt APIs; cap to reduce unnecessary traffic.
+          healthy=[]
+          for base in instances[:60]:
+            try:
+              r=s.get(base,timeout=8)
+              if r.ok and ('cobalt' in r.text.lower() or 'services' in r.text.lower()):
+                healthy.append(base)
+                print('healthy',base)
+                if len(healthy)>=15: break
+            except: pass
+          print('healthy count:',len(healthy))
+
+          def download(url,path):
+            with requests.get(url,stream=True,timeout=150,allow_redirects=True,headers={'User-Agent':'Mozilla/5.0'}) as r:
+              r.raise_for_status()
+              with open(path,'wb') as f:
+                for c in r.iter_content(1024*1024):
+                  if c: f.write(c)
+
+          report={}
+          for vid,title in targets:
+            final=out/f'yt-{vid}.mp4'
+            errors=[]
+            for base in healthy:
+              try:
+                payload={
+                  'url':f'https://www.youtube.com/shorts/{vid}',
+                  'downloadMode':'auto',
+                  'videoQuality':'720',
+                  'youtubeVideoCodec':'h264',
+                  'youtubeVideoContainer':'mp4',
+                  'filenameStyle':'basic',
+                  'disableMetadata':False
+                }
+                rr=requests.post(base,json=payload,timeout=45,headers={'Accept':'application/json','Content-Type':'application/json','User-Agent':'Mozilla/5.0'})
+                body=rr.text[:1200]
+                print('try',vid,base,rr.status_code,body)
+                if not rr.ok:
+                  errors.append(f'{base}:{rr.status_code}'); continue
+                data=rr.json(); status=data.get('status')
+                if status in ('tunnel','redirect') and data.get('url'):
+                  download(data['url'],final)
+                elif status=='picker':
+                  picks=[x for x in data.get('picker',[]) if x.get('type')=='video' and x.get('url')]
+                  if not picks: raise RuntimeError('picker without video')
+                  download(picks[0]['url'],final)
+                else:
+                  errors.append(f'{base}:{data.get("error",{}).get("code",status)}'); continue
+                if final.exists() and final.stat().st_size>100_000:
+                  p=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(final)],capture_output=True,text=True)
+                  dur=float(p.stdout.strip() or 0)
+                  if dur>=3:
+                    report[vid]={'ok':True,'instance':base,'size':final.stat().st_size,'duration':dur}
+                    break
+                final.unlink(missing_ok=True)
+              except Exception as e:
+                final.unlink(missing_ok=True); errors.append(f'{base}:{type(e).__name__}')
+              time.sleep(.5)
+            if vid not in report: report[vid]={'ok':False,'errors':errors[-8:]}
+          Path('recovered/public-cobalt-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload any recovered MP4s to TikTok release
+        shell: bash
+        run: |
+          gh release view tiktok-youtube-shorts >/dev/null 2>&1 || gh release create tiktok-youtube-shorts --title 'TikTok Helper - YouTube Shorts Originals' --notes 'Original Shorts recovered for Radar TikTok Helper'
+          shopt -s nullglob
+          for f in recovered/yt-*.mp4; do
+            ffprobe -v error "$f" >/dev/null
+            gh release upload tiktok-youtube-shorts "$f" --clobber
+          done
+
+      - name: Merge recovered items into queue and report
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime,timezone
+          targets=[
+            ('hjCBW6wopN8','THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK'),
+            ('S-Kw8W24bzM','O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT'),
+            ('Lc3BXMSZanU','MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT'),
+            ('dvu_iLOeRds','Vice City é só o COMEÇO em GTA 6! Conheça Leonida'),
+            ('t-KVaCwbrbA','Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6'),
+            ('DFMjasmIOSw','GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀'),
+          ]
+          qpath=Path('data/tiktok_queue.json'); q=json.loads(qpath.read_text()); arr=q.setdefault('items',[])
+          by={x.get('youtube_id'):x for x in arr if x.get('youtube_id')}; now=datetime.now(timezone.utc).isoformat(); changed=[]
+          for vid,title in targets:
+            f=Path(f'recovered/yt-{vid}.mp4')
+            if not f.exists() or f.stat().st_size<100_000: continue
+            x=by.get(vid)
+            if x is None:
+              x={'id':f'yt-{vid}'}; arr.append(x); by[vid]=x
+            tags=['#Minecraft','#TheSift'] if ('MINECRAFT' in title.upper() or 'SIFT' in title.upper()) else ['#GTA6','#RockstarGames']
+            tags += ['#RadarDosGames','#Games','#Gaming','#TikTokGames']
+            x.update({
+              'title':title,
+              'media_url':f'https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-youtube-shorts/yt-{vid}.mp4',
+              'thumbnail_url':f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg',
+              'post_text':title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(tags),
+              'status':'approved','youtube_id':vid,'youtube_url':f'https://www.youtube.com/shorts/{vid}',
+              'source':'youtube_channel_recovered_public_cobalt','recovered_at':now})
+            changed.append(vid)
+          q['updated_at']=now; qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n')
+          missing=[]
+          for vid,title in targets:
+            x=by.get(vid)
+            if not x or not x.get('media_url'): missing.append({'youtube_id':vid,'title':title,'reason':'original_media_not_recovered_yet'})
+          ready=sum(1 for x in arr if x.get('youtube_id') and x.get('media_url') and x.get('status') in ('approved','ready_for_tiktok'))
+          report={'recovered_count':ready,'ready_for_tiktok':ready,'total_discovered':28,'remaining_count':len(missing),'remaining':missing,'last_recovery_at':now,'recovered_this_run':changed}
+          Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Commit queue/report
+        shell: bash
+        run: |
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json data/tiktok_backfill_report.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'bot: recover Shorts via active Cobalt instance'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo '### Public Cobalt recovery' >> "$GITHUB_STEP_SUMMARY"
+          cat recovered/public-cobalt-report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          cat data/tiktok_backfill_report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
