@@ -5,36 +5,37 @@
   "remaining_count": 6,
   "remaining": [
     {
-      "youtube_id": "hjCBW6wopN8",
-      "title": "THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "S-Kw8W24bzM",
-      "title": "O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "Lc3BXMSZanU",
-      "title": "MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "dvu_iLOeRds",
-      "title": "Vice City é só o COMEÇO em GTA 6! Conheça Leonida",
-      "reason": "original_media_not_recovered_yet"
+      "youtube_id": "DFMjasmIOSw",
+      "title": "GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀",
+      "reason": "not_imported_to_github_release"
     },
     {
       "youtube_id": "t-KVaCwbrbA",
       "title": "Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6",
-      "reason": "original_media_not_recovered_yet"
+      "reason": "not_imported_to_github_release"
     },
     {
-      "youtube_id": "DFMjasmIOSw",
-      "title": "GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀",
-      "reason": "original_media_not_recovered_yet"
+      "youtube_id": "dvu_iLOeRds",
+      "title": "Vice City é só o COMEÇO em GTA 6! Conheça Leonida",
+      "reason": "not_imported_to_github_release"
+    },
+    {
+      "youtube_id": "hjCBW6wopN8",
+      "title": "THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK",
+      "reason": "not_imported_to_github_release"
+    },
+    {
+      "youtube_id": "Lc3BXMSZanU",
+      "title": "MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT",
+      "reason": "not_imported_to_github_release"
+    },
+    {
+      "youtube_id": "S-Kw8W24bzM",
+      "title": "O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT",
+      "reason": "not_imported_to_github_release"
     }
   ],
-  "last_recovery_at": "2026-10-04T22:46:07.374757+00:00",
-  "recovered_this_run": []
+  "last_recovery_at": "2026-10-04T22:55:26.379494+00:00",
+  "recovered_this_run": [],
+  "note": "Two Minecraft items are recreated from the original approved master; the other four imported items are original recovered files."
 }
