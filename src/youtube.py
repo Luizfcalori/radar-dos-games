@@ -78,6 +78,14 @@ def _prepare_master_thumbnail(video_path: str, meta: dict) -> Path | None:
         return None
     thumb = Path(meta.get('thumbnail') or 'output/thumbnail.jpg')
     thumb.parent.mkdir(parents=True, exist_ok=True)
+
+    # Quando uma capa foi aprovada editorialmente, preserva exatamente o arquivo
+    # fornecido pelo workflow em vez de regenerá-lo no momento do upload.
+    if meta.get('use_existing_thumbnail') is True:
+        if not thumb.exists() or thumb.stat().st_size < 20_000:
+            raise RuntimeError('QUALITY_BLOCK: capa aprovada indicada, mas arquivo está ausente ou inválido.')
+        return thumb
+
     subprocess.run(
         [sys.executable, 'src/thumbnail.py', video_path, meta['title'], str(thumb)],
         check=True,
@@ -102,8 +110,6 @@ def upload(path,meta):
     cid,title=channel_identity(yt)
     assert_radar_channel(cid,title)
 
-    # A capa é gerada antes do envio do Master; após o YouTube criar o ID,
-    # ela é aplicada imediatamente pelo endpoint oficial de thumbnails.
     thumbnail = _prepare_master_thumbnail(path, meta)
 
     body={
@@ -129,6 +135,7 @@ def upload(path,meta):
         resp['_radarThumbnail'] = {
             'path': str(thumbnail),
             'applied': bool(thumb_resp),
+            'preservedApprovedCover': bool(meta.get('use_existing_thumbnail')),
         }
     print(json.dumps(resp))
 
