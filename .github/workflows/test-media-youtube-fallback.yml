@@ -14,7 +14,7 @@ permissions:
 jobs:
   test-media-fallback:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - name: Install media tools
@@ -28,17 +28,17 @@ jobs:
           {
             "minimum_assets": 1,
             "minimum_video_assets": 1,
-            "minimum_unique_video_seconds": 30,
+            "minimum_unique_video_seconds": 60,
             "minimum_image_assets": 0,
             "media": [
               {
                 "type": "video",
-                "role": "youtube_fallback_test",
-                "url": "https://www.youtube.com/watch?v=O9sPs5hP76A",
-                "source_proof": "integration-test",
-                "relevance_evidence": "known Radar dos Games reference video",
-                "source_label": "fallback integration test",
-                "min_duration": 30,
+                "role": "official_gameplay_youtube_fallback_test",
+                "url": "https://www.youtube.com/watch?v=DcphpBvdt28",
+                "source_proof": "Bandai Namco official ACE COMBAT 8 Walkthrough Trailer",
+                "relevance_evidence": "official publisher gameplay/walkthrough source",
+                "source_label": "ACE COMBAT 8: WINGS OF THEVE | Walkthrough Trailer",
+                "min_duration": 60,
                 "max_assets": 1
               }
             ]
@@ -63,17 +63,19 @@ jobs:
           assert m['video_assets'] >= 1, m
           a=m['assets'][0]
           assert a['width'] >= 1200 and a['height'] >= 700, a
-          assert a['duration'] >= 30, a
+          assert a['duration'] >= 60, a
+          assert 'DcphpBvdt28' in a['url'], a
           print('INTEGRATION_SUCCESS',a)
           PY
-      - name: Upload diagnostics
+      - name: Upload validated media
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: media-youtube-fallback-integration-test
+          name: media-youtube-fallback-official-bandai
           path: |
             /tmp/media-run.log
             /tmp/ffprobe.json
             output/clips.json
+            output/media/asset_01.mp4
           if-no-files-found: warn
           retention-days: 3
