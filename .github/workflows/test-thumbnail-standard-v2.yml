@@ -1,0 +1,56 @@
+name: Test Radar Thumbnail Standard v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-thumbnail-standard-v2.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install thumbnail dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          pip install -q Pillow
+      - name: Download approved Star Wars package as test fixture
+        uses: actions/download-artifact@v4
+        with:
+          name: star-wars-galactic-racer-vehicles-37326285663
+          path: fixture
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 37326285663
+      - name: Render standardized thumbnail v2
+        run: |
+          mkdir -p output
+          MASTER=$(find fixture -type f -name master.mp4 | head -1)
+          SOURCE=$(find fixture -type f -name thumbnail.jpg | head -1)
+          test -s "$MASTER"; test -s "$SOURCE"
+          python src/thumbnail.py "$MASTER" 'STAR WARS: 4 VEÍCULOS + 4 ESTILOS' output/thumbnail-v2.jpg "$SOURCE"
+          python - <<'PY'
+          import json
+          from PIL import Image
+          from pathlib import Path
+          p=Path('output/thumbnail-v2.jpg')
+          assert p.stat().st_size > 30000
+          assert Image.open(p).size == (1280,720)
+          q=json.loads(Path('output/thumbnail-policy.json').read_text())
+          assert q['template_version']=='radar-thumbnail-v2-2026-10-05', q
+          assert q['status']=='APPROVED', q
+          print(json.dumps(q,ensure_ascii=False,indent=2))
+          PY
+      - name: Save thumbnail test
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-thumbnail-v2-test-${{ github.run_id }}
+          path: output/
+          retention-days: 3
