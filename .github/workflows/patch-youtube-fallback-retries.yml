@@ -1,0 +1,141 @@
+name: Patch YouTube Fallback Retries
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/patch-youtube-fallback-retries.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Harden production fallback
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path('src/media.py')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('import html,json,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request',
+                      'import html,json,os,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request')
+
+          new_newisty=r'''def newisty_download(url,dest,quality='720p'):
+    """Fallback externo para YouTube quando o IP do runner recebe bloqueio anti-bot.
+
+    Respeita Retry-After/429 em start, progress e download para que um pico temporario
+    do servico nao derrube a aquisicao de midia do Master.
+    """
+    headers={'User-Agent':'radar-dos-games/1.0','Accept':'application/json','Content-Type':'application/json'}
+
+    def wait_rate_limit(err,attempt,stage):
+        try:body=err.read().decode('utf-8','replace')
+        except:body=''
+        raw=(err.headers.get('Retry-After') if getattr(err,'headers',None) else None) or str(min(10+attempt*5,45))
+        try:wait=int(float(raw))
+        except:wait=min(10+attempt*5,45)
+        wait=max(5,min(wait,45))
+        print('newisty 429',stage,'attempt',attempt,'retry in',wait,'seconds',body[:300],flush=True)
+        time.sleep(wait)
+
+    try:
+        job_id=''
+        payload=json.dumps({'url':url,'format':quality}).encode()
+        for attempt in range(1,8):
+            start=urllib.request.Request(NEWISTY_BASE+'/start',data=payload,headers=headers,method='POST')
+            try:
+                with urllib.request.urlopen(start,timeout=65) as r:obj=json.loads(r.read().decode('utf-8','replace'))
+                job_id=str(((obj.get('data') or {}).get('job_id') or '')).strip()
+                if job_id:break
+                print('newisty start failed: no job_id',obj,flush=True)
+            except urllib.error.HTTPError as e:
+                if e.code==429 and attempt<7:
+                    wait_rate_limit(e,attempt,'start');continue
+                raise
+        if not job_id:return None
+
+        state='queued'
+        for poll in range(36):
+            time.sleep(5)
+            progress=urllib.request.Request(NEWISTY_BASE+'/progress/'+urllib.parse.quote(job_id),headers={'User-Agent':headers['User-Agent'],'Accept':'application/json'})
+            try:
+                with urllib.request.urlopen(progress,timeout=45) as r:pobj=json.loads(r.read().decode('utf-8','replace'))
+            except urllib.error.HTTPError as e:
+                if e.code==404:continue
+                if e.code==429:
+                    wait_rate_limit(e,min(poll+1,6),'progress');continue
+                raise
+            state=str(((pobj.get('data') or {}).get('status') or '')).lower()
+            if state in ('done','completed','complete'):break
+            if state in ('failed','error'):
+                print('newisty job failed',pobj,flush=True);return None
+        if state not in ('done','completed','complete'):
+            print('newisty timeout',job_id,state,flush=True);return None
+
+        dreq=urllib.request.Request(NEWISTY_BASE+'/download/'+urllib.parse.quote(job_id),headers={'User-Agent':headers['User-Agent'],'Accept':'*/*'})
+        downloaded=False
+        for attempt in range(1,7):
+            try:
+                with urllib.request.urlopen(dreq,timeout=240) as r,open(dest,'wb') as f:
+                    while True:
+                        chunk=r.read(1024*1024)
+                        if not chunk:break
+                        f.write(chunk)
+                        if f.tell()>700*1024*1024:break
+                downloaded=True;break
+            except urllib.error.HTTPError as e:
+                dest.unlink(missing_ok=True)
+                if e.code==429 and attempt<6:
+                    wait_rate_limit(e,attempt,'download');continue
+                raise
+        if not downloaded:return None
+        info=probe_info(dest)
+        if info:
+            print('newisty youtube fallback success',quality,info,flush=True)
+            return info
+    except Exception as e:print('newisty youtube fallback failed',type(e).__name__,e,flush=True)
+    dest.unlink(missing_ok=True);return None
+'''
+
+          new_ytdlp=r'''def ytdlp(url,dest):
+    if 'youtube.com' not in url and 'youtu.be' not in url:return None
+    # Nos runners GitHub o YouTube direto esta bloqueando IPs de datacenter.
+    # Fontes/CDNs oficiais continuam sendo priorizadas pelo fluxo; quando a fonte e
+    # realmente YouTube, usamos a rota externa validada para evitar perder o Master.
+    if os.environ.get('GITHUB_ACTIONS','').lower()=='true':
+        print('github actions youtube: external fallback selected',flush=True)
+        return newisty_download(url,dest,'720p')
+    args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15','-f','bv*[height<=1080]+ba/b[height<=1080]/best','--merge-output-format','mp4','-o',str(dest),url]
+    try:
+        subprocess.run(args,check=True,timeout=35)
+        info=probe_info(dest)
+        if info:return info
+    except Exception as e:print('yt direct fallback failed',e,flush=True)
+    dest.unlink(missing_ok=True)
+    return newisty_download(url,dest,'720p')
+'''
+
+          s,n1=re.subn(r"def newisty_download\(url,dest,quality='720p'\):.*?(?=\ndef ytdlp\()",new_newisty+'\n',s,flags=re.S)
+          s,n2=re.subn(r"def ytdlp\(url,dest\):.*?(?=\ndef discover\()",new_ytdlp+'\n',s,flags=re.S)
+          if n1!=1 or n2!=1:
+              raise SystemExit(f'patch mismatch newisty={n1} ytdlp={n2}')
+          p.write_text(s,encoding='utf-8')
+          PY
+          python -m py_compile src/media.py
+          grep -n "external fallback selected\|newisty 429" src/media.py
+
+      - name: Commit production patch
+        run: |
+          git config user.name "Radar dos Games Bot"
+          git config user.email "55815124+Luizfcalori@users.noreply.github.com"
+          rm .github/workflows/patch-youtube-fallback-retries.yml
+          git add src/media.py .github/workflows/patch-youtube-fallback-retries.yml
+          git commit -m "fix: make YouTube fallback resilient to rate limits"
+          git push origin HEAD:main
