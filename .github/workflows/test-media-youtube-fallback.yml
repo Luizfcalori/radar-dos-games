@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/test-media-youtube-fallback.yml"
+      - "src/media.py"
 
 permissions:
   contents: read
@@ -46,7 +47,10 @@ jobs:
           rm -rf output/media output/clips.json
           mkdir -p output/media
       - name: Run production media.py
-        run: python src/media.py /tmp/media-plan.json | tee /tmp/media-run.log
+        shell: bash
+        run: |
+          set -o pipefail
+          python src/media.py /tmp/media-plan.json | tee /tmp/media-run.log
       - name: Verify resulting MP4
         run: |
           test -s output/media/asset_01.mp4
