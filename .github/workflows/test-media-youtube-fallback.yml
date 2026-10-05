@@ -1,0 +1,75 @@
+name: Test media.py YouTube Fallback
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/test-media-youtube-fallback.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test-media-fallback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install media tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install -U yt-dlp
+      - name: Build isolated media plan
+        run: |
+          cat > /tmp/media-plan.json <<'JSON'
+          {
+            "minimum_assets": 1,
+            "minimum_video_assets": 1,
+            "minimum_unique_video_seconds": 30,
+            "minimum_image_assets": 0,
+            "media": [
+              {
+                "type": "video",
+                "role": "youtube_fallback_test",
+                "url": "https://www.youtube.com/watch?v=O9sPs5hP76A",
+                "source_proof": "integration-test",
+                "relevance_evidence": "known Radar dos Games reference video",
+                "source_label": "fallback integration test",
+                "min_duration": 30,
+                "max_assets": 1
+              }
+            ]
+          }
+          JSON
+          rm -rf output/media output/clips.json
+          mkdir -p output/media
+      - name: Run production media.py
+        run: python src/media.py /tmp/media-plan.json | tee /tmp/media-run.log
+      - name: Verify resulting MP4
+        run: |
+          test -s output/media/asset_01.mp4
+          test -s output/clips.json
+          ffprobe -v error -show_entries stream=codec_name,width,height -show_entries format=duration -of json output/media/asset_01.mp4 | tee /tmp/ffprobe.json
+          python - <<'PY'
+          import json
+          m=json.load(open('output/clips.json'))
+          assert m['publishable_media'] is True, m
+          assert m['video_assets'] >= 1, m
+          a=m['assets'][0]
+          assert a['width'] >= 1200 and a['height'] >= 700, a
+          assert a['duration'] >= 30, a
+          print('INTEGRATION_SUCCESS',a)
+          PY
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-youtube-fallback-integration-test
+          path: |
+            /tmp/media-run.log
+            /tmp/ffprobe.json
+            output/clips.json
+          if-no-files-found: warn
+          retention-days: 3
