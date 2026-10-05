@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Aquisição de mídia com prova de relevância por jogo e QA semântico."""
-import html,json,re,subprocess,sys,urllib.parse,urllib.request
+import html,json,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 
 VIDEO_EXTS=('.mp4','.mov','.webm','.m4v')
@@ -11,6 +11,7 @@ LOW_VALUE_TOKENS=(
     'share-button','/share/','/intro.mp4','/intro-sp.mp4','/ptcl.mp4','splash','loading','background-loop'
 )
 STEAM_VIDEO_HOST='https://video.fastly.steamstatic.com/'
+NEWISTY_BASE='https://newisty.com/api/video-downloader'
 
 def probe_info(p):
     if not p.exists() or p.stat().st_size < 20000:return None
@@ -75,12 +76,55 @@ def gdrive_download(url,dest):
             if info:return info
     return None
 
+def newisty_download(url,dest,quality='720p'):
+    """Fallback externo para YouTube quando o IP do runner recebe bloqueio anti-bot."""
+    headers={'User-Agent':'radar-dos-games/1.0','Accept':'application/json','Content-Type':'application/json'}
+    try:
+        payload=json.dumps({'url':url,'format':quality}).encode()
+        start=urllib.request.Request(NEWISTY_BASE+'/start',data=payload,headers=headers,method='POST')
+        with urllib.request.urlopen(start,timeout=65) as r:obj=json.loads(r.read().decode('utf-8','replace'))
+        job_id=str(((obj.get('data') or {}).get('job_id') or '')).strip()
+        if not job_id:
+            print('newisty start failed: no job_id',obj);return None
+        state='queued'
+        for _ in range(24):
+            time.sleep(5)
+            progress=urllib.request.Request(NEWISTY_BASE+'/progress/'+urllib.parse.quote(job_id),headers={'User-Agent':headers['User-Agent'],'Accept':'application/json'})
+            try:
+                with urllib.request.urlopen(progress,timeout=45) as r:pobj=json.loads(r.read().decode('utf-8','replace'))
+            except urllib.error.HTTPError as e:
+                if e.code==404:continue
+                raise
+            state=str(((pobj.get('data') or {}).get('status') or '')).lower()
+            if state in ('done','completed','complete'):break
+            if state in ('failed','error'):
+                print('newisty job failed',pobj);return None
+        if state not in ('done','completed','complete'):
+            print('newisty timeout',job_id,state);return None
+        dreq=urllib.request.Request(NEWISTY_BASE+'/download/'+urllib.parse.quote(job_id),headers={'User-Agent':headers['User-Agent'],'Accept':'*/*'})
+        with urllib.request.urlopen(dreq,timeout=240) as r,open(dest,'wb') as f:
+            while True:
+                chunk=r.read(1024*1024)
+                if not chunk:break
+                f.write(chunk)
+                if f.tell()>700*1024*1024:break
+        info=probe_info(dest)
+        if info:
+            print('newisty youtube fallback success',quality,info)
+            return info
+    except Exception as e:print('newisty youtube fallback failed',type(e).__name__,e)
+    dest.unlink(missing_ok=True);return None
+
 def ytdlp(url,dest):
     if 'youtube.com' not in url and 'youtu.be' not in url:return None
     args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15','-f','bv*[height<=1080]+ba/b[height<=1080]/best','--merge-output-format','mp4','-o',str(dest),url]
     try:
-        subprocess.run(args,check=True,timeout=100);return probe_info(dest)
-    except Exception as e:print('yt fallback failed',e);dest.unlink(missing_ok=True);return None
+        subprocess.run(args,check=True,timeout=100)
+        info=probe_info(dest)
+        if info:return info
+    except Exception as e:print('yt direct fallback failed',e)
+    dest.unlink(missing_ok=True)
+    return newisty_download(url,dest,'720p')
 
 def discover(page,allow_images=False):
     try:
@@ -237,7 +281,7 @@ def main(path):
     manifest={'assets':assets,'clips':[a['path'] for a in assets],'errors':errors,'publishable_media':False,'generic_fallback':False,'official_assets':True,
               'minimum_assets':minimum,'video_assets':len(videos),'image_assets':len(images),'unique_video_seconds':unique_video_seconds,
               'minimum_video_assets':min_videos,'minimum_unique_video_seconds':min_secs,'minimum_image_assets':min_images,
-              'semantic_policy':'exact_source_only; exact_app_assets; direct_steam_cdn_before_youtube; no_generic_page_images; reject_logo_banner_store_intro; explicit_scene_assets_only'}
+              'semantic_policy':'exact_source_only; exact_app_assets; direct_steam_cdn_before_youtube; external_youtube_fallback_after_direct_block; no_generic_page_images; reject_logo_banner_store_intro; explicit_scene_assets_only'}
     manifest['publishable_media']=len(assets)>=minimum and len(videos)>=min_videos and unique_video_seconds>=min_secs and len(images)>=min_images
     Path('output/clips.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     if len(assets)<minimum:raise RuntimeError(f'QUALITY_BLOCK: somente {len(assets)} assets aprovados; minimo {minimum}')
