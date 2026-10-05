@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-05T00:20:32.683078+00:00",
-  "total_discovered": 29,
-  "ready_for_tiktok": 28,
+  "updated_at": "2026-10-05T14:00:48.141849+00:00",
+  "total_discovered": 32,
+  "ready_for_tiktok": 31,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "PijxXReT4Gs",
+      "youtube_url": "https://www.youtube.com/shorts/PijxXReT4Gs",
+      "title": "WARDOGS vale a pena acompanhar?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "zULfXZEKDm8",
+      "youtube_url": "https://www.youtube.com/shorts/zULfXZEKDm8",
+      "title": "WARDOGS: destruição, tanques e helicópteros",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "vOShZR5WAIE",
+      "youtube_url": "https://www.youtube.com/shorts/vOShZR5WAIE",
+      "title": "WARDOGS: 100 jogadores em guerra total",
+      "status": "approved"
+    },
     {
       "youtube_id": "XA-YklCtg1k",
       "youtube_url": "https://www.youtube.com/shorts/XA-YklCtg1k",

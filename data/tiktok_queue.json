@@ -1,19 +1,23 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-05T11:43:15.292694+00:00",
+  "updated_at": "2026-10-05T14:00:48.141849+00:00",
   "items": [
     {
-      "id": "wardogs-approved-37300872441-short-1",
-      "title": "WARDOGS: 100 jogadores em guerra total",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-1.jpg",
-      "post_text": "WARDOGS: 100 jogadores em guerra total\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WARDOGS #RadarDosGames #Bulkhead #Team17 #Games #Gaming #TikTokGames",
+      "id": "wardogs-approved-37300872441-short-3",
+      "title": "WARDOGS vale a pena acompanhar?",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-3.jpg",
+      "post_text": "WARDOGS vale a pena acompanhar?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WARDOGS #RadarDosGames #Bulkhead #Team17 #Games #Gaming #TikTokGames",
       "status": "approved",
       "source_run_id": 37300872441,
-      "short_number": 1,
+      "short_number": 3,
       "approved_at": "2026-10-05T11:43:15.292694+00:00",
-      "source": "approved_production_artifact"
+      "source": "youtube_channel",
+      "youtube_id": "PijxXReT4Gs",
+      "youtube_url": "https://www.youtube.com/shorts/PijxXReT4Gs",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-05T14:00:48.141849+00:00"
     },
     {
       "id": "wardogs-approved-37300872441-short-2",
@@ -25,19 +29,27 @@
       "source_run_id": 37300872441,
       "short_number": 2,
       "approved_at": "2026-10-05T11:43:15.292694+00:00",
-      "source": "approved_production_artifact"
+      "source": "youtube_channel",
+      "youtube_id": "zULfXZEKDm8",
+      "youtube_url": "https://www.youtube.com/shorts/zULfXZEKDm8",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-05T14:00:48.141849+00:00"
     },
     {
-      "id": "wardogs-approved-37300872441-short-3",
-      "title": "WARDOGS vale a pena acompanhar?",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-3.jpg",
-      "post_text": "WARDOGS vale a pena acompanhar?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WARDOGS #RadarDosGames #Bulkhead #Team17 #Games #Gaming #TikTokGames",
+      "id": "wardogs-approved-37300872441-short-1",
+      "title": "WARDOGS: 100 jogadores em guerra total",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/wardogs-37300872441-short-1.jpg",
+      "post_text": "WARDOGS: 100 jogadores em guerra total\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WARDOGS #RadarDosGames #Bulkhead #Team17 #Games #Gaming #TikTokGames",
       "status": "approved",
       "source_run_id": 37300872441,
-      "short_number": 3,
+      "short_number": 1,
       "approved_at": "2026-10-05T11:43:15.292694+00:00",
-      "source": "approved_production_artifact"
+      "source": "youtube_channel",
+      "youtube_id": "vOShZR5WAIE",
+      "youtube_url": "https://www.youtube.com/shorts/vOShZR5WAIE",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-05T14:00:48.141849+00:00"
     },
     {
       "id": "yt-XA-YklCtg1k",
