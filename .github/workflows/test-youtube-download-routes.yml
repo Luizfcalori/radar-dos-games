@@ -18,201 +18,249 @@ permissions:
 jobs:
   test-download-routes:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       TEST_URL: ${{ github.event.inputs.url || 'https://www.youtube.com/watch?v=O9sPs5hP76A' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Node 24 for yt-dlp EJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Install tools
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg curl jq
           python -m pip install --upgrade pip
-          python -m pip install -U yt-dlp bgutil-ytdlp-pot-provider
+          python -m pip install -U "yt-dlp[default]" bgutil-ytdlp-pot-provider
           yt-dlp --version
+          node --version
           ffmpeg -version | head -1
           docker --version
 
-      - name: Prepare result helpers
+      - name: Prepare diagnostics
         shell: bash
         run: |
+          mkdir -p test-output
+          echo "route|status|detail|bytes|duration|codec" > test-output/results.txt
+          echo "Testing: $TEST_URL" > test-output/context.txt
+          echo "Runner: $RUNNER_NAME / $RUNNER_OS" >> test-output/context.txt
+          date -u >> test-output/context.txt
+          python - <<'PY'
+          import os,re,pathlib
+          u=os.environ['TEST_URL']
+          m=re.search(r'(?:v=|youtu\.be/|shorts/)([A-Za-z0-9_-]{6,})',u)
+          if not m: raise SystemExit('cannot parse video id')
+          pathlib.Path('test-output/video_id.txt').write_text(m.group(1))
+          print('video id',m.group(1))
+          PY
           cat > /tmp/check_media.sh <<'SH'
           #!/usr/bin/env bash
           set -u
-          name="$1"
-          pattern="$2"
+          name="$1"; pattern="$2"; detail="${3:-}"
           file="$(find test-output -maxdepth 1 -type f -name "$pattern" -size +100k | head -1 || true)"
           if [ -n "$file" ]; then
             size=$(stat -c%s "$file")
             dur=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$file" 2>/dev/null || true)
             codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$file" 2>/dev/null || true)
             if [ -n "$dur" ] && [ -n "$codec" ]; then
-              echo "$name|SUCCESS|$file|$size|$dur|$codec" | tee -a test-output/results.txt
+              echo "$name|SUCCESS|$detail|$size|$dur|$codec" | tee -a test-output/results.txt
               exit 0
             fi
           fi
-          echo "$name|FAILED||||" | tee -a test-output/results.txt
+          echo "$name|FAILED|$detail|||" | tee -a test-output/results.txt
           exit 1
           SH
           chmod +x /tmp/check_media.sh
-          mkdir -p test-output
-          echo "route|status|file|bytes|duration|codec" > test-output/results.txt
-          echo "Testing: $TEST_URL" | tee test-output/context.txt
-          echo "Runner: $RUNNER_NAME / $RUNNER_OS" | tee -a test-output/context.txt
-          date -u | tee -a test-output/context.txt
-
-      - name: Route A - yt-dlp baseline
-        id: baseline
-        continue-on-error: true
-        shell: bash
-        run: |
-          set +e
-          timeout 120 yt-dlp -v --no-playlist --retries 1 --fragment-retries 1 --socket-timeout 15 \
-            -f "bv*[height<=720]+ba/b[height<=720]/best" \
-            --merge-output-format mp4 \
-            -o "test-output/baseline.%(ext)s" "$TEST_URL" 2>&1 | tee test-output/baseline.log
-          rc=${PIPESTATUS[0]}
-          /tmp/check_media.sh baseline 'baseline.*' || true
-          exit $rc
-
-      - name: Route B - yt-dlp android_vr client
-        id: androidvr
-        continue-on-error: true
-        shell: bash
-        run: |
-          set +e
-          timeout 120 yt-dlp -v --no-playlist --retries 1 --fragment-retries 1 --socket-timeout 15 \
-            --extractor-args "youtube:player_client=android_vr" \
-            -f "bv*[height<=720]+ba/b[height<=720]/best" \
-            --merge-output-format mp4 \
-            -o "test-output/android_vr.%(ext)s" "$TEST_URL" 2>&1 | tee test-output/android_vr.log
-          rc=${PIPESTATUS[0]}
-          /tmp/check_media.sh android_vr 'android_vr.*' || true
-          exit $rc
 
       - name: Start automatic PO Token provider
-        id: potserver
-        continue-on-error: true
         shell: bash
         run: |
           set +e
-          docker pull brainicism/bgutil-ytdlp-pot-provider:latest 2>&1 | tee test-output/pot-docker-pull.log
-          docker run -d --name bgutil-pot -p 4416:4416 --init brainicism/bgutil-ytdlp-pot-provider:latest 2>&1 | tee test-output/pot-docker-run.log
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:4416/ >/dev/null 2>&1; then break; fi
-            sleep 1
-          done
+          docker pull brainicism/bgutil-ytdlp-pot-provider:latest > test-output/pot-pull.log 2>&1
+          docker run -d --name bgutil-pot -p 4416:4416 --init brainicism/bgutil-ytdlp-pot-provider:latest > test-output/pot-run.log 2>&1
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4416/ >/dev/null 2>&1 && break; sleep 1; done
           docker logs bgutil-pot > test-output/pot-server.log 2>&1 || true
-          curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4416/ | tee test-output/pot-http-status.txt
           exit 0
 
-      - name: Route C - yt-dlp mweb + automatic PO Token
-        id: pot
+      - name: Route A - yt-dlp mweb + PO Token + EJS
         continue-on-error: true
         shell: bash
         run: |
           set +e
-          timeout 150 yt-dlp -v --no-playlist --retries 1 --fragment-retries 1 --socket-timeout 15 \
-            --extractor-args "youtube:player_client=mweb" \
-            -f "bv*[height<=720]+ba/b[height<=720]/best" \
-            --merge-output-format mp4 \
-            -o "test-output/pot_mweb.%(ext)s" "$TEST_URL" 2>&1 | tee test-output/pot_mweb.log
-          rc=${PIPESTATUS[0]}
-          /tmp/check_media.sh pot_mweb 'pot_mweb.*' || true
-          exit $rc
+          timeout 150 yt-dlp -v --js-runtimes node --remote-components ejs:github \
+            --extractor-args "youtube:player_client=mweb" --no-playlist --retries 1 --fragment-retries 1 \
+            -f "bv*[height<=720]+ba/b[height<=720]/best" --merge-output-format mp4 \
+            -o "test-output/pot_ejs.%(ext)s" "$TEST_URL" > test-output/pot_ejs.log 2>&1
+          /tmp/check_media.sh pot_ejs 'pot_ejs.*' 'mweb+bgutil+node24' || true
+          exit 0
+
+      - name: Route B - yt-dlp web_safari HLS + EJS
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          timeout 150 yt-dlp -v --js-runtimes node --remote-components ejs:github \
+            --extractor-args "youtube:player_client=web_safari" --no-playlist --retries 1 --fragment-retries 1 \
+            -f "best[height<=720]/best" --merge-output-format mp4 \
+            -o "test-output/safari_hls.%(ext)s" "$TEST_URL" > test-output/safari_hls.log 2>&1
+          /tmp/check_media.sh safari_hls 'safari_hls.*' 'web_safari' || true
+          exit 0
 
       - name: Start self-hosted Cobalt
-        id: cobaltserver
-        continue-on-error: true
         shell: bash
         run: |
           set +e
-          docker pull ghcr.io/imputnet/cobalt:11 2>&1 | tee test-output/cobalt-pull.log
+          docker pull ghcr.io/imputnet/cobalt:11 > test-output/cobalt-pull.log 2>&1
           docker run -d --name cobalt-test -p 9000:9000 --init \
-            -e API_URL=http://127.0.0.1:9000/ \
-            ghcr.io/imputnet/cobalt:11 2>&1 | tee test-output/cobalt-run.log
-          ok=0
-          for i in $(seq 1 45); do
-            if curl -fsS http://127.0.0.1:9000/ > test-output/cobalt-info.json 2>/dev/null; then ok=1; break; fi
-            sleep 1
-          done
-          docker logs cobalt-test > test-output/cobalt-server.log 2>&1 || true
-          test "$ok" = 1
+            -e API_URL=http://127.0.0.1:9000/ ghcr.io/imputnet/cobalt:11 > test-output/cobalt-run.log 2>&1
+          for i in $(seq 1 45); do curl -fsS http://127.0.0.1:9000/ > test-output/cobalt-info.json 2>/dev/null && break; sleep 1; done
+          exit 0
 
-      - name: Route D - self-hosted Cobalt
-        id: cobalt
+      - name: Route C - Cobalt standard and HLS
         continue-on-error: true
         shell: bash
         run: |
           set +e
-          python - <<'PY' 2>&1 | tee test-output/cobalt-client.log
-          import json, os, pathlib, urllib.request
+          python - <<'PY' > test-output/cobalt-client.log 2>&1
+          import json,os,pathlib,urllib.request,urllib.error
           url=os.environ['TEST_URL']
-          payload=json.dumps({
-              'url':url,
-              'videoQuality':'720',
-              'youtubeVideoContainer':'mp4',
-              'youtubeVideoCodec':'h264',
-              'downloadMode':'auto',
-              'localProcessing':'disabled'
-          }).encode()
-          req=urllib.request.Request('http://127.0.0.1:9000/', data=payload,
-              headers={'Accept':'application/json','Content-Type':'application/json'}, method='POST')
-          with urllib.request.urlopen(req, timeout=60) as r:
-              body=r.read().decode('utf-8','replace')
-          pathlib.Path('test-output/cobalt-response.json').write_text(body)
-          print(body)
-          obj=json.loads(body)
-          status=obj.get('status')
-          if status not in ('tunnel','redirect') or not obj.get('url'):
-              raise SystemExit('Cobalt did not return downloadable tunnel/redirect: '+str(status))
-          target=obj['url']
-          req2=urllib.request.Request(target,headers={'User-Agent':'Mozilla/5.0'})
-          with urllib.request.urlopen(req2,timeout=180) as r, open('test-output/cobalt.mp4','wb') as f:
-              while True:
-                  b=r.read(1024*1024)
-                  if not b: break
-                  f.write(b)
-                  if f.tell() > 300*1024*1024: break
-          print('downloaded bytes',pathlib.Path('test-output/cobalt.mp4').stat().st_size)
+          def attempt(label,hls):
+              payload=json.dumps({'url':url,'videoQuality':'720','youtubeVideoContainer':'mp4','youtubeVideoCodec':'h264','downloadMode':'auto','youtubeHLS':hls}).encode()
+              req=urllib.request.Request('http://127.0.0.1:9000/',data=payload,headers={'Accept':'application/json','Content-Type':'application/json'},method='POST')
+              try:
+                  with urllib.request.urlopen(req,timeout=60) as r: body=r.read().decode('utf-8','replace')
+              except urllib.error.HTTPError as e:
+                  body=e.read().decode('utf-8','replace'); print(label,'HTTP',e.code,body)
+                  pathlib.Path(f'test-output/cobalt-{label}-response.json').write_text(body); return False
+              pathlib.Path(f'test-output/cobalt-{label}-response.json').write_text(body); print(label,body)
+              obj=json.loads(body); target=obj.get('url')
+              if obj.get('status') not in ('tunnel','redirect') or not target:return False
+              try:
+                  req2=urllib.request.Request(target,headers={'User-Agent':'Mozilla/5.0'})
+                  with urllib.request.urlopen(req2,timeout=180) as r,open(f'test-output/cobalt_{label}.mp4','wb') as f:
+                      while True:
+                          b=r.read(1024*1024)
+                          if not b: break
+                          f.write(b)
+                  return True
+              except Exception as e: print(label,'download failed',repr(e)); return False
+          attempt('standard',False)
+          attempt('hls',True)
           PY
-          rc=${PIPESTATUS[0]}
-          /tmp/check_media.sh cobalt 'cobalt.mp4' || true
-          exit $rc
+          docker logs cobalt-test > test-output/cobalt-server.log 2>&1 || true
+          /tmp/check_media.sh cobalt_standard 'cobalt_standard.mp4' 'self-hosted' || true
+          /tmp/check_media.sh cobalt_hls 'cobalt_hls.mp4' 'self-hosted+hls' || true
+          exit 0
 
-      - name: Summarize routes
+      - name: Route D - Piped public proxy instances
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python - <<'PY' > test-output/piped.log 2>&1
+          import json,pathlib,urllib.request,urllib.error
+          vid=pathlib.Path('test-output/video_id.txt').read_text().strip()
+          instances=['https://pipedapi.kavin.rocks','https://pipedapi.leptons.xyz','https://pipedapi.nosebs.ru','https://api-piped.mha.fi','https://piped-api.garudalinux.org']
+          out=pathlib.Path('test-output/piped.mp4')
+          for base in instances:
+              print('TRY',base,flush=True)
+              try:
+                  req=urllib.request.Request(f'{base}/streams/{vid}',headers={'User-Agent':'Mozilla/5.0','Accept':'application/json'})
+                  with urllib.request.urlopen(req,timeout=35) as r: data=json.load(r)
+                  pathlib.Path('test-output/piped-last-response.json').write_text(json.dumps(data)[:200000])
+                  streams=[s for s in data.get('videoStreams',[]) if not s.get('videoOnly') and s.get('url')]
+                  streams.sort(key=lambda s:(int(s.get('height') or 0)>720,int(s.get('height') or 0)),reverse=True)
+                  chosen=next((s for s in streams if int(s.get('height') or 0)<=720),streams[0] if streams else None)
+                  if not chosen:
+                      print('no muxed stream'); continue
+                  print('chosen',chosen.get('quality'),chosen.get('mimeType'),chosen.get('url')[:140])
+                  req2=urllib.request.Request(chosen['url'],headers={'User-Agent':'Mozilla/5.0'})
+                  with urllib.request.urlopen(req2,timeout=180) as r,open(out,'wb') as f:
+                      print('HTTP stream',getattr(r,'status',None),'type',r.headers.get('Content-Type'),'length',r.headers.get('Content-Length'))
+                      while True:
+                          b=r.read(1024*1024)
+                          if not b: break
+                          f.write(b)
+                  if out.exists() and out.stat().st_size>100000:
+                      pathlib.Path('test-output/piped-instance.txt').write_text(base)
+                      print('SUCCESS',base,out.stat().st_size); break
+              except Exception as e:
+                  print('FAIL',base,repr(e),flush=True); out.unlink(missing_ok=True)
+          PY
+          detail="$(cat test-output/piped-instance.txt 2>/dev/null || echo public-proxy)"
+          /tmp/check_media.sh piped 'piped.mp4' "$detail" || true
+          exit 0
+
+      - name: Route E - Invidious local proxy instances
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python - <<'PY' > test-output/invidious.log 2>&1
+          import json,pathlib,urllib.request,urllib.parse
+          vid=pathlib.Path('test-output/video_id.txt').read_text().strip()
+          instances=['https://inv.nadeko.net','https://invidious.nerdvpn.de','https://yt.chocolatemoo53.com','https://invidious.tiekoetter.com']
+          out=pathlib.Path('test-output/invidious.mp4')
+          for base in instances:
+              print('TRY',base,flush=True)
+              try:
+                  req=urllib.request.Request(f'{base}/api/v1/videos/{vid}',headers={'User-Agent':'Mozilla/5.0','Accept':'application/json'})
+                  with urllib.request.urlopen(req,timeout=35) as r:data=json.load(r)
+                  pathlib.Path('test-output/invidious-last-response.json').write_text(json.dumps(data)[:200000])
+                  fmts=data.get('formatStreams') or []
+                  def h(x):
+                      q=str(x.get('qualityLabel') or x.get('quality') or '0'); import re
+                      m=re.search(r'\d+',q); return int(m.group()) if m else 0
+                  fmts.sort(key=h,reverse=True)
+                  chosen=next((x for x in fmts if h(x)<=720),fmts[0] if fmts else None)
+                  if not chosen: print('no formatStreams'); continue
+                  itag=chosen.get('itag'); print('itag',itag,'quality',chosen.get('qualityLabel') or chosen.get('quality'))
+                  target=f'{base}/latest_version?'+urllib.parse.urlencode({'id':vid,'itag':itag,'local':'true','title':'radar-test'})
+                  req2=urllib.request.Request(target,headers={'User-Agent':'Mozilla/5.0'})
+                  with urllib.request.urlopen(req2,timeout=180) as r,open(out,'wb') as f:
+                      print('HTTP stream',getattr(r,'status',None),'type',r.headers.get('Content-Type'),'length',r.headers.get('Content-Length'))
+                      while True:
+                          b=r.read(1024*1024)
+                          if not b: break
+                          f.write(b)
+                  if out.exists() and out.stat().st_size>100000:
+                      pathlib.Path('test-output/invidious-instance.txt').write_text(base)
+                      print('SUCCESS',base,out.stat().st_size);break
+              except Exception as e:
+                  print('FAIL',base,repr(e),flush=True);out.unlink(missing_ok=True)
+          PY
+          detail="$(cat test-output/invidious-instance.txt 2>/dev/null || echo public-proxy)"
+          /tmp/check_media.sh invidious 'invidious.mp4' "$detail" || true
+          exit 0
+
+      - name: Summarize
         if: always()
         shell: bash
         run: |
-          echo '==== RESULTS ===='
+          echo '==== VERIFIED RESULTS ===='
           cat test-output/results.txt || true
-          echo '==== STEP OUTCOMES ===='
-          echo "baseline=${{ steps.baseline.outcome }}"
-          echo "android_vr=${{ steps.androidvr.outcome }}"
-          echo "pot_server=${{ steps.potserver.outcome }}"
-          echo "pot_mweb=${{ steps.pot.outcome }}"
-          echo "cobalt_server=${{ steps.cobaltserver.outcome }}"
-          echo "cobalt=${{ steps.cobalt.outcome }}"
+          echo '==== COBALT RESPONSES ===='
+          cat test-output/cobalt-standard-response.json 2>/dev/null || true
+          echo
+          cat test-output/cobalt-hls-response.json 2>/dev/null || true
+          echo
           {
-            echo "# YouTube route test"
+            echo '# YouTube download route test v2'
             echo
             echo '```'
             cat test-output/results.txt || true
             echo '```'
-            echo
-            echo "baseline: ${{ steps.baseline.outcome }}"
-            echo "android_vr: ${{ steps.androidvr.outcome }}"
-            echo "PO token mweb: ${{ steps.pot.outcome }}"
-            echo "Cobalt: ${{ steps.cobalt.outcome }}"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-download-route-test
+          name: youtube-download-route-test-v2
           path: test-output/
           if-no-files-found: warn
           retention-days: 3
