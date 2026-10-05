@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-05T14:00:48.141849+00:00",
-  "total_discovered": 32,
-  "ready_for_tiktok": 31,
+  "updated_at": "2026-10-05T21:33:19.979125+00:00",
+  "total_discovered": 34,
+  "ready_for_tiktok": 33,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,18 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "Jgc8oz3zALM",
+      "youtube_url": "https://www.youtube.com/shorts/Jgc8oz3zALM",
+      "title": "4 veículos de Galactic Racer: qual combina com você?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "m_M1m9Ijo8Y",
+      "youtube_url": "https://www.youtube.com/shorts/m_M1m9Ijo8Y",
+      "title": "Galactic Racer: por que o PODRACER é tão difícil?",
+      "status": "approved"
+    },
     {
       "youtube_id": "PijxXReT4Gs",
       "youtube_url": "https://www.youtube.com/shorts/PijxXReT4Gs",

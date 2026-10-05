@@ -1,20 +1,8 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-05T15:44:01.066010+00:00",
+  "updated_at": "2026-10-05T21:33:19.979125+00:00",
   "items": [
-    {
-      "id": "star-wars-galactic-racer-vehicles-approved-37326285663-short-1",
-      "title": "Galactic Racer: por que o PODRACER é tão difícil?",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-1.jpg",
-      "post_text": "Galactic Racer: por que o PODRACER é tão difícil?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #Podracer #RadarDosGames #Games #Gaming #TikTokGames",
-      "status": "approved",
-      "source_run_id": 37326285663,
-      "short_number": 1,
-      "approved_at": "2026-10-05T15:44:01.066010+00:00",
-      "source": "approved_production_artifact"
-    },
     {
       "id": "star-wars-galactic-racer-vehicles-approved-37326285663-short-2",
       "title": "4 veículos de Galactic Racer: qual combina com você?",
@@ -25,19 +13,27 @@
       "source_run_id": 37326285663,
       "short_number": 2,
       "approved_at": "2026-10-05T15:44:01.066010+00:00",
-      "source": "approved_production_artifact"
+      "source": "youtube_channel",
+      "youtube_id": "Jgc8oz3zALM",
+      "youtube_url": "https://www.youtube.com/shorts/Jgc8oz3zALM",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-05T21:33:19.979125+00:00"
     },
     {
-      "id": "star-wars-galactic-racer-vehicles-approved-37326285663-short-3",
-      "title": "Galactic Racer tem campanha, Arcade e até 12 online",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-3.jpg",
-      "post_text": "Galactic Racer tem campanha, Arcade e até 12 online\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #RadarDosGames #Podracer #Games #Gaming #TikTokGames",
+      "id": "star-wars-galactic-racer-vehicles-approved-37326285663-short-1",
+      "title": "Galactic Racer: por que o PODRACER é tão difícil?",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-1.jpg",
+      "post_text": "Galactic Racer: por que o PODRACER é tão difícil?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #Podracer #RadarDosGames #Games #Gaming #TikTokGames",
       "status": "approved",
       "source_run_id": 37326285663,
-      "short_number": 3,
+      "short_number": 1,
       "approved_at": "2026-10-05T15:44:01.066010+00:00",
-      "source": "approved_production_artifact"
+      "source": "youtube_channel",
+      "youtube_id": "m_M1m9Ijo8Y",
+      "youtube_url": "https://www.youtube.com/shorts/m_M1m9Ijo8Y",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-05T21:33:19.979125+00:00"
     },
     {
       "id": "wardogs-approved-37300872441-short-3",
@@ -497,6 +493,18 @@
       "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
+    },
+    {
+      "id": "star-wars-galactic-racer-vehicles-approved-37326285663-short-3",
+      "title": "Galactic Racer tem campanha, Arcade e até 12 online",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/star-wars-galactic-racer-vehicles-37326285663-short-3.jpg",
+      "post_text": "Galactic Racer tem campanha, Arcade e até 12 online\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#StarWars #GalacticRacer #RadarDosGames #Podracer #Games #Gaming #TikTokGames",
+      "status": "approved",
+      "source_run_id": 37326285663,
+      "short_number": 3,
+      "approved_at": "2026-10-05T15:44:01.066010+00:00",
+      "source": "approved_production_artifact"
     }
   ]
 }
