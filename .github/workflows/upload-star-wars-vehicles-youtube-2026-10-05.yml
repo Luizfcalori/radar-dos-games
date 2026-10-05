@@ -1,4 +1,5 @@
 name: Upload Star Wars Vehicles to YouTube
+# retry-safe resumable upload
 
 on:
   push:
