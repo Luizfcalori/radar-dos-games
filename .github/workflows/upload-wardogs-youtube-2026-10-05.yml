@@ -1,0 +1,119 @@
+name: Upload WARDOGS to YouTube
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/upload-wardogs-youtube-2026-10-05.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download approved WARDOGS package
+        uses: actions/download-artifact@v4
+        with:
+          name: wardogs-master-3-shorts-37300872441
+          path: wardogs-final
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37300872441
+
+      - name: Prepare files and schedule metadata
+        run: |
+          python -m pip install -q google-api-python-client google-auth google-auth-httplib2
+          find wardogs-final -type f -maxdepth 4 | sort
+          MASTER=$(find wardogs-final -type f -name master.mp4 | head -1)
+          S1=$(find wardogs-final -type f -path '*/shorts/short_1.mp4' | head -1)
+          S2=$(find wardogs-final -type f -path '*/shorts/short_2.mp4' | head -1)
+          S3=$(find wardogs-final -type f -path '*/shorts/short_3.mp4' | head -1)
+          MJSON=$(find wardogs-final -type f -name master-youtube.json | head -1)
+          J1=$(find wardogs-final -type f -name short-1-youtube.json | head -1)
+          J2=$(find wardogs-final -type f -name short-2-youtube.json | head -1)
+          J3=$(find wardogs-final -type f -name short-3-youtube.json | head -1)
+          test -s "$MASTER"; test -s "$S1"; test -s "$S2"; test -s "$S3"
+          mkdir -p output/shorts
+          cp "$MASTER" output/master.mp4
+          cp "$S1" output/shorts/short_1.mp4
+          cp "$S2" output/shorts/short_2.mp4
+          cp "$S3" output/shorts/short_3.mp4
+          cp "$MJSON" output/master-youtube.json
+          cp "$J1" output/short-1-youtube.json
+          cp "$J2" output/short-2-youtube.json
+          cp "$J3" output/short-3-youtube.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          slots={
+            'master-youtube.json':'2026-10-05T11:40:00Z',
+            'short-1-youtube.json':'2026-10-05T12:00:00Z',
+            'short-2-youtube.json':'2026-10-05T12:30:00Z',
+            'short-3-youtube.json':'2026-10-05T13:00:00Z',
+          }
+          for fn,publish_at in slots.items():
+              p=Path('output')/fn
+              m=json.loads(p.read_text(encoding='utf-8'))
+              m['privacy']='private'
+              m['publishAt']=publish_at
+              p.write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding='utf-8')
+              print(fn,publish_at,m['title'])
+          PY
+
+      - name: Verify YouTube OAuth and channel
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/check_youtube.py
+
+      - name: Upload Master scheduled 08:40 BRT
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+
+      - name: Upload Short 1 scheduled 09:00 BRT
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+
+      - name: Upload Short 2 scheduled 09:30 BRT
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+
+      - name: Upload Short 3 scheduled 10:00 BRT
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Save upload confirmations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wardogs-youtube-upload-results-${{ github.run_id }}
+          path: |
+            output/*youtube*.json
+            output/thumbnail.jpg
+          if-no-files-found: warn
+          retention-days: 7
