@@ -80,14 +80,27 @@ def newisty_download(url,dest,quality='720p'):
     """Fallback externo para YouTube quando o IP do runner recebe bloqueio anti-bot."""
     headers={'User-Agent':'radar-dos-games/1.0','Accept':'application/json','Content-Type':'application/json'}
     try:
+        job_id=''
         payload=json.dumps({'url':url,'format':quality}).encode()
-        start=urllib.request.Request(NEWISTY_BASE+'/start',data=payload,headers=headers,method='POST')
-        with urllib.request.urlopen(start,timeout=65) as r:obj=json.loads(r.read().decode('utf-8','replace'))
-        job_id=str(((obj.get('data') or {}).get('job_id') or '')).strip()
-        if not job_id:
-            print('newisty start failed: no job_id',obj);return None
+        for attempt in range(1,7):
+            start=urllib.request.Request(NEWISTY_BASE+'/start',data=payload,headers=headers,method='POST')
+            try:
+                with urllib.request.urlopen(start,timeout=65) as r:obj=json.loads(r.read().decode('utf-8','replace'))
+                job_id=str(((obj.get('data') or {}).get('job_id') or '')).strip()
+                if job_id:break
+                print('newisty start failed: no job_id',obj)
+            except urllib.error.HTTPError as e:
+                body=e.read().decode('utf-8','replace')
+                if e.code!=429:raise
+                raw_wait=e.headers.get('Retry-After') or '10'
+                try:wait=int(float(raw_wait))
+                except:wait=10
+                wait=max(5,min(wait,30))
+                print('newisty temporary 429; retry',attempt,'in',wait,'seconds',body[:300])
+                if attempt<6:time.sleep(wait)
+        if not job_id:return None
         state='queued'
-        for _ in range(24):
+        for _ in range(30):
             time.sleep(5)
             progress=urllib.request.Request(NEWISTY_BASE+'/progress/'+urllib.parse.quote(job_id),headers={'User-Agent':headers['User-Agent'],'Accept':'application/json'})
             try:
@@ -119,7 +132,7 @@ def ytdlp(url,dest):
     if 'youtube.com' not in url and 'youtu.be' not in url:return None
     args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15','-f','bv*[height<=1080]+ba/b[height<=1080]/best','--merge-output-format','mp4','-o',str(dest),url]
     try:
-        subprocess.run(args,check=True,timeout=100)
+        subprocess.run(args,check=True,timeout=35)
         info=probe_info(dest)
         if info:return info
     except Exception as e:print('yt direct fallback failed',e)
