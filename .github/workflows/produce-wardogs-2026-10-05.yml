@@ -1,0 +1,196 @@
+name: Produce WARDOGS Master + 3 Shorts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/produce-wardogs-2026-10-05.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+
+      - name: Validate official intro
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: Build WARDOGS script media plan and metadata
+        run: |
+          mkdir -p output output/shorts output/media
+          cat > output/auto-script.txt <<'TXT'
+          WARDOGS chegou com uma proposta direta: colocar até cem jogadores em uma guerra tática de grande escala. Desenvolvido pela BULKHEAD e publicado pela Team17, o jogo está em acesso antecipado e tenta misturar combate de infantaria, veículos, construção e destruição em um mesmo campo de batalha.
+
+          A estrutura principal divide cem jogadores em três equipes. Todas disputam uma Zona de Controle que muda de posição dentro do enorme mapa, e a equipe com mais presença dentro da área marca pontos. A primeira a alcançar cem pontos vence a partida.
+
+          A Zona de Controle ocupa dois por dois quilômetros, mas ela aparece dentro de um mapa muito maior, com duzentos e cinquenta e seis quilômetros quadrados. Isso faz com que a rota até o objetivo, a posição dos veículos e a escolha de onde montar uma defesa mudem bastante de uma partida para outra.
+
+          O cenário é inspirado em montanhas industriais abandonadas do leste europeu. E o mapa não é apenas decoração: prédios podem ser destruídos, áreas podem ser fortificadas e o combate pode mudar completamente quando uma equipe decide abrir passagem com explosivos ou segurar um ponto com construções defensivas.
+
+          Outro diferencial é a economia persistente. Cada jogador começa sua jornada com dinheiro para montar o equipamento, e ações de equipe como reanimar aliados, transportar companheiros ou ajudar no objetivo rendem mais recursos. O dinheiro continua entre as partidas, então gastar em armas, equipamentos ou veículos vira parte da estratégia.
+
+          A liberdade de abordagem também chama atenção. Dá para atuar sozinho, jogar em esquadrão, usar helicópteros, veículos blindados, atirar de longe ou construir uma base avançada perto de um ponto estratégico. A proposta é deixar as decisões do jogador moldarem cada confronto.
+
+          Para este vídeo, o Radar dos Games está usando gameplay, trailers e imagens oficiais do próprio WARDOGS, com prioridade para os arquivos disponibilizados pela Steam e pela Team17. Assim você vê o jogo em movimento e também os cenários, veículos e combates divulgados oficialmente.
+
+          WARDOGS está disponível em acesso antecipado e já entra no radar como um dos shooters táticos mais interessantes para acompanhar. Se a BULKHEAD continuar ampliando conteúdo, desempenho e variedade de batalhas, esse jogo pode ganhar bastante espaço entre quem gosta de guerra em grande escala.
+          TXT
+
+          cat > output/auto-media-plan.json <<'JSON'
+          {
+            "minimum_assets": 5,
+            "minimum_video_assets": 2,
+            "minimum_unique_video_seconds": 90,
+            "minimum_image_assets": 3,
+            "media": [
+              {
+                "type": "video",
+                "role": "official_gameplay",
+                "steam_app_id": 1867240,
+                "source_proof": "WARDOGS official Steam app 1867240",
+                "min_duration": 20,
+                "max_assets": 3
+              },
+              {
+                "type": "image",
+                "role": "official_screenshots",
+                "steam_app_id": 1867240,
+                "source_proof": "WARDOGS official Steam screenshots",
+                "max_assets": 8
+              },
+              {
+                "type": "video",
+                "role": "official_team17_media",
+                "url": "https://www.team17.com/games/wardogs",
+                "source_proof": "Team17 official WARDOGS page",
+                "min_duration": 15,
+                "max_assets": 2
+              }
+            ],
+            "scenes": [
+              {"paragraph":1,"title":"WARDOGS NO RADAR","subtitle":"100 JOGADORES • GUERRA TÁTICA","media_indices":[1,2]},
+              {"paragraph":2,"title":"3 EQUIPES, 1 OBJETIVO","subtitle":"A CORRIDA PELA ZONA DE CONTROLE","media_indices":[2,3]},
+              {"paragraph":3,"title":"MAPA GIGANTE","subtitle":"256 KM² DE CAMPO DE BATALHA","media_indices":[3,4]},
+              {"paragraph":4,"title":"DESTRUIR OU FORTIFICAR","subtitle":"O MAPA REAGE AO COMBATE","media_indices":[4,5]},
+              {"paragraph":5,"title":"DINHEIRO MUDA A PARTIDA","subtitle":"ECONOMIA PERSISTENTE","media_indices":[5,1]},
+              {"paragraph":6,"title":"JOGUE DO SEU JEITO","subtitle":"INFANTARIA • VEÍCULOS • HELICÓPTEROS","media_indices":[1,3]},
+              {"paragraph":7,"title":"GAMEPLAY + FOTOS OFICIAIS","subtitle":"STEAM E TEAM17","media_indices":[2,4]},
+              {"paragraph":8,"title":"VALE FICAR DE OLHO","subtitle":"RADAR DOS GAMES","media_indices":[3,5]}
+            ]
+          }
+          JSON
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          src='https://www.team17.com/games/wardogs'
+          steam='https://store.steampowered.com/app/1867240/WARDOGS/'
+          tags=['Radar dos Games','WARDOGS','Bulkhead','Team17','FPS','Tactical FPS','Steam','Early Access']
+          master={
+            'title':'WARDOGS: o FPS de guerra total com 100 jogadores',
+            'description':'🎮 WARDOGS mistura guerra tática, destruição, veículos e até 100 jogadores divididos em três equipes. Neste vídeo mostramos gameplay e imagens oficiais e explicamos como funciona a Zona de Controle, a economia persistente e a liberdade de abordagem.\n\n🔎 Fontes oficiais:\n'+src+'\n'+steam+'\n\n#WARDOGS #RadarDosGames #FPS #Team17 #Bulkhead',
+            'tags':tags,'privacy':'unlisted','containsSyntheticMedia':False
+          }
+          shorts=[
+            {'title':'WARDOGS: 100 jogadores em guerra total #Shorts','description':'WARDOGS coloca até 100 jogadores em três equipes disputando uma Zona de Controle.\n\nFonte oficial: '+src+'\n\n#WARDOGS #RadarDosGames #Shorts','tags':tags+['Shorts'],'privacy':'unlisted','containsSyntheticMedia':False},
+            {'title':'WARDOGS: destruição, tanques e helicópteros #Shorts','description':'Em WARDOGS, o campo de batalha combina destruição, construção e combate com veículos.\n\nFonte oficial: '+src+'\n\n#WARDOGS #RadarDosGames #Shorts','tags':tags+['Shorts'],'privacy':'unlisted','containsSyntheticMedia':False},
+            {'title':'WARDOGS vale a pena acompanhar? #Shorts','description':'Um FPS tático em acesso antecipado com economia persistente e mapa de grande escala.\n\nFonte oficial: '+src+'\n\n#WARDOGS #RadarDosGames #Shorts','tags':tags+['Shorts'],'privacy':'unlisted','containsSyntheticMedia':False}
+          ]
+          Path('output/master-youtube.json').write_text(json.dumps(master,ensure_ascii=False,indent=2),encoding='utf-8')
+          for i,x in enumerate(shorts,1): Path(f'output/short-{i}-youtube.json').write_text(json.dumps(x,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Create Thalita PT-BR narration
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaNeural --segments-json output/voice-timings.json
+
+      - name: Download official gameplay and screenshots
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Build render manifest from approved media
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('output/auto-media-plan.json').read_text(encoding='utf-8'))
+          media=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
+          assets=media['assets']
+          ok=[int(a['index']) for a in assets]
+          assert len(ok)>=5, ok
+          scenes=spec['scenes']
+          for i,scene in enumerate(scenes):
+              a=ok[i%len(ok)]; b=ok[(i+1)%len(ok)]
+              scene['media_indices']=[a] if a==b else [a,b]
+          manifest={'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'radar-dos-games-intro-oficial.mp4','scenes':scenes,'output':'output/master.mp4'}
+          Path('output/render.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Render Master approved style
+        run: python src/render.py output/render.json
+
+      - name: Generate 3 Shorts
+        run: python src/shorts.py output/master.mp4
+
+      - name: Final QA
+        run: |
+          python - <<'PY'
+          import glob,json,subprocess
+          from pathlib import Path
+          def probe(p): return json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(p)],text=True))
+          master=Path('output/master.mp4'); assert master.exists() and master.stat().st_size>3_000_000
+          m=probe(master); md=float(m['format']['duration']); mv=next(x for x in m['streams'] if x['codec_type']=='video')
+          assert (int(mv['width']),int(mv['height']))==(1920,1080)
+          assert 100<=md<=420, md
+          assert any(x['codec_type']=='audio' for x in m['streams'])
+          qa=json.loads(Path('output/qa.json').read_text(encoding='utf-8'))
+          assert qa['card_style']['shadow_attached_to_text'] is True
+          assert qa['voice']=='pt-BR-ThalitaNeural'
+          shorts=sorted(glob.glob('output/shorts/short_*.mp4')); assert len(shorts)==3
+          report=[]
+          for p in shorts:
+              q=probe(p); d=float(q['format']['duration']); v=next(x for x in q['streams'] if x['codec_type']=='video')
+              assert (int(v['width']),int(v['height']))==(1080,1920)
+              assert 10<=d<=65
+              assert any(x['codec_type']=='audio' for x in q['streams'])
+              report.append({'file':p,'seconds':round(d,2)})
+          out={'master_seconds':round(md,2),'master':'1920x1080','shorts':report,'status':'APPROVED'}
+          Path('output/final-qa.json').write_text(json.dumps(out,indent=2),encoding='utf-8')
+          print(json.dumps(out,indent=2))
+          PY
+
+      - name: Upload final WARDOGS package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wardogs-master-3-shorts-${{ github.run_id }}
+          path: |
+            output/auto-script.txt
+            output/auto-media-plan.json
+            output/clips.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/master.mp4
+            output/qa.json
+            output/final-qa.json
+            output/shorts/*.mp4
+            output/*youtube*.json
+          retention-days: 7
