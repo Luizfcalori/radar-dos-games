@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -124,11 +125,21 @@ def upload(path,meta):
     req=yt.videos().insert(
         part='snippet,status',
         body=body,
-        media_body=MediaFileUpload(path,chunksize=-1,resumable=True),
+        media_body=MediaFileUpload(path,chunksize=8*1024*1024,resumable=True),
     )
     resp=None
+    consecutive_errors=0
     while resp is None:
-        _,resp=req.next_chunk()
+        try:
+            _,resp=req.next_chunk()
+            consecutive_errors=0
+        except (TimeoutError, OSError) as exc:
+            consecutive_errors += 1
+            if consecutive_errors > 5:
+                raise
+            wait=min(5 * (2 ** (consecutive_errors - 1)), 60)
+            print(f'Upload temporariamente interrompido ({type(exc).__name__}); retomando em {wait}s...', file=sys.stderr)
+            time.sleep(wait)
 
     thumb_resp = _set_thumbnail(yt, resp['id'], thumbnail)
     if thumbnail is not None:
