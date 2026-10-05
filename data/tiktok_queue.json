@@ -1,8 +1,21 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-04T23:18:14.291380+00:00",
+  "updated_at": "2026-10-05T00:20:32.683078+00:00",
   "items": [
+    {
+      "id": "yt-XA-YklCtg1k",
+      "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
+      "media_url": "",
+      "thumbnail_url": "https://i.ytimg.com/vi/XA-YklCtg1k/hqdefault.jpg",
+      "post_text": "Gears of War: E-Day é o #1 do TOP 10! 🔥\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#Gears #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "waiting_media",
+      "youtube_id": "XA-YklCtg1k",
+      "youtube_url": "https://www.youtube.com/shorts/XA-YklCtg1k",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-10-05T00:20:32.683078+00:00"
+    },
     {
       "id": "yt-G7uUZh_dcmE",
       "title": "Dragon’s Dogma em destaque no TOP 10 Games",
@@ -13,7 +26,7 @@
       "youtube_id": "G7uUZh_dcmE",
       "youtube_url": "https://www.youtube.com/shorts/G7uUZh_dcmE",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191122+00:00"
     },
@@ -27,7 +40,7 @@
       "youtube_id": "xZvU-U2lBOg",
       "youtube_url": "https://www.youtube.com/shorts/xZvU-U2lBOg",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191137+00:00"
     },
@@ -41,7 +54,7 @@
       "youtube_id": "_FRcK8AnIoI",
       "youtube_url": "https://www.youtube.com/shorts/_FRcK8AnIoI",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191141+00:00"
     },
@@ -55,7 +68,7 @@
       "youtube_id": "Ec5DOnNEmsQ",
       "youtube_url": "https://www.youtube.com/shorts/Ec5DOnNEmsQ",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191143+00:00"
     },
@@ -69,7 +82,7 @@
       "youtube_id": "9XJfF2fMTZ8",
       "youtube_url": "https://www.youtube.com/shorts/9XJfF2fMTZ8",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191145+00:00"
     },
@@ -83,7 +96,7 @@
       "youtube_id": "deg5A2eYoRA",
       "youtube_url": "https://www.youtube.com/shorts/deg5A2eYoRA",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191147+00:00"
     },
@@ -97,7 +110,7 @@
       "youtube_id": "rwld0AShJ8c",
       "youtube_url": "https://www.youtube.com/shorts/rwld0AShJ8c",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191149+00:00"
     },
@@ -111,7 +124,7 @@
       "youtube_id": "t7rOGU817fs",
       "youtube_url": "https://www.youtube.com/shorts/t7rOGU817fs",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191151+00:00"
     },
@@ -125,7 +138,7 @@
       "youtube_id": "2NyCeNUZj4g",
       "youtube_url": "https://www.youtube.com/shorts/2NyCeNUZj4g",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191153+00:00"
     },
@@ -187,7 +200,7 @@
       "youtube_id": "FrS_CuyvCxo",
       "youtube_url": "https://www.youtube.com/shorts/FrS_CuyvCxo",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191155+00:00"
     },
@@ -201,7 +214,7 @@
       "youtube_id": "Mn6IZn2nPYM",
       "youtube_url": "https://www.youtube.com/shorts/Mn6IZn2nPYM",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191157+00:00"
     },
@@ -215,7 +228,7 @@
       "youtube_id": "akvK2Vmy8qE",
       "youtube_url": "https://www.youtube.com/shorts/akvK2Vmy8qE",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191159+00:00"
     },
@@ -229,7 +242,7 @@
       "youtube_id": "qF_J0S_Ro24",
       "youtube_url": "https://www.youtube.com/shorts/qF_J0S_Ro24",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191161+00:00"
     },
@@ -243,7 +256,7 @@
       "youtube_id": "iRGjt-366xQ",
       "youtube_url": "https://www.youtube.com/shorts/iRGjt-366xQ",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191163+00:00"
     },
@@ -257,7 +270,7 @@
       "youtube_id": "PTKLCEgdxTo",
       "youtube_url": "https://www.youtube.com/shorts/PTKLCEgdxTo",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191165+00:00"
     },
@@ -271,7 +284,7 @@
       "youtube_id": "BhTKkDjhTnc",
       "youtube_url": "https://www.youtube.com/shorts/BhTKkDjhTnc",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:10:30.580704+00:00"
     },
@@ -285,7 +298,7 @@
       "youtube_id": "hjCBW6wopN8",
       "youtube_url": "https://www.youtube.com/shorts/hjCBW6wopN8",
       "youtube_published_at": null,
-      "source": "drive_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     },
@@ -299,7 +312,7 @@
       "youtube_id": "S-Kw8W24bzM",
       "youtube_url": "https://www.youtube.com/shorts/S-Kw8W24bzM",
       "youtube_published_at": null,
-      "source": "recreated_from_original_master",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     },
@@ -313,7 +326,7 @@
       "youtube_id": "Lc3BXMSZanU",
       "youtube_url": "https://www.youtube.com/shorts/Lc3BXMSZanU",
       "youtube_published_at": null,
-      "source": "recreated_from_original_master",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     },
@@ -327,7 +340,7 @@
       "youtube_id": "rDT12IWkDE8",
       "youtube_url": "https://www.youtube.com/shorts/rDT12IWkDE8",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191167+00:00"
     },
@@ -341,7 +354,7 @@
       "youtube_id": "9QmthjXQgq4",
       "youtube_url": "https://www.youtube.com/shorts/9QmthjXQgq4",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191172+00:00"
     },
@@ -355,7 +368,7 @@
       "youtube_id": "krjnB6c0KvE",
       "youtube_url": "https://www.youtube.com/shorts/krjnB6c0KvE",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191174+00:00"
     },
@@ -369,7 +382,7 @@
       "youtube_id": "dvu_iLOeRds",
       "youtube_url": "https://www.youtube.com/shorts/dvu_iLOeRds",
       "youtube_published_at": null,
-      "source": "drive_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     },
@@ -383,7 +396,7 @@
       "youtube_id": "t-KVaCwbrbA",
       "youtube_url": "https://www.youtube.com/shorts/t-KVaCwbrbA",
       "youtube_published_at": null,
-      "source": "drive_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     },
@@ -397,7 +410,7 @@
       "youtube_id": "DFMjasmIOSw",
       "youtube_url": "https://www.youtube.com/shorts/DFMjasmIOSw",
       "youtube_published_at": null,
-      "source": "drive_recovered_original",
+      "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     }
