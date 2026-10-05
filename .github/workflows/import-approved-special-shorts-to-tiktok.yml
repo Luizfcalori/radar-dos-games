@@ -1,0 +1,188 @@
+name: Radar TikTok - Import Approved Special Shorts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-approved-special-shorts-to-tiktok.yml'
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Production workflow run id'
+        required: false
+        default: '37300872441'
+      artifact_name:
+        description: 'Approved production artifact name'
+        required: false
+        default: 'wardogs-master-3-shorts-37300872441'
+      slug:
+        description: 'Stable topic slug'
+        required: false
+        default: 'wardogs'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: radar-tiktok-special-import
+  cancel-in-progress: false
+
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      SOURCE_RUN_ID: ${{ inputs.source_run_id || '37300872441' }}
+      ARTIFACT_NAME: ${{ inputs.artifact_name || 'wardogs-master-3-shorts-37300872441' }}
+      SLUG: ${{ inputs.slug || 'wardogs' }}
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: bundle
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
+
+      - name: Validate approval and prepare TikTok assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          QA=$(find bundle -type f -name 'final-qa.json' -print -quit)
+          test -n "$QA" && test -s "$QA"
+          python - "$QA" <<'PY'
+          import json,sys
+          q=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert q.get('status') == 'APPROVED', q
+          print('QA APPROVED')
+          PY
+
+          mkdir -p tiktok-upload
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+
+          for N in 1 2 3; do
+            SRC=$(find bundle -type f -path "*/shorts/short_${N}.mp4" -print -quit)
+            META=$(find bundle -type f -name "short-${N}-youtube.json" -print -quit)
+            test -n "$SRC" && test -s "$SRC"
+            test -n "$META" && test -s "$META"
+            cp "$SRC" "tiktok-upload/${SLUG}-${SOURCE_RUN_ID}-short-${N}.mp4"
+            cp "$META" "tiktok-upload/short-${N}-youtube.json"
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "$SRC" -frames:v 1 -vf "scale=720:-2" \
+              "tiktok-upload/${SLUG}-${SOURCE_RUN_ID}-short-${N}.jpg"
+          done
+
+      - name: Publish MP4s and previews to stable storage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" \
+              --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          fi
+          gh release upload "$TAG" tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+
+      - name: Update TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re, unicodedata
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          qpath=Path('data/tiktok_queue.json')
+          queue=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
+          run_id=os.environ['SOURCE_RUN_ID']; slug=os.environ['SLUG']
+          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+          now=datetime.now(timezone.utc).isoformat()
+
+          def clean_title(v):
+              v=re.sub(r'(?i)#shorts?\b','',str(v or ''))
+              return re.sub(r'\s+',' ',v).strip(' -|') or 'Radar dos Games'
+          def tag(v):
+              v=re.sub(r'[^\w]','',str(v or '').strip().lstrip('#'),flags=re.UNICODE)
+              return f'#{v}' if v else ''
+
+          new=[]
+          for n in (1,2,3):
+              meta=json.loads(Path(f'tiktok-upload/short-{n}-youtube.json').read_text(encoding='utf-8'))
+              title=clean_title(meta.get('title'))
+              dynamic=[]
+              desc=str(meta.get('description') or '')
+              for found in re.findall(r'#([\wÀ-ÿ]+)',desc,flags=re.UNICODE): dynamic.append(tag(found))
+              tags=meta.get('tags') or []
+              if isinstance(tags,str): tags=[x.strip() for x in tags.split(',') if x.strip()]
+              for x in tags: dynamic.append(tag(x))
+              for word in re.findall(r'[A-Za-zÀ-ÿ0-9]{4,}',title):
+                  if word.lower() not in {'para','como','mais','esse','essa','sobre','games','game','radar','shorts','short'}: dynamic.append(tag(word))
+              chosen=[]; seen=set()
+              for x in dynamic:
+                  key=unicodedata.normalize('NFKD',x).encode('ascii','ignore').decode().lower()
+                  if not x or not key or key in seen or x.lower() in {'#shorts','#youtubeshorts'}: continue
+                  seen.add(key); chosen.append(x)
+                  if len(chosen)>=4: break
+              generic=['#RadarDosGames','#Games','#Gaming','#TikTokGames']
+              hashtags=chosen+[x for x in generic if x.lower() not in {y.lower() for y in chosen}]
+              entry={
+                'id':f'{slug}-approved-{run_id}-short-{n}',
+                'title':title,
+                'media_url':f'{base}/{slug}-{run_id}-short-{n}.mp4',
+                'thumbnail_url':f'{base}/{slug}-{run_id}-short-{n}.jpg',
+                'post_text':f'{title}\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(hashtags),
+                'status':'approved','source_run_id':int(run_id),'short_number':n,'approved_at':now,
+                'source':'approved_production_artifact'
+              }
+              new.append(entry)
+
+          ids={x['id'] for x in new}
+          old=[x for x in (queue.get('items') or []) if x.get('id') not in ids]
+          queue['updated_at']=now
+          queue['items']=(new+old)[:120]
+          qpath.parent.mkdir(parents=True,exist_ok=True)
+          qpath.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'added':len(new),'total':len(queue['items']),'ids':[x['id'] for x in new]},ensure_ascii=False))
+          PY
+
+      - name: Commit queue update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase origin main
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo 'Queue already up to date.'
+          else
+            git commit -m "bot: add approved ${SLUG} Shorts to TikTok queue"
+            git push origin main
+          fi
+
+      - name: Confirm imported Shorts
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,os
+          q=json.load(open('data/tiktok_queue.json',encoding='utf-8'))
+          p=f"{os.environ['SLUG']}-approved-{os.environ['SOURCE_RUN_ID']}-short-"
+          rows=[x for x in q.get('items',[]) if str(x.get('id','')).startswith(p)]
+          assert len(rows)==3, rows
+          assert all(x.get('status')=='approved' and x.get('media_url') for x in rows), rows
+          print('OK: 3 approved special Shorts are in TikTok Helper queue')
+          for x in rows: print(x['id'],x['title'])
+          PY
