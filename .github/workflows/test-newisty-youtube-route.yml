@@ -1,0 +1,166 @@
+name: Test Newisty YouTube Route
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "YouTube URL to test"
+        required: false
+        default: "https://www.youtube.com/watch?v=O9sPs5hP76A"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/test-newisty-youtube-route.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test-newisty:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      TEST_URL: ${{ github.event.inputs.url || 'https://www.youtube.com/watch?v=O9sPs5hP76A' }}
+    steps:
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Test one Newisty download job
+        shell: bash
+        run: |
+          mkdir -p test-output
+          python - <<'PY'
+          import json, os, pathlib, time, urllib.request, urllib.error
+
+          out = pathlib.Path('test-output')
+          url = os.environ['TEST_URL']
+          base = 'https://newisty.com/api/video-downloader'
+          headers = {
+              'User-Agent': 'radar-dos-games-github-test/1.0',
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          }
+
+          def request_json(req, timeout=60):
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as r:
+                      body = r.read().decode('utf-8', 'replace')
+                      return getattr(r, 'status', 200), body
+              except urllib.error.HTTPError as e:
+                  return e.code, e.read().decode('utf-8', 'replace')
+              except Exception as e:
+                  return 0, json.dumps({'exception': repr(e)})
+
+          def walk_find(obj, keys):
+              if isinstance(obj, dict):
+                  for k in keys:
+                      if k in obj and obj[k] not in (None, ''):
+                          return obj[k]
+                  for v in obj.values():
+                      got = walk_find(v, keys)
+                      if got not in (None, ''):
+                          return got
+              elif isinstance(obj, list):
+                  for v in obj:
+                      got = walk_find(v, keys)
+                      if got not in (None, ''):
+                          return got
+              return None
+
+          payload = json.dumps({'url': url, 'format': '480p'}).encode()
+          req = urllib.request.Request(base + '/start', data=payload, headers=headers, method='POST')
+          code, body = request_json(req)
+          (out/'start.txt').write_text(f'HTTP {code}\n{body}', encoding='utf-8')
+          print('START HTTP', code)
+          print(body[:1500])
+
+          try:
+              obj = json.loads(body)
+          except Exception:
+              obj = {}
+          job_id = walk_find(obj, ('job_id','jobId','jobID'))
+          if not job_id:
+              print('No job id returned')
+              (out/'results.txt').write_text('newisty|FAILED|no_job_id\n', encoding='utf-8')
+              raise SystemExit(0)
+          job_id = str(job_id)
+          (out/'job_id.txt').write_text(job_id, encoding='utf-8')
+          print('JOB', job_id)
+
+          final_state = None
+          for i in range(1, 19):
+              time.sleep(7)
+              req = urllib.request.Request(base + '/progress/' + job_id,
+                  headers={'User-Agent':headers['User-Agent'], 'Accept':'application/json'})
+              code, body = request_json(req, timeout=45)
+              with (out/'progress.log').open('a', encoding='utf-8') as f:
+                  f.write(f'POLL {i} HTTP {code}\n{body}\n')
+              print('POLL', i, 'HTTP', code, body[:500])
+              if code == 404:
+                  continue
+              try:
+                  pobj = json.loads(body)
+              except Exception:
+                  pobj = {}
+              state = walk_find(pobj, ('state','job_status','download_status'))
+              if not state:
+                  vals=[]
+                  def collect(o):
+                      if isinstance(o,dict):
+                          for k,v in o.items():
+                              if k == 'status' and isinstance(v,str): vals.append(v)
+                              collect(v)
+                      elif isinstance(o,list):
+                          for v in o: collect(v)
+                  collect(pobj)
+                  state = next((v for v in vals if v.lower() in {'queued','pending','processing','downloading','done','completed','complete','failed','error'}), None)
+              if state:
+                  final_state = str(state).lower()
+              if final_state in {'done','completed','complete','failed','error'}:
+                  (out/'progress-final.json').write_text(body, encoding='utf-8')
+                  break
+
+          if final_state not in {'done','completed','complete'}:
+              reason = final_state or 'timeout_or_unknown'
+              (out/'results.txt').write_text(f'newisty|FAILED|{reason}\n', encoding='utf-8')
+              raise SystemExit(0)
+
+          dreq = urllib.request.Request(base + '/download/' + job_id,
+              headers={'User-Agent':headers['User-Agent'], 'Accept':'*/*'})
+          try:
+              with urllib.request.urlopen(dreq, timeout=180) as r, (out/'newisty.mp4').open('wb') as f:
+                  print('DOWNLOAD HTTP', getattr(r,'status',200), r.headers.get('Content-Type'), r.headers.get('Content-Length'))
+                  while True:
+                      chunk = r.read(1024*1024)
+                      if not chunk: break
+                      f.write(chunk)
+                      if f.tell() > 350*1024*1024: break
+          except Exception as e:
+              (out/'download-error.txt').write_text(repr(e), encoding='utf-8')
+              (out/'results.txt').write_text(f'newisty|FAILED|download_error:{type(e).__name__}\n', encoding='utf-8')
+              raise SystemExit(0)
+          print('BYTES', (out/'newisty.mp4').stat().st_size)
+          PY
+
+          if [ -s test-output/newisty.mp4 ]; then
+            bytes=$(stat -c%s test-output/newisty.mp4)
+            duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 test-output/newisty.mp4 2>/dev/null || true)
+            codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 test-output/newisty.mp4 2>/dev/null || true)
+            if [ -n "$duration" ] && [ -n "$codec" ] && [ "$bytes" -gt 100000 ]; then
+              echo "newisty|SUCCESS|bytes=$bytes|duration=$duration|codec=$codec" | tee test-output/results.txt
+            else
+              echo "newisty|FAILED|invalid_media|bytes=$bytes|duration=$duration|codec=$codec" | tee test-output/results.txt
+            fi
+          fi
+          cat test-output/results.txt
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newisty-youtube-route-test
+          path: test-output/
+          if-no-files-found: warn
+          retention-days: 3
