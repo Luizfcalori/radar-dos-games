@@ -33,8 +33,9 @@ jobs:
 
       - name: Prepare files and schedule metadata
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
           python -m pip install -q google-api-python-client google-auth google-auth-httplib2 Pillow
-          find wardogs-final -type f -maxdepth 4 | sort
           MASTER=$(find wardogs-final -type f -name master.mp4 | head -1)
           S1=$(find wardogs-final -type f -path '*/shorts/short_1.mp4' | head -1)
           S2=$(find wardogs-final -type f -path '*/shorts/short_2.mp4' | head -1)
