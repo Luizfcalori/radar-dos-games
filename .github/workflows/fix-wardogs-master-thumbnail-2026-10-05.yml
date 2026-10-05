@@ -1,0 +1,64 @@
+name: Fix WARDOGS Master Thumbnail
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fix-wardogs-master-thumbnail-2026-10-05.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  thumbnail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build thumbnail from official WARDOGS screenshot
+        run: |
+          python -m pip install -q Pillow google-api-python-client google-auth google-auth-httplib2
+          mkdir -p output
+          python - <<'PY'
+          import json, urllib.request
+          url='https://store.steampowered.com/api/appdetails?appids=1867240&cc=us&l=english'
+          req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+          with urllib.request.urlopen(req,timeout=30) as r:
+              data=json.load(r)
+          shots=data['1867240']['data']['screenshots']
+          assert shots, 'No official screenshots found'
+          img=shots[0]['path_full']
+          print('official screenshot:',img)
+          req=urllib.request.Request(img,headers={'User-Agent':'Mozilla/5.0','Referer':'https://store.steampowered.com/'})
+          with urllib.request.urlopen(req,timeout=30) as r, open('output/wardogs-official.jpg','wb') as f:
+              f.write(r.read())
+          PY
+          python src/thumbnail.py /dev/null 'WARDOGS: o FPS de guerra total com 100 jogadores' output/thumbnail.jpg output/wardogs-official.jpg
+          test -s output/thumbnail.jpg
+
+      - name: Apply official thumbnail to scheduled Master
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          from googleapiclient.http import MediaFileUpload
+          from src.youtube import service, channel_identity, assert_radar_channel
+          yt=service()
+          cid,title=channel_identity(yt)
+          assert_radar_channel(cid,title)
+          video_id='KzDX81xRSu8'
+          r=yt.thumbnails().set(videoId=video_id,media_body=MediaFileUpload('output/thumbnail.jpg',mimetype='image/jpeg',resumable=False)).execute()
+          print('THUMBNAIL_APPLIED',video_id,bool(r))
+          PY
+
+      - name: Save final thumbnail
+        uses: actions/upload-artifact@v4
+        with:
+          name: wardogs-final-thumbnail-${{ github.run_id }}
+          path: |
+            output/thumbnail.jpg
+            output/thumbnail-policy.json
+          retention-days: 7
