@@ -1,0 +1,218 @@
+name: Test YouTube Download Routes
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "YouTube URL to test"
+        required: false
+        default: "https://www.youtube.com/watch?v=O9sPs5hP76A"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/test-youtube-download-routes.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test-download-routes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TEST_URL: ${{ github.event.inputs.url || 'https://www.youtube.com/watch?v=O9sPs5hP76A' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg curl jq
+          python -m pip install --upgrade pip
+          python -m pip install -U yt-dlp bgutil-ytdlp-pot-provider
+          yt-dlp --version
+          ffmpeg -version | head -1
+          docker --version
+
+      - name: Prepare result helpers
+        shell: bash
+        run: |
+          cat > /tmp/check_media.sh <<'SH'
+          #!/usr/bin/env bash
+          set -u
+          name="$1"
+          pattern="$2"
+          file="$(find test-output -maxdepth 1 -type f -name "$pattern" -size +100k | head -1 || true)"
+          if [ -n "$file" ]; then
+            size=$(stat -c%s "$file")
+            dur=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$file" 2>/dev/null || true)
+            codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$file" 2>/dev/null || true)
+            if [ -n "$dur" ] && [ -n "$codec" ]; then
+              echo "$name|SUCCESS|$file|$size|$dur|$codec" | tee -a test-output/results.txt
+              exit 0
+            fi
+          fi
+          echo "$name|FAILED||||" | tee -a test-output/results.txt
+          exit 1
+          SH
+          chmod +x /tmp/check_media.sh
+          mkdir -p test-output
+          echo "route|status|file|bytes|duration|codec" > test-output/results.txt
+          echo "Testing: $TEST_URL" | tee test-output/context.txt
+          echo "Runner: $RUNNER_NAME / $RUNNER_OS" | tee -a test-output/context.txt
+          date -u | tee -a test-output/context.txt
+
+      - name: Route A - yt-dlp baseline
+        id: baseline
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          timeout 120 yt-dlp -v --no-playlist --retries 1 --fragment-retries 1 --socket-timeout 15 \
+            -f "bv*[height<=720]+ba/b[height<=720]/best" \
+            --merge-output-format mp4 \
+            -o "test-output/baseline.%(ext)s" "$TEST_URL" 2>&1 | tee test-output/baseline.log
+          rc=${PIPESTATUS[0]}
+          /tmp/check_media.sh baseline 'baseline.*' || true
+          exit $rc
+
+      - name: Route B - yt-dlp android_vr client
+        id: androidvr
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          timeout 120 yt-dlp -v --no-playlist --retries 1 --fragment-retries 1 --socket-timeout 15 \
+            --extractor-args "youtube:player_client=android_vr" \
+            -f "bv*[height<=720]+ba/b[height<=720]/best" \
+            --merge-output-format mp4 \
+            -o "test-output/android_vr.%(ext)s" "$TEST_URL" 2>&1 | tee test-output/android_vr.log
+          rc=${PIPESTATUS[0]}
+          /tmp/check_media.sh android_vr 'android_vr.*' || true
+          exit $rc
+
+      - name: Start automatic PO Token provider
+        id: potserver
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          docker pull brainicism/bgutil-ytdlp-pot-provider:latest 2>&1 | tee test-output/pot-docker-pull.log
+          docker run -d --name bgutil-pot -p 4416:4416 --init brainicism/bgutil-ytdlp-pot-provider:latest 2>&1 | tee test-output/pot-docker-run.log
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4416/ >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          docker logs bgutil-pot > test-output/pot-server.log 2>&1 || true
+          curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4416/ | tee test-output/pot-http-status.txt
+          exit 0
+
+      - name: Route C - yt-dlp mweb + automatic PO Token
+        id: pot
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          timeout 150 yt-dlp -v --no-playlist --retries 1 --fragment-retries 1 --socket-timeout 15 \
+            --extractor-args "youtube:player_client=mweb" \
+            -f "bv*[height<=720]+ba/b[height<=720]/best" \
+            --merge-output-format mp4 \
+            -o "test-output/pot_mweb.%(ext)s" "$TEST_URL" 2>&1 | tee test-output/pot_mweb.log
+          rc=${PIPESTATUS[0]}
+          /tmp/check_media.sh pot_mweb 'pot_mweb.*' || true
+          exit $rc
+
+      - name: Start self-hosted Cobalt
+        id: cobaltserver
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          docker pull ghcr.io/imputnet/cobalt:11 2>&1 | tee test-output/cobalt-pull.log
+          docker run -d --name cobalt-test -p 9000:9000 --init \
+            -e API_URL=http://127.0.0.1:9000/ \
+            ghcr.io/imputnet/cobalt:11 2>&1 | tee test-output/cobalt-run.log
+          ok=0
+          for i in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:9000/ > test-output/cobalt-info.json 2>/dev/null; then ok=1; break; fi
+            sleep 1
+          done
+          docker logs cobalt-test > test-output/cobalt-server.log 2>&1 || true
+          test "$ok" = 1
+
+      - name: Route D - self-hosted Cobalt
+        id: cobalt
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python - <<'PY' 2>&1 | tee test-output/cobalt-client.log
+          import json, os, pathlib, urllib.request
+          url=os.environ['TEST_URL']
+          payload=json.dumps({
+              'url':url,
+              'videoQuality':'720',
+              'youtubeVideoContainer':'mp4',
+              'youtubeVideoCodec':'h264',
+              'downloadMode':'auto',
+              'localProcessing':'disabled'
+          }).encode()
+          req=urllib.request.Request('http://127.0.0.1:9000/', data=payload,
+              headers={'Accept':'application/json','Content-Type':'application/json'}, method='POST')
+          with urllib.request.urlopen(req, timeout=60) as r:
+              body=r.read().decode('utf-8','replace')
+          pathlib.Path('test-output/cobalt-response.json').write_text(body)
+          print(body)
+          obj=json.loads(body)
+          status=obj.get('status')
+          if status not in ('tunnel','redirect') or not obj.get('url'):
+              raise SystemExit('Cobalt did not return downloadable tunnel/redirect: '+str(status))
+          target=obj['url']
+          req2=urllib.request.Request(target,headers={'User-Agent':'Mozilla/5.0'})
+          with urllib.request.urlopen(req2,timeout=180) as r, open('test-output/cobalt.mp4','wb') as f:
+              while True:
+                  b=r.read(1024*1024)
+                  if not b: break
+                  f.write(b)
+                  if f.tell() > 300*1024*1024: break
+          print('downloaded bytes',pathlib.Path('test-output/cobalt.mp4').stat().st_size)
+          PY
+          rc=${PIPESTATUS[0]}
+          /tmp/check_media.sh cobalt 'cobalt.mp4' || true
+          exit $rc
+
+      - name: Summarize routes
+        if: always()
+        shell: bash
+        run: |
+          echo '==== RESULTS ===='
+          cat test-output/results.txt || true
+          echo '==== STEP OUTCOMES ===='
+          echo "baseline=${{ steps.baseline.outcome }}"
+          echo "android_vr=${{ steps.androidvr.outcome }}"
+          echo "pot_server=${{ steps.potserver.outcome }}"
+          echo "pot_mweb=${{ steps.pot.outcome }}"
+          echo "cobalt_server=${{ steps.cobaltserver.outcome }}"
+          echo "cobalt=${{ steps.cobalt.outcome }}"
+          {
+            echo "# YouTube route test"
+            echo
+            echo '```'
+            cat test-output/results.txt || true
+            echo '```'
+            echo
+            echo "baseline: ${{ steps.baseline.outcome }}"
+            echo "android_vr: ${{ steps.androidvr.outcome }}"
+            echo "PO token mweb: ${{ steps.pot.outcome }}"
+            echo "Cobalt: ${{ steps.cobalt.outcome }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-download-route-test
+          path: test-output/
+          if-no-files-found: warn
+          retention-days: 3
