@@ -6,7 +6,7 @@ on:
       url:
         description: "YouTube URL to test"
         required: false
-        default: "https://www.youtube.com/watch?v=O9sPs5hP76A"
+        default: "https://www.youtube.com/watch?v=DcphpBvdt28"
   push:
     branches: [main]
     paths:
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
-      TEST_URL: ${{ github.event.inputs.url || 'https://www.youtube.com/watch?v=O9sPs5hP76A' }}
+      TEST_URL: ${{ github.event.inputs.url || 'https://www.youtube.com/watch?v=DcphpBvdt28' }}
     steps:
       - name: Install ffmpeg
         run: |
