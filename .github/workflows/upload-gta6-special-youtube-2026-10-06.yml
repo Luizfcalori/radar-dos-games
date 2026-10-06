@@ -1,0 +1,199 @@
+name: Upload GTA 6 Special to YouTube 2026-10-06
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/upload-gta6-special-youtube-2026-10-06.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download approved GTA 6 package
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-gta6-special-2026-10-06-37451573514
+          path: gta6-final
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37451573514
+
+      - name: Prepare approved files and exact schedule
+        run: |
+          python -m pip install -q google-api-python-client==2.184.0 google-auth==2.41.1
+          mkdir -p approved/shorts
+          MASTER=$(find gta6-final -type f -name master.mp4 | head -1)
+          S1=$(find gta6-final -type f -path '*/shorts/short_1.mp4' | head -1)
+          S2=$(find gta6-final -type f -path '*/shorts/short_2.mp4' | head -1)
+          S3=$(find gta6-final -type f -path '*/shorts/short_3.mp4' | head -1)
+          MT=$(find gta6-final -type f -name thumbnail.jpg | head -1)
+          C1=$(find gta6-final -type f -path '*/shorts/short_1_cover.jpg' | head -1)
+          C2=$(find gta6-final -type f -path '*/shorts/short_2_cover.jpg' | head -1)
+          C3=$(find gta6-final -type f -path '*/shorts/short_3_cover.jpg' | head -1)
+          MJSON=$(find gta6-final -type f -name master-youtube.json | head -1)
+          J1=$(find gta6-final -type f -name short-1-youtube.json | head -1)
+          J2=$(find gta6-final -type f -name short-2-youtube.json | head -1)
+          J3=$(find gta6-final -type f -name short-3-youtube.json | head -1)
+          for F in "$MASTER" "$S1" "$S2" "$S3" "$MT" "$C1" "$C2" "$C3" "$MJSON" "$J1" "$J2" "$J3"; do test -s "$F"; done
+          cp "$MASTER" approved/master.mp4
+          cp "$S1" approved/shorts/short_1.mp4
+          cp "$S2" approved/shorts/short_2.mp4
+          cp "$S3" approved/shorts/short_3.mp4
+          cp "$MT" approved/thumbnail.jpg
+          cp "$C1" approved/shorts/short_1_cover.jpg
+          cp "$C2" approved/shorts/short_2_cover.jpg
+          cp "$C3" approved/shorts/short_3_cover.jpg
+          cp "$MJSON" approved/master.json
+          cp "$J1" approved/short1.json
+          cp "$J2" approved/short2.json
+          cp "$J3" approved/short3.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          slots={
+            'master.json':('2026-10-06T11:40:00Z','approved/thumbnail.jpg'),
+            'short1.json':('2026-10-06T12:00:00Z','approved/shorts/short_1_cover.jpg'),
+            'short2.json':('2026-10-06T12:10:00Z','approved/shorts/short_2_cover.jpg'),
+            'short3.json':('2026-10-06T12:20:00Z','approved/shorts/short_3_cover.jpg'),
+          }
+          for fn,(publish_at,thumb) in slots.items():
+              p=Path('approved')/fn
+              m=json.loads(p.read_text(encoding='utf-8'))
+              m['privacy']='private'
+              m['publishAt']=publish_at
+              m['thumbnail']=thumb
+              m['use_existing_thumbnail']=True
+              p.write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding='utf-8')
+              print(fn,publish_at,m['title'],thumb)
+          PY
+
+      - name: Upload, schedule, apply all covers and verify
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, time
+          from pathlib import Path
+          from datetime import datetime, timezone
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+          from googleapiclient.errors import HttpError
+
+          CHANNEL_ID='UCSZJZE-E10SVdx42wrDeWhw'
+          CHANNEL_TITLE='Radar dos Games'
+          scopes=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube.readonly']
+          creds=Credentials(None,refresh_token=os.environ['YT_REFRESH_TOKEN'],token_uri='https://oauth2.googleapis.com/token',
+                            client_id=os.environ['YT_CLIENT_ID'],client_secret=os.environ['YT_CLIENT_SECRET'],scopes=scopes)
+          yt=build('youtube','v3',credentials=creds)
+
+          ch=yt.channels().list(part='id,snippet,contentDetails',mine=True).execute()['items']
+          if len(ch)!=1: raise RuntimeError('OAuth deve apontar para exatamente um canal')
+          cid=ch[0]['id']; ctitle=ch[0]['snippet']['title']
+          if cid!=CHANNEL_ID or ctitle.strip().casefold()!=CHANNEL_TITLE.casefold():
+              raise RuntimeError(f'CANAL INCORRETO: {ctitle} ({cid})')
+
+          uploads_playlist=ch[0]['contentDetails']['relatedPlaylists']['uploads']
+
+          def recent_by_title():
+              found={}
+              token=None
+              for _ in range(3):
+                  r=yt.playlistItems().list(part='snippet,contentDetails',playlistId=uploads_playlist,maxResults=50,pageToken=token).execute()
+                  for it in r.get('items',[]):
+                      title=it.get('snippet',{}).get('title','').strip()
+                      vid=it.get('contentDetails',{}).get('videoId')
+                      if title and vid: found[title.casefold()]=vid
+                  token=r.get('nextPageToken')
+                  if not token: break
+              return found
+
+          existing=recent_by_title()
+          items=[
+            ('master','approved/master.mp4','approved/master.json'),
+            ('short1','approved/shorts/short_1.mp4','approved/short1.json'),
+            ('short2','approved/shorts/short_2.mp4','approved/short2.json'),
+            ('short3','approved/shorts/short_3.mp4','approved/short3.json'),
+          ]
+          results=[]
+
+          def scheduled_status(meta):
+              pa=meta['publishAt']
+              dt=datetime.fromisoformat(pa.replace('Z','+00:00'))
+              if dt <= datetime.now(timezone.utc):
+                  raise RuntimeError(f'Horário de publicação já passou antes do upload: {pa}')
+              return {'privacyStatus':'private','publishAt':pa,'selfDeclaredMadeForKids':False,
+                      'containsSyntheticMedia':bool(meta.get('containsSyntheticMedia',True))}
+
+          def upload_video(path,meta):
+              body={'snippet':{'title':meta['title'],'description':meta['description'],'tags':meta.get('tags',[]),'categoryId':'20'},
+                    'status':scheduled_status(meta)}
+              req=yt.videos().insert(part='snippet,status',body=body,
+                    media_body=MediaFileUpload(path,chunksize=8*1024*1024,resumable=True))
+              resp=None; errors=0
+              while resp is None:
+                  try:
+                      _,resp=req.next_chunk(); errors=0
+                  except (TimeoutError,OSError):
+                      errors+=1
+                      if errors>5: raise
+                      time.sleep(min(5*(2**(errors-1)),60))
+              return resp['id']
+
+          for key,path,meta_path in items:
+              meta=json.loads(Path(meta_path).read_text(encoding='utf-8'))
+              vid=existing.get(meta['title'].strip().casefold())
+              if vid:
+                  print(f'REUSE_EXISTING {key} {vid}')
+              else:
+                  vid=upload_video(path,meta)
+                  existing[meta['title'].strip().casefold()]=vid
+                  print(f'UPLOADED {key} {vid}')
+
+              thumb=Path(meta['thumbnail'])
+              if not thumb.exists() or thumb.stat().st_size < 20000:
+                  raise RuntimeError(f'Capa inválida: {thumb}')
+              yt.thumbnails().set(videoId=vid,media_body=MediaFileUpload(str(thumb),mimetype='image/jpeg',resumable=False)).execute()
+              print(f'THUMBNAIL_APPLIED {key} {thumb}')
+
+              v=yt.videos().list(part='snippet,status',id=vid).execute()['items'][0]
+              st=v['status']; sn=v['snippet']
+              if sn['channelId']!=CHANNEL_ID: raise RuntimeError(f'Canal incorreto em {key}')
+              if sn['title'].strip()!=meta['title'].strip(): raise RuntimeError(f'Título divergente em {key}: {sn["title"]}')
+              if st.get('privacyStatus')!='private': raise RuntimeError(f'{key} não ficou privado/agendado: {st}')
+              if st.get('publishAt')!=meta['publishAt']: raise RuntimeError(f'{key} publishAt divergente: {st}')
+              results.append({'key':key,'id':vid,'url':f'https://www.youtube.com/watch?v={vid}',
+                              'title':sn['title'],'publishAt':st.get('publishAt'),'privacy':st.get('privacyStatus'),
+                              'thumbnail':str(thumb),'thumbnailApplied':True})
+              print(json.dumps(results[-1],ensure_ascii=False))
+
+          Path('approved/youtube-schedule-confirmed.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Save YouTube schedule confirmation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gta6-youtube-schedule-results-${{ github.run_id }}
+          path: |
+            approved/youtube-schedule-confirmed.json
+            approved/*.json
+            approved/thumbnail.jpg
+            approved/shorts/*_cover.jpg
+          if-no-files-found: warn
+          retention-days: 7
