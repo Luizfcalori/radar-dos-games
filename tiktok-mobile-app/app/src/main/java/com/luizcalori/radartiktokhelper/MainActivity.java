@@ -274,8 +274,9 @@ public class MainActivity extends Activity {
                     json = readUrl(QUEUE_RAW_URL + "?ts=" + nonce);
                     source = "Raw fallback";
                 }
+                final String syncSource = source;
                 JSONObject root = new JSONObject(json);
-                String queueUpdatedAt = root.optString("updated_at", "sem data");
+                final String queueUpdatedAt = root.optString("updated_at", "sem data");
                 JSONArray items = root.optJSONArray("items");
                 List<QueueItem> loaded = new ArrayList<>();
                 if (items != null) {
@@ -293,7 +294,7 @@ public class MainActivity extends Activity {
                     allItems.addAll(loaded);
                     cursor = 0;
                     rebuildVisibleItems();
-                    status.setText("Fila sincronizada • " + loaded.size() + " aprovados • " + source + " • " + queueUpdatedAt);
+                    status.setText("Fila sincronizada • " + loaded.size() + " aprovados • " + syncSource + " • " + queueUpdatedAt);
                     if (toast) Toast.makeText(this, "Fila atualizada: " + loaded.size() + " aprovados.", Toast.LENGTH_SHORT).show();
                 });
             } catch (Exception e) {
