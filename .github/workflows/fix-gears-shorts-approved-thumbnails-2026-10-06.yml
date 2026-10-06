@@ -1,0 +1,97 @@
+name: Fix Gears Shorts approved thumbnails
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fix-gears-shorts-approved-thumbnails-2026-10-06.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install YouTube client
+        run: |
+          python -m pip install -q google-api-python-client==2.184.0 google-auth==2.41.1 pillow
+
+      - name: Download exact approved Shorts covers
+        run: |
+          curl -L --fail --retry 3 "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/18652cd2874e03a22f10ee11d0e5ea7670e7e91c1d4096787dacd12ed55450c7.jpg" -o short1-brutal.jpg
+          curl -L --fail --retry 3 "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/a70323f9dc167536733e02da27e50ebe684205a82cb469e07d130dbfed09dcf9.jpg" -o short2-invasao.jpg
+          curl -L --fail --retry 3 "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/f8a6c3c82f7e5f495869d11fa11e64d4e4384b0bba84fce3fe5c6cd8a170e105.jpg" -o short3-vale.jpg
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          for p in ['short1-brutal.jpg','short2-invasao.jpg','short3-vale.jpg']:
+              f=Path(p)
+              assert f.exists() and f.stat().st_size > 100000
+              with Image.open(f) as im:
+                  print('APPROVED_SHORT_COVER', p, im.size, im.format, f.stat().st_size)
+                  assert im.size == (864,1536)
+          PY
+
+      - name: Apply exact approved covers to Shorts
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+
+          CHANNEL_ID='UCSZJZE-E10SVdx42wrDeWhw'
+          SCOPES=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube.readonly']
+          items=[
+            ('short1','3Z-HdsAnm5U','short1-brutal.jpg','GEARS E-DAY voltou a ser BRUTAL! #Shorts'),
+            ('short2','3DRa5L_gF-o','short2-invasao.jpg','O começo da INVASÃO LOCUST em Gears E-Day #Shorts'),
+            ('short3','1lwIpveTDlA','short3-vale.jpg','Gears E-Day VALE A PENA no lançamento? #Shorts'),
+          ]
+          creds=Credentials(None,
+              refresh_token=os.environ['YT_REFRESH_TOKEN'],
+              token_uri='https://oauth2.googleapis.com/token',
+              client_id=os.environ['YT_CLIENT_ID'],
+              client_secret=os.environ['YT_CLIENT_SECRET'],
+              scopes=SCOPES)
+          yt=build('youtube','v3',credentials=creds)
+          results=[]
+          for key,vid,img,expected_title in items:
+              info=yt.videos().list(part='snippet,status',id=vid).execute()['items'][0]
+              assert info['snippet']['channelId']==CHANNEL_ID,(key,info['snippet']['channelId'])
+              assert info['snippet']['title'].strip()==expected_title,(key,info['snippet']['title'])
+              resp=yt.thumbnails().set(
+                  videoId=vid,
+                  media_body=MediaFileUpload(img,mimetype='image/jpeg',resumable=False)
+              ).execute()
+              verify=yt.videos().list(part='snippet,status',id=vid).execute()['items'][0]
+              rec={
+                'key':key,'videoId':vid,'title':verify['snippet']['title'],
+                'privacyStatus':verify['status']['privacyStatus'],
+                'approvedThumbnailApplied':True,
+                'image':img,
+                'thumbnailSetKind':resp.get('kind')
+              }
+              results.append(rec)
+              print(json.dumps(rec,ensure_ascii=False))
+          open('shorts-thumbnail-fix-result.json','w',encoding='utf-8').write(json.dumps(results,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload confirmation
+        uses: actions/upload-artifact@v4
+        with:
+          name: gears-shorts-approved-thumbnail-fix-${{ github.run_id }}
+          path: |
+            short1-brutal.jpg
+            short2-invasao.jpg
+            short3-vale.jpg
+            shorts-thumbnail-fix-result.json
+          retention-days: 7
