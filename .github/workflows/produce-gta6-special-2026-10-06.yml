@@ -1,0 +1,351 @@
+name: Radar dos Games - GTA 6 Especial 2026-10-06
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/produce-gta6-special-2026-10-06.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp gdown
+
+      - name: Validate official intro
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: Build GTA 6 special script media plan and metadata
+        run: |
+          mkdir -p output output/shorts output/media
+          cat > output/auto-script.txt <<'TXT'
+          GTA 6 entrou na reta final para o lançamento, e agora finalmente existe material suficiente para olhar para o jogo de forma mais concreta, sem depender de rumor. A Rockstar confirmou o lançamento para 19 de novembro de 2026 no PlayStation 5 e Xbox Series X e S, e nas últimas semanas ampliou bastante a divulgação. O ponto mais importante foi o vídeo Grand Theft Auto VI: An Extended Look, capturado inteiramente dentro do jogo no PlayStation 5. Esse material mostra que a proposta não é simplesmente fazer um GTA 5 maior. A Rockstar está tentando transformar Vice City e o estado de Leonida em um mundo muito mais denso, reativo e detalhado. E é justamente isso que vamos destrinchar agora: história, protagonistas, mapa, clima, atividades, personalização, vida criminal e o que já está confirmado para o lançamento.
+
+          A campanha gira em torno de Jason Duval e Lucia Caminos. A própria Rockstar resume a história dizendo que os dois sempre souberam que as probabilidades estavam contra eles, mas que um serviço aparentemente simples dá errado e coloca o casal no centro de uma conspiração criminal que atravessa Leonida. Esse detalhe é importante porque muda o foco em relação a GTA 5. Em vez de três protagonistas vivendo histórias relativamente separadas, tudo indica que o coração de GTA 6 será a relação entre Jason e Lucia, com os dois dependendo um do outro para sobreviver. O material oficial também mostra que eles não vivem isolados. Personagens como Cal Hampton, Boobie Ike, Dre'Quan Priest, Real Dimez, Raul Bautista e Brian Heder ajudam a construir a rede de contatos, negócios, golpes e conflitos ao redor da dupla.
+
+          O mapa também vai muito além de uma única cidade. Vice City volta como o grande centro urbano, mas ela faz parte do estado de Leonida, claramente inspirado na Flórida. A Rockstar já apresentou regiões como Leonida Keys, Port Gellhorn, Ambrosia, Grassrivers e Mount Kalaga National Park. Isso abre espaço para praias, ilhas, áreas industriais, pântanos, estradas rurais, cidades menores e regiões naturais dentro do mesmo mundo aberto. O mais interessante é que a sensação de escala não vem apenas do tamanho do mapa. Executivos e desenvolvedores da Rockstar têm destacado densidade e nível de detalhe como prioridades. A ideia parece ser que cada região tenha identidade própria, população própria e atividades que façam sentido naquele lugar, em vez de servir apenas como cenário entre uma missão e outra.
+
+          O gameplay também está apontando para um GTA com muito mais coisas para fazer fora das missões principais. Informações recentes mostraram atividades como corridas de rua, luta livre, minigolfe e outras distrações espalhadas pelo mapa. A Rockstar também confirmou garagens pessoais em Leonida, com espaço seguro para veículos, armazenamento de itens roubados e armários de armas para organizar o equipamento. Isso parece pequeno no papel, mas muda a rotina do jogador. Em vez de toda preparação acontecer em um único esconderijo, diferentes pontos do mapa podem funcionar como bases de apoio. Também foi confirmado que objetos roubados podem ser vendidos para receptadores, criando um ciclo de crime mais direto: roubar, escapar da polícia, esconder mercadoria quente e depois transformar aquilo em dinheiro.
+
+          Outro ponto forte é a personalização. O material oficial e as informações de pré-venda mostram carros, roupas, penteados, tatuagens, lojas, oficinas e variações de armas. A Rockstar também apresenta locais como Rideout Customs Mod Shop, Sara's Unisex Salon, Stock 305 Clothing Store, Electric Fang Tattoo Parlor e One-Eyed Willie's Mod Shop. Isso sugere que a customização não vai ficar concentrada apenas em menus. Ela deve fazer parte do próprio mundo. E para quem gosta de carros, há sinais de uma atenção enorme ao sistema automotivo: veículos clássicos, motos, barcos, personalização e oficinas aparecem repetidamente no material divulgado. Se a física e a condução acompanharem esse nível de variedade, dirigir pode voltar a ser uma das partes mais divertidas da experiência.
+
+          E quando a gente fala em detalhe, um dos sistemas que mais chama atenção é o clima. Em entrevistas recentes sobre o desenvolvimento, a Rockstar explicou que o sistema foi refeito para GTA 6 e não é simplesmente uma versão reciclada do que existia em Red Dead Redemption 2. Leonida pode ter calor pesado, chuva, grandes formações de nuvens, vento forte e até furacões. A água reage, o cabelo dos personagens pode responder ao vento e poças se formam depois da chuva. A equipe também falou em arco-íris depois das tempestades. Parece um detalhe visual, mas em um jogo de mundo aberto isso muda a sensação de presença. Dirigir por Vice City à noite sob chuva forte, atravessar uma área costeira durante vento intenso ou sair de uma tempestade para um céu aberto pode fazer o mundo parecer menos estático e mais imprevisível.
+
+          A vida criminal também parece mais integrada ao mundo. O enredo começa com um golpe que dá errado, mas a estrutura mostrada até agora aponta para assaltos, chantagens, tráfico, receptação e negócios espalhados por Leonida. Brian Heder, por exemplo, é apresentado como um antigo traficante que ainda movimenta produto pelo estaleiro e deixa Jason morar de graça em uma de suas propriedades em troca de serviços locais. Boobie Ike transformou a vida nas ruas em um império que passa por imóveis, clube e estúdio de gravação. Já Raul Bautista aparece ligado a trabalhos maiores. Isso dá a impressão de que a progressão de Jason e Lucia não será apenas subir uma lista de missões, mas entrar cada vez mais fundo em uma rede criminosa que conecta pessoas, lugares e oportunidades.
+
+          Visualmente, GTA 6 também está tentando aumentar o número de coisas acontecendo ao mesmo tempo. O material mostrado pela Rockstar tem praias cheias, trânsito intenso, festas, barcos, aviões, helicópteros, animais, multidões, redes sociais dentro do universo do jogo e NPCs reagindo ao ambiente. O objetivo declarado da equipe é combinar escala com detalhe, e esse é provavelmente o maior desafio técnico do projeto. Não adianta ter um mapa gigantesco se ele parece vazio. O que torna GTA memorável é encontrar situações inesperadas simplesmente dirigindo ou andando pela cidade. Se o jogo conseguir manter essa densidade sem sacrificar desempenho, Vice City pode ser um dos mundos abertos mais convincentes já feitos pela Rockstar.
+
+          Juntando tudo, GTA 6 parece estar sendo construído menos como uma sequência tradicional e mais como uma tentativa de elevar vários sistemas ao mesmo tempo: mundo aberto, clima, personagens, atividades, customização, veículos, crime, densidade de NPCs e narrativa em dupla. Ainda existem perguntas importantes, principalmente sobre desempenho, inteligência artificial, física, estrutura das missões e como será a experiência online, mas o que já foi mostrado oficialmente é muito mais concreto do que há um ano. A grande diferença agora é que já conseguimos enxergar como essas peças conversam entre si: Jason e Lucia no centro da história, um estado enorme ao redor deles e sistemas que tentam fazer Leonida reagir às escolhas do jogador.
+
+          Agora, sobre lançamento: GTA 6 chega em 19 de novembro de 2026 para PlayStation 5 e Xbox Series X e S. A Rockstar ainda não anunciou uma versão de PC para o lançamento. As reservas já estão abertas e a empresa confirmou bônus de pré-venda e diferentes edições, além do pacote Vintage Vice City. Também existe um álbum oficial de Grand Theft Auto VI anunciado para o mesmo dia do jogo, com 34 faixas originais, reforçando como música continua sendo parte central da identidade de Vice City. Aqui no Radar dos Games vamos continuar acompanhando tudo. Se você quer mais GTA 6, comenta qual ponto mais te chamou atenção: o mundo de Leonida, Jason e Lucia, o clima, os carros ou as atividades. E se inscreve no canal porque quando surgir novidade realmente importante, ela entra direto no radar.
+          TXT
+
+          cat > output/auto-media-plan.json <<'JSON'
+          {
+            "minimum_assets": 8,
+            "minimum_video_assets": 0,
+            "minimum_unique_video_seconds": 0,
+            "minimum_image_assets": 8,
+            "media": [
+              {
+                "type":"image",
+                "url":"https://www.rockstargames.com/VI/media/screenshots",
+                "allow_images_from_page":true,
+                "role":"official_rockstar_screenshots",
+                "source_proof":"https://www.rockstargames.com/VI/media/screenshots",
+                "max_assets":12
+              },
+              {
+                "type":"image",
+                "url":"https://www.rockstargames.com/VI/media/artwork-wallpapers",
+                "allow_images_from_page":true,
+                "role":"official_rockstar_artwork",
+                "source_proof":"https://www.rockstargames.com/VI/media/artwork-wallpapers",
+                "max_assets":5
+              }
+            ],
+            "scenes": [
+              {"paragraph":1,"title":"GTA 6 NA RETA FINAL","subtitle":"GAMEPLAY OFICIAL E MUITO MAIS DETALHES","media_indices":[]},
+              {"paragraph":2,"title":"JASON + LUCIA","subtitle":"A DUPLA NO CENTRO DA CONSPIRAÇÃO","media_indices":[]},
+              {"paragraph":3,"title":"VICE CITY E LEONIDA","subtitle":"UM ESTADO INTEIRO PARA EXPLORAR","media_indices":[]},
+              {"paragraph":4,"title":"MUITO ALÉM DAS MISSÕES","subtitle":"ATIVIDADES, GARAGENS E RECEPTADORES","media_indices":[]},
+              {"paragraph":5,"title":"PERSONALIZAÇÃO","subtitle":"CARROS, ROUPAS, TATUAGENS E OFICINAS","media_indices":[]},
+              {"paragraph":6,"title":"CLIMA REFEITO","subtitle":"CHUVA, VENTO, FURACÕES E MUNDO REATIVO","media_indices":[]},
+              {"paragraph":7,"title":"A REDE CRIMINAL","subtitle":"CONTATOS, NEGÓCIOS E GOLPES","media_indices":[]},
+              {"paragraph":8,"title":"UM MUNDO MAIS VIVO","subtitle":"MULTIDÕES, VEÍCULOS, ANIMAIS E DENSIDADE","media_indices":[]},
+              {"paragraph":9,"title":"O QUE GTA 6 QUER ELEVAR","subtitle":"MUNDO, SISTEMAS E NARRATIVA EM DUPLA","media_indices":[]},
+              {"paragraph":10,"title":"19 DE NOVEMBRO","subtitle":"PLATAFORMAS, RESERVA E TRILHA SONORA","media_indices":[]}
+            ]
+          }
+          JSON
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rockstar='https://www.rockstargames.com/VI'
+          extended='https://www.rockstargames.com/VI/an-extended-look'
+          media='https://www.rockstargames.com/VI/media'
+          tags=['Radar dos Games','GTA 6','GTA VI','Rockstar Games','Vice City','Leonida','Jason','Lucia','PS5','Xbox Series X']
+          master={
+            'title':'GTA 6: GAMEPLAY, LEONIDA, CLIMA e TUDO que já sabemos!',
+            'description':'🎮 GTA 6 entrou na reta final. Neste especial do Radar dos Games, reunimos história, Jason e Lucia, Vice City e Leonida, gameplay, clima dinâmico, atividades, personalização, garagens, receptadores, personagens e lançamento.\n\n🔎 Fontes principais:\n'+rockstar+'\n'+extended+'\n'+media+'\n\n#GTA6 #GTAVI #RockstarGames #ViceCity #RadarDosGames',
+            'tags':tags,'privacy':'unlisted','containsSyntheticMedia':True,'thumbnail':'output/thumbnail.jpg'
+          }
+          shorts=[
+            {'title':'GTA 6: por que esse gameplay mudou o jogo? #Shorts','description':'GTA 6 está na reta final e a Rockstar já mostrou muito mais do mundo de Leonida.\n\nFonte oficial: '+rockstar+'\n\n#GTA6 #GTAVI #RockstarGames #RadarDosGames #Shorts','tags':tags+['Shorts'],'privacy':'unlisted','containsSyntheticMedia':True,'thumbnail':'output/shorts/short_1_cover.jpg'},
+            {'title':'GTA 6 terá FURACÕES e clima muito mais realista! #Shorts','description':'O sistema de clima de GTA 6 foi refeito: chuva, vento, grandes nuvens, furacões e muito mais detalhe em Leonida.\n\nFonte oficial: '+rockstar+'\n\n#GTA6 #GTAVI #ViceCity #RadarDosGames #Shorts','tags':tags+['Shorts'],'privacy':'unlisted','containsSyntheticMedia':True,'thumbnail':'output/shorts/short_2_cover.jpg'},
+            {'title':'GTA 6: tudo que já está confirmado para novembro #Shorts','description':'GTA 6 chega em 19 de novembro de 2026 no PS5 e Xbox Series X|S. Veja o que já está confirmado.\n\nFonte oficial: '+rockstar+'\n\n#GTA6 #GTAVI #PS5 #Xbox #RadarDosGames #Shorts','tags':tags+['Shorts'],'privacy':'unlisted','containsSyntheticMedia':True,'thumbnail':'output/shorts/short_3_cover.jpg'}
+          ]
+          Path('output/master-youtube.json').write_text(json.dumps(master,ensure_ascii=False,indent=2),encoding='utf-8')
+          for i,x in enumerate(shorts,1): Path(f'output/short-{i}-youtube.json').write_text(json.dumps(x,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('output/selected.json').write_text(json.dumps({
+            'content_id':'gta6-special-2026-10-06',
+            'title':master['title'],
+            'source':rockstar,
+            'script_words':len(Path('output/auto-script.txt').read_text(encoding='utf-8').split()),
+            'script_paragraphs':10,
+            'sources':[rockstar,extended,media,
+              'https://www.gamesradar.com/games/grand-theft-auto/gta-6s-weather-is-completely-re-engineered-from-red-dead-redemption-2-and-it-has-hurricanes-rainbows-proper-cloud-formations-and-more/',
+              'https://www.gamesradar.com/games/grand-theft-auto/gta-6-new-gameplay-details-activities-customization-confirmed-63-screenshots/']
+          },ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Create Thalita Multilingual PT-BR narration for GTA 6
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --segments-json output/voice-timings.json
+
+      - name: Download official GTA VI screenshots and artwork
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Download official Rockstar GTA VI video pack and build render manifest
+        run: |
+          python - <<'PY'
+          import json,subprocess,time,urllib.request,zipfile
+          from pathlib import Path
+
+          root=Path('output/rockstar-videos')
+          root.mkdir(parents=True,exist_ok=True)
+          zip_path=root/'GTAVI_Videos.zip'
+          url='https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip'
+          last=None
+          for attempt in range(1,5):
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+                  with urllib.request.urlopen(req,timeout=120) as r, open(zip_path,'wb') as f:
+                      while True:
+                          chunk=r.read(1024*1024)
+                          if not chunk: break
+                          f.write(chunk)
+                  if zip_path.stat().st_size>1_000_000: break
+              except Exception as exc:
+                  last=exc
+                  zip_path.unlink(missing_ok=True)
+                  time.sleep(attempt*5)
+          else:
+              raise RuntimeError(f'QUALITY_BLOCK official Rockstar video zip download failed: {last}')
+
+          with zipfile.ZipFile(zip_path) as z:
+              z.extractall(root/'files')
+
+          clips_path=Path('output/clips.json')
+          clips=json.loads(clips_path.read_text(encoding='utf-8'))
+          assets=[a for a in clips.get('assets',[]) if a.get('approved')]
+          next_idx=max([int(a.get('index',0)) for a in assets]+[0])+1
+          video_ext={'.mp4','.mov','.m4v','.webm'}
+          video_files=[p for p in (root/'files').rglob('*') if p.is_file() and p.suffix.lower() in video_ext]
+          assert len(video_files)>=4, f'QUALITY_BLOCK videos_in_zip={len(video_files)}'
+
+          def probe(path):
+              d=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(path)],text=True))
+              v=next(x for x in d['streams'] if x['codec_type']=='video')
+              return float(d['format'].get('duration') or 0),int(v.get('width') or 0),int(v.get('height') or 0)
+
+          for p in sorted(video_files,key=lambda x:x.name.lower())[:12]:
+              dur,w,h=probe(p)
+              if dur<3 or w<640 or h<360: continue
+              assets.append({
+                'index':next_idx,'path':str(p),'type':'video','role':'official_rockstar_gtavi_video',
+                'url':url,'source':'https://www.rockstargames.com/VI/media/videos',
+                'relevance_evidence':'official_rockstar_download_zip','source_label':'Rockstar Games GTA VI Official Media',
+                'approved':True,'duration':round(dur,3),'width':w,'height':h,'filename':p.name
+              })
+              next_idx+=1
+
+          videos=[a for a in assets if a.get('type')=='video']
+          images=[a for a in assets if a.get('type')=='image']
+          assert len(videos)>=4, f'QUALITY_BLOCK official_videos={len(videos)}'
+          assert len(images)>=8, f'QUALITY_BLOCK official_images={len(images)}'
+
+          clips.update({
+            'assets':assets,'clips':[a['path'] for a in assets],'publishable_media':True,'official_assets':True,
+            'video_assets':len(videos),'image_assets':len(images),
+            'unique_video_seconds':round(sum(float(a.get('duration',0)) for a in videos),3),
+            'semantic_policy':'official_rockstar_only; explicit_scene_assets; gameplay_video_first; no_reuploads'
+          })
+          clips_path.write_text(json.dumps(clips,ensure_ascii=False,indent=2),encoding='utf-8')
+
+          spec=json.loads(Path('output/auto-media-plan.json').read_text(encoding='utf-8'))
+          scenes=spec['scenes']
+          def norm(a):
+              return (' '.join([str(a.get('filename') or ''),str(a.get('url') or ''),str(a.get('path') or ''),str(a.get('role') or '')])).lower()
+          def pick(pool,terms,offset):
+              hits=[a for a in pool if any(t in norm(a) for t in terms)]
+              base=hits or pool
+              return base[offset%len(base)]
+
+          terms=[
+            ['trailer','cover','jason','lucia'],
+            ['jason','lucia'],
+            ['vice','leonida','keys','gellhorn','grass','kalaga','ambrosia'],
+            ['vehicle','car','garage','robbery','trailer'],
+            ['custom','style','salon','tattoo','shop','vehicle'],
+            ['vice','grass','keys','water','trailer'],
+            ['brian','boobie','raul','dre','real','cal'],
+            ['vice','beach','city','trailer'],
+            ['trailer','cover','jason','lucia'],
+            ['cover','vice','jason','lucia']
+          ]
+          for i,scene in enumerate(scenes):
+              v=pick(videos,terms[i],i)
+              im=pick(images,terms[i],i)
+              scene['media_indices']=[int(v['index']),int(im['index'])]
+
+          Path('output/auto-media-plan.json').write_text(json.dumps(spec,ensure_ascii=False,indent=2),encoding='utf-8')
+          manifest={'assets':assets,'voice':'output/voice.mp3','voice_timings':'output/voice-timings.json','intro':'radar-dos-games-intro-oficial.mp4','scenes':scenes,'output':'output/master.mp4'}
+          Path('output/render.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+
+          artwork=[a for a in images if a.get('role')=='official_rockstar_artwork']
+          chosen=(artwork or images)[0]
+          Path('output/cover-source.txt').write_text(chosen['path'],encoding='utf-8')
+          PY
+      - name: Render Master approved style
+        run: python src/render.py output/render.json
+
+      - name: Create official GTA VI thumbnail
+        run: |
+          COVER=$(cat output/cover-source.txt)
+          python src/thumbnail.py output/master.mp4 'GTA 6: TUDO MUDOU!' output/thumbnail.jpg "$COVER"
+
+      - name: Generate 3 GTA VI Shorts without cutting speech
+        run: python src/shorts.py output/master.mp4
+
+
+      - name: Create vertical covers for all 3 Shorts
+        run: |
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageEnhance,ImageFilter,ImageFont,ImageOps
+          W,H=1080,1920
+          FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+          titles=[('GTA 6','GAMEPLAY E LEONIDA'),('CLIMA INSANO','FURACÕES EM GTA 6'),('19 DE NOVEMBRO','O QUE JÁ ESTÁ CONFIRMADO')]
+          def font(size): return ImageFont.truetype(FONT,size)
+          def fit(draw,text,width,start=86,minimum=44):
+              for size in range(start,minimum-1,-2):
+                  ft=font(size); b=draw.textbbox((0,0),text,font=ft,stroke_width=4)
+                  if b[2]-b[0]<=width: return ft
+              return font(minimum)
+          out=Path('output/shorts')
+          for i in range(1,4):
+              video=out/f'short_{i}.mp4'
+              frame=out/f'.short_{i}_cover_frame.jpg'
+              subprocess.run(['ffmpeg','-y','-v','error','-ss','2.0','-i',str(video),'-frames:v','1','-q:v','2',str(frame)],check=True)
+              with Image.open(frame) as src:
+                  bg=ImageOps.fit(src.convert('RGB'),(W,H),method=Image.Resampling.LANCZOS)
+              bg=ImageEnhance.Contrast(bg.filter(ImageFilter.GaussianBlur(5))).enhance(1.12).convert('RGBA')
+              shade=Image.new('RGBA',(W,H),(0,0,0,0)); sd=ImageDraw.Draw(shade,'RGBA')
+              sd.rectangle((0,0,W,H),fill=(0,0,0,68)); sd.rectangle((0,0,W,170),fill=(3,7,20,235))
+              sd.rectangle((62,1170,1018,1555),fill=(0,0,0,208)); sd.rectangle((62,1170,78,1555),fill=(235,58,138,255))
+              bg=Image.alpha_composite(bg,shade); d=ImageDraw.Draw(bg,'RGBA')
+              d.text((48,58),'RADAR DOS GAMES',font=font(42),fill=(255,255,255,255),stroke_width=2,stroke_fill=(0,0,0,190))
+              main,sub=titles[i-1]; mf=fit(d,main,820,96,56); sf=fit(d,sub,820,70,42)
+              d.text((108,1240),main,font=mf,fill=(255,255,255,255),stroke_width=5,stroke_fill=(0,0,0,230))
+              d.text((108,1380),sub,font=sf,fill=(255,184,62,255),stroke_width=4,stroke_fill=(0,0,0,230))
+              d.text((108,1500),'GTA VI • ROCKSTAR',font=font(34),fill=(255,255,255,235),stroke_width=2,stroke_fill=(0,0,0,180))
+              d.rectangle((0,H-18,W,H),fill=(235,58,138,255))
+              cover=out/f'short_{i}_cover.jpg'; bg.convert('RGB').save(cover,'JPEG',quality=95,subsampling=0)
+              frame.unlink(missing_ok=True)
+          PY
+
+      - name: Final QA GTA VI special
+        run: |
+          python - <<'PY'
+          import glob,json,subprocess
+          from pathlib import Path
+          from PIL import Image
+          def probe(p): return json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(p)],text=True))
+          master=Path('output/master.mp4'); assert master.exists() and master.stat().st_size>5_000_000
+          m=probe(master); md=float(m['format']['duration']); mv=next(x for x in m['streams'] if x['codec_type']=='video')
+          assert (int(mv['width']),int(mv['height']))==(1920,1080)
+          assert 300<=md<=650, md
+          assert any(x['codec_type']=='audio' for x in m['streams'])
+          qa=json.loads(Path('output/qa.json').read_text(encoding='utf-8'))
+          assert qa['card_style']['shadow_attached_to_text'] is True
+          assert qa['voice']=='pt-BR-ThalitaMultilingualNeural'
+          assert qa['framing_policy']=='full_source_visible; blurred_background_fill; no_destructive_crop'
+          assert len(qa['scenes'])==10
+          assert all(x['all_assets_explicit'] for x in qa['scenes'])
+          assert all(x['gameplay_first'] for x in qa['scenes'])
+          clips=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
+          assert clips.get('video_assets',0)>=4
+          assert clips.get('image_assets',0)>=8
+          thumb=Path('output/thumbnail.jpg'); assert thumb.exists() and thumb.stat().st_size>30000
+          with Image.open(thumb) as im: assert im.size==(1280,720)
+          shorts=sorted(glob.glob('output/shorts/short_*.mp4')); assert len(shorts)==3
+          sm=json.loads(Path('output/shorts/manifest.json').read_text(encoding='utf-8'))
+          assert len(sm.get('shorts',[]))==3
+          assert all(x.get('boundary_policy')=='voice_segment_complete' for x in sm['shorts']), sm
+          report=[]
+          for i,p in enumerate(shorts,1):
+              q=probe(p); d=float(q['format']['duration']); v=next(x for x in q['streams'] if x['codec_type']=='video')
+              assert (int(v['width']),int(v['height']))==(1080,1920)
+              assert 20<=d<=75, (p,d)
+              assert any(x['codec_type']=='audio' for x in q['streams'])
+              cover=Path(f'output/shorts/short_{i}_cover.jpg'); assert cover.exists() and cover.stat().st_size>30000
+              with Image.open(cover) as im: assert im.size==(1080,1920)
+              report.append({'file':p,'seconds':round(d,2),'cover':str(cover)})
+          out={'master_seconds':round(md,2),'master':'1920x1080','script_words':len(Path('output/auto-script.txt').read_text(encoding='utf-8').split()),'official_video_assets':clips['video_assets'],'official_image_assets':clips['image_assets'],'shorts':report,'thumbnail':'1280x720','shorts_complete_speech':True,'status':'APPROVED'}
+          Path('output/final-qa.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Upload final GTA VI special package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-gta6-special-2026-10-06-${{ github.run_id }}
+          path: |
+            output/auto-script.txt
+            output/auto-media-plan.json
+            output/clips.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/master.mp4
+            output/thumbnail.jpg
+            output/thumbnail-policy.json
+            output/qa.json
+            output/final-qa.json
+            output/shorts/*.mp4
+            output/shorts/*_cover.jpg
+            output/shorts/manifest.json
+            output/selected.json
+            output/render.json
+            output/*youtube*.json
+          retention-days: 7
