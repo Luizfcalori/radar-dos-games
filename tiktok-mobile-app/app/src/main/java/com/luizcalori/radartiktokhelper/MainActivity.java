@@ -262,7 +262,7 @@ public class MainActivity extends Activity {
         status.setText("Sincronizando fila...");
         executor.execute(() -> {
             try {
-                String json = readUrl(QUEUE_URL);
+                String json = readUrl(QUEUE_URL + "?ts=" + System.currentTimeMillis());
                 JSONObject root = new JSONObject(json);
                 JSONArray items = root.optJSONArray("items");
                 List<QueueItem> loaded = new ArrayList<>();
@@ -281,7 +281,7 @@ public class MainActivity extends Activity {
                     allItems.addAll(loaded);
                     cursor = 0;
                     rebuildVisibleItems();
-                    status.setText("Fila sincronizada.");
+                    status.setText("Fila sincronizada • " + loaded.size() + " aprovados.");
                     if (toast) Toast.makeText(this, "Fila atualizada.", Toast.LENGTH_SHORT).show();
                 });
             } catch (Exception e) {
@@ -587,7 +587,9 @@ public class MainActivity extends Activity {
         HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         c.setConnectTimeout(12000);
         c.setReadTimeout(12000);
-        c.setRequestProperty("User-Agent", "RadarTikTokHelper/1.0");
+        c.setRequestProperty("User-Agent", "RadarTikTokHelper/1.1");
+        c.setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0");
+        c.setRequestProperty("Pragma", "no-cache");
         c.setUseCaches(false);
         try {
             int code = c.getResponseCode();
