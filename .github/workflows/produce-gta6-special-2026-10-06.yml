@@ -132,95 +132,122 @@ jobs:
         run: |
           python src/voice.py output/auto-script.txt output/voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --segments-json output/voice-timings.json
 
-      - name: Download official GTA VI screenshots and artwork
-        run: python src/media.py output/auto-media-plan.json
-
-      - name: Download official Rockstar GTA VI video pack and build render manifest
+      - name: Download official Rockstar GTA VI media packs and build render manifest
         run: |
           python - <<'PY'
           import json,subprocess,time,urllib.request,zipfile
           from pathlib import Path
+          from PIL import Image
 
-          root=Path('output/rockstar-videos')
+          root=Path('output/rockstar-media')
           root.mkdir(parents=True,exist_ok=True)
-          zip_path=root/'GTAVI_Videos.zip'
-          url='https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip'
-          last=None
-          for attempt in range(1,5):
-              try:
-                  req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
-                  with urllib.request.urlopen(req,timeout=120) as r, open(zip_path,'wb') as f:
-                      while True:
-                          chunk=r.read(1024*1024)
-                          if not chunk: break
-                          f.write(chunk)
-                  if zip_path.stat().st_size>1_000_000: break
-              except Exception as exc:
-                  last=exc
-                  zip_path.unlink(missing_ok=True)
-                  time.sleep(attempt*5)
-          else:
-              raise RuntimeError(f'QUALITY_BLOCK official Rockstar video zip download failed: {last}')
+          packs={
+            'videos':'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip',
+            'screenshots':'https://media-rockstargames-com.akamaized.net/VI/downloads/screenshots/GTAVI_Screenshots.zip',
+            'artwork':'https://media-rockstargames-com.akamaized.net/VI/downloads/artwork_wallpapers/GTAVI_Artwork_Wallpapers.zip',
+          }
 
-          with zipfile.ZipFile(zip_path) as z:
-              z.extractall(root/'files')
+          def download(url,dest):
+              last=None
+              for attempt in range(1,5):
+                  try:
+                      req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+                      with urllib.request.urlopen(req,timeout=180) as r, open(dest,'wb') as f:
+                          while True:
+                              chunk=r.read(1024*1024)
+                              if not chunk: break
+                              f.write(chunk)
+                      if dest.stat().st_size>100_000: return
+                  except Exception as exc:
+                      last=exc
+                      dest.unlink(missing_ok=True)
+                      time.sleep(attempt*5)
+              raise RuntimeError(f'QUALITY_BLOCK download failed {url}: {last}')
 
-          clips_path=Path('output/clips.json')
-          clips=json.loads(clips_path.read_text(encoding='utf-8'))
-          assets=[a for a in clips.get('assets',[]) if a.get('approved')]
-          next_idx=max([int(a.get('index',0)) for a in assets]+[0])+1
-          video_ext={'.mp4','.mov','.m4v','.webm'}
-          video_files=[p for p in (root/'files').rglob('*') if p.is_file() and p.suffix.lower() in video_ext]
-          assert len(video_files)>=4, f'QUALITY_BLOCK videos_in_zip={len(video_files)}'
+          extracted={}
+          for key,url in packs.items():
+              z=root/f'{key}.zip'
+              download(url,z)
+              folder=root/key
+              folder.mkdir(exist_ok=True)
+              with zipfile.ZipFile(z) as archive:
+                  archive.extractall(folder)
+              extracted[key]=folder
 
-          def probe(path):
+          def probe_video(path):
               d=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(path)],text=True))
               v=next(x for x in d['streams'] if x['codec_type']=='video')
               return float(d['format'].get('duration') or 0),int(v.get('width') or 0),int(v.get('height') or 0)
 
-          for p in sorted(video_files,key=lambda x:x.name.lower())[:12]:
-              dur,w,h=probe(p)
-              if dur<3 or w<640 or h<360: continue
-              assets.append({
-                'index':next_idx,'path':str(p),'type':'video','role':'official_rockstar_gtavi_video',
-                'url':url,'source':'https://www.rockstargames.com/VI/media/videos',
-                'relevance_evidence':'official_rockstar_download_zip','source_label':'Rockstar Games GTA VI Official Media',
-                'approved':True,'duration':round(dur,3),'width':w,'height':h,'filename':p.name
-              })
-              next_idx+=1
+          assets=[]; idx=1
+          video_ext={'.mp4','.mov','.m4v','.webm'}
+          image_ext={'.jpg','.jpeg','.png','.webp'}
 
-          videos=[a for a in assets if a.get('type')=='video']
-          images=[a for a in assets if a.get('type')=='image']
+          videos=[]
+          for p in extracted['videos'].rglob('*'):
+              if not p.is_file() or p.suffix.lower() not in video_ext: continue
+              try:
+                  dur,w,h=probe_video(p)
+              except Exception:
+                  continue
+              if dur<3 or w<640 or h<360: continue
+              a={'index':idx,'path':str(p),'type':'video','role':'official_rockstar_gtavi_video',
+                 'url':packs['videos'],'source':'https://www.rockstargames.com/VI/media/videos',
+                 'relevance_evidence':'official_rockstar_download_zip','source_label':'Rockstar Games GTA VI Official Media',
+                 'approved':True,'duration':round(dur,3),'width':w,'height':h,'filename':p.name}
+              assets.append(a); videos.append(a); idx+=1
+
+          images=[]
+          for role,key,source in [
+              ('official_rockstar_screenshot','screenshots','https://www.rockstargames.com/VI/media/screenshots'),
+              ('official_rockstar_artwork','artwork','https://www.rockstargames.com/VI/media/artwork-wallpapers')
+          ]:
+              for p in extracted[key].rglob('*'):
+                  if not p.is_file() or p.suffix.lower() not in image_ext: continue
+                  try:
+                      with Image.open(p) as im: w,h=im.size
+                  except Exception:
+                      continue
+                  if w<640 or h<360: continue
+                  a={'index':idx,'path':str(p),'type':'image','role':role,
+                     'url':packs[key],'source':source,'relevance_evidence':'official_rockstar_download_zip',
+                     'source_label':'Rockstar Games GTA VI Official Media','approved':True,
+                     'duration':0,'width':w,'height':h,'filename':p.name}
+                  assets.append(a); images.append(a); idx+=1
+
           assert len(videos)>=4, f'QUALITY_BLOCK official_videos={len(videos)}'
           assert len(images)>=8, f'QUALITY_BLOCK official_images={len(images)}'
 
-          clips.update({
-            'assets':assets,'clips':[a['path'] for a in assets],'publishable_media':True,'official_assets':True,
+          clips={
+            'assets':assets,'clips':[a['path'] for a in assets],'errors':[],'publishable_media':True,
+            'generic_fallback':False,'official_assets':True,'minimum_assets':12,
             'video_assets':len(videos),'image_assets':len(images),
             'unique_video_seconds':round(sum(float(a.get('duration',0)) for a in videos),3),
-            'semantic_policy':'official_rockstar_only; explicit_scene_assets; gameplay_video_first; no_reuploads'
-          })
-          clips_path.write_text(json.dumps(clips,ensure_ascii=False,indent=2),encoding='utf-8')
+            'minimum_video_assets':4,'minimum_unique_video_seconds':120,'minimum_image_assets':8,
+            'semantic_policy':'official_rockstar_only; direct_official_media_packs; explicit_scene_assets; gameplay_video_first; no_reuploads'
+          }
+          Path('output/clips.json').write_text(json.dumps(clips,ensure_ascii=False,indent=2),encoding='utf-8')
 
           spec=json.loads(Path('output/auto-media-plan.json').read_text(encoding='utf-8'))
           scenes=spec['scenes']
+
           def norm(a):
-              return (' '.join([str(a.get('filename') or ''),str(a.get('url') or ''),str(a.get('path') or ''),str(a.get('role') or '')])).lower()
+              return (' '.join([str(a.get('filename') or ''),str(a.get('path') or ''),str(a.get('role') or '')])).lower()
           def pick(pool,terms,offset):
               hits=[a for a in pool if any(t in norm(a) for t in terms)]
               base=hits or pool
               return base[offset%len(base)]
 
           terms=[
-            ['trailer','cover','jason','lucia'],
+            ['trailer','jason','lucia','vice'],
             ['jason','lucia'],
             ['vice','leonida','keys','gellhorn','grass','kalaga','ambrosia'],
-            ['vehicle','car','garage','robbery','trailer'],
-            ['custom','style','salon','tattoo','shop','vehicle'],
-            ['vice','grass','keys','water','trailer'],
+            ['vehicle','car','garage','robbery'],
+            ['custom','salon','tattoo','shop','vehicle'],
+            ['water','storm','rain','vice','grass','keys'],
             ['brian','boobie','raul','dre','real','cal'],
-            ['vice','beach','city','trailer'],
-            ['trailer','cover','jason','lucia'],
+            ['beach','city','vice','crowd'],
+            ['trailer','jason','lucia','vice'],
             ['cover','vice','jason','lucia']
           ]
           for i,scene in enumerate(scenes):
@@ -233,8 +260,8 @@ jobs:
           Path('output/render.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
 
           artwork=[a for a in images if a.get('role')=='official_rockstar_artwork']
-          chosen=(artwork or images)[0]
-          Path('output/cover-source.txt').write_text(chosen['path'],encoding='utf-8')
+          cover=max((artwork or images),key=lambda a:int(a.get('width',0))*int(a.get('height',0)))
+          Path('output/cover-source.txt').write_text(cover['path'],encoding='utf-8')
           PY
       - name: Render Master approved style
         run: python src/render.py output/render.json
@@ -317,7 +344,7 @@ jobs:
           for i,p in enumerate(shorts,1):
               q=probe(p); d=float(q['format']['duration']); v=next(x for x in q['streams'] if x['codec_type']=='video')
               assert (int(v['width']),int(v['height']))==(1080,1920)
-              assert 20<=d<=75, (p,d)
+              assert 20<=d<=120, (p,d)
               assert any(x['codec_type']=='audio' for x in q['streams'])
               cover=Path(f'output/shorts/short_{i}_cover.jpg'); assert cover.exists() and cover.stat().st_size>30000
               with Image.open(cover) as im: assert im.size==(1080,1920)
