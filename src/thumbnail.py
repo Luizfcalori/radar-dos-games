@@ -3,7 +3,7 @@
 
 Padrão editorial fixo:
 - imagem oficial aprovada como fundo quando disponível;
-- título principal grande no centro, branco + vermelho;
+- título principal grande no centro, branco + verde Radar;
 - subtítulo dentro de barra metálica escura;
 - assinatura RADAR DOS GAMES centralizada na base;
 - alto contraste, sombra forte e leitura no celular;
@@ -20,8 +20,8 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
 W, H = 1280, 720
 FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 WHITE = (246, 247, 249)
-RED = (215, 30, 43)
-RED_DARK = (112, 10, 19)
+RADAR_GREEN = (57, 255, 20)
+RADAR_GREEN_DARK = (19, 118, 22)
 GOLD = (255, 194, 35)
 BLACK = (5, 7, 11)
 
@@ -157,7 +157,7 @@ def compose(base: Image.Image, title: str) -> Image.Image:
     overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay, "RGBA")
 
-    # Headline central. Última palavra em vermelho para repetir a capa aprovada.
+    # Headline central. Última palavra em verde Radar — identidade oficial aprovada.
     words = headline.split()
     left = " ".join(words[:-1]) if len(words) > 1 else words[0]
     right = words[-1] if len(words) > 1 else ""
@@ -171,13 +171,13 @@ def compose(base: Image.Image, title: str) -> Image.Image:
     y = 390
     draw_text_shadow(d, (x, y), left, hf, WHITE)
     if right:
-        draw_text_shadow(d, (x + (lb[2]-lb[0]) + gap, y), right, hf, RED)
+        draw_text_shadow(d, (x + (lb[2]-lb[0]) + gap, y), right, hf, RADAR_GREEN)
 
     # Barra metálica fixa do padrão Radar.
     panel = (90, 515, 1190, 630)
     d.rounded_rectangle(panel, radius=14, fill=(11, 14, 20, 238), outline=(156, 161, 171, 210), width=4)
-    d.rounded_rectangle((100, 525, 1180, 620), radius=10, outline=(RED[0], RED[1], RED[2], 235), width=4)
-    d.rectangle((90, 551, 1190, 558), fill=(RED[0], RED[1], RED[2], 150))
+    d.rounded_rectangle((100, 525, 1180, 620), radius=10, outline=(RADAR_GREEN[0], RADAR_GREEN[1], RADAR_GREEN[2], 235), width=4)
+    d.rectangle((90, 551, 1190, 558), fill=(RADAR_GREEN[0], RADAR_GREEN[1], RADAR_GREEN[2], 150))
     for x0 in range(112, 1180, 44):
         d.line((x0, 526, x0 + 18, 526), fill=(95, 101, 112, 160), width=2)
         d.line((x0, 619, x0 + 18, 619), fill=(95, 101, 112, 160), width=2)
@@ -191,17 +191,17 @@ def compose(base: Image.Image, title: str) -> Image.Image:
 
     # Assinatura fixa na base.
     badge = (392, 646, 888, 704)
-    d.rounded_rectangle(badge, radius=8, fill=(7, 9, 13, 245), outline=(RED[0], RED[1], RED[2], 245), width=4)
+    d.rounded_rectangle(badge, radius=8, fill=(7, 9, 13, 245), outline=(RADAR_GREEN[0], RADAR_GREEN[1], RADAR_GREEN[2], 245), width=4)
     bf = font(28)
     a, b = "RADAR DOS ", "GAMES"
     aw = d.textbbox((0, 0), a, font=bf)[2]
     bw = d.textbbox((0, 0), b, font=bf)[2]
     bx = (W - aw - bw) // 2
     d.text((bx, 658), a, font=bf, fill=WHITE + (255,), stroke_width=2, stroke_fill=BLACK + (255,))
-    d.text((bx + aw, 658), b, font=bf, fill=RED + (255,), stroke_width=2, stroke_fill=BLACK + (255,))
+    d.text((bx + aw, 658), b, font=bf, fill=RADAR_GREEN + (255,), stroke_width=2, stroke_fill=BLACK + (255,))
 
-    # Moldura inferior vermelha/metalizada consistente.
-    d.line((0, 714, W, 714), fill=RED + (255,), width=6)
+    # Moldura inferior verde/metalizada consistente.
+    d.line((0, 714, W, 714), fill=RADAR_GREEN + (255,), width=6)
     return Image.alpha_composite(canvas, overlay).convert("RGB")
 
 
@@ -241,8 +241,8 @@ def main():
     headline, subtitle = split_title(title)
     policy = {
         "status": "APPROVED",
-        "policy": "radar_standard_v2; official_image_first; centered_white_red_headline; metallic_subtitle_bar; branded_footer; mobile_legible; 16:9",
-        "template_version": "radar-thumbnail-v2-2026-10-05",
+        "policy": "radar_standard_v3_green; official_image_first; centered_white_green_headline; metallic_subtitle_bar; branded_footer; neon_green_brand_accents; mobile_legible; 16:9",
+        "template_version": "radar-thumbnail-v3-green-2026-10-06",
         "source_kind": source_kind,
         "source_path": str(source_image),
         "source_url": (asset or {}).get("url"),
