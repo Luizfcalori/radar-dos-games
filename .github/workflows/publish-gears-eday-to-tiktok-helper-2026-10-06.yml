@@ -1,0 +1,160 @@
+name: Publish Gears E-Day Shorts to TikTok Helper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-gears-eday-to-tiktok-helper-2026-10-06.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved Gears production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-gears-eday-launch-2026-10-06-37469055958
+          path: gears-final
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37469055958
+
+      - name: Prepare exact MP4s and approved covers
+        run: |
+          set -euo pipefail
+          mkdir -p helper-assets
+          cp gears-final/shorts/short_1.mp4 helper-assets/gears-eday-2026-10-06-short-1.mp4
+          cp gears-final/shorts/short_2.mp4 helper-assets/gears-eday-2026-10-06-short-2.mp4
+          cp gears-final/shorts/short_3.mp4 helper-assets/gears-eday-2026-10-06-short-3.mp4
+
+          curl -L --fail --retry 3 "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/18652cd2874e03a22f10ee11d0e5ea7670e7e91c1d4096787dacd12ed55450c7.jpg" -o helper-assets/gears-eday-2026-10-06-short-1.jpg
+          curl -L --fail --retry 3 "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/a70323f9dc167536733e02da27e50ebe684205a82cb469e07d130dbfed09dcf9.jpg" -o helper-assets/gears-eday-2026-10-06-short-2.jpg
+          curl -L --fail --retry 3 "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/f8a6c3c82f7e5f495869d11fa11e64d4e4384b0bba84fce3fe5c6cd8a170e105.jpg" -o helper-assets/gears-eday-2026-10-06-short-3.jpg
+
+          test -s helper-assets/gears-eday-2026-10-06-short-1.mp4
+          test -s helper-assets/gears-eday-2026-10-06-short-2.mp4
+          test -s helper-assets/gears-eday-2026-10-06-short-3.mp4
+          test -s helper-assets/gears-eday-2026-10-06-short-1.jpg
+          test -s helper-assets/gears-eday-2026-10-06-short-2.jpg
+          test -s helper-assets/gears-eday-2026-10-06-short-3.jpg
+
+      - name: Publish files to TikTok Helper release
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" helper-assets/* --clobber
+
+      - name: Promote Gears Shorts to approved in queue
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          p=Path('data/tiktok_queue.json')
+          q=json.loads(p.read_text(encoding='utf-8'))
+          now=datetime.now(timezone.utc).isoformat()
+          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+
+          configs={
+            '3Z-HdsAnm5U':{
+              'title':'GEARS E-DAY voltou a ser BRUTAL!',
+              'short_number':1,
+              'mp4':'gears-eday-2026-10-06-short-1.mp4',
+              'jpg':'gears-eday-2026-10-06-short-1.jpg',
+              'post_text':'GEARS E-DAY voltou a ser BRUTAL!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GearsOfWar #GearsEDay #Xbox #RadarDosGames #Games #Gaming #TikTokGames'
+            },
+            '3DRa5L_gF-o':{
+              'title':'O começo da INVASÃO LOCUST em Gears E-Day',
+              'short_number':2,
+              'mp4':'gears-eday-2026-10-06-short-2.mp4',
+              'jpg':'gears-eday-2026-10-06-short-2.jpg',
+              'post_text':'O começo da INVASÃO LOCUST em Gears E-Day\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GearsOfWar #GearsEDay #Locust #RadarDosGames #Games #Gaming #TikTokGames'
+            },
+            '1lwIpveTDlA':{
+              'title':'Gears E-Day VALE A PENA no lançamento?',
+              'short_number':3,
+              'mp4':'gears-eday-2026-10-06-short-3.mp4',
+              'jpg':'gears-eday-2026-10-06-short-3.jpg',
+              'post_text':'Gears E-Day VALE A PENA no lançamento?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GearsOfWar #GearsEDay #GamePass #RadarDosGames #Games #Gaming #TikTokGames'
+            },
+          }
+
+          items=q.get('items') or []
+          seen=set()
+          for item in items:
+              yid=item.get('youtube_id')
+              if yid not in configs:
+                  continue
+              cfg=configs[yid]
+              item.update({
+                'id':f'yt-{yid}',
+                'title':cfg['title'],
+                'media_url':f"{base}/{cfg['mp4']}",
+                'thumbnail_url':f"{base}/{cfg['jpg']}",
+                'post_text':cfg['post_text'],
+                'status':'approved',
+                'source_run_id':37469055958,
+                'short_number':cfg['short_number'],
+                'approved_at':now,
+                'source':'approved_production_artifact_manual_fix',
+                'youtube_id':yid,
+                'youtube_url':f'https://www.youtube.com/shorts/{yid}',
+                'synced_at':now,
+              })
+              seen.add(yid)
+
+          missing=set(configs)-seen
+          if missing:
+              raise RuntimeError(f'Itens Gears ausentes na fila: {sorted(missing)}')
+
+          # Gears aprovados sempre no topo, preservando a ordem Short 1, 2, 3.
+          order=['3Z-HdsAnm5U','3DRa5L_gF-o','1lwIpveTDlA']
+          gears=[next(x for x in items if x.get('youtube_id')==yid) for yid in order]
+          rest=[x for x in items if x.get('youtube_id') not in set(order)]
+          q['version']=2
+          q['updated_at']=now
+          q['items']=gears+rest
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          print(json.dumps({
+            'updated_at':now,
+            'gears':[
+              {'youtube_id':x['youtube_id'],'status':x['status'],'media_url':x['media_url'],'thumbnail_url':x['thumbnail_url']}
+              for x in gears
+            ]
+          },ensure_ascii=False,indent=2))
+          PY
+
+      - name: Verify public release files
+        run: |
+          set -euo pipefail
+          for f in             gears-eday-2026-10-06-short-1.mp4 gears-eday-2026-10-06-short-2.mp4 gears-eday-2026-10-06-short-3.mp4             gears-eday-2026-10-06-short-1.jpg gears-eday-2026-10-06-short-2.jpg gears-eday-2026-10-06-short-3.jpg
+          do
+            curl -L --fail --range 0-1023 "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/$f" -o /dev/null
+            echo "PUBLIC_OK $f"
+          done
+
+      - name: Commit refreshed Helper queue
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          git commit -m "fix: publish Gears E-Day Shorts to TikTok Helper"
+          git pull --rebase origin main
+          git push origin main
