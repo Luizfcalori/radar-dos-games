@@ -38,6 +38,7 @@ SCENES = [
  {"title":"UNREAL ENGINE 5","subtitle":"Kalona em colapso","media_indices":[]},
  {"title":"COMEÇO FORTE NO PC","subtitle":"Steam • cross-platform • PT-BR","media_indices":[]},
  {"title":"VALE A PENA?","subtitle":"Um novo começo para Gears","media_indices":[]},
+ {"title":"O E-DAY É AGORA","subtitle":"Campanha • Horde Siege • Versus","media_indices":[]},
 ]
 
 media=[
