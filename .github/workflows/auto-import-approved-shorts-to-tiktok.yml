@@ -40,7 +40,7 @@ jobs:
           mkdir -p candidates imported-assets
 
           python - <<'PY'
-          import json, os, subprocess, urllib.request, zipfile
+          import json, os, re, subprocess, urllib.request, zipfile
           from pathlib import Path
           from datetime import datetime, timezone, timedelta
 
@@ -63,10 +63,11 @@ jobs:
           runs=api(f'/repos/{repo}/actions/runs?status=success&per_page=30').get('workflow_runs',[])
           cutoff=datetime.now(timezone.utc)-timedelta(hours=24)
           selected=[]
+          seen_artifact_families=set()
 
           for run in runs:
               rid=str(run.get('id') or '')
-              if not rid or rid in imported_runs:
+              if not rid:
                   continue
               created=run.get('created_at') or ''
               try:
@@ -84,6 +85,164 @@ jobs:
                   low=name.lower()
                   if any(x in low for x in ('youtube-upload-results','thumbnail-test','tiktok-helper','login-proof','debug')):
                       continue
+                  # Runs mais novos vêm primeiro. Pacotes de rerun do mesmo conteúdo
+                  # usam o mesmo nome-base e só mudam o sufixo numérico do run.
+                  # A família do pacote bloqueia importações antigas/duplicadas.
+                  family=re.sub(r'-\\d{8,}
+                  cmd=['gh','api',f'/repos/{repo}/actions/artifacts/{aid}/zip']
+                  with zpath.open('wb') as out:
+                      p=subprocess.run(cmd,stdout=out,stderr=subprocess.DEVNULL)
+                  if p.returncode!=0 or not zpath.exists() or zpath.stat().st_size<1000:
+                      zpath.unlink(missing_ok=True); continue
+
+                  d=Path('candidates')/f'{rid}-{aid}'
+                  d.mkdir(parents=True,exist_ok=True)
+                  try:
+                      with zipfile.ZipFile(zpath) as z: z.extractall(d)
+                  except Exception:
+                      continue
+
+                  qa=list(d.rglob('final-qa.json'))
+                  shorts=[next(iter(d.rglob(f'short_{n}.mp4')),None) for n in (1,2,3)]
+                  metas=[next(iter(d.rglob(f'short-{n}-youtube.json')),None) for n in (1,2,3)]
+                  if not qa or not all(shorts) or not all(metas):
+                      continue
+                  try:
+                      q=json.loads(qa[0].read_text(encoding='utf-8'))
+                  except Exception:
+                      continue
+                  if str(q.get('status') or '').upper()!='APPROVED':
+                      continue
+
+                  selected.append({
+                      'run_id':rid,'artifact_id':str(aid),'artifact_name':name,
+                      'dir':str(d),'shorts':[str(x) for x in shorts],
+                      'metas':[str(x) for x in metas],
+                  })
+                  seen_artifact_families.add(family)
+                  break
+
+          Path('/tmp/radar-tiktok-auto-import.json').write_text(json.dumps(selected,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps({'approved_packages_found':len(selected),'runs':[x['run_id'] for x in selected]},ensure_ascii=False))
+          PY
+
+      - name: Publish MP4s, previews and merge them into the TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re, shutil, subprocess, unicodedata
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          selected=json.loads(Path('/tmp/radar-tiktok-auto-import.json').read_text(encoding='utf-8'))
+          qpath=Path('data/tiktok_queue.json')
+          queue=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
+          old=queue.get('items') or []
+          now=datetime.now(timezone.utc).isoformat()
+          new=[]
+
+          def slugify(v):
+              v=unicodedata.normalize('NFKD',str(v)).encode('ascii','ignore').decode().lower()
+              v=re.sub(r'[^a-z0-9]+','-',v).strip('-')
+              return v[:55] or 'radar-games'
+
+          def clean_title(v):
+              v=re.sub(r'(?i)#shorts?\b','',str(v or ''))
+              return re.sub(r'\s+',' ',v).strip(' -|') or 'Radar dos Games'
+
+          for pkg in selected:
+              rid=str(pkg['run_id'])
+              first=json.loads(Path(pkg['metas'][0]).read_text(encoding='utf-8'))
+              slug=slugify(first.get('title') or pkg.get('artifact_name') or rid)
+
+              for n in (1,2,3):
+                  src=Path(pkg['shorts'][n-1]); meta=Path(pkg['metas'][n-1])
+                  data=json.loads(meta.read_text(encoding='utf-8'))
+                  title=clean_title(data.get('title'))
+                  stem=f'{slug}-{rid}-short-{n}'
+                  mp4=Path('imported-assets')/(stem+'.mp4')
+                  jpg=Path('imported-assets')/(stem+'.jpg')
+                  shutil.copy2(src,mp4)
+                  subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-ss','1','-i',str(src),'-frames:v','1','-vf','scale=720:-2',str(jpg)],check=True)
+
+                  desc=str(data.get('description') or '')
+                  tags=[]
+                  for t in re.findall(r'#([\wÀ-ÿ]+)',desc,flags=re.UNICODE):
+                      tag='#'+re.sub(r'[^\w]','',t,flags=re.UNICODE)
+                      if tag.lower() not in {'#shorts','#youtubeshorts'} and tag.lower() not in {x.lower() for x in tags}:
+                          tags.append(tag)
+                      if len(tags)>=4: break
+                  for g in ['#RadarDosGames','#Games','#Gaming','#TikTokGames']:
+                      if g.lower() not in {x.lower() for x in tags}: tags.append(g)
+
+                  new.append({
+                    'id':f'{slug}-approved-{rid}-short-{n}',
+                    'title':title,
+                    'media_asset':mp4.name,
+                    'thumbnail_asset':jpg.name,
+                    'post_text':title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(tags),
+                    'status':'approved','source_run_id':int(rid),'short_number':n,
+                    'approved_at':now,'source':'approved_production_artifact_auto',
+                  })
+
+          Path('/tmp/radar-tiktok-new-items.json').write_text(json.dumps(new,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps({'prepared':len(new)},ensure_ascii=False))
+          PY
+
+          shopt -s nullglob
+          files=(imported-assets/*.mp4 imported-assets/*.jpg)
+          if ((${#files[@]})); then
+            TAG=tiktok-approved-assets
+            gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title 'Radar dos Games - Shorts aprovados para TikTok' --notes 'Arquivos aprovados usados pelo Radar TikTok Helper.'
+            gh release upload "$TAG" "${files[@]}" --clobber
+          fi
+
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          qpath=Path('data/tiktok_queue.json')
+          q=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
+          new=json.loads(Path('/tmp/radar-tiktok-new-items.json').read_text(encoding='utf-8'))
+          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+          for x in new:
+              x['media_url']=f"{base}/{x.pop('media_asset')}"
+              x['thumbnail_url']=f"{base}/{x.pop('thumbnail_asset')}"
+          ids={x['id'] for x in new}
+          old=[x for x in (q.get('items') or []) if x.get('id') not in ids]
+          if new:
+              q['version']=2
+              q['updated_at']=datetime.now(timezone.utc).isoformat()
+              q['items']=(new+old)[:200]
+              qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'added':len(new),'total':len(q.get('items') or [])},ensure_ascii=False))
+          PY
+
+      - name: Commit queue only when new approved Shorts were imported
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo 'No new approved production Shorts to import.'
+            exit 0
+          fi
+          git commit -m 'bot: auto-import approved production Shorts to TikTok Helper'
+          git pull --rebase origin main
+          git push origin main
+
+# forced-import: gta6-2026-10-06
+,'',low)
+                  if family in seen_artifact_families:
+                      continue
+                  if rid in imported_runs:
+                      seen_artifact_families.add(family)
+                      continue
+
                   aid=art.get('id')
                   if not aid:
                       continue
