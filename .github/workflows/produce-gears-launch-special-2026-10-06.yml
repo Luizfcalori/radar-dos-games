@@ -154,7 +154,7 @@ jobs:
           qa=json.loads(Path('output/qa.json').read_text(encoding='utf-8'))
           assert qa['card_style']['shadow_attached_to_text'] is True
           assert qa['voice']=='pt-BR-ThalitaMultilingualNeural'
-          assert len(qa['scenes'])==10
+          assert len(qa['scenes'])==11
           assert all(x['all_assets_explicit'] for x in qa['scenes'])
           assert all(x['gameplay_first'] for x in qa['scenes'])
           clips=json.loads(Path('output/clips.json').read_text(encoding='utf-8'))
@@ -218,3 +218,5 @@ jobs:
             output/render.json
             output/*youtube*.json
           retention-days: 7
+
+# rerun: fix-11-scenes
