@@ -44,7 +44,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity {
-    private static final String QUEUE_URL =
+    private static final String QUEUE_API_URL =
+            "https://api.github.com/repos/Luizfcalori/radar-dos-games/contents/data/tiktok_queue.json?ref=main";
+    private static final String QUEUE_RAW_URL =
             "https://raw.githubusercontent.com/Luizfcalori/radar-dos-games/main/data/tiktok_queue.json";
     private static final String PREFS = "radar_tiktok_state";
     private static final String TIKTOK_PACKAGE = "com.zhiliaoapp.musically";
@@ -262,8 +264,18 @@ public class MainActivity extends Activity {
         status.setText("Sincronizando fila...");
         executor.execute(() -> {
             try {
-                String json = readUrl(QUEUE_URL + "?ts=" + System.currentTimeMillis());
+                String json;
+                String source;
+                long nonce = System.currentTimeMillis();
+                try {
+                    json = readQueueApi(QUEUE_API_URL + "&ts=" + nonce);
+                    source = "GitHub API";
+                } catch (Exception apiError) {
+                    json = readUrl(QUEUE_RAW_URL + "?ts=" + nonce);
+                    source = "Raw fallback";
+                }
                 JSONObject root = new JSONObject(json);
+                String queueUpdatedAt = root.optString("updated_at", "sem data");
                 JSONArray items = root.optJSONArray("items");
                 List<QueueItem> loaded = new ArrayList<>();
                 if (items != null) {
@@ -281,8 +293,8 @@ public class MainActivity extends Activity {
                     allItems.addAll(loaded);
                     cursor = 0;
                     rebuildVisibleItems();
-                    status.setText("Fila sincronizada • " + loaded.size() + " aprovados.");
-                    if (toast) Toast.makeText(this, "Fila atualizada.", Toast.LENGTH_SHORT).show();
+                    status.setText("Fila sincronizada • " + loaded.size() + " aprovados • " + source + " • " + queueUpdatedAt);
+                    if (toast) Toast.makeText(this, "Fila atualizada: " + loaded.size() + " aprovados.", Toast.LENGTH_SHORT).show();
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> status.setText("Falha ao sincronizar: " + shortMessage(e)));
@@ -583,11 +595,36 @@ public class MainActivity extends Activity {
         return ids == null ? new HashSet<>() : new HashSet<>(ids);
     }
 
+    private String readQueueApi(String url) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+        c.setConnectTimeout(12000);
+        c.setReadTimeout(12000);
+        c.setRequestProperty("User-Agent", "RadarTikTokHelper/1.2");
+        c.setRequestProperty("Accept", "application/vnd.github.raw+json");
+        c.setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0");
+        c.setRequestProperty("Pragma", "no-cache");
+        c.setUseCaches(false);
+        try {
+            int code = c.getResponseCode();
+            if (code < 200 || code >= 300) throw new IllegalStateException("GitHub API HTTP " + code);
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream(), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = r.readLine()) != null) sb.append(line).append('\n');
+            }
+            String body = sb.toString().trim();
+            if (!body.startsWith("{")) throw new IllegalStateException("GitHub API não retornou JSON bruto");
+            return body;
+        } finally {
+            c.disconnect();
+        }
+    }
+
     private String readUrl(String url) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         c.setConnectTimeout(12000);
         c.setReadTimeout(12000);
-        c.setRequestProperty("User-Agent", "RadarTikTokHelper/1.1");
+        c.setRequestProperty("User-Agent", "RadarTikTokHelper/1.2");
         c.setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0");
         c.setRequestProperty("Pragma", "no-cache");
         c.setUseCaches(false);
