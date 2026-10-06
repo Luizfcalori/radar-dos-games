@@ -376,3 +376,5 @@ jobs:
             output/render.json
             output/*youtube*.json
           retention-days: 7
+
+# requested-run: gta6-special-quality-pass
