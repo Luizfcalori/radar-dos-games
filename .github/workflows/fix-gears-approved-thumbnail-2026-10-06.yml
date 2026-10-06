@@ -19,7 +19,7 @@ jobs:
 
       - name: Install YouTube client
         run: |
-          python -m pip install -q google-api-python-client==2.184.0 google-auth==2.41.1
+          python -m pip install -q google-api-python-client==2.184.0 google-auth==2.41.1 pillow
 
       - name: Download exact approved thumbnail
         run: |
@@ -93,3 +93,5 @@ jobs:
             approved-gears-thumbnail.jpg
             thumbnail-fix-result.json
           retention-days: 7
+
+# rerun after adding Pillow for image validation
