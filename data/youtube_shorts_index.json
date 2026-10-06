@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-05T21:33:19.979125+00:00",
-  "total_discovered": 34,
-  "ready_for_tiktok": 33,
+  "updated_at": "2026-10-06T01:50:05.036963+00:00",
+  "total_discovered": 35,
+  "ready_for_tiktok": 34,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,12 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "i28TYdGzPrI",
+      "youtube_url": "https://www.youtube.com/shorts/i28TYdGzPrI",
+      "title": "Galactic Racer tem campanha, Arcade e até 12 online",
+      "status": "approved"
+    },
     {
       "youtube_id": "Jgc8oz3zALM",
       "youtube_url": "https://www.youtube.com/shorts/Jgc8oz3zALM",
