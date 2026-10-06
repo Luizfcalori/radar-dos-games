@@ -1,25 +1,10 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-06T15:20:37.911423+00:00",
+  "updated_at": "2026-10-06T20:26:37.129683+00:00",
   "total_discovered": 41,
-  "ready_for_tiktok": 37,
+  "ready_for_tiktok": 40,
   "waiting_media": [
-    {
-      "youtube_id": "3Z-HdsAnm5U",
-      "title": "GEARS E-DAY voltou a ser BRUTAL!",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "3DRa5L_gF-o",
-      "title": "O começo da INVASÃO LOCUST em Gears E-Day",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "1lwIpveTDlA",
-      "title": "Gears E-Day VALE A PENA no lançamento?",
-      "reason": "original_media_not_recovered_yet"
-    },
     {
       "youtube_id": "XA-YklCtg1k",
       "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
@@ -31,19 +16,19 @@
       "youtube_id": "3Z-HdsAnm5U",
       "youtube_url": "https://www.youtube.com/shorts/3Z-HdsAnm5U",
       "title": "GEARS E-DAY voltou a ser BRUTAL!",
-      "status": "waiting_media"
+      "status": "approved"
     },
     {
       "youtube_id": "3DRa5L_gF-o",
       "youtube_url": "https://www.youtube.com/shorts/3DRa5L_gF-o",
       "title": "O começo da INVASÃO LOCUST em Gears E-Day",
-      "status": "waiting_media"
+      "status": "approved"
     },
     {
       "youtube_id": "1lwIpveTDlA",
       "youtube_url": "https://www.youtube.com/shorts/1lwIpveTDlA",
       "title": "Gears E-Day VALE A PENA no lançamento?",
-      "status": "waiting_media"
+      "status": "approved"
     },
     {
       "youtube_id": "OqRUFau7c1s",

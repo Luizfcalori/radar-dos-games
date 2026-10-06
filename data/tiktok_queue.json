@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-06T15:23:20.871372+00:00",
+  "updated_at": "2026-10-06T20:26:37.129683+00:00",
   "items": [
     {
       "id": "yt-3Z-HdsAnm5U",
@@ -13,7 +13,7 @@
       "youtube_id": "3Z-HdsAnm5U",
       "youtube_url": "https://www.youtube.com/shorts/3Z-HdsAnm5U",
       "youtube_published_at": null,
-      "source": "approved_production_artifact_manual_fix",
+      "source": "youtube_channel",
       "synced_at": "2026-10-06T15:23:20.871372+00:00",
       "source_run_id": 37469055958,
       "short_number": 1,
@@ -29,7 +29,7 @@
       "youtube_id": "3DRa5L_gF-o",
       "youtube_url": "https://www.youtube.com/shorts/3DRa5L_gF-o",
       "youtube_published_at": null,
-      "source": "approved_production_artifact_manual_fix",
+      "source": "youtube_channel",
       "synced_at": "2026-10-06T15:23:20.871372+00:00",
       "source_run_id": 37469055958,
       "short_number": 2,
@@ -45,7 +45,7 @@
       "youtube_id": "1lwIpveTDlA",
       "youtube_url": "https://www.youtube.com/shorts/1lwIpveTDlA",
       "youtube_published_at": null,
-      "source": "approved_production_artifact_manual_fix",
+      "source": "youtube_channel",
       "synced_at": "2026-10-06T15:23:20.871372+00:00",
       "source_run_id": 37469055958,
       "short_number": 3,
