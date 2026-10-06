@@ -448,6 +448,7 @@ def build_metadata(candidate, parser, privacy):
         "tags": tags,
         "privacy": privacy,
         "containsSyntheticMedia": False,
+        "thumbnail": "output/thumbnail.jpg",
     }
 
     hooks = ["O QUE FOI CONFIRMADO", "POR QUE ISSO IMPORTA", "O QUE VEM AGORA"]
@@ -467,6 +468,7 @@ def build_metadata(candidate, parser, privacy):
             "tags": tags + ["Shorts"],
             "privacy": privacy,
             "containsSyntheticMedia": False,
+            "thumbnail": f"output/shorts/short_{i}_cover.jpg",
         })
     return master, shorts
 
