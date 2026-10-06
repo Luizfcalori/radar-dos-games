@@ -1,0 +1,95 @@
+name: Fix Gears E-Day approved thumbnail
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fix-gears-approved-thumbnail-2026-10-06.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install YouTube client
+        run: |
+          python -m pip install -q google-api-python-client==2.184.0 google-auth==2.41.1
+
+      - name: Download exact approved thumbnail
+        run: |
+          curl -L --fail --retry 3             "https://cdn.openart.ai/openart-uploads/production/attachment-transfers/2d4e0785ba79204dc49b2cc4639430366c83873cbe358d54b6c22e9e60d00d1b.jpg"             -o approved-gears-thumbnail.jpg
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          p=Path('approved-gears-thumbnail.jpg')
+          assert p.exists() and p.stat().st_size > 100_000
+          with Image.open(p) as im:
+              print('APPROVED_IMAGE', im.size, im.format, p.stat().st_size)
+              assert im.size == (1536,864)
+          PY
+
+      - name: Apply exact approved thumbnail to Gears video
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+
+          VIDEO_ID='YHr00oaEZDQ'
+          CHANNEL_ID='UCSZJZE-E10SVdx42wrDeWhw'
+          SCOPES=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube.readonly']
+
+          creds=Credentials(
+              None,
+              refresh_token=os.environ['YT_REFRESH_TOKEN'],
+              token_uri='https://oauth2.googleapis.com/token',
+              client_id=os.environ['YT_CLIENT_ID'],
+              client_secret=os.environ['YT_CLIENT_SECRET'],
+              scopes=SCOPES,
+          )
+          yt=build('youtube','v3',credentials=creds)
+
+          video=yt.videos().list(part='snippet,status',id=VIDEO_ID).execute()['items'][0]
+          assert video['snippet']['channelId']==CHANNEL_ID, video['snippet']['channelId']
+
+          resp=yt.thumbnails().set(
+              videoId=VIDEO_ID,
+              media_body=MediaFileUpload(
+                  'approved-gears-thumbnail.jpg',
+                  mimetype='image/jpeg',
+                  resumable=False
+              )
+          ).execute()
+
+          verify=yt.videos().list(part='snippet,status',id=VIDEO_ID).execute()['items'][0]
+          result={
+              'videoId':VIDEO_ID,
+              'title':verify['snippet']['title'],
+              'channelId':verify['snippet']['channelId'],
+              'privacyStatus':verify['status']['privacyStatus'],
+              'approvedThumbnailApplied':True,
+              'youtubeThumbnailResponse':resp,
+          }
+          print(json.dumps(result,ensure_ascii=False))
+          open('thumbnail-fix-result.json','w',encoding='utf-8').write(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload confirmation
+        uses: actions/upload-artifact@v4
+        with:
+          name: gears-approved-thumbnail-fix-${{ github.run_id }}
+          path: |
+            approved-gears-thumbnail.jpg
+            thumbnail-fix-result.json
+          retention-days: 7
