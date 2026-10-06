@@ -43,3 +43,23 @@ Referência aprovada em 02/10/2026: `THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JA
 ## Regra do projeto
 
 Este é o padrão oficial dos Shorts até nova aprovação explícita. O gerador em `src/shorts.py` deve permanecer compatível com `python src/shorts.py <master.mp4>` e produzir exatamente três arquivos em `output/shorts/`.
+
+
+## Capa vertical do Short — padrão oficial aprovado em 06/10/2026
+
+A capa do Short é separada do layout interno do vídeo. Para as capas verticais, a identidade visual é fixa e deve seguir o modelo aprovado pelo usuário:
+
+- Resolução obrigatória: 1080 × 1920.
+- Badge `RADAR DOS GAMES` no topo.
+- Verde neon Radar como cor dominante de branding e destaque.
+- Headline muito grande, pesada, de alto impacto, combinando branco + verde.
+- Fundo com ação forte e arte oficial do jogo.
+- Painel metálico/tech escuro na região inferior para headline/subheadline.
+- Visual gamer premium, dramático, agressivo e otimizado para clique.
+- Adaptar personagens, cenário e atmosfera ao jogo atual sem alterar a linguagem visual da marca.
+- Não usar vermelho como cor dominante do branding da capa.
+- Gerador oficial: `src/short_cover.py`.
+- Arquivos esperados: `output/shorts/short_1_cover.jpg`, `short_2_cover.jpg`, `short_3_cover.jpg`.
+- As capas devem ser referenciadas automaticamente nos respectivos `short-1-youtube.json`, `short-2-youtube.json` e `short-3-youtube.json`.
+
+A regra de cor contextual descrita acima continua valendo somente para elementos internos do vídeo Short; não substitui a identidade verde fixa das capas.
