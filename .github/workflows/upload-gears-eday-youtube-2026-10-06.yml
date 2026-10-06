@@ -1,0 +1,240 @@
+name: Upload Gears E-Day to YouTube - 12h 2026-10-06
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/upload-gears-eday-youtube-2026-10-06.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ferramentas
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install -q pillow google-api-python-client==2.184.0 google-auth==2.41.1
+
+      - name: Baixar pacote final aprovado do Gears E-Day
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-gears-eday-launch-2026-10-06-37469055958
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37469055958
+
+      - name: Recriar as 4 capas no novo padrão verde aprovado
+        run: |
+          TITLE=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('output/master-youtube.json').read_text(encoding='utf-8'))['title'])
+          PY
+          )
+          python src/thumbnail.py output/master.mp4 "$TITLE" output/thumbnail.jpg
+          python src/short_cover.py output/shorts/short_1.mp4 output/short-1-youtube.json output/shorts/short_1_cover.jpg 1
+          python src/short_cover.py output/shorts/short_2.mp4 output/short-2-youtube.json output/shorts/short_2_cover.jpg 2
+          python src/short_cover.py output/shorts/short_3.mp4 output/short-3-youtube.json output/shorts/short_3_cover.jpg 3
+
+      - name: Programar todos para 12h00 de hoje
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          publish_at='2026-10-06T15:00:00Z'
+          entries=[
+            ('master-youtube.json','output/thumbnail.jpg'),
+            ('short-1-youtube.json','output/shorts/short_1_cover.jpg'),
+            ('short-2-youtube.json','output/shorts/short_2_cover.jpg'),
+            ('short-3-youtube.json','output/shorts/short_3_cover.jpg'),
+          ]
+          for fn,thumb in entries:
+              p=Path('output')/fn
+              m=json.loads(p.read_text(encoding='utf-8'))
+              m['privacy']='private'
+              m['publishAt']=publish_at
+              m['thumbnail']=thumb
+              m['use_existing_thumbnail']=True
+              p.write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding='utf-8')
+              print(fn,m['title'],publish_at,thumb)
+          PY
+
+      - name: Validar capas antes do upload
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          checks=[
+            ('output/thumbnail.jpg',(1280,720)),
+            ('output/shorts/short_1_cover.jpg',(1080,1920)),
+            ('output/shorts/short_2_cover.jpg',(1080,1920)),
+            ('output/shorts/short_3_cover.jpg',(1080,1920)),
+          ]
+          for p,size in checks:
+              f=Path(p)
+              assert f.exists() and f.stat().st_size>30000,(p,'missing/small')
+              with Image.open(f) as im:
+                  assert im.size==size,(p,im.size,size)
+              print('COVER_OK',p,size)
+          PY
+
+      - name: Upload, aplicar capas e confirmar agendamento
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, time
+          from pathlib import Path
+          from datetime import datetime, timezone
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+
+          CHANNEL_ID='UCSZJZE-E10SVdx42wrDeWhw'
+          CHANNEL_TITLE='Radar dos Games'
+          scopes=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube.readonly']
+          creds=Credentials(None,refresh_token=os.environ['YT_REFRESH_TOKEN'],
+              token_uri='https://oauth2.googleapis.com/token',
+              client_id=os.environ['YT_CLIENT_ID'],
+              client_secret=os.environ['YT_CLIENT_SECRET'],scopes=scopes)
+          yt=build('youtube','v3',credentials=creds)
+
+          ch=yt.channels().list(part='id,snippet,contentDetails',mine=True).execute()['items']
+          if len(ch)!=1: raise RuntimeError('OAuth deve apontar para exatamente um canal')
+          cid=ch[0]['id']; ctitle=ch[0]['snippet']['title']
+          if cid!=CHANNEL_ID or ctitle.strip().casefold()!=CHANNEL_TITLE.casefold():
+              raise RuntimeError(f'CANAL INCORRETO: {ctitle} ({cid})')
+          uploads_playlist=ch[0]['contentDetails']['relatedPlaylists']['uploads']
+
+          def recent_by_title():
+              found={}
+              token=None
+              for _ in range(4):
+                  r=yt.playlistItems().list(part='snippet,contentDetails',playlistId=uploads_playlist,maxResults=50,pageToken=token).execute()
+                  for it in r.get('items',[]):
+                      title=it.get('snippet',{}).get('title','').strip()
+                      vid=it.get('contentDetails',{}).get('videoId')
+                      if title and vid: found[title.casefold()]=vid
+                  token=r.get('nextPageToken')
+                  if not token: break
+              return found
+
+          items=[
+            ('master','output/master.mp4','output/master-youtube.json'),
+            ('short1','output/shorts/short_1.mp4','output/short-1-youtube.json'),
+            ('short2','output/shorts/short_2.mp4','output/short-2-youtube.json'),
+            ('short3','output/shorts/short_3.mp4','output/short-3-youtube.json'),
+          ]
+          existing=recent_by_title()
+          results=[]
+
+          def upload_video(path,meta):
+              pa=meta['publishAt']
+              dt=datetime.fromisoformat(pa.replace('Z','+00:00'))
+              if dt <= datetime.now(timezone.utc):
+                  raise RuntimeError(f'Horário de publicação já passou antes do upload: {pa}')
+              body={
+                'snippet':{
+                  'title':meta['title'],
+                  'description':meta['description'],
+                  'tags':meta.get('tags',[]),
+                  'categoryId':'20'
+                },
+                'status':{
+                  'privacyStatus':'private',
+                  'publishAt':pa,
+                  'selfDeclaredMadeForKids':False,
+                  'containsSyntheticMedia':bool(meta.get('containsSyntheticMedia',True))
+                }
+              }
+              req=yt.videos().insert(part='snippet,status',body=body,
+                    media_body=MediaFileUpload(path,chunksize=8*1024*1024,resumable=True))
+              resp=None; errors=0
+              while resp is None:
+                  try:
+                      _,resp=req.next_chunk(); errors=0
+                  except (TimeoutError,OSError):
+                      errors+=1
+                      if errors>5: raise
+                      time.sleep(min(5*(2**(errors-1)),60))
+              return resp['id']
+
+          for key,path,meta_path in items:
+              meta=json.loads(Path(meta_path).read_text(encoding='utf-8'))
+              title=meta['title'].strip()
+              vid=existing.get(title.casefold())
+              if vid:
+                  print('REUSE_EXISTING',key,vid)
+                  # Se existir uma tentativa anterior com mesmo título, garante horário e metadados corretos.
+                  yt.videos().update(part='snippet,status',body={
+                    'id':vid,
+                    'snippet':{
+                      'title':meta['title'],
+                      'description':meta['description'],
+                      'tags':meta.get('tags',[]),
+                      'categoryId':'20'
+                    },
+                    'status':{
+                      'privacyStatus':'private',
+                      'publishAt':meta['publishAt'],
+                      'selfDeclaredMadeForKids':False,
+                      'containsSyntheticMedia':bool(meta.get('containsSyntheticMedia',True))
+                    }
+                  }).execute()
+              else:
+                  vid=upload_video(path,meta)
+                  existing[title.casefold()]=vid
+                  print('UPLOADED',key,vid)
+
+              thumb=Path(meta['thumbnail'])
+              yt.thumbnails().set(videoId=vid,
+                    media_body=MediaFileUpload(str(thumb),mimetype='image/jpeg',resumable=False)).execute()
+              print('THUMBNAIL_APPLIED',key,thumb)
+
+              v=yt.videos().list(part='snippet,status',id=vid).execute()['items'][0]
+              st=v['status']; sn=v['snippet']
+              if sn['channelId']!=CHANNEL_ID: raise RuntimeError(f'Canal incorreto em {key}')
+              if sn['title'].strip()!=title: raise RuntimeError(f'Título divergente em {key}')
+              if st.get('privacyStatus')!='private': raise RuntimeError(f'{key} não ficou privado/agendado: {st}')
+              if st.get('publishAt')!=meta['publishAt']: raise RuntimeError(f'{key} publishAt divergente: {st}')
+              results.append({
+                'key':key,'id':vid,'url':f'https://www.youtube.com/watch?v={vid}',
+                'title':title,'publishAt':st.get('publishAt'),
+                'thumbnail':str(thumb),'thumbnailApplied':True
+              })
+              print(json.dumps(results[-1],ensure_ascii=False))
+
+          Path('output/youtube-schedule-confirmed.json').write_text(
+            json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Guardar confirmação e novas capas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gears-eday-youtube-12h-results-${{ github.run_id }}
+          path: |
+            output/youtube-schedule-confirmed.json
+            output/thumbnail.jpg
+            output/thumbnail-policy.json
+            output/shorts/*_cover.jpg
+            output/shorts/*_cover-policy.json
+            output/*youtube*.json
+          if-no-files-found: warn
+          retention-days: 7
