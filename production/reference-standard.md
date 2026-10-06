@@ -15,16 +15,22 @@ Referências aprovadas pelo usuário: Masters finais de Gears of War: E-Day e Mi
 - Duração livre: roteiro define o tempo; não imitar 2:21/2:38.
 
 ## Thumbnail / capa — padrão oficial
+Referência visual aprovada em 06/10/2026: família de capas enviada pelo usuário + capa Gears E-Day aprovada. Este é o default obrigatório para Master e capas de Shorts, salvo mudança explícita.
+
 - A capa deve usar como base uma imagem oficial e aprovada do próprio jogo, preferencialmente screenshot/key art obtida da fonte exata usada no QA de mídia.
 - Nunca escolher um frame do Master como primeira opção para a thumbnail.
 - `src/thumbnail.py` deve procurar automaticamente uma imagem aprovada em `output/clips.json`; imagens com evidência `steam_exact_app*` têm prioridade.
 - Frame do Master existe somente como fallback técnico para fluxos antigos sem imagem oficial e deve ficar registrado como `video_frame_fallback` em `output/thumbnail-policy.json`.
-- Formato obrigatório: 1280x720 (16:9), alto contraste e leitura imediata em tela pequena.
-- O jogo é o protagonista visual. Evitar tarjas pesadas, excesso de texto e composição com aparência de screenshot cru.
-- O nome do jogo/título principal deve ser curto, grande e legível; remover caudas editoriais longas da capa quando possível.
-- Aplicar sempre o lockup visual do Radar dos Games: radar + controle + nome da marca em branco/verde, de forma profissional e sem competir com a arte do jogo.
-- Manter identidade visual coerente com a arte escolhida, preservando o verde Radar como assinatura.
-- A thumbnail final deve ser gerada automaticamente no mesmo fluxo do Master e registrada no pacote de artifacts.
+- Master: 1280x720 (16:9). Shorts cover: 1080x1920 (9:16).
+- Identidade fixa das capas: **verde neon Radar** como cor de destaque principal. Vermelho não deve ser usado como cor dominante de branding.
+- Manter badge/lockup `RADAR DOS GAMES` no topo, com `GAMES` em verde.
+- Tipografia de headline deve ser enorme, pesada, agressiva e imediatamente legível no celular; combinar branco + verde Radar.
+- Visual obrigatório: gamer premium, alto impacto, ação forte, iluminação dramática, molduras/painéis metálicos/tech e profundidade visual.
+- A arte do jogo é protagonista; adaptar personagens, cenário, inimigos e atmosfera ao jogo atual, preservando a mesma linguagem visual da marca.
+- Usar painel/faixa inferior estilizada para subtítulo ou complemento curto, sempre coerente com o modelo aprovado.
+- Evitar capa simples, apagada, genérica, screenshot cru, excesso de texto ou composição com baixa taxa de clique.
+- `src/thumbnail.py` é o gerador padrão do Master e `src/short_cover.py` é o gerador padrão das três capas verticais.
+- As quatro capas devem ser geradas automaticamente no mesmo fluxo da produção e incluídas nos artifacts e metadados do YouTube.
 
 ## Enquadramento obrigatório
 - Nenhuma imagem/gameplay contextual pode sofrer crop destrutivo que corte personagem, HUD, texto, logo ou elemento importante.
