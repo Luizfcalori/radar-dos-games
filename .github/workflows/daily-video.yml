@@ -20,6 +20,9 @@ on:
       - ".github/workflows/daily-video.yml"
       - "src/auto_daily.py"
       - "src/research.py"
+      - "src/thumbnail.py"
+      - "src/short_cover.py"
+      - "production/reference-standard.md"
 
 permissions:
   contents: write
@@ -142,8 +145,24 @@ jobs:
       - name: Renderizar Master no padrão aprovado
         run: python src/render.py output/render.json
 
+      - name: Gerar capa Master no padrão verde aprovado
+        run: |
+          TITLE=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('output/master-youtube.json').read_text(encoding='utf-8'))['title'])
+          PY
+          )
+          python src/thumbnail.py output/master.mp4 "$TITLE" output/thumbnail.jpg
+
       - name: Gerar exatamente 3 Shorts
         run: python src/shorts.py output/master.mp4
+
+      - name: Gerar capas dos 3 Shorts no padrão verde aprovado
+        run: |
+          python src/short_cover.py output/shorts/short_1.mp4 output/short-1-youtube.json output/shorts/short_1_cover.jpg 1
+          python src/short_cover.py output/shorts/short_2.mp4 output/short-2-youtube.json output/shorts/short_2_cover.jpg 2
+          python src/short_cover.py output/shorts/short_3.mp4 output/short-3-youtube.json output/shorts/short_3_cover.jpg 3
 
       - name: Quality gate Master + Shorts
         run: |
@@ -168,8 +187,18 @@ jobs:
           assert qa["voice"] == "pt-BR-ThalitaNeural"
           assert qa["semantic_timing_source"] == "paragraph_boundaries"
           assert len(qa["scenes"]) == 8
+          from PIL import Image
+          thumb = Path("output/thumbnail.jpg")
+          assert thumb.exists() and thumb.stat().st_size > 30000, thumb
+          with Image.open(thumb) as im:
+              assert im.size == (1280,720), im.size
           shorts = sorted(glob.glob("output/shorts/short_*.mp4"))
           assert len(shorts) == 3, shorts
+          for i in range(1,4):
+              cover = Path(f"output/shorts/short_{i}_cover.jpg")
+              assert cover.exists() and cover.stat().st_size > 30000, cover
+              with Image.open(cover) as im:
+                  assert im.size == (1080,1920), (cover, im.size)
           report = []
           for path in shorts:
               p = probe(path)
@@ -268,8 +297,12 @@ jobs:
             output/voice.mp3
             output/voice-timings.json
             output/master.mp4
+            output/thumbnail.jpg
+            output/thumbnail-policy.json
             output/qa.json
             output/final-qa.json
             output/shorts/*.mp4
+            output/shorts/*_cover.jpg
+            output/shorts/*_cover-policy.json
             output/*youtube*.json
           retention-days: 7
