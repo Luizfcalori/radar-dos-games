@@ -161,12 +161,16 @@ def main():
     manifest=load("output/render.json"); timings=load("output/voice-timings.json"); picks=load("output/short-picks.json")
     scenes=manifest.get("scenes") or []; assets={int(a["index"]):a for a in manifest.get("assets") or []}
     segments=timings.get("segments") or []; indexes=[int(x) for x in picks.get("scene_indexes") or []]
+    expected_hooks=[" ".join(str(x or "").split()).strip() for x in (picks.get("expected_hooks") or [])]
     if len(indexes)!=3:raise RuntimeError("QUALITY_BLOCK: V4 precisa de 3 cenas de Short")
+    if len(expected_hooks)!=3 or any(not x for x in expected_hooks):
+        raise RuntimeError("QUALITY_BLOCK: V4 precisa de 3 hooks aprovados e não vazios")
     out=Path("output/shorts"); out.mkdir(parents=True,exist_ok=True)
     report=[]
 
     for short_no,scene_index in enumerate(indexes,1):
         scene=scenes[scene_index]; seg=segments[scene_index]; beats=scene.get("beats") or []
+        hook=expected_hooks[short_no-1]
         if not beats:raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} sem beats V4")
         tmp=out/f"v4_{short_no}"; tmp.mkdir(exist_ok=True)
         pieces=[]; events=[]; cursor=0.0; accents=[]
@@ -174,7 +178,7 @@ def main():
             idx=int(beat["media_index"]); asset=assets[idx]; d=float(beat["duration"])
             p=tmp/f"piece_{n:02d}.mp4"
             accents.append(render_vertical_piece(
-                asset,d,p,n,headline=scene.get("title",""),
+                asset,d,p,n,headline=hook,
                 keyword=beat.get("keyword_overlay",""),
                 first=n==1,last=n==len(beats),
             ))
@@ -192,7 +196,10 @@ def main():
             "duration":round(probe_duration(dest),3),
             "boundary_policy":"independent_scene_voice_complete",
             "render_policy":"rebuilt_from_source_assets_not_master_crop",
-            "title":scene.get("title"),"subtitle":scene.get("subtitle"),
+            "title":hook,
+            "approved_hook":hook,
+            "scene_title":scene.get("title"),
+            "subtitle":scene.get("subtitle"),
             "beats":len(beats),"accent":accents[0] if accents else "0x00DCC8",
             "music_bed":music_policy,
         })
@@ -202,7 +209,8 @@ def main():
         "premium_version":"PREMIUM_V4_DIRECTOR_CUT",
         "source_policy":"independent_rebuild_from_approved_assets",
         "resolution":[W,H],"fps":FPS,
-        "hook_policy":"headline_first_frame; phrase_level_visuals; selective_keywords",
+        "hook_policy":"exact_approved_hook_on_first_frame; semantic_scene_match; phrase_level_visuals; selective_keywords",
+        "expected_hooks":expected_hooks,
         "sound_design":"compression+loudnorm+limiter+subtle_editorial_sfx",
         "shorts":report,
     }
