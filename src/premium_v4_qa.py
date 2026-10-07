@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Gate editorial Premium V4 Director Cut."""
 import json
+import re
 from pathlib import Path
 
 def load(path):
@@ -11,6 +12,7 @@ def load(path):
 def main():
     plan=load("output/auto-media-plan.json")
     director=load("output/director-v4.json")
+    clips=load("output/clips.json")
     semantic=load("output/semantic-visual-qa.json")
     render=load("output/qa.json")
     shorts=load("output/shorts/manifest.json")
@@ -24,6 +26,46 @@ def main():
     assert render.get("editing_policy")=="phrase_level_beats; variable_pacing; selective_keyword_overlays"
     assert frames.get("status")=="APPROVED",frames
     assert "sentence_estimates" in str(timings.get("source","")),timings.get("source")
+
+    if not clips.get("publishable_media"):
+        raise RuntimeError("QUALITY_BLOCK: pacote de mídia não está publicável")
+    video_assets=int(clips.get("video_assets") or 0)
+    unique_video_seconds=float(clips.get("unique_video_seconds") or 0)
+    required_videos=max(1,int(plan.get("minimum_video_assets") or 0))
+    required_unique=max(15.0,float(plan.get("minimum_unique_video_seconds") or 0))
+    if video_assets < required_videos:
+        raise RuntimeError(f"QUALITY_BLOCK: gameplay/vídeo oficial ausente ({video_assets}/{required_videos})")
+    if unique_video_seconds < required_unique:
+        raise RuntimeError(f"QUALITY_BLOCK: somente {unique_video_seconds:.1f}s de vídeo oficial único; mínimo {required_unique:.1f}s")
+
+    plan_scenes=plan.get("scenes") or []
+    for i,scene in enumerate(plan_scenes,1):
+        title=str(scene.get("title") or "").strip()
+        if not title:
+            raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem headline")
+        if re.fullmatch(r"DESTAQUE\s*\d*",title,re.I) or re.fullmatch(r"CENA\s*\d+.*",title,re.I):
+            raise RuntimeError(f"QUALITY_BLOCK: headline genérica proibida na cena {i}: {title}")
+
+    asset_map={int(a["index"]):a for a in clips.get("assets",[]) if a.get("approved")}
+    body_seconds=0.0
+    moving_seconds=0.0
+    video_scene_count=0
+    for scene in plan_scenes:
+        scene_has_video=False
+        for beat in scene.get("beats") or []:
+            duration=float(beat.get("duration") or 0)
+            body_seconds+=duration
+            asset=asset_map.get(int(beat.get("media_index") or 0),{})
+            if asset.get("type")=="video":
+                moving_seconds+=duration
+                scene_has_video=True
+        if scene_has_video:
+            video_scene_count+=1
+    moving_ratio=(moving_seconds/body_seconds) if body_seconds else 0.0
+    if moving_ratio+1e-9 < 0.35:
+        raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage em movimento ocupa {moving_ratio:.1%}; mínimo 35%")
+    if video_scene_count < min(3,len(plan_scenes)):
+        raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage presente em somente {video_scene_count} cenas")
 
     scenes=render.get("scenes") or []
     assert scenes and len(scenes)==len(plan.get("scenes") or []),(len(scenes),len(plan.get("scenes") or []))
@@ -56,6 +98,13 @@ def main():
         "sound_design":"APPROVED",
         "independent_shorts":"APPROVED",
         "visual_frame_qa":"APPROVED",
+        "real_headlines":"APPROVED",
+        "gameplay_moving_footage":"APPROVED",
+        "video_assets":video_assets,
+        "unique_video_seconds":round(unique_video_seconds,3),
+        "moving_footage_seconds":round(moving_seconds,3),
+        "moving_footage_ratio":round(moving_ratio,4),
+        "video_scene_count":video_scene_count,
         "cold_open_seconds":director.get("cold_open_seconds"),
         "cadence":cadence,
     }
