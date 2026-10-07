@@ -285,7 +285,7 @@ def main(path):
             candidates=steam_candidates(item['steam_app_id'],wanted);source=f"steam_app:{item['steam_app_id']}"
         else:
             url=item['url'];source=item.get('source_proof') or url;low=url.lower().split('?')[0]
-            if low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url:
+            if low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS) or bool(item.get('force_image',False)) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url:
                 candidates=[(url,item.get('relevance_evidence','direct_source'),item.get('source_label',''))]
             else:
                 allow_images=bool(item.get('allow_images_from_page',False) and wanted=='image')
