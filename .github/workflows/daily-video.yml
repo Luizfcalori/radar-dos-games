@@ -24,6 +24,7 @@ on:
       - "src/short_cover.py"
       - "src/premium_covers.py"
       - "src/cover_qa.py"
+      - "src/narration_qa.py"
       - "production/reference-standard.md"
 
 permissions:
@@ -65,6 +66,9 @@ jobs:
           RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
+
+      - name: QA editorial da narração
+        run: python src/narration_qa.py output/auto-script.txt
 
       - name: Aplicar agenda nativa do YouTube
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
@@ -301,6 +305,7 @@ jobs:
             output/clips.json
             output/voice.mp3
             output/voice-timings.json
+            output/narration-qa.json
             output/master.mp4
             output/thumbnail.jpg
             output/thumbnail-policy.json
