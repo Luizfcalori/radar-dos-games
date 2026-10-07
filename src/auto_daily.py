@@ -508,6 +508,13 @@ def fetch_manual_media(brief):
     combined.media = []
     combined.paragraphs = []
     errors = []
+
+    # Vídeos oficiais explícitos entram primeiro para garantir gameplay/trailers
+    # contextuais quando as páginas modernas escondem os MP4 atrás de JavaScript.
+    for video_url in brief.get("video_urls", []):
+        if isinstance(video_url, str) and ("youtube.com/watch" in video_url or "youtu.be/" in video_url):
+            combined.media.append(("video", video_url))
+
     for url in brief["media_source_urls"]:
         try:
             p = fetch_page(url)
@@ -516,7 +523,15 @@ def fetch_manual_media(brief):
             combined.meta.update(p.meta)
         except Exception as exc:
             errors.append({"url": url, "error": str(exc)[:180]})
-    media = canonical_media(combined.media)
+
+    # Descarta assets de interface/decorativos que podem ser quase pretos e não
+    # representam o jogo (ex.: shards do layout do site da Rockstar).
+    blocked_tokens = ("shard", "sprite", "favicon", "icon", "logo", "background-loop", "loading")
+    curated = [
+        (kind, url) for kind, url in combined.media
+        if not any(token in url.lower() for token in blocked_tokens)
+    ]
+    media = canonical_media(curated)
     if len(media) < 2:
         raise RuntimeError("Brief manual sem mídia oficial suficiente: " + json.dumps(errors, ensure_ascii=False))
     return combined, media, errors
