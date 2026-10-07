@@ -482,12 +482,52 @@ def candidate_score(candidate, index, media, repeat):
     return total, mix
 
 
+
+def load_manual_brief():
+    p = Path("production/manual-brief.json")
+    if not p.exists():
+        return None
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    valid_until = parse_dt(data.get("valid_until"))
+    if valid_until and datetime.now(timezone.utc) > valid_until:
+        return None
+    blocks = [sentence(x) for x in data.get("script_blocks", []) if sentence(x)]
+    sources = [x for x in data.get("media_source_urls", []) if isinstance(x, str) and x.startswith("http")]
+    if not blocks or not sources:
+        return None
+    data["script_blocks"] = blocks
+    data["media_source_urls"] = sources
+    return data
+
+
+def fetch_manual_media(brief):
+    combined = PageParser(brief["media_source_urls"][0])
+    combined.media = []
+    combined.paragraphs = []
+    errors = []
+    for url in brief["media_source_urls"]:
+        try:
+            p = fetch_page(url)
+            combined.media.extend(p.media)
+            combined.paragraphs.extend(p.paragraphs)
+            combined.meta.update(p.meta)
+        except Exception as exc:
+            errors.append({"url": url, "error": str(exc)[:180]})
+    media = canonical_media(combined.media)
+    if len(media) < 2:
+        raise RuntimeError("Brief manual sem mídia oficial suficiente: " + json.dumps(errors, ensure_ascii=False))
+    return combined, media, errors
+
 def main():
     research_path = OUT / "research.json"
     if not research_path.exists():
         raise RuntimeError("output/research.json ausente")
     candidates = json.loads(research_path.read_text(encoding="utf-8")).get("candidates", [])
-    if not candidates:
+    manual = load_manual_brief()
+    if not candidates and not manual:
         raise RuntimeError("Nenhuma pauta recente encontrada nas fontes oficiais")
 
     history = load_history()
@@ -497,53 +537,80 @@ def main():
     evaluated = []
     errors = []
 
-    for index, c in enumerate(candidates):
-        if c.get("content_id") in used:
-            errors.append({"title": c.get("title"), "error": "content_id já publicado"})
-            continue
-        if forced.upper() != "AUTO" and forced.lower() not in c.get("title", "").lower():
-            continue
-
-        repeat = repetition_check(c, history, now)
-        if repeat["blocked"] and forced.upper() == "AUTO":
-            errors.append({"title": c.get("title"), "error": "; ".join(repeat["reasons"])})
-            continue
-
-        try:
-            p = fetch_page(c["url"])
-            media = canonical_media(p.media)
-            if len(media) < 2:
-                errors.append({"title": c.get("title"), "error": f"somente {len(media)} mídias descobertas"})
+    if manual:
+        parser, selected_media, manual_errors = fetch_manual_media(manual)
+        errors.extend(manual_errors)
+        selected = {
+            "content_id": manual.get("content_id") or ("manual-" + ascii_slug(manual.get("title", "pauta"))[:48]),
+            "title": manual.get("title") or "Pauta especial",
+            "summary": " ".join(manual["script_blocks"][:3]),
+            "url": manual.get("primary_source") or manual["media_source_urls"][0],
+            "source": "manual_brief",
+            "published_at": now.isoformat(),
+            "score": 999,
+        }
+        mix = media_mix(selected_media)
+        winner = {
+            "candidate": selected,
+            "parser": parser,
+            "media": selected_media,
+            "selection_score": 999.0,
+            "mix": mix,
+            "repeat": {
+                "blocked": False,
+                "penalty": 0,
+                "reasons": [],
+                "topic_key": topic_key(selected["title"]),
+            },
+        }
+        script = "\n\n".join(manual["script_blocks"])
+    else:
+        for index, c in enumerate(candidates):
+            if c.get("content_id") in used:
+                errors.append({"title": c.get("title"), "error": "content_id já publicado"})
                 continue
-            score, mix = candidate_score(c, index, media, repeat)
-            evaluated.append({
-                "candidate": c,
-                "parser": p,
-                "media": media,
-                "selection_score": round(score, 2),
-                "mix": mix,
-                "repeat": repeat,
-            })
-        except Exception as exc:
-            errors.append({"title": c.get("title"), "error": str(exc)[:200]})
+            if forced.upper() != "AUTO" and forced.lower() not in c.get("title", "").lower():
+                continue
 
-    if not evaluated:
-        raise RuntimeError("Nenhuma pauta nova com mídia oficial suficiente e diversidade aceitável. " + json.dumps(errors[:8], ensure_ascii=False))
+            repeat = repetition_check(c, history, now)
+            if repeat["blocked"] and forced.upper() == "AUTO":
+                errors.append({"title": c.get("title"), "error": "; ".join(repeat["reasons"])})
+                continue
 
-    evaluated.sort(
-        key=lambda x: (
-            x["mix"]["quality"] == "video+images",
-            x["mix"]["videos"] > 0,
-            x["selection_score"],
-        ),
-        reverse=True,
-    )
-    winner = evaluated[0]
-    selected = winner["candidate"]
-    parser = winner["parser"]
-    selected_media = winner["media"]
+            try:
+                p = fetch_page(c["url"])
+                media = canonical_media(p.media)
+                if len(media) < 2:
+                    errors.append({"title": c.get("title"), "error": f"somente {len(media)} mídias descobertas"})
+                    continue
+                score, mix = candidate_score(c, index, media, repeat)
+                evaluated.append({
+                    "candidate": c,
+                    "parser": p,
+                    "media": media,
+                    "selection_score": round(score, 2),
+                    "mix": mix,
+                    "repeat": repeat,
+                })
+            except Exception as exc:
+                errors.append({"title": c.get("title"), "error": str(exc)[:200]})
 
-    script = make_script(selected, parser)
+        if not evaluated:
+            raise RuntimeError("Nenhuma pauta nova com mídia oficial suficiente e diversidade aceitável. " + json.dumps(errors[:8], ensure_ascii=False))
+
+        evaluated.sort(
+            key=lambda x: (
+                x["mix"]["quality"] == "video+images",
+                x["mix"]["videos"] > 0,
+                x["selection_score"],
+            ),
+            reverse=True,
+        )
+        winner = evaluated[0]
+        selected = winner["candidate"]
+        parser = winner["parser"]
+        selected_media = winner["media"]
+        script = make_script(selected, parser)
     (OUT / "auto-script.txt").write_text(script + "\n", encoding="utf-8")
 
     media_items = []
@@ -563,7 +630,7 @@ def main():
         media_items.append(item)
 
     plan = {
-        "topic": pt_headline(selected, parser),
+        "topic": (manual.get("headline") if manual else pt_headline(selected, parser)),
         "source": selected["url"],
         "minimum_assets": 2,
         "minimum_video_assets": 0,
@@ -577,6 +644,26 @@ def main():
 
     privacy = os.getenv("PUBLISH_PRIVACY", "unlisted").strip() or "unlisted"
     master_meta, shorts_meta = build_metadata(selected, parser, privacy)
+    if manual:
+        headline = sentence(manual.get("headline") or master_meta["title"])[:100]
+        master_meta["title"] = headline
+        all_sources = manual.get("source_urls") or [selected["url"]]
+        source_lines = "\n".join(f"- {u}" for u in all_sources[:8])
+        master_meta["description"] = (
+            f"🎮 {headline}\n\n"
+            "Especial aprofundado do Radar dos Games reunindo informações oficiais da Rockstar e separando fatos confirmados de reportagens ainda não formalizadas pela empresa.\n\n"
+            f"🔎 Fontes consultadas:\n{source_lines}\n\n"
+            "#RadarDosGames #GTAVI #GTA6 #RockstarGames"
+        )
+        hooks = manual.get("short_hooks") or []
+        for i, meta in enumerate(shorts_meta):
+            if i < len(hooks):
+                meta["title"] = sentence(hooks[i])[:88] + " #Shorts"
+            meta["description"] = (
+                f"{headline}. Recorte {i+1}/3 do especial do Radar dos Games.\n\n"
+                f"Fonte principal: {selected['url']}\n\n"
+                "#RadarDosGames #GTAVI #GTA6 #Shorts"
+            )
     (OUT / "master-youtube.json").write_text(json.dumps(master_meta, ensure_ascii=False, indent=2), encoding="utf-8")
     for i, meta in enumerate(shorts_meta, 1):
         (OUT / f"short-{i}-youtube.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -588,6 +675,8 @@ def main():
         "topic_key": winner["repeat"]["topic_key"],
         "selection_score": winner["selection_score"],
         "media_mix": winner["mix"],
+        "manual_brief": bool(manual),
+        "source_urls": (manual.get("source_urls") if manual else [selected["url"]]),
         "selection_policy": {
             "franchise_cooldown_hours": 48,
             "same_day_similarity_block": 0.50,
