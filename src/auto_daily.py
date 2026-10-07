@@ -3,8 +3,8 @@
 
 Regras editoriais principais:
 - evitar repetição da mesma franquia/tema em sequência;
-- priorizar pautas com gameplay/vídeo oficial + imagens oficiais;
-- usar somente vídeo ou somente imagens como fallback;
+- exigir gameplay/vídeo oficial em movimento como parte obrigatória do Master;
+- imagens oficiais podem complementar, mas nunca substituir totalmente o gameplay/vídeo;
 - gerar títulos, descrições e hashtags em português-BR e contextualizados.
 """
 import html
@@ -381,26 +381,67 @@ def make_script(candidate, parser):
     ]
     return "\n\n".join(blocks)
 
+def scene_headline(paragraph, candidate, index):
+    """Cria headline curta e semântica para a barra; nunca usa 'DESTAQUE X'."""
+    raw = sentence(paragraph)
+    low = ascii_slug(raw)
+    rules = [
+        (("data" in low and ("lancamento" in low or "estreia" in low)) or "19 de novembro" in low, "DATA DE LANÇAMENTO"),
+        (("playstation" in low and "xbox" in low) and ("plataforma" in low or "pc" in low), "PLATAFORMAS CONFIRMADAS"),
+        ("jason" in low and "lucia" in low and ("historia" in low or "campanha" in low), "JASON E LUCIA"),
+        ("jason" in low and "lucia" not in low, "QUEM É JASON"),
+        ("lucia" in low and "jason" not in low, "QUEM É LUCIA"),
+        (("mapa" in low or "vice city" in low) and "leonida" in low, "LEONIDA ALÉM DE VICE CITY"),
+        (("imagens de jogo" in low or "gameplay" in low or "capturado inteiramente" in low), "GAMEPLAY E IMAGENS DE JOGO"),
+        ("pre carga" in low or "pre-carga" in low, "PRÉ-CARGA E LANÇAMENTO"),
+        (("standard" in low and "ultimate" in low) or "edicao" in low, "EDIÇÕES E BÔNUS"),
+        (("musica" in low or "faixas" in low or "trilha" in low), "TRILHA SONORA"),
+        (("xbox cloud" in low or "cloud gaming" in low) and ("reportagem" in low or "confusao" in low or "exclusividade" in low), "XBOX CLOUD: FATO OU RUMOR"),
+        ("streaming" in low and "pc" in low, "STREAMING NÃO É VERSÃO DE PC"),
+        (("novos materiais oficiais" in low or "merecem atencao" in low), "O QUE AINDA PODE MUDAR"),
+        (("comenta" in low or "queremos saber" in low or "pergunta" in low), "SUA VEZ NO RADAR"),
+    ]
+    for ok, title in rules:
+        if ok:
+            return title
+
+    kws = keywords(raw, 6)
+    if kws:
+        title = " ".join(kws[:5]).upper()
+        if title and not re.fullmatch(r"DESTAQUE\s*\d*", title, re.I):
+            return title[:48].rstrip(" -:|")
+
+    first = re.split(r"[.!?]", raw, maxsplit=1)[0]
+    first = re.sub(r"^(agora|também|por isso|na prática|outro detalhe|entre os principais)\s+", "", first, flags=re.I)
+    words = first.split()
+    title = " ".join(words[:7]).upper()[:48].rstrip(" -:|")
+    return title or f"{game_name(candidate.get('title','')).upper()[:42]} EM FOCO"
+
+
+def scene_subtitle(paragraph, candidate):
+    game = (game_name(candidate.get("title", "")) or "RADAR DOS GAMES").upper()
+    low = ascii_slug(paragraph)
+    if "rockstar" in low:
+        return "INFORMAÇÃO OFICIAL DA ROCKSTAR"
+    if "rumor" in low or "reportagem" in low:
+        return "FATO, CONTEXTO E RUMOR SEPARADOS"
+    return f"{game[:48]} • RADAR DOS GAMES"
+
+
 def make_scenes(candidate, media, script):
     paras = [x.strip() for x in script.split("\n\n") if x.strip()]
-    titles = [
-        "NO TOPO DO RADAR", "O QUE FOI CONFIRMADO", "POR QUE ISSO IMPORTA", "PLATAFORMAS E DISPONIBILIDADE",
-        "DATAS E JANELAS", "IMPACTO PARA QUEM JOGA", "GAMEPLAY + IMAGENS", "RESUMO DO RADAR"
-    ]
-    subs = [
-        pt_headline(candidate, type("P", (), {"paragraphs": []})())[:70],
-        "FATOS DA FONTE OFICIAL", "CONTEXTO SEM ESPECULAÇÃO", "ONDE A NOTÍCIA SE APLICA",
-        "O ESTADO ATUAL DO ANÚNCIO", "O QUE PODE MUDAR NA EXPERIÊNCIA", "MÍDIA OFICIAL SEM REPETIÇÃO", "RADAR DOS GAMES"
-    ]
     n = max(1, len(media))
     scenes = []
-    for i, _ in enumerate(paras):
+    for i, paragraph in enumerate(paras):
         a = (i % n) + 1
         b = ((i + 1) % n) + 1
+        title = scene_headline(paragraph, candidate, i + 1)
+        if re.fullmatch(r"DESTAQUE\s*\d*", title, re.I):
+            raise RuntimeError(f"QUALITY_BLOCK: headline genérica proibida na cena {i+1}: {title}")
         scenes.append({
             "paragraph": i + 1,
-            "title": titles[i] if i < len(titles) else f"DESTAQUE {i+1}",
-            "subtitle": subs[i] if i < len(subs) else "RADAR DOS GAMES",
+            "title": title,
+            "subtitle": scene_subtitle(paragraph, candidate),
             "media_indices": [a] if a == b else [a, b],
         })
     return scenes
@@ -534,6 +575,8 @@ def fetch_manual_media(brief):
     media = canonical_media(curated)
     if len(media) < 2:
         raise RuntimeError("Brief manual sem mídia oficial suficiente: " + json.dumps(errors, ensure_ascii=False))
+    if not any(kind == "video" for kind, _ in media):
+        raise RuntimeError("QUALITY_BLOCK: brief manual sem gameplay/vídeo oficial em movimento")
     return combined, media, errors
 
 def main():
@@ -599,6 +642,9 @@ def main():
                     errors.append({"title": c.get("title"), "error": f"somente {len(media)} mídias descobertas"})
                     continue
                 score, mix = candidate_score(c, index, media, repeat)
+                if mix["videos"] < 1:
+                    errors.append({"title": c.get("title"), "error": "sem gameplay/vídeo oficial em movimento"})
+                    continue
                 evaluated.append({
                     "candidate": c,
                     "parser": p,
@@ -630,10 +676,11 @@ def main():
 
     media_items = []
     for i, (typ, url) in enumerate(selected_media, 1):
+        role = f"official_gameplay_or_trailer_{i:02d}" if typ == "video" else f"official_context_{i:02d}"
         item = {
             "type": typ,
             "url": url,
-            "role": f"official_context_{i:02d}",
+            "role": role,
             "max_assets": 1,
             "source_proof": selected["url"],
             "relevance_evidence": "official_source_page_discovered_asset",
@@ -648,10 +695,10 @@ def main():
         "topic": (manual.get("headline") if manual else pt_headline(selected, parser)),
         "source": selected["url"],
         "minimum_assets": 2,
-        "minimum_video_assets": 0,
-        "minimum_unique_video_seconds": 0,
+        "minimum_video_assets": 1,
+        "minimum_unique_video_seconds": 15,
         "minimum_image_assets": 0,
-        "media_policy": "prefer_video_plus_images; accept_official_video_5s_plus; graceful_single_type_fallback; premium_v3_motion_for_images",
+        "media_policy": "gameplay_or_official_moving_footage_required; minimum_15s_unique_video; images_are_complement_only; no_image_only_master; premium_v4_motion_for_images",
         "media": media_items,
         "scenes": make_scenes(selected, selected_media, script),
     }
