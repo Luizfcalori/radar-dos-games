@@ -176,9 +176,9 @@ def mix_voice_sfx(visuals,voice,sfx,dest):
             "ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),
             "-stream_loop","-1","-i",str(bed),
             "-filter_complex",
-            f"[1:a]{VOICE_CHAIN}[voice];[2:a]volume=0.72[sfx];"
-            "[3:a]volume=0.10[bed];[bed][voice]sidechaincompress=threshold=0.015:ratio=12:attack=18:release=260[ducked];"
-            "[voice][ducked][sfx]amix=inputs=3:weights='1 0.55 0.45':normalize=0,alimiter=limit=0.92[a]",
+            f"[1:a]{VOICE_CHAIN},asplit=2[voice_main][voice_sc];[2:a]volume=0.72[sfx];"
+            "[3:a]volume=0.10[bed];[bed][voice_sc]sidechaincompress=threshold=0.015:ratio=12:attack=18:release=260[ducked];"
+            "[voice_main][ducked][sfx]amix=inputs=3:weights='1 0.55 0.45':normalize=0,alimiter=limit=0.92[a]",
             "-map","0:v:0","-map","[a]","-shortest","-c:v","copy",
             "-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)
         ])
