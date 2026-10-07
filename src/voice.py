@@ -144,6 +144,39 @@ def duration(path: Path) -> float:
     )
 
 
+def _sentence_timings(text: str, start: float, duration_seconds: float, paragraph_index: int):
+    """Estima limites de frase sem re-sintetizar a voz.
+
+    A duração real do parágrafo continua vindo do MP3 da Thalita. As sentenças
+    recebem fatias proporcionais ao conteúdo + pausa de pontuação, suficientes
+    para dirigir cortes visuais sem degradar a prosódia.
+    """
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
+    if not sentences:
+        sentences = [text.strip()]
+    weights = []
+    for s in sentences:
+        words = max(1, len(re.findall(r"\w+", s, re.UNICODE)))
+        pause = 2.2 if s.endswith(("!", "?")) else 1.5
+        weights.append(words + pause)
+    total = sum(weights) or 1.0
+    cursor = float(start)
+    result = []
+    for i, (s, w) in enumerate(zip(sentences, weights), 1):
+        share = duration_seconds * (w / total)
+        end = start + duration_seconds if i == len(sentences) else cursor + share
+        result.append({
+            "paragraph": paragraph_index,
+            "sentence": i,
+            "start": round(cursor, 3),
+            "end": round(end, 3),
+            "duration": round(end - cursor, 3),
+            "text": s,
+        })
+        cursor = end
+    return result
+
+
 async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: str | None = None):
     out = Path(output)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -159,6 +192,7 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
     seg_dir = out.parent / "voice_segments"
     seg_dir.mkdir(parents=True, exist_ok=True)
     segments = []
+    phrases = []
     cursor = 0.0
 
     for i, paragraph in enumerate(paragraphs, 1):
@@ -175,6 +209,7 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
                 "file": str(seg),
             }
         )
+        phrases.extend(_sentence_timings(paragraph, cursor, d, i))
         cursor += d
 
     concat_file = seg_dir / "concat.txt"
@@ -190,8 +225,9 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
     payload = {
         "voice": voice,
         "segments": segments,
+        "phrases": phrases,
         "duration": round(duration(out), 3),
-        "source": "paragraph_boundaries",
+        "source": "paragraph_boundaries+sentence_estimates",
         "editorial_revision": "natural_script+cross_scene_dedupe+varied_cta+no_canned_expansion",
     }
     Path(segments_json).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
