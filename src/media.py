@@ -293,7 +293,7 @@ def main(path):
         got=0
         for u,evidence,label in candidates[:60]:
             if u in seen:continue
-            low=u.lower();clean=low.split('?')[0];isimg=clean.endswith(IMAGE_EXTS);isstream=clean.endswith(STREAM_EXTS);isdrive='drive.google.com/file/d/' in low
+            low=u.lower();clean=low.split('?')[0];isimg=clean.endswith(IMAGE_EXTS) or bool(item.get('force_image',False) and wanted=='image');isstream=clean.endswith(STREAM_EXTS);isdrive='drive.google.com/file/d/' in low
             if wanted=='video' and isimg:continue
             if wanted=='image' and not isimg:continue
             blocked=blocked_candidate(u,item)
