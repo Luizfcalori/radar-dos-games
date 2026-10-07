@@ -63,3 +63,5 @@ jobs:
             output/cover-qa.json
           if-no-files-found: warn
           retention-days: 7
+
+# premium-cover-test-revision: 2
