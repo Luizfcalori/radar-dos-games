@@ -87,3 +87,19 @@ Novo Master deve ser criado do zero. Nenhum render Ace Combat anterior é fonte 
 - Quando houver chamada direta, preferir linguagem coletiva ("vocês", "galera", "quem joga", "quem acompanha") e evitar tratamento individual recorrente.
 - O sincronismo fala-imagem continua obrigatório, mas deve acontecer **silenciosamente na edição**; nunca deve ser explicado pela locução.
 - Roteiros automáticos devem passar por `src/narration_qa.py` antes da geração da voz. Se houver linguagem meta/editorial proibida, a produção deve bloquear.
+
+
+## Premium V3 — evolução do Fortnite V2 (07/10/2026)
+
+O **Fortnite/Fortnitemares V2 é a base visual**. O Premium V3 acrescenta uma camada obrigatória de direção e QA ao pipeline inteiro.
+
+- Antes do render, `src/director_v3.py` resolve o mapeamento cena -> mídia usando apenas assets aprovados. Fluxos STRICT com papéis explícitos preservam esse mapeamento; fluxos automáticos deixam de usar rotação cega de mídia.
+- A fala determina o ritmo: alvo de ~4,2 s por corte, mantendo normalmente 3–6 s por mudança visual.
+- Gameplay/vídeo contextual continua em primeiro lugar. Imagens oficiais são usadas com movimento sutil não destrutivo; nenhum crop pode sacrificar personagem, HUD, logo ou informação importante.
+- Cenas consecutivas devem variar o primeiro asset quando houver alternativa relevante.
+- `src/semantic_gate.py` permanece bloqueante antes do render.
+- `src/premium_v3_qa.py` valida cadência, sincronismo semântico, movimento e os 3 Shorts antes de permitir publicação.
+- Shorts usam cenas escolhidas pelo diretor por força de hook, preservam fim completo da fala e exibem headline desde o primeiro frame.
+- O `final-qa.json` deve registrar `premium_version=PREMIUM_V3`, `semantic_visual_sync` e `visual_cadence`.
+
+Sequência oficial: pesquisa -> roteiro -> narração -> mídia -> **diretor V3** -> gate semântico -> render V3 -> 3 Shorts -> QA V3 -> capas premium -> QA final -> publicação.
