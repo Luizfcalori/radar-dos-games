@@ -19,7 +19,9 @@ on:
     paths:
       - ".github/workflows/daily-video.yml"
       - "src/auto_daily.py"
+      - "src/media.py"
       - "src/research.py"
+      - "production/manual-brief.json"
       - "src/thumbnail.py"
       - "src/short_cover.py"
       - "src/premium_covers.py"
