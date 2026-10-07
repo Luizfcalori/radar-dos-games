@@ -235,23 +235,8 @@ jobs:
                   current = yt.videos().list(part="snippet,status", id=vid).execute().get("items", [])
                   if not current or current[0]["snippet"].get("channelId") != CHANNEL_ID:
                       raise RuntimeError(f"Vídeo existente não pertence ao canal correto: {key}")
-                  yt.videos().update(
-                      part="snippet,status",
-                      body={
-                          "id": vid,
-                          "snippet": {
-                              "title": meta["title"],
-                              "description": meta["description"],
-                              "tags": meta.get("tags", []),
-                              "categoryId": "20",
-                          },
-                          "status": {
-                              "privacyStatus": "public",
-                              "selfDeclaredMadeForKids": False,
-                              "containsSyntheticMedia": bool(meta.get("containsSyntheticMedia", False)),
-                          },
-                      },
-                  ).execute()
+                  if current[0]["snippet"].get("title", "").strip() != title:
+                      raise RuntimeError(f"Título divergente no vídeo existente: {key}")
               else:
                   vid = upload_video(path, meta)
                   existing[title.casefold()] = vid
