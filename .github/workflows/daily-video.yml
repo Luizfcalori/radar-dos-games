@@ -22,6 +22,8 @@ on:
       - "src/research.py"
       - "src/thumbnail.py"
       - "src/short_cover.py"
+      - "src/premium_covers.py"
+      - "src/cover_qa.py"
       - "production/reference-standard.md"
 
 permissions:
@@ -110,7 +112,7 @@ jobs:
       - name: Criar narração Thalita PT-BR com timings semânticos
         run: |
           python src/voice.py output/auto-script.txt output/voice.mp3 \
-            --voice pt-BR-ThalitaNeural \
+            --voice pt-BR-ThalitaMultilingualNeural \
             --segments-json output/voice-timings.json
 
       - name: Baixar mídia oficial/contextual
@@ -145,24 +147,14 @@ jobs:
       - name: Renderizar Master no padrão aprovado
         run: python src/render.py output/render.json
 
-      - name: Gerar capa Master no padrão verde aprovado
-        run: |
-          TITLE=$(python - <<'PY'
-          import json
-          from pathlib import Path
-          print(json.loads(Path('output/master-youtube.json').read_text(encoding='utf-8'))['title'])
-          PY
-          )
-          python src/thumbnail.py output/master.mp4 "$TITLE" output/thumbnail.jpg
-
       - name: Gerar exatamente 3 Shorts
         run: python src/shorts.py output/master.mp4
 
-      - name: Gerar capas dos 3 Shorts no padrão verde aprovado
-        run: |
-          python src/short_cover.py output/shorts/short_1.mp4 output/short-1-youtube.json output/shorts/short_1_cover.jpg 1
-          python src/short_cover.py output/shorts/short_2.mp4 output/short-2-youtube.json output/shorts/short_2_cover.jpg 2
-          python src/short_cover.py output/shorts/short_3.mp4 output/short-3-youtube.json output/shorts/short_3_cover.jpg 3
+      - name: Gerar automaticamente 4 capas premium no padrão Radar
+        run: python src/premium_covers.py
+
+      - name: QA bloqueante das capas premium
+        run: python src/cover_qa.py
 
       - name: Quality gate Master + Shorts
         run: |
@@ -184,7 +176,7 @@ jobs:
           qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
           assert qa["card_style"]["shadow_attached_to_text"] is True
           assert qa["framing_policy"] == "full_source_visible; blurred_background_fill; no_destructive_crop"
-          assert qa["voice"] == "pt-BR-ThalitaNeural"
+          assert qa["voice"] == "pt-BR-ThalitaMultilingualNeural"
           assert qa["semantic_timing_source"] == "paragraph_boundaries"
           assert len(qa["scenes"]) == 8
           from PIL import Image
@@ -208,7 +200,20 @@ jobs:
               assert 10 <= d <= 65, (path, d)
               assert any(x["codec_type"] == "audio" for x in p["streams"]), path
               report.append({"file": path, "seconds": round(d, 2)})
-          Path("output/final-qa.json").write_text(json.dumps({"master_seconds": round(md, 2), "master": "1920x1080@30", "shorts": report, "status": "APPROVED"}, indent=2), encoding="utf-8")
+          cover_qa = json.loads(Path("output/cover-qa.json").read_text(encoding="utf-8"))
+          assert cover_qa.get("premium_cover_qa") == "APPROVED", cover_qa
+          final = {
+              "master_seconds": round(md, 2),
+              "master": "1920x1080@30",
+              "shorts": report,
+              "voice": "pt-BR-ThalitaMultilingualNeural",
+              "premium_cover_generation": cover_qa.get("premium_cover_generation"),
+              "premium_cover_qa": cover_qa.get("premium_cover_qa"),
+              "cover_fallback_used": bool(cover_qa.get("fallback_used")),
+              "cover_template_version": cover_qa.get("template_version"),
+              "status": "APPROVED",
+          }
+          Path("output/final-qa.json").write_text(json.dumps(final, indent=2), encoding="utf-8")
           print(Path("output/final-qa.json").read_text())
           PY
 
@@ -299,6 +304,8 @@ jobs:
             output/master.mp4
             output/thumbnail.jpg
             output/thumbnail-policy.json
+            output/cover-suite-policy.json
+            output/cover-qa.json
             output/qa.json
             output/final-qa.json
             output/shorts/*.mp4
