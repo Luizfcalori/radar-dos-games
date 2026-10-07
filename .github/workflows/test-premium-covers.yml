@@ -1,0 +1,65 @@
+name: Test Premium Covers Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/test-premium-covers.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  test-premium-covers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependências
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install pillow
+
+      - name: Baixar pacote Fortnite aprovado
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-fortnitemares-2026-strict-sync
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37619936984
+
+      - name: Gerar 4 capas premium automaticamente
+        run: python src/premium_covers.py
+
+      - name: Rodar QA bloqueante das capas
+        run: python src/cover_qa.py
+
+      - name: Mostrar resultado
+        run: |
+          cat output/cover-suite-policy.json
+          cat output/cover-qa.json
+
+      - name: Guardar resultado do teste
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: premium-covers-test-${{ github.run_id }}
+          path: |
+            output/thumbnail.jpg
+            output/shorts/short_1_cover.jpg
+            output/shorts/short_2_cover.jpg
+            output/shorts/short_3_cover.jpg
+            output/cover-suite-policy.json
+            output/cover-qa.json
+          if-no-files-found: warn
+          retention-days: 7
