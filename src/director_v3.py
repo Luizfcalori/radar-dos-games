@@ -74,10 +74,9 @@ def candidate_assets(scene, assets):
     return vals or [a for a in assets.values() if a.get("approved", True)]
 
 
-def choose_assets(scene, assets, usage, previous_first, wanted):
+def choose_assets(scene, assets, usage, previous_first, wanted, preserve_explicit=False):
     explicit = valid_explicit(scene, assets)
-    has_semantic_rules = bool(scene.get("allowed_roles") or scene.get("allowed_role_prefixes") or scene.get("semantic_subject"))
-    if explicit and has_semantic_rules:
+    if explicit and preserve_explicit:
         return explicit[:MAX_SCENE_ASSETS]
 
     candidates = candidate_assets(scene, assets)
@@ -161,6 +160,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     report = []
 
     for i, (scene, timing) in enumerate(zip(scenes, segments), 1):
+        preserve_explicit = bool(scene.get("allowed_roles") or scene.get("allowed_role_prefixes"))
         scene["semantic_subject"] = generic_subject(plan, scene, i)
         if generic_roles and not scene.get("allowed_roles") and not scene.get("allowed_role_prefixes"):
             scene["allowed_role_prefixes"] = ["official_context_"]
@@ -169,7 +169,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         cuts = cut_count(duration)
         available = len(candidate_assets(scene, assets))
         wanted = max(1, min(MAX_SCENE_ASSETS, available, max(2, math.ceil(cuts / 2))))
-        ids = choose_assets(scene, assets, usage, previous_first, wanted)
+        ids = choose_assets(scene, assets, usage, previous_first, wanted, preserve_explicit=preserve_explicit)
         if not ids:
             raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem mídia elegível no Premium V3")
 
