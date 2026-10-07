@@ -127,7 +127,11 @@ def short_score(scene, index, total):
     return score
 
 def pick_shorts(scenes):
-    ranked=sorted(range(len(scenes)),key=lambda i:(-short_score(scenes[i],i,len(scenes)),i))
+    def scene_duration(scene):
+        return sum(float(b.get("duration") or 0) for b in (scene.get("beats") or []))
+    eligible_indexes=[i for i,s in enumerate(scenes) if 8.0 <= scene_duration(s) <= 60.0]
+    pool=eligible_indexes if len(eligible_indexes)>=3 else list(range(len(scenes)))
+    ranked=sorted(pool,key=lambda i:(-short_score(scenes[i],i,len(scenes)),i))
     picks=[]
     for idx in ranked:
         if all(abs(idx-old)>=2 for old in picks) or len(scenes)<5:
