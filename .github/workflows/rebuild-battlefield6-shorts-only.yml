@@ -31,6 +31,10 @@ jobs:
       - name: Validar ferramentas do runner e instalar somente dependências dos Shorts
         run: |
           ffmpeg -version | head -1
+          if ! command -v ffprobe >/dev/null 2>&1; then
+            sudo apt-get install -y ffmpeg
+          fi
+          ffprobe -version | head -1
           test -s /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
           python -m pip install --disable-pip-version-check --no-input \
             edge-tts==7.2.3 requests==2.32.5 feedparser==6.0.12 "Pillow>=11.0,<13" yt-dlp
