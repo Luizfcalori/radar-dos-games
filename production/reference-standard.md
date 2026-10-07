@@ -29,8 +29,12 @@ Referência visual aprovada em 06/10/2026: família de capas enviada pelo usuár
 - A arte do jogo é protagonista; adaptar personagens, cenário, inimigos e atmosfera ao jogo atual, preservando a mesma linguagem visual da marca.
 - Usar painel/faixa inferior estilizada para subtítulo ou complemento curto, sempre coerente com o modelo aprovado.
 - Evitar capa simples, apagada, genérica, screenshot cru, excesso de texto ou composição com baixa taxa de clique.
-- `src/thumbnail.py` é o gerador padrão do Master e `src/short_cover.py` é o gerador padrão das três capas verticais.
+- `src/premium_covers.py` é o gerador padrão obrigatório do Master e das três capas verticais.
+- `src/thumbnail.py` e `src/short_cover.py` existem somente como fallback técnico automático quando o gerador premium não consegue concluir após as tentativas previstas.
+- O gerador premium deve priorizar mídia oficial/aprovada do assunto, montar composição cinematográfica de alto impacto e manter a identidade Radar; não é permitido escolher screenshot cru como padrão principal.
+- `src/cover_qa.py` é gate bloqueante das quatro capas e deve validar resolução, integridade visual, política aplicada e registrar se houve fallback.
 - As quatro capas devem ser geradas automaticamente no mesmo fluxo da produção e incluídas nos artifacts e metadados do YouTube.
+- O `final-qa.json` deve registrar `premium_cover_generation`, `premium_cover_qa`, `cover_fallback_used` e `cover_template_version`.
 
 ## Enquadramento obrigatório
 - Nenhuma imagem/gameplay contextual pode sofrer crop destrutivo que corte personagem, HUD, texto, logo ou elemento importante.
@@ -50,6 +54,14 @@ Referência visual aprovada em 06/10/2026: família de capas enviada pelo usuár
 Reprovar automaticamente se: intro oficial ausente; voz diferente do padrão; encarte sem relação semântica com a narração; mídia sem relação com o trecho falado; cards grandes/soltos; cenas genéricas repetitivas; sincronização ruim; crop destrutivo; elemento importante fora de quadro; Short cortando fala; ou tentativa de reconstruir o padrão apenas por timestamps fixos.
 
 Para thumbnails de novos fluxos STRICT, também reprovar a liberação se não houver imagem oficial do jogo disponível para a capa. O fallback por frame existe somente por retrocompatibilidade técnica e deve ser tratado como exceção, não como padrão aprovado.
+
+## Automação definitiva das capas
+- Toda produção nova gera automaticamente 4 capas: 1 Master + 3 Shorts.
+- A capa Master representa o tema principal; cada Short deve priorizar os assets da própria cena/assunto selecionado.
+- A sequência obrigatória é: render Master -> gerar Shorts -> `premium_covers.py` -> `cover_qa.py` -> QA final -> upload/publicação.
+- O gerador premium faz nova tentativa automática com composição alternativa antes de acionar o fallback legado.
+- Publicação só pode avançar depois do `cover_qa.py` retornar uma aprovação.
+- Fallback é permitido para continuidade operacional, porém deve ficar explicitamente registrado em QA; ele nunca redefine o padrão visual oficial.
 
 ## Ace Combat
 Novo Master deve ser criado do zero. Nenhum render Ace Combat anterior é fonte visual/editorial. Os Masters Gears/Minecraft são as únicas referências de padrão.
