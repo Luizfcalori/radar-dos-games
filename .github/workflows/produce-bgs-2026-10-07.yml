@@ -148,6 +148,24 @@ jobs:
               },
               {
                   "type":"image",
+                  "steam_app_id":2924540,
+                  "role":"crazy_taxi_screenshots",
+                  "max_assets":3,
+                  "source_proof":"https://store.steampowered.com/app/2924540/Crazy_Taxi_World_Tour/",
+                  "relevance_evidence":"steam_exact_app_screenshot",
+                  "source_label":"Crazy Taxi: World Tour"
+              },
+              {
+                  "type":"image",
+                  "steam_app_id":4199910,
+                  "role":"total_war_screenshots",
+                  "max_assets":3,
+                  "source_proof":"https://store.steampowered.com/app/4199910/Total_War_WARHAMMER_40000/",
+                  "relevance_evidence":"steam_exact_app_screenshot",
+                  "source_label":"Total War: Warhammer 40,000"
+              },
+              {
+                  "type":"image",
                   "url":source_guests,
                   "role":"bgs_guest_images",
                   "max_assets":3,
