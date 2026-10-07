@@ -5,11 +5,11 @@
   "headline": "GTA VI: O QUE ESTÁ CONFIRMADO, O QUE MUDOU E O QUE AINDA É RUMOR",
   "primary_source": "https://www.rockstargames.com/VI",
   "media_source_urls": [
-    "https://www.rockstargames.com/VI",
-    "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/VI/media/screenshots",
     "https://www.rockstargames.com/VI/media/artwork-wallpapers",
-    "https://www.rockstargames.com/VI/vice-city"
+    "https://www.rockstargames.com/VI/vice-city",
+    "https://www.rockstargames.com/VI/media/videos",
+    "https://www.rockstargames.com/VI"
   ],
   "source_urls": [
     "https://www.rockstargames.com/VI",
@@ -39,5 +39,10 @@
     "Por isso, o ponto mais importante é não misturar as coisas: streaming pelo ecossistema Xbox, caso seja confirmado nos termos finais, não é a mesma coisa que um lançamento nativo para PC. A lista oficial da Rockstar continua mostrando PlayStation 5 e Xbox Series X|S como plataformas do lançamento de 19 de novembro.",
     "Até a estreia, os pontos que mais merecem atenção são novos materiais oficiais, possíveis detalhes técnicos, a preparação para a pré-carga e qualquer esclarecimento definitivo sobre streaming. O que já está confirmado é suficiente para mostrar que GTA VI chega como um dos maiores lançamentos do ano e com uma campanha fortemente centrada em Jason, Lucia, Vice City e o estado de Leonida.",
     "E agora queremos saber de vocês: o que mais pesa para GTA VI — a história de Jason e Lucia, o tamanho de Leonida, o retorno a Vice City ou a possibilidade de jogar por streaming? Comenta aí e acompanha o Radar dos Games, porque vamos separar cada novidade real de cada rumor até o lançamento."
+  ],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k",
+    "https://www.youtube.com/watch?v=VQRLujxTm3c",
+    "https://www.youtube.com/watch?v=QdBZY2fkU-0"
   ]
 }
