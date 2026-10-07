@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-06T20:26:37.129683+00:00",
-  "total_discovered": 41,
-  "ready_for_tiktok": 40,
+  "updated_at": "2026-10-07T17:48:11.585233+00:00",
+  "total_discovered": 47,
+  "ready_for_tiktok": 46,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,42 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "jwXtn0b0rYA",
+      "youtube_url": "https://www.youtube.com/shorts/jwXtn0b0rYA",
+      "title": "FREDDY KRUEGER ESTÁ NO FORTNITE! 😱",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "FCP-BVHY_sk",
+      "youtube_url": "https://www.youtube.com/shorts/FCP-BVHY_sk",
+      "title": "HORDE RUSH VOLTOU NO FORTNITE! 🎃",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "CRXm8kVDCUo",
+      "youtube_url": "https://www.youtube.com/shorts/CRXm8kVDCUo",
+      "title": "FNAF VIROU CHEFE NO FORTNITE! 🤯",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "MuWdL8FE5ns",
+      "youtube_url": "https://www.youtube.com/shorts/MuWdL8FE5ns",
+      "title": "6 GAMES DA SEGA para ver na BGS 2026 🎮",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "DSp4g5lyEZk",
+      "youtube_url": "https://www.youtube.com/shorts/DSp4g5lyEZk",
+      "title": "CRAZY TAXI VOLTOU — e Kenji Kanno vem ao Brasil! 🇧🇷",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "gdIZrvA5Whw",
+      "youtube_url": "https://www.youtube.com/shorts/gdIZrvA5Whw",
+      "title": "ALIEN: ISOLATION 2 na BGS 2026! 😱",
+      "status": "approved"
+    },
     {
       "youtube_id": "3Z-HdsAnm5U",
       "youtube_url": "https://www.youtube.com/shorts/3Z-HdsAnm5U",
