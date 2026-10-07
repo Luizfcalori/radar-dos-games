@@ -89,3 +89,20 @@ O Premium V3 evolui o padrão Fortnite V2 sem descartar sua base visual. Regras 
 - o gate `src/premium_v3_qa.py` é bloqueante: sem aprovação semântica, cadência, movimento e Shorts, não há publicação.
 
 Implementação de referência: `src/director_v3.py` -> `src/semantic_gate.py` -> `src/render.py` -> `src/shorts.py` -> `src/premium_v3_qa.py`.
+
+
+## Premium V4 — Director Cut (padrão oficial a partir de 07/10/2026)
+
+O Premium V4 mantém integralmente as regras de segurança visual e sincronismo do V3 e adiciona direção em nível de frase.
+
+- A voz oficial continua **Thalita Multilingual PT-BR**; a síntese não é fragmentada para preservar naturalidade.
+- `voice.py` registra limites estimados de sentenças dentro do áudio real de cada parágrafo.
+- `director_v4.py` converte as sentenças em beats visuais com ritmo variável: frases de impacto recebem cortes mais rápidos; explicações respiram mais.
+- O Master usa cold open curto antes da intro/sting quando existir um limite semântico seguro, sem repetir a fala.
+- Palavras-chave são exibidas seletivamente, nunca como legenda permanente.
+- Áudio passa por compressão leve, loudness, limiter e efeitos editoriais discretos. Música não é forçada sem asset previamente aprovado/licenciado.
+- Shorts são **reconstruídos a partir das mídias originais aprovadas e da voz da própria cena**; não são crop do Master.
+- `visual_frame_qa.py` amostra o Master em vários pontos e bloqueia quadros vazios/quase pretos ou tecnicamente degradados em excesso.
+- `pro_score.py` soma sincronismo, direção, áudio, Shorts, frames, capas e identidade de voz; publicação exige **PRO_SCORE >= 85/100**.
+
+Pipeline oficial: pesquisa -> roteiro -> Thalita + mapa de frases -> mídia -> Director V4 -> gate semântico -> Master V4 -> frame QA -> 3 Shorts independentes -> QA V4 -> capas premium -> PRO_SCORE -> publicação.
