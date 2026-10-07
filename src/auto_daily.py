@@ -697,7 +697,7 @@ def main():
             key = hook.casefold()
             if not hook or key in seen_hooks:
                 continue
-            if re.fullmatch(r"(DESTAQUE|CENA|BLOCO|T[ÓO]PICO)\\s*\\d*.*", hook, re.I):
+            if re.fullmatch(r"(DESTAQUE|CENA|BLOCO|T[ÓO]PICO)\\s*\\d*.*", hook, re.I) or hook.casefold()=="contexto oficial":
                 continue
             seen_hooks.add(key)
             short_hooks.append(hook[:88])
@@ -754,17 +754,20 @@ def main():
         master_meta["title"] = headline
         all_sources = manual.get("source_urls") or [selected["url"]]
         source_lines = "\n".join(f"- {u}" for u in all_sources[:8])
+        game_tag = hashtag(selected.get("title") or "") or "#Games"
+        source_tag = hashtag(source_name(selected["url"])) or "#Gaming"
         master_meta["description"] = (
             f"🎮 {headline}\n\n"
-            "Especial aprofundado do Radar dos Games reunindo informações oficiais da Rockstar e separando fatos confirmados de reportagens ainda não formalizadas pela empresa.\n\n"
+            "Especial aprofundado do Radar dos Games com informações das fontes oficiais consultadas, "
+            "contexto do anúncio e separação clara entre fatos confirmados e interpretações.\n\n"
             f"🔎 Fontes consultadas:\n{source_lines}\n\n"
-            "#RadarDosGames #GTAVI #GTA6 #RockstarGames"
+            f"#RadarDosGames {game_tag} {source_tag} #Gaming"
         )
         for i, meta in enumerate(shorts_meta):
             meta["description"] = (
                 f"{headline}. Recorte {i+1}/3 do especial do Radar dos Games.\n\n"
                 f"Fonte principal: {selected['url']}\n\n"
-                "#RadarDosGames #GTAVI #GTA6 #Shorts"
+                f"#RadarDosGames {game_tag} {source_tag} #Gaming #Shorts"
             )
     (OUT / "master-youtube.json").write_text(json.dumps(master_meta, ensure_ascii=False, indent=2), encoding="utf-8")
     for i, meta in enumerate(shorts_meta, 1):
