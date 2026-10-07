@@ -25,7 +25,13 @@ on:
       - "src/premium_covers.py"
       - "src/cover_qa.py"
       - "src/narration_qa.py"
+      - "src/director_v3.py"
+      - "src/semantic_gate.py"
+      - "src/render.py"
+      - "src/shorts.py"
+      - "src/premium_v3_qa.py"
       - "production/reference-standard.md"
+      - "docs/VIDEO_STANDARD_RADAR_DOS_GAMES.md"
 
 permissions:
   contents: write
@@ -122,37 +128,20 @@ jobs:
       - name: Baixar mídia oficial/contextual
         run: python src/media.py output/auto-media-plan.json
 
-      - name: Montar manifesto apenas com mídias validadas
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          spec = json.loads(Path("output/auto-media-plan.json").read_text(encoding="utf-8"))
-          media = json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
-          assets = media["assets"]
-          ok = [int(a["index"]) for a in assets]
-          assert len(ok) >= 2, ok
-          scenes = spec["scenes"]
-          for i, scene in enumerate(scenes):
-              a = ok[i % len(ok)]
-              b = ok[(i + 1) % len(ok)]
-              scene["media_indices"] = [a] if a == b else [a, b]
-          manifest = {
-              "assets": assets,
-              "voice": "output/voice.mp3",
-              "voice_timings": "output/voice-timings.json",
-              "intro": "radar-dos-games-intro-oficial.mp4",
-              "scenes": scenes,
-              "output": "output/master.mp4",
-          }
-          Path("output/render.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-          PY
+      - name: Diretor semântico Premium V3
+        run: python src/director_v3.py output/auto-media-plan.json output/clips.json
 
-      - name: Renderizar Master no padrão aprovado
+      - name: Gate semântico fala -> imagem
+        run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
+
+      - name: Renderizar Master Premium V3
         run: python src/render.py output/render.json
 
       - name: Gerar exatamente 3 Shorts
         run: python src/shorts.py output/master.mp4
+
+      - name: QA bloqueante Premium V3
+        run: python src/premium_v3_qa.py
 
       - name: Gerar automaticamente 4 capas premium no padrão Radar
         run: python src/premium_covers.py
@@ -178,6 +167,13 @@ jobs:
           assert (int(mv["width"]), int(mv["height"])) == (1920, 1080)
           assert any(x["codec_type"] == "audio" for x in m["streams"])
           qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
+          assert qa.get("standard") == "radar-dos-games-premium-v3", qa.get("standard")
+          assert qa.get("motion_policy") == "subtle_non_destructive_on_images; source_fully_visible"
+          semantic = json.loads(Path("output/semantic-visual-qa.json").read_text(encoding="utf-8"))
+          assert semantic.get("status") == "APPROVED", semantic
+          premium = json.loads(Path("output/premium-v3-qa.json").read_text(encoding="utf-8"))
+          assert premium.get("status") == "APPROVED", premium
+          assert premium.get("version") == "PREMIUM_V3", premium
           assert qa["card_style"]["shadow_attached_to_text"] is True
           assert qa["framing_policy"] == "full_source_visible; blurred_background_fill; no_destructive_crop"
           assert qa["voice"] == "pt-BR-ThalitaMultilingualNeural"
@@ -215,6 +211,9 @@ jobs:
               "premium_cover_qa": cover_qa.get("premium_cover_qa"),
               "cover_fallback_used": bool(cover_qa.get("fallback_used")),
               "cover_template_version": cover_qa.get("template_version"),
+              "premium_version": "PREMIUM_V3",
+              "semantic_visual_sync": premium.get("semantic_visual_sync"),
+              "visual_cadence": premium.get("visual_cadence"),
               "status": "APPROVED",
           }
           Path("output/final-qa.json").write_text(json.dumps(final, indent=2), encoding="utf-8")
@@ -306,6 +305,11 @@ jobs:
             output/voice.mp3
             output/voice-timings.json
             output/narration-qa.json
+            output/director-v3.json
+            output/render.json
+            output/semantic-visual-qa.json
+            output/premium-v3-qa.json
+            output/short-picks.json
             output/master.mp4
             output/thumbnail.jpg
             output/thumbnail-policy.json
@@ -313,6 +317,7 @@ jobs:
             output/cover-qa.json
             output/qa.json
             output/final-qa.json
+            output/shorts/manifest.json
             output/shorts/*.mp4
             output/shorts/*_cover.jpg
             output/shorts/*_cover-policy.json
