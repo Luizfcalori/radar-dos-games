@@ -22,6 +22,8 @@ CALM_TARGET = 4.7
 HOOK_TARGET = 2.25
 MAX_BEAT = 5.8
 MAX_ASSETS_PER_SCENE = 5
+MIN_MOVING_FOOTAGE_RATIO = 0.35
+MIN_VIDEO_SCENES = 3
 
 HOOK_TOKENS = (
     "confirm", "novo", "nova", "revel", "agora", "lanç", "data", "primeir",
@@ -57,6 +59,33 @@ def keyword_overlay(text):
         return candidates[0].upper()
     words=[w for w in re.findall(r"[A-Za-zÀ-ÿ0-9'-]+", raw) if len(w)>=6]
     return (words[0].upper() if words else "")[:24]
+
+def headline_from_text(text, scene_no):
+    """Fallback semântico de segurança: barras nunca podem sair como DESTAQUE X."""
+    raw=str(text or "").strip()
+    low=norm(raw)
+    rules=[
+        ("lancamento" in low and ("data" in low or re.search(r"\b20\d{2}\b",low)), "DATA DE LANÇAMENTO"),
+        ("playstation" in low and "xbox" in low, "PLATAFORMAS CONFIRMADAS"),
+        ("jason" in low and "lucia" in low, "JASON E LUCIA"),
+        ("jason" in low and "lucia" not in low, "QUEM É JASON"),
+        ("lucia" in low and "jason" not in low, "QUEM É LUCIA"),
+        ("vice city" in low and "leonida" in low, "LEONIDA ALÉM DE VICE CITY"),
+        ("gameplay" in low or "imagens de jogo" in low or "capturado inteiramente" in low, "GAMEPLAY E IMAGENS DE JOGO"),
+        ("pre carga" in low, "PRÉ-CARGA E LANÇAMENTO"),
+        ("standard" in low and "ultimate" in low, "EDIÇÕES E BÔNUS"),
+        ("musica" in low or "faixas" in low, "TRILHA SONORA"),
+        ("xbox cloud" in low or "cloud gaming" in low, "XBOX CLOUD: FATO OU RUMOR"),
+        ("streaming" in low and "pc" in low, "STREAMING NÃO É VERSÃO DE PC"),
+        ("comenta" in low or "queremos saber" in low, "SUA VEZ NO RADAR"),
+    ]
+    for ok,title in rules:
+        if ok:return title
+    first=re.split(r"[.!?]",raw,maxsplit=1)[0]
+    words=[w for w in re.findall(r"[A-Za-zÀ-ÿ0-9'’-]+",first) if len(w)>2]
+    title=" ".join(words[:7]).upper()[:48].rstrip(" -:|")
+    return title or f"CENA {scene_no}: CONTEXTO OFICIAL"
+
 
 def role_allowed(scene, asset):
     role=str(asset.get("role") or "")
@@ -157,6 +186,11 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         if generic and not scene.get("allowed_roles") and not scene.get("allowed_role_prefixes"):
             scene["allowed_role_prefixes"]=["official_context_"]
         scene["semantic_subject"]=scene.get("semantic_subject") or f"scene_{i:02d}"
+        current_title=str(scene.get("title") or "").strip()
+        if not current_title or re.fullmatch(r"DESTAQUE\s*\d*", current_title, re.I):
+            scene["title"]=headline_from_text(segment.get("text",""),i)
+        if re.fullmatch(r"DESTAQUE\s*\d*", str(scene.get("title") or "").strip(), re.I):
+            raise RuntimeError(f"QUALITY_BLOCK: headline genérica proibida na cena {i}: {scene.get('title')}")
 
         rows=phrases_for_paragraph(timings,i,segment)
         beats=[]; scene_ids=[]
@@ -193,10 +227,70 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             "transition_policy":"hard_cut_inside_subject; micro_dip_on_scene_change",
         }
         phrase_total+=len(rows)
+
+    def footage_stats():
+        total=0.0; moving=0.0; video_scenes=0
+        for scene in scenes:
+            has_video=False
+            for beat in scene.get("beats") or []:
+                d=float(beat.get("duration") or 0)
+                total+=d
+                asset=assets.get(int(beat.get("media_index") or 0),{})
+                if asset.get("type")=="video":
+                    moving+=d;has_video=True
+            if has_video:video_scenes+=1
+        return total,moving,video_scenes
+
+    video_assets=[a for a in assets.values() if a.get("type")=="video" and a.get("approved",True)]
+    if not video_assets:
+        raise RuntimeError("QUALITY_BLOCK: Master sem gameplay/vídeo oficial em movimento")
+
+    # Cada cena que aceita vídeo recebe pelo menos um beat em movimento.
+    for scene in scenes:
+        vids=[a for a in eligible(scene,assets) if a.get("type")=="video"]
+        beats=scene.get("beats") or []
+        if vids and beats and not any(assets.get(int(b.get("media_index") or 0),{}).get("type")=="video" for b in beats):
+            pick=min(vids,key=lambda a:(usage[int(a["index"])],int(a["index"])))
+            beats[0]["media_index"]=int(pick["index"]);usage[int(pick["index"])]+=1
+
+    # Se ainda houver pouca gameplay/footage, converte beats de imagem permitidos
+    # até atingir o piso editorial do Radar.
+    total,moving,video_scenes=footage_stats()
+    target=total*MIN_MOVING_FOOTAGE_RATIO
+    if moving<target:
+        for scene in scenes:
+            vids=[a for a in eligible(scene,assets) if a.get("type")=="video"]
+            if not vids:continue
+            for beat in scene.get("beats") or []:
+                if moving>=target:break
+                old=assets.get(int(beat.get("media_index") or 0),{})
+                if old.get("type")=="video":continue
+                pick=min(vids,key=lambda a:(usage[int(a["index"])],int(a["index"])))
+                beat["media_index"]=int(pick["index"]);usage[int(pick["index"])]+=1
+                moving+=float(beat.get("duration") or 0)
+            if moving>=target:break
+
+    for scene in scenes:
+        scene["media_indices"]=list(dict.fromkeys(int(b["media_index"]) for b in (scene.get("beats") or [])))
+
+    total,moving,video_scenes=footage_stats()
+    moving_ratio=(moving/total) if total else 0.0
+    if moving_ratio+1e-9<MIN_MOVING_FOOTAGE_RATIO:
+        raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage em movimento {moving_ratio:.1%}; mínimo {MIN_MOVING_FOOTAGE_RATIO:.0%}")
+    if video_scenes<min(MIN_VIDEO_SCENES,len(scenes)):
+        raise RuntimeError(f"QUALITY_BLOCK: gameplay presente em somente {video_scenes} cenas")
+
+    scene_report=[]
+    for i,scene in enumerate(scenes,1):
+        beats=scene.get("beats") or []
         scene_report.append({
-            "scene":i,"phrases":len(rows),"beats":len(beats),
-            "media_indices":scene["media_indices"],
-            "avg_beat_seconds":round(sum(float(b["duration"]) for b in beats)/max(1,len(beats)),3),
+            "scene":i,
+            "title":scene.get("title"),
+            "phrases":len({int(b.get("phrase") or 1) for b in beats}),
+            "beats":len(beats),
+            "media_indices":scene.get("media_indices") or [],
+            "video_beats":sum(1 for b in beats if assets.get(int(b.get("media_index") or 0),{}).get("type")=="video"),
+            "avg_beat_seconds":round(sum(float(b.get("duration") or 0) for b in beats)/max(1,len(beats)),3),
         })
 
     picks=pick_shorts(scenes)
@@ -229,6 +323,12 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         "cold_open_seconds":0.0,
         "short_scene_indexes":picks,
         "asset_usage":{str(k):v for k,v in sorted(usage.items())},
+        "moving_footage_seconds":round(moving,3),
+        "body_seconds":round(total,3),
+        "moving_footage_ratio":round(moving_ratio,4),
+        "video_scenes":video_scenes,
+        "headline_policy":"semantic_real_headline_no_DESTAQUE_X",
+        "gameplay_policy":"official_video_required; moving_footage_ratio_gte_35pct",
         "scenes":scene_report,
     }
     Path("output/director-v4.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
