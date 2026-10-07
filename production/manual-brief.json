@@ -43,7 +43,9 @@
   "video_urls": [
     "https://www.rockstargames.com/VI/downloads/videos/GTAVI_Trailer_2/GTAVI_Trailer_2.mp4",
     "https://www.rockstargames.com/VI/downloads/videos/GTAVI_Trailer_1/GTAVI_Trailer_1.mp4",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4",
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4"
+  ],
+  "video_fallback_urls": [
     "https://www.youtube.com/watch?v=VQRLujxTm3c",
     "https://www.youtube.com/watch?v=QdBZY2fkU-0",
     "https://www.youtube.com/watch?v=tJbzMqJGH4k"
