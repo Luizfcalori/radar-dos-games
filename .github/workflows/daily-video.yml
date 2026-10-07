@@ -45,7 +45,7 @@ defaults:
 
 concurrency:
   group: radar-dos-games-daily
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   produce:
