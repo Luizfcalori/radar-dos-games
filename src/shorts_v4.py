@@ -136,11 +136,26 @@ def concat_visuals(paths,dest,tmp):
     listing.write_text("".join(f"file '{Path(p).resolve()}'\n" for p in paths),encoding="utf-8")
     sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),"-c","copy",str(dest)])
 
+def approved_music_bed():
+    for p in (Path("assets/audio/radar-bed.mp3"),Path("assets/audio/radar-bed.wav"),Path("assets/audio/radar-bed.m4a")):
+        if p.exists() and p.stat().st_size>20000:return p
+    return None
+
 def mix_audio(visuals,voice,sfx,dest):
+    bed=approved_music_bed()
+    if bed:
+        sh(["ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),"-stream_loop","-1","-i",str(bed),
+            "-filter_complex",f"[1:a]{VOICE_CHAIN}[v];[2:a]volume=.68[s];[3:a]volume=.10[bed];"
+            "[bed][v]sidechaincompress=threshold=.015:ratio=12:attack=18:release=240[ducked];"
+            "[v][ducked][s]amix=inputs=3:weights='1 .55 .45':normalize=0,alimiter=limit=.92[a]",
+            "-map","0:v:0","-map","[a]","-shortest","-c:v","copy","-c:a","aac","-b:a","160k","-ar","48000","-ac","2",
+            "-movflags","+faststart",str(dest)])
+        return "approved_bed_with_voice_ducking"
     sh(["ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),
         "-filter_complex",f"[1:a]{VOICE_CHAIN}[v];[2:a]volume=.68[s];[v][s]amix=inputs=2:weights='1 .5':normalize=0,alimiter=limit=.92[a]",
         "-map","0:v:0","-map","[a]","-shortest","-c:v","copy","-c:a","aac","-b:a","160k","-ar","48000","-ac","2",
         "-movflags","+faststart",str(dest)])
+    return "ducking_ready_no_approved_bed"
 
 def main():
     manifest=load("output/render.json"); timings=load("output/voice-timings.json"); picks=load("output/short-picks.json")
@@ -171,7 +186,7 @@ def main():
         sfx=tmp/"sfx.wav"; sfx_track(cursor,events,sfx)
         voice=Path(seg["file"])
         if not voice.exists():raise RuntimeError(f"QUALITY_BLOCK: áudio da cena {scene_index+1} ausente")
-        dest=out/f"short_{short_no}.mp4"; mix_audio(visuals,voice,sfx,dest)
+        dest=out/f"short_{short_no}.mp4"; music_policy=mix_audio(visuals,voice,sfx,dest)
         report.append({
             "index":short_no,"path":str(dest),"scene_index":scene_index,
             "duration":round(probe_duration(dest),3),
@@ -179,6 +194,7 @@ def main():
             "render_policy":"rebuilt_from_source_assets_not_master_crop",
             "title":scene.get("title"),"subtitle":scene.get("subtitle"),
             "beats":len(beats),"accent":accents[0] if accents else "0x00DCC8",
+            "music_bed":music_policy,
         })
 
     payload={
