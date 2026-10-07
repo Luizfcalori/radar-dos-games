@@ -1,0 +1,156 @@
+name: Import BGS 2026 Shorts to TikTok Helper
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-bgs-2026-to-tiktok-helper.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-bgs-2026-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved BGS 2026 package
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-bgs-2026-strict-v2
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37605500852
+
+      - name: Validate approved Shorts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s output/shorts/short_1.mp4
+          test -s output/shorts/short_2.mp4
+          test -s output/shorts/short_3.mp4
+          test -s output/shorts/short_1_cover.jpg
+          test -s output/shorts/short_2_cover.jpg
+          test -s output/shorts/short_3_cover.jpg
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          qa=json.loads(Path("output/final-qa.json").read_text(encoding="utf-8"))
+          assert qa.get("status")=="APPROVED_STRICT", qa
+          assert qa.get("semantic_visual_sync")=="APPROVED", qa
+          assert qa.get("six_games_media_coverage")=="APPROVED", qa
+          print("BGS_STRICT_PACKAGE_OK")
+          PY
+
+      - name: Publish MP4s and covers for TikTok Helper
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-bgs-assets
+          cp output/shorts/short_1.mp4 tiktok-bgs-assets/bgs-2026-gdIZrvA5Whw.mp4
+          cp output/shorts/short_2.mp4 tiktok-bgs-assets/bgs-2026-DSp4g5lyEZk.mp4
+          cp output/shorts/short_3.mp4 tiktok-bgs-assets/bgs-2026-MuWdL8FE5ns.mp4
+          cp output/shorts/short_1_cover.jpg tiktok-bgs-assets/bgs-2026-gdIZrvA5Whw.jpg
+          cp output/shorts/short_2_cover.jpg tiktok-bgs-assets/bgs-2026-DSp4g5lyEZk.jpg
+          cp output/shorts/short_3_cover.jpg tiktok-bgs-assets/bgs-2026-MuWdL8FE5ns.jpg
+
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG"             --title "Radar dos Games - Shorts aprovados para TikTok"             --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-bgs-assets/* --clobber
+
+      - name: Add BGS 2026 Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          p=Path("data/tiktok_queue.json")
+          q=json.loads(p.read_text(encoding="utf-8"))
+          old=q.get("items") or []
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          now=datetime.now(timezone.utc).isoformat()
+          items=[
+            {
+              "id":"yt-gdIZrvA5Whw",
+              "title":"ALIEN: ISOLATION 2 na BGS 2026! 😱",
+              "media_url":f"{base}/bgs-2026-gdIZrvA5Whw.mp4",
+              "thumbnail_url":f"{base}/bgs-2026-gdIZrvA5Whw.jpg",
+              "post_text":"ALIEN: ISOLATION 2 na BGS 2026! 😱\n\nAlien: Isolation 2 é um dos destaques confirmados na BGS 2026.\n\n#RadarDosGames #BGS2026 #AlienIsolation2 #Games #Gaming #TikTokGames",
+              "status":"approved",
+              "youtube_id":"gdIZrvA5Whw",
+              "youtube_url":"https://www.youtube.com/shorts/gdIZrvA5Whw",
+              "source":"bgs_2026_approved_strict_v2",
+              "source_run_id":37605500852,
+              "short_number":1,
+              "approved_at":now
+            },
+            {
+              "id":"yt-DSp4g5lyEZk",
+              "title":"CRAZY TAXI VOLTOU — e Kenji Kanno vem ao Brasil! 🇧🇷",
+              "media_url":f"{base}/bgs-2026-DSp4g5lyEZk.mp4",
+              "thumbnail_url":f"{base}/bgs-2026-DSp4g5lyEZk.jpg",
+              "post_text":"CRAZY TAXI VOLTOU — e Kenji Kanno vem ao Brasil! 🇧🇷\n\nCrazy Taxi: World Tour e Kenji Kanno estão entre os destaques da BGS 2026.\n\n#RadarDosGames #BGS2026 #CrazyTaxi #SEGA #Games #Gaming #TikTokGames",
+              "status":"approved",
+              "youtube_id":"DSp4g5lyEZk",
+              "youtube_url":"https://www.youtube.com/shorts/DSp4g5lyEZk",
+              "source":"bgs_2026_approved_strict_v2",
+              "source_run_id":37605500852,
+              "short_number":2,
+              "approved_at":now
+            },
+            {
+              "id":"yt-MuWdL8FE5ns",
+              "title":"6 GAMES DA SEGA para ver na BGS 2026 🎮",
+              "media_url":f"{base}/bgs-2026-MuWdL8FE5ns.mp4",
+              "thumbnail_url":f"{base}/bgs-2026-MuWdL8FE5ns.jpg",
+              "post_text":"6 GAMES DA SEGA para ver na BGS 2026 🎮\n\nAlien 2, Persona 4 Revival, Stranger Than Heaven, Crazy Taxi, Sonic Pico Park e Total War: Warhammer 40,000 no nosso especial da BGS 2026.\n\n#RadarDosGames #BGS2026 #SEGA #Games #Gaming #TikTokGames",
+              "status":"approved",
+              "youtube_id":"MuWdL8FE5ns",
+              "youtube_url":"https://www.youtube.com/shorts/MuWdL8FE5ns",
+              "source":"bgs_2026_approved_strict_v2",
+              "source_run_id":37605500852,
+              "short_number":3,
+              "approved_at":now
+            }
+          ]
+          ids={x["id"] for x in items}
+          yids={x["youtube_id"] for x in items}
+          old=[x for x in old if x.get("id") not in ids and x.get("youtube_id") not in yids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(items+old)[:200]
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":len(items),"total":len(q["items"]),"ids":[x["id"] for x in items]},ensure_ascii=False))
+          PY
+
+      - name: Commit updated TikTok queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "BGS Shorts already present."
+            exit 0
+          fi
+          git commit -m "tiktok: add approved BGS 2026 Shorts to helper"
+          git pull --rebase origin main
+          git push origin main
