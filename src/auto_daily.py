@@ -145,7 +145,15 @@ def canonical_media(items):
     images = []
     for kind, url in items:
         url = url.replace("&amp;", "&")
-        key = re.sub(r"[?#].*$", "", url)
+        # YouTube usa o query param ?v= como identidade do vídeo. Remover a
+        # query inteira fazia vídeos diferentes virarem a mesma chave (/watch).
+        if "youtube.com/watch" in url.lower():
+            m = re.search(r"[?&]v=([^&#]+)", url, re.I)
+            key = "youtube:" + (m.group(1) if m else url)
+        elif "youtu.be/" in url.lower():
+            key = "youtube:" + urlparse(url).path.strip("/").split("/")[0]
+        else:
+            key = re.sub(r"[?#].*$", "", url)
         if key in seen or not media_quality(kind, url):
             continue
         seen.add(key)
@@ -553,7 +561,7 @@ def fetch_manual_media(brief):
     # Vídeos oficiais explícitos entram primeiro para garantir gameplay/trailers
     # contextuais quando as páginas modernas escondem os MP4 atrás de JavaScript.
     for video_url in brief.get("video_urls", []):
-        if isinstance(video_url, str) and ("youtube.com/watch" in video_url or "youtu.be/" in video_url):
+        if isinstance(video_url, str) and video_url.startswith("http"):
             combined.media.append(("video", video_url))
 
     for url in brief["media_source_urls"]:
