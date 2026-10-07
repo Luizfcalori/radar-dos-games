@@ -49,7 +49,8 @@ jobs:
           cp production/bgs-2026-strict-v2/covers/short-3-six-games.jpg output/shorts/short_3_cover.jpg
           python - <<'PY'
           from pathlib import Path
-          from PIL import Image
+          from PIL import Image, ImageFile
+          ImageFile.LOAD_TRUNCATED_IMAGES = True
           for p in [
               Path("output/thumbnail.jpg"),
               Path("output/shorts/short_1_cover.jpg"),
