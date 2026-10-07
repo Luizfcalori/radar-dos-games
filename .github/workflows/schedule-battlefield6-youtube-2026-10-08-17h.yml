@@ -1,0 +1,284 @@
+name: Schedule Battlefield 6 YouTube - 17h 2026-10-08
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/schedule-battlefield6-youtube-2026-10-08-17h.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: battlefield6-youtube-2026-10-08-17h
+  cancel-in-progress: true
+
+jobs:
+  schedule:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar cliente YouTube
+        run: |
+          python -m pip install --disable-pip-version-check --no-input \
+            google-api-python-client==2.184.0 google-auth==2.41.1
+
+      - name: Baixar Master aprovado
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-37671565573
+          path: battlefield-master
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37671565573
+
+      - name: Baixar Shorts aprovados
+        uses: actions/download-artifact@v4
+        with:
+          name: battlefield6-shorts-corrected-37682817247
+          path: battlefield-shorts
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37682817247
+
+      - name: Preparar pacote exato para upload
+        run: |
+          set -euo pipefail
+          mkdir -p output/shorts
+          cp battlefield-master/master.mp4 output/master.mp4
+          cp battlefield-master/master-youtube.json output/master-youtube.json
+          cp battlefield-master/thumbnail.jpg output/thumbnail.jpg
+
+          cp battlefield-shorts/shorts/short_1.mp4 output/shorts/short_1.mp4
+          cp battlefield-shorts/shorts/short_2.mp4 output/shorts/short_2.mp4
+          cp battlefield-shorts/shorts/short_3.mp4 output/shorts/short_3.mp4
+          cp battlefield-shorts/shorts/short_1_cover.jpg output/shorts/short_1_cover.jpg
+          cp battlefield-shorts/shorts/short_2_cover.jpg output/shorts/short_2_cover.jpg
+          cp battlefield-shorts/shorts/short_3_cover.jpg output/shorts/short_3_cover.jpg
+          cp battlefield-shorts/short-1-youtube.json output/short-1-youtube.json
+          cp battlefield-shorts/short-2-youtube.json output/short-2-youtube.json
+          cp battlefield-shorts/short-3-youtube.json output/short-3-youtube.json
+
+          test -s output/master.mp4
+          for i in 1 2 3; do
+            test -s "output/shorts/short_${i}.mp4"
+            test -s "output/shorts/short_${i}_cover.jpg"
+            test -s "output/short-${i}-youtube.json"
+          done
+
+      - name: Fixar agendamento em 17h BRT
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          publish_at='2026-10-08T20:00:00Z'  # 17:00 America/Sao_Paulo
+
+          entries=[
+              ('master-youtube.json','output/thumbnail.jpg'),
+              ('short-1-youtube.json','output/shorts/short_1_cover.jpg'),
+              ('short-2-youtube.json','output/shorts/short_2_cover.jpg'),
+              ('short-3-youtube.json','output/shorts/short_3_cover.jpg'),
+          ]
+
+          for fn,thumb in entries:
+              p=Path('output')/fn
+              meta=json.loads(p.read_text(encoding='utf-8'))
+              meta['privacy']='private'
+              meta['publishAt']=publish_at
+              meta['thumbnail']=thumb
+              meta['use_existing_thumbnail']=True
+              p.write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8')
+              print(json.dumps({
+                  'file':fn,
+                  'title':meta['title'],
+                  'publishAt':publish_at,
+                  'thumbnail':thumb
+              },ensure_ascii=False))
+          PY
+
+      - name: Upload e confirmação no YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, time
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+
+          CHANNEL_ID='UCSZJZE-E10SVdx42wrDeWhw'
+          CHANNEL_TITLE='Radar dos Games'
+          EXPECTED='2026-10-08T20:00:00Z'
+          scopes=[
+              'https://www.googleapis.com/auth/youtube.upload',
+              'https://www.googleapis.com/auth/youtube.readonly'
+          ]
+
+          creds=Credentials(
+              None,
+              refresh_token=os.environ['YT_REFRESH_TOKEN'],
+              token_uri='https://oauth2.googleapis.com/token',
+              client_id=os.environ['YT_CLIENT_ID'],
+              client_secret=os.environ['YT_CLIENT_SECRET'],
+              scopes=scopes
+          )
+          yt=build('youtube','v3',credentials=creds)
+
+          channels=yt.channels().list(part='id,snippet,contentDetails',mine=True).execute().get('items',[])
+          if len(channels)!=1:
+              raise RuntimeError('OAuth deve apontar para exatamente um canal')
+          ch=channels[0]
+          if ch['id']!=CHANNEL_ID or ch['snippet']['title'].strip().casefold()!=CHANNEL_TITLE.casefold():
+              raise RuntimeError(f"CANAL INCORRETO: {ch['snippet']['title']} ({ch['id']})")
+
+          playlist=ch['contentDetails']['relatedPlaylists']['uploads']
+
+          def recent_by_title():
+              found={}
+              token=None
+              for _ in range(5):
+                  r=yt.playlistItems().list(
+                      part='snippet,contentDetails',
+                      playlistId=playlist,maxResults=50,pageToken=token
+                  ).execute()
+                  for it in r.get('items',[]):
+                      title=it.get('snippet',{}).get('title','').strip()
+                      vid=it.get('contentDetails',{}).get('videoId')
+                      if title and vid:
+                          found[title.casefold()]=vid
+                  token=r.get('nextPageToken')
+                  if not token:
+                      break
+              return found
+
+          items=[
+              ('master','output/master.mp4','output/master-youtube.json'),
+              ('short1','output/shorts/short_1.mp4','output/short-1-youtube.json'),
+              ('short2','output/shorts/short_2.mp4','output/short-2-youtube.json'),
+              ('short3','output/shorts/short_3.mp4','output/short-3-youtube.json'),
+          ]
+          existing=recent_by_title()
+          results=[]
+
+          def body_for(meta):
+              return {
+                  'snippet':{
+                      'title':meta['title'],
+                      'description':meta['description'],
+                      'tags':meta.get('tags',[]),
+                      'categoryId':'20'
+                  },
+                  'status':{
+                      'privacyStatus':'private',
+                      'publishAt':EXPECTED,
+                      'selfDeclaredMadeForKids':False,
+                      'containsSyntheticMedia':bool(meta.get('containsSyntheticMedia',False))
+                  }
+              }
+
+          def upload_video(path,meta):
+              dt=datetime.fromisoformat(EXPECTED.replace('Z','+00:00'))
+              if dt<=datetime.now(timezone.utc):
+                  raise RuntimeError('Horário de publicação já passou antes do upload')
+              req=yt.videos().insert(
+                  part='snippet,status',
+                  body=body_for(meta),
+                  media_body=MediaFileUpload(path,chunksize=8*1024*1024,resumable=True)
+              )
+              resp=None
+              errors=0
+              while resp is None:
+                  try:
+                      _,resp=req.next_chunk()
+                      errors=0
+                  except (TimeoutError,OSError):
+                      errors+=1
+                      if errors>5:
+                          raise
+                      time.sleep(min(5*(2**(errors-1)),60))
+              return resp['id']
+
+          for key,path,meta_path in items:
+              meta=json.loads(Path(meta_path).read_text(encoding='utf-8'))
+              title=meta['title'].strip()
+              vid=existing.get(title.casefold())
+
+              if vid:
+                  print('REUSE_EXISTING',key,vid)
+                  yt.videos().update(
+                      part='snippet,status',
+                      body={'id':vid,**body_for(meta)}
+                  ).execute()
+              else:
+                  vid=upload_video(path,meta)
+                  existing[title.casefold()]=vid
+                  print('UPLOADED',key,vid)
+
+              thumb=Path(meta['thumbnail'])
+              thumb_applied=False
+              try:
+                  yt.thumbnails().set(
+                      videoId=vid,
+                      media_body=MediaFileUpload(str(thumb),mimetype='image/jpeg',resumable=False)
+                  ).execute()
+                  thumb_applied=True
+                  print('THUMBNAIL_APPLIED',key,str(thumb))
+              except Exception as exc:
+                  print('THUMBNAIL_WARNING',key,type(exc).__name__,str(exc)[:240])
+
+              v=yt.videos().list(part='snippet,status',id=vid).execute()['items'][0]
+              sn=v['snippet']; st=v['status']
+              if sn['channelId']!=CHANNEL_ID:
+                  raise RuntimeError(f'Canal incorreto em {key}')
+              if sn['title'].strip()!=title:
+                  raise RuntimeError(f'Título divergente em {key}: {sn["title"]}')
+              if st.get('privacyStatus')!='private':
+                  raise RuntimeError(f'{key} não ficou privado/agendado: {st}')
+              if st.get('publishAt')!=EXPECTED:
+                  raise RuntimeError(f'{key} publishAt divergente: {st}')
+
+              row={
+                  'key':key,
+                  'id':vid,
+                  'url':f'https://www.youtube.com/watch?v={vid}',
+                  'title':title,
+                  'publishAt':st.get('publishAt'),
+                  'localTime':'2026-10-08 17:00 America/Sao_Paulo',
+                  'thumbnail':str(thumb),
+                  'thumbnailApplied':thumb_applied,
+                  'status':'SCHEDULED_CONFIRMED'
+              }
+              results.append(row)
+              print(json.dumps(row,ensure_ascii=False))
+
+          if len(results)!=4:
+              raise RuntimeError(f'Esperava 4 vídeos confirmados; recebeu {len(results)}')
+
+          Path('output/youtube-schedule-confirmed.json').write_text(
+              json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8'
+          )
+          PY
+
+      - name: Guardar confirmação do agendamento
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: battlefield6-youtube-17h-confirmation-${{ github.run_id }}
+          path: |
+            output/youtube-schedule-confirmed.json
+            output/master-youtube.json
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+          if-no-files-found: warn
+          retention-days: 7
