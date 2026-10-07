@@ -49,9 +49,9 @@ jobs:
           article_pt = "https://www.fortnite.com/news/the-corruption-spreads-in-fortnitemares-2026?lang=pt-BR"
           trailer = "https://www.youtube.com/watch?v=7qQFLL_DJ7Q"
 
-          weapon_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize%3Dfit%3Aclip%2Cwidth%3A1920/quality%3Dvalue%3A80/cmuo6uhl37cav07obrctm0nn6"
-          fnaf_stage_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize%3Dfit%3Aclip%2Cwidth%3A1920/quality%3Dvalue%3A80/cmumsn6g007wm06n4pnkts1et"
-          fnaf_group_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize%3Dfit%3Aclip%2Cwidth%3A1920/quality%3Dvalue%3A80/cmulmm5nc3jgl07o1ozjap94e"
+          weapon_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=fit:clip,width:1920/quality=value:80/cmuo6uhl37cav07obrctm0nn6"
+          fnaf_stage_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=fit:clip,width:1920/quality=value:80/cmumsn6g007wm06n4pnkts1et"
+          fnaf_group_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=fit:clip,width:1920/quality=value:80/cmulmm5nc3jgl07o1ozjap94e"
           horde_img = "https://cdn2.unrealengine.com/links-admin-EN_FNBR_42-30_Fortnitemares_HordeRush_DiscoverTile_480x270-2689b75f.jpg"
 
           script = """Fortnitemares 2026 já tomou conta do Fortnite, e desta vez o evento mistura terror, chefes especiais, armas amaldiçoadas e colaborações gigantes. A Epic colocou Five Nights at Freddy's e Freddy Krueger no centro da atualização, e o Radar dos Games vai mostrar cada novidade com a imagem correspondente ao que está sendo falado.
