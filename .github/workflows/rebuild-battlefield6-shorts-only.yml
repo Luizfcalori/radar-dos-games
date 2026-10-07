@@ -1,0 +1,272 @@
+name: Battlefield 6 - Rebuild Shorts Only
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/rebuild-battlefield6-shorts-only.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: radar-dos-games-daily
+  cancel-in-progress: true
+
+jobs:
+  shorts_only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      BASE_MASTER_RUN_ID: "37671565573"
+      BASE_MASTER_ARTIFACT_ID: "11505893632"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Instalar ferramentas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+
+      - name: Baixar Master aprovado somente como referência
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-37671565573
+          path: base-approved
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37671565573
+
+      - name: Confirmar Master preservado
+        run: |
+          set -euo pipefail
+          test -s base-approved/master.mp4
+          mkdir -p output
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          p=Path("base-approved/master.mp4")
+          h=hashlib.sha256()
+          with p.open("rb") as f:
+              for chunk in iter(lambda:f.read(1024*1024),b""):
+                  h.update(chunk)
+          info={
+              "status":"REUSED_UNCHANGED",
+              "source_run_id":37671565573,
+              "source_artifact_id":11505893632,
+              "master_path":"base-approved/master.mp4",
+              "bytes":p.stat().st_size,
+              "sha256":h.hexdigest(),
+          }
+          Path("output/base-master.json").write_text(json.dumps(info,indent=2),encoding="utf-8")
+          print(json.dumps(info,indent=2))
+          PY
+
+      - name: Pesquisar fontes atuais
+        run: python src/research.py
+
+      - name: Montar pauta, hooks e plano sem refazer Master
+        env:
+          RADAR_TOPIC: "Battlefield 6"
+          PUBLISH_PRIVACY: "unlisted"
+        run: python src/auto_daily.py
+
+      - name: QA editorial
+        run: python src/narration_qa.py output/auto-script.txt
+
+      - name: Criar narração e segmentos Thalita PT-BR
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaMultilingualNeural \
+            --segments-json output/voice-timings.json
+
+      - name: Baixar mídia oficial/contextual
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Diretor V4 - selecionar cenas pelos hooks aprovados
+        run: python src/director_v4.py output/auto-media-plan.json output/clips.json
+
+      - name: Gate semântico fala imagem
+        run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
+
+      - name: Reconstruir somente os 3 Shorts
+        run: python src/shorts_v4.py
+
+      - name: QA bloqueante dos hooks e vídeos
+        run: |
+          python - <<'PY'
+          import json,re,subprocess
+          from pathlib import Path
+
+          def load(p):
+              return json.loads(Path(p).read_text(encoding="utf-8"))
+          def norm(v):
+              v=re.sub(r"(?i)\s*#shorts?\b","",str(v or ""))
+              return re.sub(r"\s+"," ",v).strip().casefold()
+          def probe(p):
+              return json.loads(subprocess.check_output(
+                  ["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(p)],
+                  text=True
+              ))
+
+          manual=load("production/manual-brief.json")
+          plan=load("output/auto-media-plan.json")
+          picks=load("output/short-picks.json")
+          manifest=load("output/shorts/manifest.json")
+          semantic=load("output/semantic-visual-qa.json")
+
+          expected=[" ".join(str(x or "").split()).strip() for x in manual.get("short_hooks",[])]
+          assert len(expected)==3 and all(expected), expected
+          assert [norm(x) for x in plan.get("short_hooks",[])]==[norm(x) for x in expected], plan.get("short_hooks")
+          assert [norm(x) for x in picks.get("expected_hooks",[])]==[norm(x) for x in expected], picks
+          assert semantic.get("status")=="APPROVED", semantic
+
+          matches=picks.get("semantic_matches") or []
+          assert len(matches)==3, matches
+          rows=manifest.get("shorts") or []
+          assert len(rows)==3, rows
+
+          report=[]
+          seen_scenes=set()
+          for i,(hook,row,match) in enumerate(zip(expected,rows,matches),1):
+              assert norm(row.get("title"))==norm(hook),(i,row.get("title"),hook)
+              assert norm(row.get("approved_hook"))==norm(hook),(i,row.get("approved_hook"),hook)
+              assert int(row.get("scene_index"))==int(match.get("scene_index")),(i,row,match)
+              assert float(match.get("semantic_score") or 0)>0,(i,match)
+              assert int(row.get("scene_index")) not in seen_scenes,(i,row.get("scene_index"))
+              seen_scenes.add(int(row.get("scene_index")))
+
+              meta=load(f"output/short-{i}-youtube.json")
+              assert norm(meta.get("title"))==norm(hook),(i,meta.get("title"),hook)
+
+              p=Path(f"output/shorts/short_{i}.mp4")
+              assert p.exists() and p.stat().st_size>1_000_000,p
+              info=probe(p)
+              d=float(info["format"]["duration"])
+              v=next(x for x in info["streams"] if x["codec_type"]=="video")
+              assert (int(v["width"]),int(v["height"]))==(1080,1920),(i,v["width"],v["height"])
+              assert 8<=d<=65,(i,d)
+              assert any(x["codec_type"]=="audio" for x in info["streams"]),i
+              report.append({
+                  "short":i,
+                  "hook":hook,
+                  "scene_index":row.get("scene_index"),
+                  "scene_title":row.get("scene_title"),
+                  "semantic_score":match.get("semantic_score"),
+                  "duration":round(d,3),
+                  "status":"APPROVED",
+              })
+
+          result={
+              "status":"APPROVED",
+              "mode":"SHORTS_ONLY_REBUILD",
+              "base_master_run_id":37671565573,
+              "master_reused_unchanged":True,
+              "exact_hooks":"APPROVED",
+              "semantic_scene_match":"APPROVED",
+              "unique_short_scenes":"APPROVED",
+              "shorts":report,
+          }
+          Path("output/shorts-only-qa.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Gerar somente as 3 capas dos Shorts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image, ImageStat
+          import src.premium_covers as pc
+
+          out=Path("output")
+          sources={}
+          rows=[]
+          for i in range(1,4):
+              meta=pc.read_json(out/f"short-{i}-youtube.json")
+              last_error=None
+              for variant in (0,1):
+                  try:
+                      img,picked=pc.short_cover(meta,i,variant)
+                      path=out/"shorts"/f"short_{i}_cover.jpg"
+                      pc.save_checked(img,path,(1080,1920))
+                      sources[f"short_{i}"]=[
+                          {"index":a.get("index"),"role":a.get("role"),"url":a.get("url")}
+                          for a in picked
+                      ]
+                      with Image.open(path) as im:
+                          var=float(ImageStat.Stat(im.convert("L").resize((64,64))).var[0])
+                      if var<120:
+                          raise RuntimeError(f"capa visualmente pobre: variance={var:.1f}")
+                      rows.append({"short":i,"path":str(path),"bytes":path.stat().st_size,"variance":round(var,1),"status":"APPROVED"})
+                      break
+                  except Exception as exc:
+                      last_error=exc
+              else:
+                  raise RuntimeError(f"QUALITY_BLOCK: capa do Short {i} falhou: {last_error}")
+
+          qa={
+              "status":"APPROVED",
+              "mode":"SHORTS_ONLY",
+              "short_covers":"APPROVED",
+              "template_version":"radar-premium-auto-v1-2026-10-07",
+              "sources":sources,
+              "covers":rows,
+          }
+          (out/"shorts-cover-qa.json").write_text(json.dumps(qa,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(qa,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Gate final Shorts-only
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          qa=json.loads(Path("output/shorts-only-qa.json").read_text(encoding="utf-8"))
+          covers=json.loads(Path("output/shorts-cover-qa.json").read_text(encoding="utf-8"))
+          master=json.loads(Path("output/base-master.json").read_text(encoding="utf-8"))
+          assert qa.get("status")=="APPROVED",qa
+          assert qa.get("exact_hooks")=="APPROVED",qa
+          assert qa.get("semantic_scene_match")=="APPROVED",qa
+          assert qa.get("unique_short_scenes")=="APPROVED",qa
+          assert covers.get("short_covers")=="APPROVED",covers
+          assert master.get("status")=="REUSED_UNCHANGED",master
+          print(json.dumps({
+              "status":"APPROVED",
+              "master":"REUSED_UNCHANGED_FROM_37671565573",
+              "shorts":3,
+              "short_hooks_exact":"APPROVED",
+              "semantic_scene_match":"APPROVED",
+              "short_covers":"APPROVED"
+          },indent=2))
+          PY
+
+      - name: Guardar pacote Shorts corrigidos
+        uses: actions/upload-artifact@v4
+        with:
+          name: battlefield6-shorts-corrected-${{ github.run_id }}
+          path: |
+            output/base-master.json
+            output/shorts-only-qa.json
+            output/shorts-cover-qa.json
+            output/short-picks.json
+            output/shorts/manifest.json
+            output/shorts/short_1.mp4
+            output/shorts/short_2.mp4
+            output/shorts/short_3.mp4
+            output/shorts/short_1_cover.jpg
+            output/shorts/short_2_cover.jpg
+            output/shorts/short_3_cover.jpg
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+            output/semantic-visual-qa.json
+          retention-days: 7
