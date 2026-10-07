@@ -39,18 +39,21 @@ def fit(draw,text,maxw,start=92,end=44):
             return f
     return font(end)
 
-def approved_image(index:int):
+def approved_image(index:int, preferred_role=None):
     p=Path("output/clips.json")
-    if not p.exists(): return None
+    if not p.exists(): return None, None
     try: data=json.loads(p.read_text(encoding="utf-8"))
-    except Exception: return None
+    except Exception: return None, None
     imgs=[]
     for a in data.get("assets",[]):
-        if a.get("approved") and a.get("type")=="image":
-            fp=Path(str(a.get("path") or ""))
-            if fp.exists() and fp.stat().st_size>20000:
-                imgs.append(fp)
-    if not imgs: return None
+        if not (a.get("approved") and a.get("type")=="image"):
+            continue
+        if preferred_role and a.get("role") != preferred_role:
+            continue
+        fp=Path(str(a.get("path") or ""))
+        if fp.exists() and fp.stat().st_size>20000:
+            imgs.append((fp,a))
+    if not imgs: return None, None
     return imgs[(max(index,1)-1)%len(imgs)]
 
 def frame(video:Path,out:Path):
@@ -118,15 +121,16 @@ def compose(src:Path,title:str):
     return Image.alpha_composite(canvas,ov).convert("RGB")
 
 def main():
-    if len(sys.argv) not in (4,5):
-        raise SystemExit("uso: short_cover.py SHORT.mp4 META.json SAIDA.jpg [INDICE]")
-    video=Path(sys.argv[1]); meta=Path(sys.argv[2]); out=Path(sys.argv[3]); idx=int(sys.argv[4]) if len(sys.argv)==5 else 1
+    if len(sys.argv) not in (4,5,6):
+        raise SystemExit("uso: short_cover.py SHORT.mp4 META.json SAIDA.jpg [INDICE] [ROLE_PREFERIDA]")
+    video=Path(sys.argv[1]); meta=Path(sys.argv[2]); out=Path(sys.argv[3]); idx=int(sys.argv[4]) if len(sys.argv)>=5 else 1
+    preferred_role=sys.argv[5] if len(sys.argv)==6 else None
     out.parent.mkdir(parents=True,exist_ok=True)
     data=json.loads(meta.read_text(encoding="utf-8"))
-    source=approved_image(idx)
+    source,asset=approved_image(idx,preferred_role)
     tmp=None
     if source is None:
-        tmp=frame(video,out); source=tmp
+        tmp=frame(video,out); source=tmp; asset=None
     img=compose(source,data.get("title",""))
     img.save(out,"JPEG",quality=95,subsampling=0,optimize=True)
     if tmp: tmp.unlink(missing_ok=True)
@@ -136,7 +140,11 @@ def main():
       "status":"APPROVED",
       "policy":"radar_short_cover_v1_green; official_image_first; top_brand_badge; huge_white_green_headline; metallic_lower_panel; neon_green_brand_accents; 9:16",
       "template_version":"radar-short-cover-v1-green-2026-10-06",
-      "output":str(out),"size":[W,H],"index":idx,"title":data.get("title")
+      "output":str(out),"size":[W,H],"index":idx,"title":data.get("title"),
+      "preferred_role":preferred_role,
+      "source_path":str(source),
+      "source_role":(asset or {}).get("role"),
+      "source_url":(asset or {}).get("url")
     }
     out.with_name(out.stem+"-policy.json").write_text(json.dumps(policy,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps(policy,ensure_ascii=False))
