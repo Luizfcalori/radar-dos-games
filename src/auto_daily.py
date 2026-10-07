@@ -682,6 +682,32 @@ def main():
         script = make_script(selected, parser)
     (OUT / "auto-script.txt").write_text(script + "\n", encoding="utf-8")
 
+    planned_scenes = make_scenes(selected, selected_media, script)
+    if manual:
+        short_hooks = [sentence(x) for x in (manual.get("short_hooks") or []) if sentence(x)]
+        if len(short_hooks) != 3:
+            raise RuntimeError(
+                f"QUALITY_BLOCK: brief manual precisa definir exatamente 3 short_hooks aprovados; recebeu {len(short_hooks)}"
+            )
+    else:
+        short_hooks = []
+        seen_hooks = set()
+        for scene in planned_scenes:
+            hook = sentence(scene.get("title") or "")
+            key = hook.casefold()
+            if not hook or key in seen_hooks:
+                continue
+            if re.fullmatch(r"(DESTAQUE|CENA|BLOCO|T[ÓO]PICO)\\s*\\d*.*", hook, re.I):
+                continue
+            seen_hooks.add(key)
+            short_hooks.append(hook[:88])
+            if len(short_hooks) == 3:
+                break
+        if len(short_hooks) != 3:
+            raise RuntimeError("QUALITY_BLOCK: não foi possível definir 3 hooks editoriais reais para os Shorts")
+
+    short_hooks = [h[:88].rstrip(" -:|") for h in short_hooks]
+
     media_items = []
     video_position = 0
     for i, (typ, url) in enumerate(selected_media, 1):
@@ -712,13 +738,17 @@ def main():
         "minimum_unique_video_seconds": 15,
         "minimum_image_assets": 0,
         "media_policy": "gameplay_or_official_moving_footage_required; minimum_15s_unique_video; images_are_complement_only; no_image_only_master; premium_v4_motion_for_images",
+        "short_hooks": short_hooks,
+        "short_hook_policy": "exact_approved_hook; semantic_scene_match; qa_block_on_mismatch",
         "media": media_items,
-        "scenes": make_scenes(selected, selected_media, script),
+        "scenes": planned_scenes,
     }
     (OUT / "auto-media-plan.json").write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
 
     privacy = os.getenv("PUBLISH_PRIVACY", "unlisted").strip() or "unlisted"
     master_meta, shorts_meta = build_metadata(selected, parser, privacy)
+    for i, meta in enumerate(shorts_meta):
+        meta["title"] = short_hooks[i] + " #Shorts"
     if manual:
         headline = sentence(manual.get("headline") or master_meta["title"])[:100]
         master_meta["title"] = headline
@@ -730,10 +760,7 @@ def main():
             f"🔎 Fontes consultadas:\n{source_lines}\n\n"
             "#RadarDosGames #GTAVI #GTA6 #RockstarGames"
         )
-        hooks = manual.get("short_hooks") or []
         for i, meta in enumerate(shorts_meta):
-            if i < len(hooks):
-                meta["title"] = sentence(hooks[i])[:88] + " #Shorts"
             meta["description"] = (
                 f"{headline}. Recorte {i+1}/3 do especial do Radar dos Games.\n\n"
                 f"Fonte principal: {selected['url']}\n\n"
@@ -751,6 +778,8 @@ def main():
         "selection_score": winner["selection_score"],
         "media_mix": winner["mix"],
         "manual_brief": bool(manual),
+        "short_hooks": short_hooks,
+        "short_hook_policy": "exact_approved_hook; semantic_scene_match; qa_block_on_mismatch",
         "source_urls": (manual.get("source_urls") if manual else [selected["url"]]),
         "selection_policy": {
             "franchise_cooldown_hours": 48,
