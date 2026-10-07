@@ -259,7 +259,7 @@ def make(src, out, start, length, card):
         "drawbox=x=25:y=470:w=1030:h=535:color=0x020A23@0.94:t=fill,"
         f"drawbox=x=96:y=525:w=888:h=430:color={accent}@0.96:t=8,"
         f"drawbox=x=110:y=539:w=860:h=402:color={accent}@0.42:t=3[canvas];"
-        "[canvas][fg]overlay=(W-w)/2:575+(430-h)/2[tmp];"
+        "[canvas][fg]overlay=x='(W-w)/2+5*sin(t*0.70)':y='575+(430-h)/2+4*cos(t*0.55)'[tmp];"
         f"[tmp]drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x=48:y=55:fontsize=32:"
         "fontcolor=white:borderw=2:bordercolor=black@0.7:expansion=none,"
         f"drawtext=fontfile='{FONT}':text='{headline}':x=(w-text_w)/2:y=155:fontsize=52:"
@@ -304,12 +304,15 @@ def main(src):
     intro_offset = intro_offset_seconds()
 
     manifest = {
-        "standard": "radar-dos-games-short-reference-2026-10-02-v3-complete-speech",
+        "standard": "radar-dos-games-shorts-premium-v3",
+        "premium_version": "PREMIUM_V3",
+        "hook_policy": "headline_visible_from_first_frame; semantic_scene_pick; visual_motion_continuous",
         "source": str(src),
         "resolution": [W, H],
         "fps": FPS,
         "accent_policy": "contextual_from_each_clip; neutral_white_fallback; never_fixed_cyan",
         "speech_end_policy": "complete_voice_segment_when_available; otherwise_first_natural_silence; never_fixed_22s",
+        "motion_policy": "subtle_non_destructive_vertical_reframe",
         "intro_offset_seconds": round(intro_offset, 3),
         "shorts": [],
     }
