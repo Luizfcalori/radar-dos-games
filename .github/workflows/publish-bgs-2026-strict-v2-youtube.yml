@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/publish-bgs-2026-strict-v2-youtube.yml"
+      - "production/bgs-2026-strict-v2/covers/**"
   workflow_dispatch:
 
 permissions:
