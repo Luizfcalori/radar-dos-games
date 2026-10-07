@@ -6,7 +6,7 @@ Direção por frase sobre a base semântica do V3:
 - cada sentença recebe um ou mais beats visuais;
 - ritmo varia com o conteúdo (impacto mais rápido, explicação respira);
 - evita repetir o primeiro asset entre frases quando existe alternativa;
-- produz mapa para Shorts independentes e cold open.
+- produz mapa para Shorts independentes; o Master sempre começa pela intro oficial completa.
 """
 import json
 import math
@@ -176,7 +176,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     "end":round(float(phrase.get("start") or 0)+(beat_duration*(n+1)),3),
                     "duration":round(beat_duration,3),
                     "media_index":asset_id,
-                    "transition":"hard_cut" if n else ("micro_dip" if i>1 else "cold_open"),
+                    "transition":"hard_cut" if n else ("micro_dip" if i>1 else "opening_after_full_intro"),
                     "keyword_overlay":keyword_overlay(phrase.get("text","")) if n==0 and intensity(phrase.get("text",""))>=1 else "",
                     "intensity":intensity(phrase.get("text","")),
                 })
@@ -200,10 +200,6 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         })
 
     picks=pick_shorts(scenes)
-    first_beats=scenes[0].get("beats") or []
-    cold_end=float(first_beats[0].get("end") or 0) if first_beats else 0
-    cold_open=round(max(0.0,min(6.5,cold_end)),3)
-    if cold_open<2.0:cold_open=0.0
 
     plan["premium_version"]="PREMIUM_V4_DIRECTOR_CUT"
     plan["director_policy"]="phrase_level_semantic_direction; variable_pacing; selective_keyword_overlays; independent_shorts; pro_score_gate"
@@ -219,8 +215,8 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         "voice":"output/voice.mp3",
         "voice_timings":"output/voice-timings.json",
         "intro":"radar-dos-games-intro-oficial.mp4",
-        "intro_sting_seconds":2.8,
-        "cold_open_seconds":cold_open,
+        "intro_policy":"full_intro_first",
+        "cold_open_seconds":0.0,
         "scenes":scenes,
         "output":"output/master.mp4",
     }
@@ -228,7 +224,9 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
 
     result={
         "status":"APPROVED","version":"PREMIUM_V4_DIRECTOR_CUT",
-        "phrase_count":phrase_total,"cold_open_seconds":cold_open,
+        "phrase_count":phrase_total,
+        "intro_policy":"full_intro_first",
+        "cold_open_seconds":0.0,
         "short_scene_indexes":picks,
         "asset_usage":{str(k):v for k,v in sorted(usage.items())},
         "scenes":scene_report,
