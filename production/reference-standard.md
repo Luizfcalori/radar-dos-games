@@ -76,3 +76,14 @@ Novo Master deve ser criado do zero. Nenhum render Ace Combat anterior é fonte 
 - Em matérias de lista/roundup, a checagem deve cobrir TODOS os jogos mencionados no roteiro, não apenas o tema principal do vídeo.
 - O QA final deve reprovar cenas em que a fala e a mídia não correspondam semanticamente, mesmo que resolução, áudio e duração estejam corretos.
 
+
+
+## Narração — naturalidade obrigatória
+- A narração fala com o **público do canal**, nunca com o operador, editor ou uma pessoa específica.
+- O texto deve soar como apresentador humano de canal gamer: direto, informativo, energético e natural em português do Brasil.
+- É proibido narrar o processo de edição ou explicar a própria sincronização. Exemplos bloqueados: "estou mostrando", "na tela eu coloquei", "este trecho mostra", "aqui a tela fica", "o vídeo tenta mostrar", "o que está na tela", "como vocês podem ver na minha tela" e equivalentes.
+- É proibido justificar decisões internas do Radar durante a matéria, como "o Radar prioriza", "o Radar considera", "a gente confere", "separando o que é fato" ou comentários sobre como a pauta foi produzida.
+- Não usar tom de sermão, correção, tutorial do próprio vídeo ou conversa privada com o usuário.
+- Quando houver chamada direta, preferir linguagem coletiva ("vocês", "galera", "quem joga", "quem acompanha") e evitar tratamento individual recorrente.
+- O sincronismo fala-imagem continua obrigatório, mas deve acontecer **silenciosamente na edição**; nunca deve ser explicado pela locução.
+- Roteiros automáticos devem passar por `src/narration_qa.py` antes da geração da voz. Se houver linguagem meta/editorial proibida, a produção deve bloquear.
