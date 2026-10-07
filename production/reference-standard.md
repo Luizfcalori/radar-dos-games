@@ -103,3 +103,18 @@ O **Fortnite/Fortnitemares V2 é a base visual**. O Premium V3 acrescenta uma ca
 - O `final-qa.json` deve registrar `premium_version=PREMIUM_V3`, `semantic_visual_sync` e `visual_cadence`.
 
 Sequência oficial: pesquisa -> roteiro -> narração -> mídia -> **diretor V3** -> gate semântico -> render V3 -> 3 Shorts -> QA V3 -> capas premium -> QA final -> publicação.
+
+
+## Premium V4 — Director Cut (07/10/2026)
+
+O V4 é a evolução do **Fortnite V2 -> Premium V3** e passa a ser o default do pipeline automático.
+
+- Direção deixa de ser apenas por cena e passa a ser **por frase**, sem recortar a locução da Thalita em TTS separados.
+- Cada sentença pode gerar vários beats visuais; frases de impacto usam ritmo mais rápido e explicações usam cortes mais longos.
+- Cold open pode anteceder a identidade Radar quando houver limite semântico seguro; nenhuma fala é duplicada.
+- Overlays de palavra-chave são seletivos e curtos, apenas em informação de impacto.
+- Sound design usa compressão, normalização, limiter e impactos editoriais discretos. Música só entra quando existir cama sonora aprovada/licenciada; o pipeline não inventa nem baixa música de terceiros.
+- Os 3 Shorts passam a ser renderizações próprias 9:16 a partir dos assets aprovados + áudio completo da cena selecionada.
+- O QA visual amostra frames do Master para detectar telas quase pretas/vazias e baixa informação visual.
+- **PRO_SCORE >= 85/100** é condição bloqueante para publicação automática.
+- V3 permanece disponível como fallback técnico, mas não é mais o padrão do `daily-video.yml`.
