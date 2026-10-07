@@ -1,0 +1,158 @@
+name: Publish GTA VI Shorts to TikTok Helper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-gta6-to-tiktok-helper-2026-10-07.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved GTA VI production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-37661810722
+          path: gta6-final
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37661810722
+
+      - name: Prepare approved Shorts
+        run: |
+          set -euo pipefail
+          mkdir -p helper-assets
+          cp gta6-final/shorts/short_1.mp4 helper-assets/gta6-2026-10-07-short-1.mp4
+          cp gta6-final/shorts/short_2.mp4 helper-assets/gta6-2026-10-07-short-2.mp4
+          cp gta6-final/shorts/short_3.mp4 helper-assets/gta6-2026-10-07-short-3.mp4
+          cp gta6-final/shorts/short_1_cover.jpg helper-assets/gta6-2026-10-07-short-1.jpg
+          cp gta6-final/shorts/short_2_cover.jpg helper-assets/gta6-2026-10-07-short-2.jpg
+          cp gta6-final/shorts/short_3_cover.jpg helper-assets/gta6-2026-10-07-short-3.jpg
+
+          for f in helper-assets/*; do test -s "$f"; done
+
+      - name: Publish files to TikTok Helper release
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" helper-assets/* --clobber
+
+      - name: Refresh latest queue and promote GTA VI Shorts
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          p=Path('data/tiktok_queue.json')
+          q=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'version':2,'items':[]}
+          now=datetime.now(timezone.utc).isoformat()
+          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+
+          order=['_6tSnifRzIw','AXvICN8q8Vo','HRLzhVvxdRY']
+          configs={
+            '_6tSnifRzIw':{
+              'title':'GTA VI NO XBOX CLOUD? O QUE FOI CONFIRMADO',
+              'short_number':1,
+              'mp4':'gta6-2026-10-07-short-1.mp4',
+              'jpg':'gta6-2026-10-07-short-1.jpg',
+              'post_text':'GTA VI no Xbox Cloud? O que foi confirmado — e o que ainda é rumor.\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GTAVI #GTA6 #XboxCloud #RockstarGames #RadarDosGames #Games #Gaming #TikTokGames'
+            },
+            'AXvICN8q8Vo':{
+              'title':'GTA VI: DATA, PRÉ-CARGA E PLATAFORMAS',
+              'short_number':2,
+              'mp4':'gta6-2026-10-07-short-2.mp4',
+              'jpg':'gta6-2026-10-07-short-2.jpg',
+              'post_text':'GTA VI: data, pré-carga e plataformas confirmadas até agora.\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GTAVI #GTA6 #PlayStation5 #XboxSeries #RockstarGames #RadarDosGames #Games #TikTokGames'
+            },
+            'HRLzhVvxdRY':{
+              'title':'JASON, LUCIA E LEONIDA: O QUE JÁ SABEMOS',
+              'short_number':3,
+              'mp4':'gta6-2026-10-07-short-3.mp4',
+              'jpg':'gta6-2026-10-07-short-3.jpg',
+              'post_text':'Jason, Lucia e Leonida: o que já sabemos sobre GTA VI.\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GTAVI #GTA6 #Jason #Lucia #Leonida #RockstarGames #RadarDosGames #TikTokGames'
+            },
+          }
+
+          items=q.get('items') or []
+          by_yid={str(x.get('youtube_id')):x for x in items if x.get('youtube_id')}
+          promoted=[]
+          for yid in order:
+              cfg=configs[yid]
+              item=dict(by_yid.get(yid) or {})
+              item.update({
+                'id':f'yt-{yid}',
+                'title':cfg['title'],
+                'media_url':f"{base}/{cfg['mp4']}",
+                'thumbnail_url':f"{base}/{cfg['jpg']}",
+                'post_text':cfg['post_text'],
+                'status':'approved',
+                'source_run_id':37661810722,
+                'short_number':cfg['short_number'],
+                'approved_at':now,
+                'source':'approved_production_artifact',
+                'youtube_id':yid,
+                'youtube_url':f'https://www.youtube.com/shorts/{yid}',
+                'synced_at':now,
+              })
+              promoted.append(item)
+
+          ids=set(order)
+          rest=[x for x in items if str(x.get('youtube_id')) not in ids]
+          q['version']=2
+          q['source_channel']='https://www.youtube.com/@Radardosgamesbr/shorts'
+          q['updated_at']=now
+          q['items']=promoted+rest
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          print(json.dumps({
+            'updated_at':now,
+            'added':len(promoted),
+            'queue_total':len(q['items']),
+            'items':[{'youtube_id':x['youtube_id'],'title':x['title'],'status':x['status'],'media_url':x['media_url']} for x in promoted]
+          },ensure_ascii=False,indent=2))
+          PY
+
+      - name: Verify public MP4s
+        run: |
+          set -euo pipefail
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          for f in gta6-2026-10-07-short-1.mp4 gta6-2026-10-07-short-2.mp4 gta6-2026-10-07-short-3.mp4; do
+            curl -L --fail --retry 3 --range 0-1023 "$base/$f" -o /dev/null
+            echo "PUBLIC_OK $f"
+          done
+
+      - name: Commit refreshed TikTok Helper queue
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "Queue already contains approved GTA VI Shorts."
+            exit 0
+          fi
+          git commit -m "feat: add approved GTA VI Shorts to TikTok Helper"
+          git pull --rebase origin main
+          git push origin main
