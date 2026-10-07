@@ -53,3 +53,14 @@ Para thumbnails de novos fluxos STRICT, também reprovar a liberação se não h
 
 ## Ace Combat
 Novo Master deve ser criado do zero. Nenhum render Ace Combat anterior é fonte visual/editorial. Os Masters Gears/Minecraft são as únicas referências de padrão.
+
+## Sincronismo obrigatório entre narração e imagem
+- Regra bloqueante: sempre que a narração citar um jogo, personagem, veículo, mapa, evento ou recurso específico, a mídia exibida naquele trecho deve mostrar exatamente esse assunto ou uma imagem/vídeo oficial diretamente relacionado.
+- Em vídeos com vários jogos, cada jogo citado deve ter pelo menos um asset próprio e aprovado. Não é permitido ilustrar vários jogos diferentes repetindo apenas um deles.
+- Antes do render, cada cena deve ter o assunto falado identificado e seus `media_indices` precisam apontar para assets daquele mesmo assunto.
+- Se uma cena citar um jogo e não existir mídia oficial/aprovada desse jogo, o fluxo deve procurar outra fonte oficial antes de renderizar.
+- Se ainda assim não houver mídia correspondente, o Quality Gate deve BLOQUEAR a liberação em vez de preencher com gameplay de outro jogo.
+- Cards, logos da feira, imagens institucionais ou B-roll genérico podem complementar, mas nunca substituir a mídia do jogo enquanto ele estiver sendo citado.
+- Em matérias de lista/roundup, a checagem deve cobrir TODOS os jogos mencionados no roteiro, não apenas o tema principal do vídeo.
+- O QA final deve reprovar cenas em que a fala e a mídia não correspondam semanticamente, mesmo que resolução, áudio e duração estejam corretos.
+
