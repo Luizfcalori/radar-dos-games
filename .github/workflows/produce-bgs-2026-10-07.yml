@@ -128,32 +128,23 @@ jobs:
           media += [
               {
                   "type":"video",
-                  "url":"https://www.youtube.com/watch?v=ePi8tDdKuWw",
+                  "steam_app_id":2924540,
                   "role":"crazy_taxi_official_trailer",
                   "max_assets":1,
                   "min_duration":20,
-                  "source_proof":"https://www.youtube.com/@SEGA",
-                  "relevance_evidence":"official_sega_youtube",
+                  "source_proof":"https://store.steampowered.com/app/2924540/Crazy_Taxi_World_Tour/",
+                  "relevance_evidence":"steam_exact_app_direct_stream",
                   "source_label":"Crazy Taxi: World Tour"
               },
               {
                   "type":"video",
-                  "url":"https://www.youtube.com/watch?v=QeCItSg-wmI",
+                  "steam_app_id":4199910,
                   "role":"total_war_official_trailer",
                   "max_assets":1,
                   "min_duration":20,
-                  "source_proof":"https://www.youtube.com/@officialwarhammer",
-                  "relevance_evidence":"official_warhammer_youtube",
+                  "source_proof":"https://store.steampowered.com/app/4199910/Total_War_WARHAMMER_40000/",
+                  "relevance_evidence":"steam_exact_app_direct_stream",
                   "source_label":"Total War: Warhammer 40,000"
-              },
-              {
-                  "type":"video",
-                  "url":source_b2b,
-                  "role":"bgs_official_video",
-                  "max_assets":1,
-                  "min_duration":12,
-                  "source_proof":source_b2b,
-                  "source_label":"Brasil Game Show"
               },
               {
                   "type":"image",
@@ -295,12 +286,12 @@ jobs:
 
           scene_sets = [
               roles("alien_isolation_2","bgs_guest_images"),
-              roles("bgs_official_video","bgs_guest_images"),
+              roles("bgs_guest_images","crazy_taxi_official_trailer"),
               [x for r,vals in by_role.items() if r in {"persona_4_revival","stranger_than_heaven","sonic_pico_park","total_war_warhammer_40000"} for x in vals],
               [x for r,vals in by_role.items() if r in {"alien_isolation_2","crazy_taxi_world_tour","persona_4_revival","total_war_warhammer_40000","stranger_than_heaven","sonic_pico_park"} for x in vals],
               roles("crazy_taxi_official_trailer","crazy_taxi_world_tour"),
               roles("alien_isolation_2","bgs_guest_images"),
-              roles("bgs_official_video","total_war_official_trailer"),
+              roles("total_war_official_trailer","crazy_taxi_official_trailer"),
               [x for r,vals in by_role.items() if r in {"alien_isolation_2","crazy_taxi_world_tour","persona_4_revival","total_war_warhammer_40000","stranger_than_heaven","sonic_pico_park","crazy_taxi_official_trailer","total_war_official_trailer"} for x in vals],
           ]
           for i, scene in enumerate(spec["scenes"]):
