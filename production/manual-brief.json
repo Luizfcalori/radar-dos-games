@@ -1,53 +1,47 @@
 {
-  "valid_until": "2026-10-08T02:00:00Z",
-  "content_id": "manual-gta-vi-deep-dive-2026-10-07",
-  "title": "Grand Theft Auto VI",
-  "headline": "GTA VI: O QUE ESTÁ CONFIRMADO, O QUE MUDOU E O QUE AINDA É RUMOR",
-  "primary_source": "https://www.rockstargames.com/VI",
+  "valid_until": "2026-10-09T03:00:00Z",
+  "content_id": "manual-battlefield-6-game-pass-2026-10-07",
+  "title": "Battlefield 6",
+  "headline": "BATTLEFIELD 6 NO GAME PASS: DATA, BENEFÍCIOS E A TEMPORADA 5",
+  "primary_source": "https://news.xbox.com/pt-br/2026/10/07/xbox-game-pass-outubro-wave-1/",
   "media_source_urls": [
-    "https://www.rockstargames.com/VI/media/screenshots",
-    "https://www.rockstargames.com/VI/media/artwork-wallpapers",
-    "https://www.rockstargames.com/VI/vice-city",
-    "https://www.rockstargames.com/VI/media/videos",
-    "https://www.rockstargames.com/VI"
+    "https://www.ea.com/pt-br/games/battlefield/battlefield-6",
+    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-6-community-update-siege-of-vegas-incoming",
+    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-season-5-and-beyond",
+    "https://news.xbox.com/pt-br/2026/10/07/xbox-game-pass-outubro-wave-1/"
   ],
   "source_urls": [
-    "https://www.rockstargames.com/VI",
-    "https://www.rockstargames.com/newswire/article/4k138k8okkk483/grand-theft-auto-vi-an-extended-look-now-playing",
-    "https://www.rockstargames.com/newswire/article/5171972o3ak5oa/pre-order-grand-theft-auto-vi-on-june-25",
-    "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions",
-    "https://www.theverge.com/report/1005859/microsoft-xbox-gta-6-streaming-rights",
-    "https://www.purexbox.com/news/2026/10/xbox-denies-landing-exclusive-streaming-deal-for-gta-6-at-launch"
+    "https://news.xbox.com/pt-br/2026/10/07/xbox-game-pass-outubro-wave-1/",
+    "https://www.ea.com/pt-br/games/battlefield/battlefield-6",
+    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-season-5-and-beyond",
+    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-6-community-update-siege-of-vegas-incoming",
+    "https://www.ea.com/games/battlefield/battlefield-6/news"
   ],
   "short_hooks": [
-    "GTA VI NO XBOX CLOUD? O QUE FOI CONFIRMADO",
-    "GTA VI: DATA, PRÉ-CARGA E PLATAFORMAS",
-    "JASON, LUCIA E LEONIDA: O QUE JÁ SABEMOS"
+    "BATTLEFIELD 6 CHEGA AO GAME PASS!",
+    "GAME PASS ULTIMATE: O QUE VOCÊ GANHA NO BATTLEFIELD 6",
+    "BATTLEFIELD 6: TEMPORADA 5 VAI PARA VEGAS"
   ],
   "script_blocks": [
-    "GTA VI voltou ao centro das conversas hoje, mas existe uma diferença importante entre o que a Rockstar confirmou e o que está circulando como reportagem. Neste vídeo, o Radar dos Games vai separar fato, contexto e rumor para mostrar o quadro mais completo possível antes do lançamento.",
-    "A informação mais sólida é a data: Grand Theft Auto VI está marcado para 19 de novembro de 2026. A Rockstar lista PlayStation 5 e Xbox Series X|S como plataformas de lançamento. Até agora, a empresa não anunciou uma versão de PC para o dia de estreia.",
-    "A história acompanha Jason Duval e Lucia Caminos. Segundo a própria Rockstar, um golpe aparentemente simples dá errado e coloca os dois no meio de uma conspiração criminosa que se espalha pelo estado de Leonida. A relação entre os dois é apresentada como o eixo central da campanha.",
-    "Jason cresceu cercado por golpistas e criminosos, passou pelo Exército e depois acabou trabalhando para traficantes locais nas Keys. A descrição oficial deixa claro que ele quer uma vida mais simples, mas continua sendo puxado para situações cada vez maiores.",
-    "Lucia tem uma trajetória diferente. Ela foi criada para saber se defender, acabou na penitenciária de Leonida e sai de lá determinada a mudar as próprias chances. A Rockstar coloca Lucia como alguém que quer construir uma vida melhor, mas está disposta a agir de forma prática e agressiva para chegar lá.",
-    "O mapa vai muito além de Vice City. O material oficial destaca o estado de Leonida e apresenta lugares como Leonida Keys, Port Gellhorn, Ambrosia, Grassrivers e Mount Kalaga National Park. Isso reforça que a escala do jogo não está limitada à cidade principal.",
-    "Em agosto, a Rockstar publicou um olhar estendido de GTA VI e afirmou que aquele material foi capturado inteiramente com imagens de jogo no PlayStation 5. Esse conteúdo mostrou mais do mundo, da movimentação, dos personagens e do tom geral que a empresa está buscando para esta geração.",
-    "Também já existe um calendário claro para quem comprar antes do lançamento. A pré-carga digital começa em 12 de novembro, uma semana antes da estreia. A versão física anunciada pela Rockstar traz um código para download dentro da caixa, sem disco, justamente para permitir a pré-carga antecipada.",
-    "A Rockstar oferece edição Standard e Ultimate. As reservas e compras realizadas antes de 20 de novembro incluem o pacote Vintage Vice City, e a pré-venda digital também inclui um mês de GTA+. A Ultimate adiciona uma coleção maior de veículos, armas, roupas, lojas e outros conteúdos ligados à jornada de Jason e Lucia.",
-    "Outro detalhe que mostra o tamanho do projeto é a música. A página oficial de GTA VI anuncia um álbum com 34 faixas originais pensado para capturar a energia de Vice City e Leonida. Música sempre foi parte fundamental da identidade da série, e desta vez a Rockstar já está tratando isso como parte importante do lançamento.",
-    "Agora vem a notícia que gerou confusão hoje. Uma reportagem afirmou que a Microsoft teria garantido direitos de streaming de GTA VI no Xbox Cloud Gaming no lançamento. Pouco depois, um executivo do Xbox esclareceu que o jogo não teria exclusividade de streaming e que isso não significaria uma versão de PC.",
-    "Por isso, o ponto mais importante é não misturar as coisas: streaming pelo ecossistema Xbox, caso seja confirmado nos termos finais, não é a mesma coisa que um lançamento nativo para PC. A lista oficial da Rockstar continua mostrando PlayStation 5 e Xbox Series X|S como plataformas do lançamento de 19 de novembro.",
-    "Até a estreia, os pontos que mais merecem atenção são novos materiais oficiais, possíveis detalhes técnicos, a preparação para a pré-carga e qualquer esclarecimento definitivo sobre streaming. O que já está confirmado é suficiente para mostrar que GTA VI chega como um dos maiores lançamentos do ano e com uma campanha fortemente centrada em Jason, Lucia, Vice City e o estado de Leonida.",
-    "E agora queremos saber de vocês: o que mais pesa para GTA VI — a história de Jason e Lucia, o tamanho de Leonida, o retorno a Vice City ou a possibilidade de jogar por streaming? Comenta aí e acompanha o Radar dos Games, porque vamos separar cada novidade real de cada rumor até o lançamento."
+    "Battlefield 6 acaba de ganhar uma das notícias mais importantes para ampliar ainda mais sua base de jogadores: a Microsoft confirmou que o jogo entra no Xbox Game Pass no dia 13 de outubro. E não é só uma chegada ao catálogo. Ela acontece justamente quando Battlefield 6 completa um ano e se prepara para abrir o Ano 2 com a Temporada 5.",
+    "Segundo o anúncio oficial do Xbox, Battlefield 6 estará disponível em nuvem, Xbox Series X|S e PC. O acesso entra para assinantes do Game Pass Ultimate e do PC Game Pass. Para quem joga no console, o ponto central é o Ultimate; no PC, o jogo também chega pelo PC Game Pass.",
+    "A inclusão no catálogo está marcada para 13 de outubro. Isso coloca Battlefield 6 ao lado de outros títulos que chegam na mesma data, como Deep Dish Dungeon e Valor Mortis, mas aqui o peso é diferente: Battlefield já é uma franquia estabelecida e recebe uma nova porta de entrada exatamente no começo de uma nova fase do jogo.",
+    "Quem assina o Game Pass Ultimate também recebe os benefícios do EA Play incluídos na assinatura. No caso de Battlefield 6, a Microsoft destaca o EA Play Deployment Pack, o pacote da Temporada 5 e recompensas sazonais recorrentes. Assinantes ainda recebem dez por cento de desconto em compras digitais elegíveis da EA.",
+    "E o momento escolhido não é por acaso. A própria EA confirmou que outubro marca o primeiro aniversário de Battlefield 6. Durante esse primeiro ano, o jogo recebeu quatro temporadas de conteúdo, trouxe de volta mapas conhecidos da série e adicionou Guerra Naval, enquanto a equipe continuou ajustando progressão, combate, assistência de mira e balanceamento.",
+    "Agora começa a preparação para a Temporada 5, que a EA define como o início do Ano 2 de Battlefield 6 e REDSEC. A temporada vai levar a batalha para Las Vegas, com três novos mapas ao longo do período. Dois deles estarão disponíveis já no lançamento da temporada.",
+    "A proposta desses mapas é misturar combates de infantaria em espaços fechados com áreas maiores para armas combinadas. A EA fala em confrontos de curta distância, posições elevadas e batalhas com veículos terrestres e aéreos. É exatamente o tipo de contraste que sempre definiu os melhores momentos da série.",
+    "A Temporada 5 também vai trazer novas armas e ajustes importantes de jogabilidade. Veículos blindados receberão mudanças em regeneração de vida, dano direcional e pontos fracos, fazendo posicionamento e precisão contra blindados pesarem mais durante as partidas.",
+    "Outro destaque é o REDSEC. O modo recebe o Royale Rápido em versões solo e trio, pensado para encurtar as partidas e aumentar a frequência dos confrontos. A ideia foi testada no Battlefield Labs antes de chegar à temporada principal.",
+    "Mais adiante na Temporada 5, Battlefield 6 também deve receber navegador de servidores. Esse é um recurso muito pedido pela comunidade porque dá mais controle sobre onde e como entrar nas partidas, especialmente para quem prefere servidores, mapas ou regras específicas.",
+    "A EA também já confirmou que a Temporada 5 não encerra o plano de suporte. Em 2027, a equipe pretende continuar adicionando conteúdo e trabalhando em sistemas centrais, incluindo combate com veículos, mecânicas de tiro, explosivos, campo de tiro, animações de armas e balanceamento de fuzis de precisão.",
+    "Na prática, a chegada ao Game Pass pode funcionar como uma segunda grande janela de lançamento para Battlefield 6. Novos jogadores entram sem precisar comprar o jogo completo de imediato, enquanto veteranos recebem uma nova temporada e uma possível renovação na população dos servidores.",
+    "Para quem estava esperando uma boa hora para testar Battlefield 6, a data agora está marcada: 13 de outubro. Game Pass Ultimate no console e PC Game Pass no computador dão acesso ao jogo, e o Ultimate ainda carrega os benefícios do EA Play. A combinação de Game Pass, Temporada 5 e Ano 2 transforma outubro em um dos meses mais importantes do Battlefield desde o lançamento.",
+    "E agora queremos saber de vocês: a chegada ao Game Pass é suficiente para fazer você entrar ou voltar para Battlefield 6? E o que pesa mais para a Temporada 5: os mapas de Las Vegas, o Royale Rápido, as mudanças nos veículos ou o navegador de servidores? Comenta aí e acompanha o Radar dos Games para as próximas atualizações."
   ],
   "video_urls": [
-    "https://www.rockstargames.com/VI/downloads/videos/GTAVI_Trailer_2/GTAVI_Trailer_2.mp4",
-    "https://www.rockstargames.com/VI/downloads/videos/GTAVI_Trailer_1/GTAVI_Trailer_1.mp4",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4"
-  ],
-  "video_fallback_urls": [
-    "https://www.youtube.com/watch?v=VQRLujxTm3c",
-    "https://www.youtube.com/watch?v=QdBZY2fkU-0",
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
+    "https://www.youtube.com/watch?v=wFGEMfyAQtI",
+    "https://www.youtube.com/watch?v=nMBBXqu0OLE",
+    "https://www.youtube.com/watch?v=tmgWJKM7RKQ",
+    "https://www.youtube.com/watch?v=kF_c784jufE"
   ]
 }
