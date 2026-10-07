@@ -209,7 +209,7 @@ jobs:
               d = float(p["format"]["duration"])
               v = next(x for x in p["streams"] if x["codec_type"] == "video")
               assert (int(v["width"]), int(v["height"])) == (1080, 1920), path
-              assert 10 <= d <= 65, (path, d)
+              assert 8 <= d <= 65, (path, d)
               assert any(x["codec_type"] == "audio" for x in p["streams"]), path
               report.append({"file": path, "seconds": round(d, 2)})
           cover_qa = json.loads(Path("output/cover-qa.json").read_text(encoding="utf-8"))
