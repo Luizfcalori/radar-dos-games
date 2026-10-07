@@ -85,7 +85,7 @@ def render_vertical_piece(asset,duration,dest,piece_no,headline="",keyword="",fi
         f"[canvas][fg]overlay=x='(W-w)/2+5*sin(t*.65)':y='510+(1040-h)/2+4*cos(t*.47)'[tmp];"
     )
     filters=[
-        f"drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x=42:y=54:fontsize=32:fontcolor=white:"
+        f"[tmp]drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x=42:y=54:fontsize=32:fontcolor=white:"
         "borderw=2:bordercolor=black@0.7:expansion=none",
         f"drawbox=x=72:y=440:w=936:h=1120:color={accent}@0.22:t=3",
     ]
