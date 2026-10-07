@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Renderizador editorial Radar dos Games no padrão visual aprovado."""
 import json
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -43,10 +44,19 @@ def strict_scene_indices(raw_indices,assets):
     return chosen
 
 def scene_sequence(indices,cuts=4):
-    """Quatro cortes usando somente assets aprovados da própria cena."""
+    """Cortes usando somente assets aprovados da própria cena."""
     if not indices:return []
     if len(indices)>=cuts:return indices[:cuts]
     return [indices[i%len(indices)] for i in range(cuts)]
+
+def cut_count_for_duration(duration,target=4.2,min_cut=3.0,max_cut=6.0):
+    """Ritmo Premium V3: mudança visual em média a cada 3-6 segundos."""
+    duration=max(0.1,float(duration))
+    if duration<=max_cut:return 1
+    minimum=max(1,math.ceil(duration/max_cut))
+    maximum=max(minimum,math.floor(duration/min_cut))
+    desired=max(1,round(duration/target))
+    return max(minimum,min(8,maximum,desired))
 
 def media_duration(path):
     try:return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(path)],text=True).strip())
@@ -57,19 +67,26 @@ def video_seek_offset(path,piece_no,piece_duration):
     if max_seek<=1:return 0.0
     return round((piece_no*7.37)%max_seek,3)
 
-def render_piece(asset,duration,dest,card=None,piece_no=0):
+def render_piece(asset,duration,dest,card=None,piece_no=0,motion_profile='subtle_non_destructive'):
     path=Path(asset['path']);typ=asset.get('type','image')
     if not path.exists():raise RuntimeError(f'Asset ausente: {path}')
-    if typ=='image' or path.suffix.lower() in IMAGE_EXTENSIONS:
+    image_mode=typ=='image' or path.suffix.lower() in IMAGE_EXTENSIONS
+    if image_mode:
         input_args=['-loop','1','-i',str(path)]
     else:
         seek=video_seek_offset(path,piece_no,duration);input_args=['-stream_loop','-1']
         if seek>0:input_args+=['-ss',f'{seek:.3f}']
         input_args+=['-i',str(path)]
-    base=(f'[0:v]fps={FPS},split=2[bg0][fg0];'
-          f'[bg0]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=28:14,eq=brightness=-0.18:saturation=0.88[bg];'
-          f'[fg0]scale={W}:{H}:force_original_aspect_ratio=decrease,setsar=1[fg];'
-          f'[bg][fg]overlay=(W-w)/2:(H-h)/2,')
+    if image_mode and motion_profile=='subtle_non_destructive':
+        base=(f'[0:v]fps={FPS},split=2[bg0][fg0];'
+              f'[bg0]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=28:14,eq=brightness=-0.18:saturation=0.88[bg];'
+              f'[fg0]scale={W-80}:{H-50}:force_original_aspect_ratio=decrease,setsar=1[fg];'
+              f"[bg][fg]overlay=x='(W-w)/2+8*sin(t*0.65)':y='(H-h)/2+5*cos(t*0.43)',")
+    else:
+        base=(f'[0:v]fps={FPS},split=2[bg0][fg0];'
+              f'[bg0]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=28:14,eq=brightness=-0.18:saturation=0.88[bg];'
+              f'[fg0]scale={W}:{H}:force_original_aspect_ratio=decrease,setsar=1[fg];'
+              f'[bg][fg]overlay=(W-w)/2:(H-h)/2,')
     filters=[f"drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x={WATERMARK_X}:y={WATERMARK_Y}:fontsize={WATERMARK_SIZE}:fontcolor=white@0.72:borderw=1:bordercolor=black@0.55:expansion=none"]
     if card:
         show_end=max(1.2,min(duration-CARD_END_MARGIN,CARD_MAX_SECONDS));title=esc(card.get('title',''));subtitle=esc(card.get('subtitle',''));enable=f'between(t,{CARD_IN:.2f},{show_end:.3f})'
@@ -101,20 +118,23 @@ def render(manifest_path):
         if missing:raise RuntimeError(f'Cena {scene_no} aponta para assets ausentes: {missing}')
         bad=[x for x in raw_indices if not assets[x].get('approved',True)]
         if bad:raise RuntimeError(f'QUALITY_BLOCK: cena {scene_no} contém assets não aprovados: {bad}')
-        strict=strict_scene_indices(raw_indices,assets);indices=ordered_scene_indices(strict,assets);sequence=scene_sequence(indices,4)
+        strict=strict_scene_indices(raw_indices,assets);indices=ordered_scene_indices(strict,assets)
+        editing=scene.get('editing') or {};target=float(editing.get('cut_target_seconds',4.2))
+        cuts=int(editing.get('planned_cuts') or cut_count_for_duration(duration,target))
+        sequence=scene_sequence(indices,cuts)
         if not sequence:raise RuntimeError(f'Cena {scene_no} sem sequência de mídia aprovada')
         per_piece=duration/len(sequence);scene_piece_paths=[]
         for j,idx in enumerate(sequence):
             global_piece_no+=1;piece_duration=duration-per_piece*j if j==len(sequence)-1 else per_piece;p=tmp/f'scene_{scene_no:02d}_{j+1:02d}.mp4'
-            render_piece(assets[idx],piece_duration,p,card={'title':scene.get('title',''),'subtitle':scene.get('subtitle','')} if j==0 else None,piece_no=global_piece_no)
+            render_piece(assets[idx],piece_duration,p,card={'title':scene.get('title',''),'subtitle':scene.get('subtitle','')} if j==0 else None,piece_no=global_piece_no,motion_profile=editing.get('motion_profile','subtle_non_destructive'))
             pieces.append(p);scene_piece_paths.append(str(p))
-        qa_scenes.append({'scene':scene_no,'voice_start':timing.get('start'),'voice_end':timing.get('end'),'voice_duration':round(duration,3),'media_indices_explicit':raw_indices,'sequence':sequence,'distinct_assets_in_scene':len(set(sequence)),'all_assets_explicit':set(sequence).issubset(set(raw_indices)),'gameplay_first':bool(indices and is_video(assets[indices[0]])),'title':scene.get('title'),'pieces':scene_piece_paths})
+        qa_scenes.append({'scene':scene_no,'voice_start':timing.get('start'),'voice_end':timing.get('end'),'voice_duration':round(duration,3),'media_indices_explicit':raw_indices,'sequence':sequence,'cut_count':len(sequence),'average_cut_seconds':round(duration/len(sequence),3),'distinct_assets_in_scene':len(set(sequence)),'all_assets_explicit':set(sequence).issubset(set(raw_indices)),'gameplay_first':bool(indices and is_video(assets[indices[0]])),'motion_profile':editing.get('motion_profile','subtle_non_destructive'),'semantic_subject':scene.get('semantic_subject'),'title':scene.get('title'),'pieces':scene_piece_paths})
     concat_visuals=tmp/'visuals.txt';concat_visuals.write_text(''.join(f"file '{p.resolve()}'\n" for p in pieces),encoding='utf-8');visuals=tmp/'body_visuals.mp4'
     sh(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(concat_visuals),'-c','copy',str(visuals)])
     body=tmp/'body_av.mp4';sh(['ffmpeg','-y','-v','error','-i',str(visuals),'-i',m['voice'],'-map','0:v:0','-map','1:a:0','-shortest','-c:v','copy','-af',AUDIO_NORMALIZE,'-c:a','aac','-b:a','192k','-ar','48000','-ac','2',str(body)])
     intro_norm=tmp/'intro.mp4';normalize_intro(intro,intro_norm);final_list=tmp/'final.txt';final_list.write_text(f"file '{intro_norm.resolve()}'\nfile '{body.resolve()}'\n",encoding='utf-8')
     sh(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(final_list),'-c','copy','-movflags','+faststart',str(out)])
     probe=subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration,size','-show_entries','stream=codec_type,width,height,r_frame_rate','-of','json',str(out)],text=True)
-    qa={'master':str(out),'standard':'radar-dos-games-strict-explicit-media-v4','intro_source':str(intro),'intro_audio_preserved':True,'voice':timings.get('voice'),'semantic_timing_source':timings.get('source'),'framing_policy':'full_source_visible; blurred_background_fill; no_destructive_crop','media_policy':'ONLY explicit approved scene assets; never auto-fill from global pool; varied seek only inside approved videos','rejected_global_assets':rejected,'scenes':qa_scenes,'card_style':{'x':CARD_X,'y':CARD_Y,'w':CARD_W,'h':CARD_H,'title_x':TITLE_X,'title_y':TITLE_Y,'subtitle_x':SUBTITLE_X,'subtitle_y':SUBTITLE_Y,'shadow_attached_to_text':True},'probe':json.loads(probe)}
+    qa={'master':str(out),'standard':'radar-dos-games-premium-v3','premium_version':m.get('premium_version','PREMIUM_V3'),'intro_source':str(intro),'intro_audio_preserved':True,'voice':timings.get('voice'),'semantic_timing_source':timings.get('source'),'framing_policy':'full_source_visible; blurred_background_fill; no_destructive_crop','motion_policy':'subtle_non_destructive_on_images; source_fully_visible','media_policy':'ONLY explicit approved scene assets; never auto-fill from global pool; varied seek only inside approved videos','rejected_global_assets':rejected,'scenes':qa_scenes,'card_style':{'x':CARD_X,'y':CARD_Y,'w':CARD_W,'h':CARD_H,'title_x':TITLE_X,'title_y':TITLE_Y,'subtitle_x':SUBTITLE_X,'subtitle_y':SUBTITLE_Y,'shadow_attached_to_text':True},'probe':json.loads(probe)}
     Path('output/qa.json').write_text(json.dumps(qa,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps({'master':str(out),'scenes':len(qa_scenes),'intro':str(intro)},ensure_ascii=False))
 if __name__=='__main__':render(sys.argv[1])

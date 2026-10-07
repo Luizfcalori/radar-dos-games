@@ -73,3 +73,19 @@ Antes de liberar qualquer Master:
 - revisão visual de intro, primeiro card, trecho intermediário e encerramento.
 
 O renderizador `src/render.py` contém os mesmos valores como constantes para reduzir regressões visuais.
+
+
+## Premium V3 — padrão oficial a partir de 07/10/2026
+
+O Premium V3 evolui o padrão Fortnite V2 sem descartar sua base visual. Regras obrigatórias:
+
+- direção semântica antes do render: cada cena recebe somente assets aprovados e compatíveis com o assunto narrado;
+- cadência visual guiada pela fala, com alvo de ~4,2 s por corte e faixa operacional de 3–6 s quando a duração permitir;
+- vídeo/gameplay contextual tem prioridade, sem preencher trechos com gameplay de outro assunto;
+- imagens estáticas recebem movimento sutil e não destrutivo, preservando 100% do conteúdo principal;
+- evitar começar cenas consecutivas com o mesmo asset quando houver alternativa aprovada;
+- o card entra uma única vez por cena e não deve competir com o gameplay;
+- os 3 Shorts são escolhidos por força de hook e limites semânticos completos de fala;
+- o gate `src/premium_v3_qa.py` é bloqueante: sem aprovação semântica, cadência, movimento e Shorts, não há publicação.
+
+Implementação de referência: `src/director_v3.py` -> `src/semantic_gate.py` -> `src/render.py` -> `src/shorts.py` -> `src/premium_v3_qa.py`.
