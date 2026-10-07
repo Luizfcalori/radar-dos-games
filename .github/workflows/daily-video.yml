@@ -185,6 +185,9 @@ jobs:
           premium = json.loads(Path("output/premium-v4-qa.json").read_text(encoding="utf-8"))
           assert premium.get("status") == "APPROVED", premium
           assert premium.get("version") == "PREMIUM_V4_DIRECTOR_CUT", premium
+          assert premium.get("short_hooks_exact") == "APPROVED", premium
+          assert premium.get("short_semantic_selection") == "APPROVED", premium
+          assert len(premium.get("approved_short_hooks") or []) == 3, premium
           assert premium.get("real_headlines") == "APPROVED", premium
           assert premium.get("gameplay_moving_footage") == "APPROVED", premium
           assert int(premium.get("video_assets") or 0) >= 1, premium
@@ -236,6 +239,9 @@ jobs:
               "variable_pacing": premium.get("variable_pacing"),
               "sound_design": premium.get("sound_design"),
               "independent_shorts": premium.get("independent_shorts"),
+              "short_hooks_exact": premium.get("short_hooks_exact"),
+              "short_semantic_selection": premium.get("short_semantic_selection"),
+              "approved_short_hooks": premium.get("approved_short_hooks"),
               "real_headlines": premium.get("real_headlines"),
               "gameplay_moving_footage": premium.get("gameplay_moving_footage"),
               "video_assets": premium.get("video_assets"),
