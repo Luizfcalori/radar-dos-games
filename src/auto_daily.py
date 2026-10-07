@@ -359,27 +359,27 @@ def contextual_terms(candidate, parser):
 def make_script(candidate, parser):
     title = pt_headline(candidate, parser)
     src = source_name(candidate["url"])
+    game = game_name(candidate.get("title", "")) or "o jogo"
     corpus = " ".join([candidate.get("summary", "")] + parser.paragraphs[:20])
     kws = keywords(candidate.get("title", "") + " " + corpus, 8)
     plats = platforms(corpus + " " + candidate.get("title", ""))
     dates = dates_and_numbers(corpus + " " + candidate.get("title", ""))
-    focus = ", ".join(kws[:4]) if kws else "as principais novidades do anúncio"
-    extra = ", ".join(kws[4:7]) if len(kws) > 4 else "os detalhes apresentados pela fonte oficial"
-    plat_txt = ", ".join(plats) if plats else "as plataformas citadas na publicação oficial"
-    date_txt = ", ".join(dates[:3]) if dates else "a janela indicada no anúncio"
+    focus = ", ".join(kws[:4]) if kws else "as principais novidades anunciadas"
+    extra = ", ".join(kws[4:7]) if len(kws) > 4 else "novos detalhes do projeto"
+    plat_txt = ", ".join(plats) if plats else "as plataformas confirmadas pela empresa"
+    date_txt = ", ".join(dates[:3]) if dates else "a janela divulgada pela empresa"
 
     blocks = [
-        f"{title}. Essa é a pauta que entrou no topo do Radar dos Games agora. A informação vem de uma publicação oficial da {src}, e aqui a gente separa o que foi confirmado do que ainda é expectativa.",
-        f"O anúncio destaca principalmente {focus}. Esses pontos ajudam a entender por que a notícia merece atenção e qual é a mudança concreta para quem acompanha o jogo.",
-        f"Também aparecem referências a {extra}. O importante é não transformar detalhe parcial em promessa: o Radar considera primeiro o que está documentado na fonte oficial e só depois coloca o contexto.",
-        f"Sobre disponibilidade, o material menciona {plat_txt}. Plataforma, versão e janela de lançamento mudam bastante o peso de uma notícia, então esse é um dos pontos que a gente sempre confere.",
-        f"A janela temporal indicada é {date_txt}. Datas de games podem mudar, então esse é o estado atual do anúncio e qualquer atualização posterior da própria empresa passa a valer como referência principal.",
-        f"Para quem joga, a leitura mais útil é observar como {focus} chega à experiência real: conteúdo jogável, mudanças de sistema, novidades de campanha, multiplayer ou uma nova razão para voltar ao título.",
-        "Além do anúncio, o Radar prioriza gameplay, trailers e imagens oficiais quando eles existem. Assim, o vídeo tenta mostrar a novidade acontecendo na prática, sem depender só de cards ou textos na tela.",
-        f"Esse foi o Radar dos Games sobre {game_name(candidate.get('title',''))}. A fonte oficial está na descrição. Se surgir informação nova e realmente relevante, a pauta volta ao radar; se não, a prioridade passa para outro jogo para o canal não ficar repetitivo.",
+        f"{title}. A {src} confirmou a novidade, e {game} ganhou novos detalhes que já chamam a atenção de quem acompanha o jogo.",
+        f"Entre os principais destaques estão {focus}. O anúncio mexe diretamente com a experiência de {game} e ajuda a entender o que muda daqui para frente.",
+        f"{extra} também aparecem entre as informações divulgadas. Juntos, esses detalhes deixam o anúncio mais completo e dão uma ideia melhor do que os jogadores podem esperar.",
+        f"Em relação à disponibilidade, {game} aparece ligado a {plat_txt}. Esse ponto é importante porque versão, plataforma e lançamento podem mudar bastante a experiência de cada público.",
+        f"A referência de lançamento ou atualização é {date_txt}. Até aqui, essa é a janela oficial divulgada para a novidade.",
+        f"Na prática, o que mais chama atenção é como {focus} pode mudar a experiência de quem já joga ou de quem estava esperando um bom motivo para conhecer {game}.",
+        f"O material oficial também traz elementos de gameplay, trailers ou imagens de {game}, reforçando os principais pontos anunciados e deixando mais claro o tamanho da novidade.",
+        f"E agora fica a pergunta para vocês: qual parte dessa novidade de {game} mais chamou a atenção? Conta nos comentários e acompanhem o Radar dos Games para as próximas notícias.",
     ]
     return "\n\n".join(blocks)
-
 
 def make_scenes(candidate, media, script):
     paras = [x.strip() for x in script.split("\n\n") if x.strip()]
