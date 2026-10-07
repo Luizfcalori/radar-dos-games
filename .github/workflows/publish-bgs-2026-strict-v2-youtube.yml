@@ -43,24 +43,25 @@ jobs:
           test -s output/shorts/short_1.mp4
           test -s output/shorts/short_2.mp4
           test -s output/shorts/short_3.mp4
-          cp production/bgs-2026-strict-v2/covers/master.jpg output/thumbnail.jpg
-          cp production/bgs-2026-strict-v2/covers/short-1-alien.jpg output/shorts/short_1_cover.jpg
-          cp production/bgs-2026-strict-v2/covers/short-2-crazy-taxi.jpg output/shorts/short_2_cover.jpg
-          cp production/bgs-2026-strict-v2/covers/short-3-six-games.jpg output/shorts/short_3_cover.jpg
           python - <<'PY'
           from pathlib import Path
-          from PIL import Image, ImageFile
-          ImageFile.LOAD_TRUNCATED_IMAGES = True
-          for p in [
-              Path("output/thumbnail.jpg"),
-              Path("output/shorts/short_1_cover.jpg"),
-              Path("output/shorts/short_2_cover.jpg"),
-              Path("output/shorts/short_3_cover.jpg"),
-          ]:
-              with Image.open(p) as im:
-                  rgb = im.convert("RGB")
-                  rgb.save(p, format="JPEG", quality=95, optimize=True)
-              print("JPEG_NORMALIZED", p, p.stat().st_size)
+          from PIL import Image
+
+          jobs = [
+              ("production/bgs-2026-strict-v2/covers/master.webp", "output/thumbnail.jpg", (1280, 720)),
+              ("production/bgs-2026-strict-v2/covers/short-1-alien.webp", "output/shorts/short_1_cover.jpg", (1080, 1920)),
+              ("production/bgs-2026-strict-v2/covers/short-2-crazy-taxi.webp", "output/shorts/short_2_cover.jpg", (1080, 1920)),
+              ("production/bgs-2026-strict-v2/covers/short-3-six-games.webp", "output/shorts/short_3_cover.jpg", (1080, 1920)),
+          ]
+          for src, dst, size in jobs:
+              srcp, dstp = Path(src), Path(dst)
+              assert srcp.exists() and srcp.stat().st_size > 10000, (src, "asset ausente/pequeno")
+              with Image.open(srcp) as im:
+                  im.load()
+                  rgb = im.convert("RGB").resize(size, Image.Resampling.LANCZOS)
+                  dstp.parent.mkdir(parents=True, exist_ok=True)
+                  rgb.save(dstp, format="JPEG", quality=94, optimize=True, progressive=True)
+              print("APPROVED_COVER_REBUILT", src, "->", dst, size, dstp.stat().st_size)
           PY
 
       # Capas aprovadas: validar decodificação e dimensões, sem exigir tamanho arbitrário em KB.
@@ -307,7 +308,10 @@ jobs:
 
           if len(results) != 4:
               raise RuntimeError(f"Esperados 4 vídeos confirmados, obtidos {len(results)}")
-          print("ALL_4_PUBLIC_CONFIRMED")
+          failed_thumbs = [r for r in results if not r["thumbnailApplied"]]
+          if failed_thumbs:
+              raise RuntimeError("CAPAS_NAO_APLICADAS: " + json.dumps(failed_thumbs, ensure_ascii=False))
+          print("ALL_4_PUBLIC_AND_THUMBNAILS_CONFIRMED")
           PY
 
       - name: Guardar confirmação final
