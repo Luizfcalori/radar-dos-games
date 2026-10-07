@@ -47,6 +47,20 @@ jobs:
           cp production/bgs-2026-strict-v2/covers/short-1-alien.jpg output/shorts/short_1_cover.jpg
           cp production/bgs-2026-strict-v2/covers/short-2-crazy-taxi.jpg output/shorts/short_2_cover.jpg
           cp production/bgs-2026-strict-v2/covers/short-3-six-games.jpg output/shorts/short_3_cover.jpg
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          for p in [
+              Path("output/thumbnail.jpg"),
+              Path("output/shorts/short_1_cover.jpg"),
+              Path("output/shorts/short_2_cover.jpg"),
+              Path("output/shorts/short_3_cover.jpg"),
+          ]:
+              with Image.open(p) as im:
+                  rgb = im.convert("RGB")
+                  rgb.save(p, format="JPEG", quality=95, optimize=True)
+              print("JPEG_NORMALIZED", p, p.stat().st_size)
+          PY
 
       # Capas aprovadas: validar decodificação e dimensões, sem exigir tamanho arbitrário em KB.
       - name: Validar pacote e capas antes de publicar
