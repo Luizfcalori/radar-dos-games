@@ -1,0 +1,482 @@
+name: Radar dos Games - FORTNITEMARES 2026 STRICT SYNC
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/produce-fortnitemares-2026-strict-2026-10-07.yml"
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Limpeza total
+        run: |
+          rm -rf output
+          mkdir -p output
+
+      - name: Instalar ferramentas gratuitas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp gdown pillow
+
+      - name: Validar intro oficial
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: Preparar roteiro e plano semântico Fortnite
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          article = "https://www.fortnite.com/news/the-corruption-spreads-in-fortnitemares-2026"
+          article_pt = "https://www.fortnite.com/news/the-corruption-spreads-in-fortnitemares-2026?lang=pt-BR"
+          trailer = "https://www.youtube.com/watch?v=7qQFLL_DJ7Q"
+
+          weapon_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize%3Dfit%3Aclip%2Cwidth%3A1920/quality%3Dvalue%3A80/cmuo6uhl37cav07obrctm0nn6"
+          fnaf_stage_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize%3Dfit%3Aclip%2Cwidth%3A1920/quality%3Dvalue%3A80/cmumsn6g007wm06n4pnkts1et"
+          fnaf_group_img = "https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize%3Dfit%3Aclip%2Cwidth%3A1920/quality%3Dvalue%3A80/cmulmm5nc3jgl07o1ozjap94e"
+          horde_img = "https://cdn2.unrealengine.com/links-admin-EN_FNBR_42-30_Fortnitemares_HordeRush_DiscoverTile_480x270-2689b75f.jpg"
+
+          script = """Fortnitemares 2026 já tomou conta do Fortnite, e desta vez o evento mistura terror, chefes especiais, armas amaldiçoadas e colaborações gigantes. A Epic colocou Five Nights at Freddy's e Freddy Krueger no centro da atualização, e o Radar dos Games vai mostrar cada novidade com a imagem correspondente ao que está sendo falado.
+
+          Five Nights at Freddy's chegou em peso. Freddy Fazbear, Bonnie, Chica e Foxy aparecem em conteúdo oficial do evento e os trajes da colaboração já estão disponíveis na Loja. Não é apenas uma skin isolada: a parceria traz o grupo clássico dos animatrônicos para dentro do Fortnite.
+
+          Freddy Krueger também entrou no mapa. No novo Bairro Bruxesco, ele aparece como ameaça e, ao derrotá-lo, o jogador pode conseguir as Garras do Pesadelo de Freddy. O item permite se aproximar rapidamente e atacar os adversários com as lâminas, então este trecho mostra exatamente o equipamento citado.
+
+          E Five Nights at Freddy's vai além dos trajes. A Epic confirmou chefes animatrônicos que podem ser enfrentados durante a partida. Depois de derrotar um deles, é possível possuir o animatrônico e usar essa forma para espalhar o caos pelo mapa. Aqui, a tela fica dedicada aos próprios personagens de FNAF.
+
+          Entre as novidades de combate está a nova SMG Quebra-ossos. A arma consegue revelar inimigos e divide o destaque visual com as Garras do Pesadelo na arte oficial publicada pela Epic. O evento também recupera o clima clássico de Halloween com equipamentos temáticos ao longo da atualização.
+
+          A Horda Impetuosa também está de volta. O modo por tempo limitado coloca os jogadores contra ondas de inimigos e volta a fazer parte do pacote de Fortnitemares 2026. Neste bloco, o vídeo usa a própria arte oficial da Horda Impetuosa, sem trocar para outro modo enquanto a narração fala dela.
+
+          Então o resumo é simples: Fortnitemares 2026 está apostando em Freddy Krueger, Five Nights at Freddy's, novas armas e a volta da Horda Impetuosa para transformar outubro em um dos períodos mais carregados de conteúdo do Fortnite. Qual dessas novidades você vai testar primeiro?"""
+
+          script = "\n\n".join(p.strip() for p in script.split("\n\n")) + "\n"
+          Path("output/auto-script.txt").write_text(script, encoding="utf-8")
+
+          media = [
+              {
+                  "type":"video","url":trailer,"role":"fortnitemares_trailer","max_assets":1,"min_duration":20,
+                  "source_proof":article,"relevance_evidence":"official_fortnite_article_embedded_trailer",
+                  "source_label":"Fortnitemares 2026 official trailer"
+              },
+              {
+                  "type":"image","url":fnaf_group_img,"role":"fnaf_group","max_assets":1,"force_image":True,
+                  "source_proof":article,"relevance_evidence":"official_epic_article_exact_fnaf_group",
+                  "source_label":"Five Nights at Freddy's group"
+              },
+              {
+                  "type":"image","url":weapon_img,"role":"freddy_weapon","max_assets":1,"force_image":True,
+                  "source_proof":article,"relevance_evidence":"official_epic_article_exact_freddy_claws_bonerattler",
+                  "source_label":"Freddy's Nightmare claws and Bonerattler SMG"
+              },
+              {
+                  "type":"image","url":fnaf_stage_img,"role":"fnaf_stage","max_assets":1,"force_image":True,
+                  "source_proof":article,"relevance_evidence":"official_epic_article_exact_fnaf_animatronics",
+                  "source_label":"FNAF animatronics"
+              },
+              {
+                  "type":"image","url":horde_img,"role":"horde_rush","max_assets":1,
+                  "source_proof":"https://www.fortnite.com/@epic","relevance_evidence":"official_epic_horde_rush_discover_tile",
+                  "source_label":"Horde Rush"
+              },
+          ]
+
+          titles = [
+              "FORTNITEMARES 2026 COMEÇOU",
+              "FNAF TOMOU CONTA DO FORTNITE",
+              "GARRAS DO PESADELO DE FREDDY",
+              "ANIMATRÔNICOS VIRARAM CHEFES",
+              "NOVA SMG QUEBRA-OSSOS",
+              "HORDA IMPETUOSA ESTÁ DE VOLTA",
+              "O TERROR TOMOU O FORTNITE",
+          ]
+          subtitles = [
+              "FREDDY • FNAF • ARMAS • HORDA",
+              "FREDDY • BONNIE • CHICA • FOXY",
+              "FREDDY KRUEGER NO MAPA",
+              "DERROTE E POSSUA O ANIMATRÔNICO",
+              "REVELE INIMIGOS",
+              "MODO POR TEMPO LIMITADO",
+              "QUAL NOVIDADE VOCÊ VAI TESTAR?",
+          ]
+          subjects = [
+              "fortnitemares_overall",
+              "fnaf_outfits",
+              "freddy_claws",
+              "fnaf_bosses",
+              "bonerattler",
+              "horde_rush",
+              "summary",
+          ]
+          allowed = [
+              ["fortnitemares_trailer"],
+              ["fnaf_group"],
+              ["freddy_weapon"],
+              ["fnaf_stage"],
+              ["freddy_weapon"],
+              ["horde_rush"],
+              ["fnaf_group","freddy_weapon","fnaf_stage","horde_rush"],
+          ]
+          scenes=[]
+          for i in range(7):
+              scenes.append({
+                  "paragraph":i+1,
+                  "title":titles[i],
+                  "subtitle":subtitles[i],
+                  "semantic_subject":subjects[i],
+                  "allowed_role_prefixes":allowed[i],
+                  "media_indices":[]
+              })
+
+          plan = {
+              "topic":"FORTNITEMARES 2026 STRICT SYNC",
+              "source":article,
+              "sources":[article_pt,"https://www.fortnite.com/@epic"],
+              "minimum_assets":5,
+              "minimum_video_assets":1,
+              "minimum_unique_video_seconds":20,
+              "minimum_image_assets":4,
+              "media_policy":"STRICT narration_to_visual_match; exact Epic/Fortnite asset per subject; no unrelated gameplay; block if any subject visual is missing",
+              "media":media,
+              "scenes":scenes,
+          }
+          Path("output/auto-media-plan.json").write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding="utf-8")
+          Path("output/selected.json").write_text(json.dumps({
+              "title":"FORTNITEMARES 2026: FREDDY, FNAF E O TERROR TOMARAM O FORTNITE!",
+              "strict_sync":True,
+              "source":article
+          },ensure_ascii=False,indent=2),encoding="utf-8")
+
+          Path("output/short-picks.json").write_text(json.dumps({
+              "scene_indexes":[2,3,5],
+              "reason":"Freddy claws, FNAF bosses, Horde Rush — three exact visual topics"
+          },ensure_ascii=False,indent=2),encoding="utf-8")
+
+          description = """🎃 Fortnitemares 2026 chegou ao Fortnite com Freddy Krueger, Five Nights at Freddy's, a SMG Quebra-ossos e a volta da Horda Impetuosa.
+
+          Neste vídeo, cada trecho usa mídia oficial correspondente ao assunto narrado.
+
+          🔎 Fontes oficiais:
+          https://www.fortnite.com/news/the-corruption-spreads-in-fortnitemares-2026
+          https://www.fortnite.com/@epic
+
+          #RadarDosGames #Fortnite #Fortnitemares2026 #FNAF #FreddyKrueger"""
+          description = "\n".join(x.strip() for x in description.splitlines())
+
+          master = {
+              "title":"FORTNITEMARES 2026: FREDDY, FNAF E O TERROR TOMARAM O FORTNITE!",
+              "description":description,
+              "tags":["Radar dos Games","Fortnite","Fortnitemares 2026","Five Nights at Freddy's","FNAF","Freddy Krueger","Horde Rush","Bonerattler"],
+              "privacy":"unlisted",
+              "containsSyntheticMedia":False,
+              "thumbnail":"output/thumbnail.jpg"
+          }
+          shorts = [
+              {
+                  "title":"FREDDY KRUEGER ESTÁ NO FORTNITE! 😱 #Shorts",
+                  "description":"Freddy Krueger chegou ao Fortnitemares 2026 e suas Garras do Pesadelo viraram item de combate.\n\n#RadarDosGames #Fortnite #FreddyKrueger #Fortnitemares2026 #Shorts",
+                  "tags":["Radar dos Games","Fortnite","Freddy Krueger","Fortnitemares 2026","Shorts"],
+                  "privacy":"unlisted","containsSyntheticMedia":False,
+                  "thumbnail":"output/shorts/short_1_cover.jpg"
+              },
+              {
+                  "title":"FNAF VIROU CHEFE NO FORTNITE! 🤯 #Shorts",
+                  "description":"Os animatrônicos de Five Nights at Freddy's viraram chefes em Fortnitemares 2026.\n\n#RadarDosGames #Fortnite #FNAF #Fortnitemares2026 #Shorts",
+                  "tags":["Radar dos Games","Fortnite","FNAF","Five Nights at Freddy's","Shorts"],
+                  "privacy":"unlisted","containsSyntheticMedia":False,
+                  "thumbnail":"output/shorts/short_2_cover.jpg"
+              },
+              {
+                  "title":"HORDE RUSH VOLTOU NO FORTNITE! 🎃 #Shorts",
+                  "description":"A Horda Impetuosa está de volta no Fortnitemares 2026.\n\n#RadarDosGames #Fortnite #HordeRush #Fortnitemares2026 #Shorts",
+                  "tags":["Radar dos Games","Fortnite","Horde Rush","Fortnitemares 2026","Shorts"],
+                  "privacy":"unlisted","containsSyntheticMedia":False,
+                  "thumbnail":"output/shorts/short_3_cover.jpg"
+              }
+          ]
+          Path("output/master-youtube.json").write_text(json.dumps(master,ensure_ascii=False,indent=2),encoding="utf-8")
+          for i,meta in enumerate(shorts,1):
+              Path(f"output/short-{i}-youtube.json").write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
+          PY
+
+      - name: Criar narração Thalita Multilingual PT-BR
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3             --voice pt-BR-ThalitaMultilingualNeural             --segments-json output/voice-timings.json
+
+      - name: Baixar mídia oficial exata
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Transformar artes exatas em clipes de movimento
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+
+          p=Path("output/clips.json")
+          data=json.loads(p.read_text(encoding="utf-8"))
+          assets=data["assets"]
+          next_idx=max(a["index"] for a in assets)+1
+          new=[]
+          exact_roles={"fnaf_group","freddy_weapon","fnaf_stage","horde_rush"}
+          for a in list(assets):
+              if a.get("type")!="image" or a.get("role") not in exact_roles:
+                  continue
+              src=Path(a["path"])
+              dst=Path("output/media")/f"motion_{next_idx:02d}.mp4"
+              vf=("scale=1920:1080:force_original_aspect_ratio=decrease,"
+                  "pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,"
+                  "zoompan=z='min(zoom+0.0007,1.06)':d=360:s=1920x1080:fps=30,format=yuv420p")
+              subprocess.run([
+                  "ffmpeg","-y","-v","error","-loop","1","-i",str(src),"-t","12",
+                  "-vf",vf,"-an","-r","30","-c:v","libx264","-preset","veryfast","-crf","19",
+                  "-pix_fmt","yuv420p",str(dst)
+              ],check=True)
+              rec=dict(a)
+              rec.update({
+                  "index":next_idx,"path":str(dst),"type":"video",
+                  "role":a["role"]+"_motion","duration":12.0,"width":1920,"height":1080,
+                  "relevance_evidence":a.get("relevance_evidence","")+"_motion_from_exact_official_image"
+              })
+              new.append(rec)
+              next_idx+=1
+          assets.extend(new)
+          data["assets"]=assets
+          data["clips"]=[a["path"] for a in assets]
+          data["video_assets"]=sum(1 for a in assets if a["type"]=="video")
+          data["image_assets"]=sum(1 for a in assets if a["type"]=="image")
+          data["unique_video_seconds"]=round(sum(float(a.get("duration",0)) for a in assets if a["type"]=="video"),3)
+          p.write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding="utf-8")
+          print("EXACT_MOTION_ASSETS",[(a["index"],a["role"]) for a in new])
+          PY
+
+      - name: Gate de cobertura visual exata
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          clips=json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
+          assets=[a for a in clips["assets"] if a.get("approved")]
+          roles={a.get("role") for a in assets}
+          required=["fortnitemares_trailer","fnaf_group_motion","freddy_weapon_motion","fnaf_stage_motion","horde_rush_motion"]
+          missing=[r for r in required if r not in roles]
+          assert not missing, f"QUALITY_BLOCK: faltam assets exatos: {missing}"
+          Path("output/topic-coverage-qa.json").write_text(json.dumps({
+              "status":"APPROVED",
+              "required_roles":required,
+              "available_roles":sorted(roles),
+              "policy":"exact official subject asset required"
+          },ensure_ascii=False,indent=2),encoding="utf-8")
+          PY
+
+      - name: Montar manifesto com sincronismo fala-imagem
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          spec=json.loads(Path("output/auto-media-plan.json").read_text(encoding="utf-8"))
+          clips=json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
+          assets=[a for a in clips["assets"] if a.get("approved")]
+          by_role={}
+          for a in assets:
+              by_role.setdefault(a["role"],[]).append(int(a["index"]))
+
+          mapping={
+              "fortnitemares_overall":by_role["fortnitemares_trailer"],
+              "fnaf_outfits":by_role["fnaf_group_motion"],
+              "freddy_claws":by_role["freddy_weapon_motion"],
+              "fnaf_bosses":by_role["fnaf_stage_motion"],
+              "bonerattler":by_role["freddy_weapon_motion"],
+              "horde_rush":by_role["horde_rush_motion"],
+              "summary":(
+                  by_role["fnaf_group_motion"]+
+                  by_role["freddy_weapon_motion"]+
+                  by_role["fnaf_stage_motion"]+
+                  by_role["horde_rush_motion"]
+              ),
+          }
+
+          for scene in spec["scenes"]:
+              ids=mapping[scene["semantic_subject"]]
+              assert ids, f"QUALITY_BLOCK: {scene['semantic_subject']} sem mídia"
+              scene["media_indices"]=list(dict.fromkeys(ids))[:12]
+
+          Path("output/auto-media-plan.json").write_text(json.dumps(spec,ensure_ascii=False,indent=2),encoding="utf-8")
+          manifest={
+              "assets":assets,
+              "voice":"output/voice.mp3",
+              "voice_timings":"output/voice-timings.json",
+              "intro":"radar-dos-games-intro-oficial.mp4",
+              "scenes":spec["scenes"],
+              "output":"output/master.mp4"
+          }
+          Path("output/render.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
+          PY
+
+      - name: Gate semântico global
+        run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
+
+      - name: Renderizar Master sincronizado
+        run: python src/render.py output/render.json
+
+      - name: Gerar capa Master
+        run: |
+          TITLE=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path("output/master-youtube.json").read_text(encoding="utf-8"))["title"])
+          PY
+          )
+          COVER_IMG=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          clips=json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
+          print(next(a["path"] for a in clips["assets"] if a.get("approved") and a.get("role")=="fnaf_group"))
+          PY
+          )
+          python src/thumbnail.py output/master.mp4 "$TITLE" output/thumbnail.jpg "$COVER_IMG"
+
+      - name: Gerar 3 Shorts das cenas escolhidas
+        run: python src/shorts.py output/master.mp4
+
+      - name: Validar seleção semântica dos Shorts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path("output/shorts/manifest.json").read_text(encoding="utf-8"))
+          shorts=m["shorts"]
+          assert len(shorts)==3, shorts
+          expected=[
+              "GARRAS DO PESADELO DE FREDDY",
+              "ANIMATRÔNICOS VIRARAM CHEFES",
+              "HORDA IMPETUOSA ESTÁ DE VOLTA",
+          ]
+          got=[s.get("title") for s in shorts]
+          assert got==expected,(got,expected)
+          Path("output/short-selection-qa.json").write_text(json.dumps({
+              "status":"APPROVED","expected":expected,"shorts":shorts
+          },ensure_ascii=False,indent=2),encoding="utf-8")
+          PY
+
+      - name: Gerar capas dos 3 Shorts
+        run: |
+          python src/short_cover.py output/shorts/short_1.mp4 output/short-1-youtube.json output/shorts/short_1_cover.jpg 1 freddy_weapon
+          python src/short_cover.py output/shorts/short_2.mp4 output/short-2-youtube.json output/shorts/short_2_cover.jpg 1 fnaf_stage
+          python src/short_cover.py output/shorts/short_3.mp4 output/short-3-youtube.json output/shorts/short_3_cover.jpg 1 horde_rush
+
+      - name: Quality gate final STRICT
+        run: |
+          python - <<'PY'
+          import glob,json,subprocess
+          from pathlib import Path
+          from PIL import Image
+
+          def probe(path):
+              return json.loads(subprocess.check_output(
+                  ["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(path)],
+                  text=True
+              ))
+
+          master=Path("output/master.mp4")
+          assert master.exists() and master.stat().st_size>3_000_000
+          info=probe(master)
+          dur=float(info["format"]["duration"])
+          v=next(s for s in info["streams"] if s["codec_type"]=="video")
+          assert (int(v["width"]),int(v["height"]))==(1920,1080)
+          assert any(s["codec_type"]=="audio" for s in info["streams"])
+          assert 90<=dur<=420
+
+          qa=json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
+          assert qa.get("voice")=="pt-BR-ThalitaMultilingualNeural"
+          assert len(qa.get("scenes",[]))==7
+          assert all(s.get("all_assets_explicit") for s in qa["scenes"])
+
+          semantic=json.loads(Path("output/semantic-visual-qa.json").read_text(encoding="utf-8"))
+          assert semantic.get("status")=="APPROVED"
+          assert len(semantic.get("scenes",[]))==7
+          coverage=json.loads(Path("output/topic-coverage-qa.json").read_text(encoding="utf-8"))
+          assert coverage.get("status")=="APPROVED"
+
+          with Image.open("output/thumbnail.jpg") as im:
+              assert im.size==(1280,720)
+
+          shorts=sorted(glob.glob("output/shorts/short_*.mp4"))
+          assert len(shorts)==3
+          report=[]
+          for i,p in enumerate(shorts,1):
+              s=probe(p)
+              d=float(s["format"]["duration"])
+              sv=next(x for x in s["streams"] if x["codec_type"]=="video")
+              assert (int(sv["width"]),int(sv["height"]))==(1080,1920)
+              assert 8<=d<=65
+              assert any(x["codec_type"]=="audio" for x in s["streams"])
+              cover=Path(f"output/shorts/short_{i}_cover.jpg")
+              with Image.open(cover) as im:
+                  assert im.size==(1080,1920)
+              report.append({"file":p,"seconds":round(d,2)})
+
+          final={
+              "status":"APPROVED_STRICT",
+              "topic":"FORTNITEMARES 2026 STRICT SYNC",
+              "master_seconds":round(dur,2),
+              "master_resolution":"1920x1080",
+              "voice":"pt-BR-ThalitaMultilingualNeural",
+              "semantic_visual_sync":"APPROVED",
+              "exact_topic_media_coverage":"APPROVED",
+              "shorts_semantic_selection":"APPROVED",
+              "shorts":report
+          }
+          Path("output/final-qa.json").write_text(json.dumps(final,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(final,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Guardar pacote FORTNITEMARES 2026 STRICT
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-fortnitemares-2026-strict-sync
+          path: |
+            output/auto-script.txt
+            output/auto-media-plan.json
+            output/selected.json
+            output/clips.json
+            output/topic-coverage-qa.json
+            output/semantic-visual-qa.json
+            output/short-selection-qa.json
+            output/short-picks.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/render.json
+            output/master.mp4
+            output/thumbnail.jpg
+            output/thumbnail-policy.json
+            output/qa.json
+            output/final-qa.json
+            output/master-youtube.json
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+            output/shorts/*.mp4
+            output/shorts/*_cover.jpg
+            output/shorts/*_cover-policy.json
+            output/shorts/manifest.json
+          retention-days: 7
