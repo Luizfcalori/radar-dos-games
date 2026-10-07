@@ -1,0 +1,371 @@
+name: Publish Fortnitemares Master V2 + Shorts at 12h
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-fortnitemares-2026-master-v2-shorts-12h.yml"
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install pillow google-api-python-client==2.184.0 google-auth==2.41.1
+
+      - name: Baixar Master V2 aprovado
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-fortnitemares-master-human-v2
+          path: v2
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37625557821
+
+      - name: Baixar Shorts STRICT aprovados
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-fortnitemares-2026-strict-sync
+          path: strict
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37619936984
+
+      - name: Baixar capas premium aprovadas
+        uses: actions/download-artifact@v4
+        with:
+          name: premium-covers-test-37624320741
+          path: covers
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37624320741
+
+      - name: Montar pacote de publicação
+        run: |
+          rm -rf publish
+          mkdir -p publish/shorts
+          cp v2/master.mp4 publish/master.mp4
+          cp strict/shorts/short_1.mp4 publish/shorts/short_1.mp4
+          cp strict/shorts/short_2.mp4 publish/shorts/short_2.mp4
+          cp strict/shorts/short_3.mp4 publish/shorts/short_3.mp4
+          cp v2/master-youtube.json publish/master-youtube.json
+          cp strict/short-1-youtube.json publish/short-1-youtube.json
+          cp strict/short-2-youtube.json publish/short-2-youtube.json
+          cp strict/short-3-youtube.json publish/short-3-youtube.json
+          cp covers/thumbnail.jpg publish/thumbnail.jpg
+          cp covers/shorts/short_1_cover.jpg publish/shorts/short_1_cover.jpg
+          cp covers/shorts/short_2_cover.jpg publish/shorts/short_2_cover.jpg
+          cp covers/shorts/short_3_cover.jpg publish/shorts/short_3_cover.jpg
+          cp v2/final-qa.json publish/master-v2-final-qa.json
+          cp strict/final-qa.json publish/shorts-final-qa.json
+          cp covers/cover-qa.json publish/cover-qa.json
+
+      - name: Validar Master V2 Shorts e capas
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          from PIL import Image
+
+          def probe(path):
+              return json.loads(subprocess.check_output(
+                  ["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(path)],
+                  text=True
+              ))
+
+          master_qa=json.loads(Path("publish/master-v2-final-qa.json").read_text(encoding="utf-8"))
+          assert master_qa.get("status")=="APPROVED_MASTER_HUMAN_V2",master_qa
+          assert master_qa.get("narration_style")=="AUDIENCE_FIRST_NATURAL",master_qa
+          assert master_qa.get("meta_narration")=="BLOCKED_BY_QA",master_qa
+          assert master_qa.get("semantic_visual_sync")=="APPROVED",master_qa
+          assert master_qa.get("exact_topic_media_coverage")=="APPROVED",master_qa
+
+          shorts_qa=json.loads(Path("publish/shorts-final-qa.json").read_text(encoding="utf-8"))
+          assert shorts_qa.get("status")=="APPROVED_STRICT",shorts_qa
+          assert shorts_qa.get("semantic_visual_sync")=="APPROVED",shorts_qa
+          assert shorts_qa.get("exact_topic_media_coverage")=="APPROVED",shorts_qa
+          assert shorts_qa.get("shorts_semantic_selection")=="APPROVED",shorts_qa
+
+          cover_qa=json.loads(Path("publish/cover-qa.json").read_text(encoding="utf-8"))
+          assert cover_qa.get("status")=="APPROVED_PREMIUM",cover_qa
+          assert cover_qa.get("premium_cover_generation")=="APPROVED",cover_qa
+          assert cover_qa.get("premium_cover_qa")=="APPROVED",cover_qa
+          assert cover_qa.get("fallback_used") is False,cover_qa
+
+          vids=[
+              ("publish/master.mp4",(1920,1080)),
+              ("publish/shorts/short_1.mp4",(1080,1920)),
+              ("publish/shorts/short_2.mp4",(1080,1920)),
+              ("publish/shorts/short_3.mp4",(1080,1920)),
+          ]
+          for p,expected in vids:
+              f=Path(p); assert f.exists() and f.stat().st_size>500_000,(p,"missing/small")
+              info=probe(f)
+              v=next(x for x in info["streams"] if x["codec_type"]=="video")
+              assert (int(v["width"]),int(v["height"]))==expected,(p,v["width"],v["height"])
+              assert any(x["codec_type"]=="audio" for x in info["streams"]),(p,"no audio")
+              print("VIDEO_OK",p,expected,round(float(info["format"]["duration"]),2))
+
+          covers=[
+              ("publish/thumbnail.jpg",(1280,720)),
+              ("publish/shorts/short_1_cover.jpg",(1080,1920)),
+              ("publish/shorts/short_2_cover.jpg",(1080,1920)),
+              ("publish/shorts/short_3_cover.jpg",(1080,1920)),
+          ]
+          for p,expected in covers:
+              f=Path(p); assert f.exists() and f.stat().st_size>10_000,(p,"missing/small")
+              with Image.open(f) as im:
+                  im.load()
+                  assert im.size==expected,(p,im.size,expected)
+              print("COVER_OK",p,expected,f.stat().st_size)
+
+          print("PACKAGE_APPROVED_FOR_YOUTUBE")
+          PY
+
+      - name: Preparar agendamento 12h de hoje
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          publish_at="2026-10-07T15:00:00Z"
+          entries=[
+              ("master-youtube.json","publish/thumbnail.jpg"),
+              ("short-1-youtube.json","publish/shorts/short_1_cover.jpg"),
+              ("short-2-youtube.json","publish/shorts/short_2_cover.jpg"),
+              ("short-3-youtube.json","publish/shorts/short_3_cover.jpg"),
+          ]
+          for fn,thumb in entries:
+              p=Path("publish")/fn
+              meta=json.loads(p.read_text(encoding="utf-8"))
+              meta["privacy"]="private"
+              meta["publishAt"]=publish_at
+              meta["thumbnail"]=thumb
+              meta["use_existing_thumbnail"]=True
+              p.write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
+              print("SCHEDULE_READY",fn,meta["title"],publish_at)
+          PY
+
+      - name: Enviar Master V2 e 3 Shorts para o YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, time
+          from pathlib import Path
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+          from googleapiclient.errors import HttpError
+
+          CHANNEL_ID="UCSZJZE-E10SVdx42wrDeWhw"
+          CHANNEL_TITLE="Radar dos Games"
+          EXPECTED_PUBLISH="2026-10-07T15:00:00Z"
+          scopes=[
+              "https://www.googleapis.com/auth/youtube.upload",
+              "https://www.googleapis.com/auth/youtube.readonly",
+          ]
+
+          for key in ("YT_CLIENT_ID","YT_CLIENT_SECRET","YT_REFRESH_TOKEN"):
+              if not os.environ.get(key):
+                  raise RuntimeError(f"Secret ausente: {key}")
+
+          creds=Credentials(
+              None,
+              refresh_token=os.environ["YT_REFRESH_TOKEN"],
+              token_uri="https://oauth2.googleapis.com/token",
+              client_id=os.environ["YT_CLIENT_ID"],
+              client_secret=os.environ["YT_CLIENT_SECRET"],
+              scopes=scopes,
+          )
+          yt=build("youtube","v3",credentials=creds)
+
+          channels=yt.channels().list(part="id,snippet,contentDetails",mine=True).execute().get("items",[])
+          if len(channels)!=1:
+              raise RuntimeError(f"OAuth retornou {len(channels)} canais; esperado 1")
+          ch=channels[0]
+          cid=ch["id"]; title=ch["snippet"]["title"]
+          if cid!=CHANNEL_ID or title.strip().casefold()!=CHANNEL_TITLE.casefold():
+              raise RuntimeError(f"CANAL INCORRETO: {title} ({cid})")
+          print("CHANNEL_OK",title,cid)
+
+          uploads=ch["contentDetails"]["relatedPlaylists"]["uploads"]
+
+          def recent_by_title():
+              found={}
+              token=None
+              for _ in range(8):
+                  resp=yt.playlistItems().list(
+                      part="snippet,contentDetails",playlistId=uploads,maxResults=50,pageToken=token
+                  ).execute()
+                  for it in resp.get("items",[]):
+                      t=it.get("snippet",{}).get("title","").strip()
+                      vid=it.get("contentDetails",{}).get("videoId")
+                      if t and vid:
+                          found[t.casefold()]=vid
+                  token=resp.get("nextPageToken")
+                  if not token: break
+              return found
+
+          items=[
+              ("master","publish/master.mp4","publish/master-youtube.json"),
+              ("short1","publish/shorts/short_1.mp4","publish/short-1-youtube.json"),
+              ("short2","publish/shorts/short_2.mp4","publish/short-2-youtube.json"),
+              ("short3","publish/shorts/short_3.mp4","publish/short-3-youtube.json"),
+          ]
+          existing=recent_by_title()
+          results=[]
+
+          def upload_video(path,meta):
+              body={
+                  "snippet":{
+                      "title":meta["title"],
+                      "description":meta["description"],
+                      "tags":meta.get("tags",[]),
+                      "categoryId":"20",
+                  },
+                  "status":{
+                      "privacyStatus":"private",
+                      "publishAt":meta["publishAt"],
+                      "selfDeclaredMadeForKids":False,
+                      "containsSyntheticMedia":bool(meta.get("containsSyntheticMedia",False)),
+                  },
+              }
+              req=yt.videos().insert(
+                  part="snippet,status",
+                  body=body,
+                  media_body=MediaFileUpload(path,chunksize=8*1024*1024,resumable=True),
+              )
+              resp=None; errors=0
+              while resp is None:
+                  try:
+                      status,resp=req.next_chunk()
+                      errors=0
+                      if status:
+                          print("UPLOAD_PROGRESS",path,round(status.progress()*100,1))
+                  except (TimeoutError,OSError):
+                      errors+=1
+                      if errors>5: raise
+                      time.sleep(min(5*(2**(errors-1)),60))
+              return resp["id"]
+
+          for key,path,meta_path in items:
+              meta=json.loads(Path(meta_path).read_text(encoding="utf-8"))
+              title=meta["title"].strip()
+              vid=existing.get(title.casefold())
+              reused=False
+
+              if vid:
+                  reused=True
+                  print("REUSE_EXISTING_BY_EXACT_TITLE",key,vid,title)
+                  current=yt.videos().list(part="snippet,status",id=vid).execute().get("items",[])
+                  if not current or current[0]["snippet"].get("channelId")!=CHANNEL_ID:
+                      raise RuntimeError(f"Vídeo existente não pertence ao canal correto: {key}")
+                  st=current[0]["status"]
+                  if st.get("privacyStatus")=="public":
+                      raise RuntimeError(f"EXACT_TITLE_ALREADY_PUBLIC: {key} {vid}")
+                  # Reagenda item existente ainda não público.
+                  yt.videos().update(
+                      part="status",
+                      body={
+                          "id":vid,
+                          "status":{
+                              "privacyStatus":"private",
+                              "publishAt":EXPECTED_PUBLISH,
+                              "selfDeclaredMadeForKids":False,
+                              "containsSyntheticMedia":bool(meta.get("containsSyntheticMedia",False)),
+                          },
+                      },
+                  ).execute()
+              else:
+                  vid=upload_video(path,meta)
+                  existing[title.casefold()]=vid
+                  print("UPLOADED",key,vid,title)
+
+              thumb=Path(meta["thumbnail"])
+              thumb_ok=False; thumb_error=None
+              try:
+                  yt.thumbnails().set(
+                      videoId=vid,
+                      media_body=MediaFileUpload(str(thumb),mimetype="image/jpeg",resumable=False),
+                  ).execute()
+                  thumb_ok=True
+                  print("THUMBNAIL_APPLIED",key,thumb)
+              except HttpError as exc:
+                  thumb_error=str(exc)
+                  print("THUMBNAIL_WARNING",key,thumb_error)
+
+              verified=yt.videos().list(part="snippet,status",id=vid).execute().get("items",[])
+              if not verified:
+                  raise RuntimeError(f"Vídeo não encontrado após upload: {key} {vid}")
+              it=verified[0]; sn=it["snippet"]; st=it["status"]
+              if sn.get("channelId")!=CHANNEL_ID:
+                  raise RuntimeError(f"Canal divergente em {key}: {sn.get('channelId')}")
+              if sn.get("title","").strip()!=title:
+                  raise RuntimeError(f"Título divergente em {key}: {sn.get('title')}")
+              if st.get("privacyStatus")!="private":
+                  raise RuntimeError(f"{key} não ficou privado/agendado: {st}")
+              if st.get("publishAt")!=EXPECTED_PUBLISH:
+                  raise RuntimeError(f"{key} horário divergente: {st.get('publishAt')}")
+
+              result={
+                  "key":key,
+                  "id":vid,
+                  "url":f"https://www.youtube.com/watch?v={vid}",
+                  "title":title,
+                  "privacyStatus":st.get("privacyStatus"),
+                  "publishAt":st.get("publishAt"),
+                  "thumbnailApplied":thumb_ok,
+                  "thumbnailError":thumb_error,
+                  "reusedExisting":reused,
+              }
+              results.append(result)
+              print("CONFIRMED",json.dumps(result,ensure_ascii=False))
+
+          Path("publish/youtube-schedule-confirmed.json").write_text(
+              json.dumps(results,ensure_ascii=False,indent=2),encoding="utf-8"
+          )
+          if len(results)!=4:
+              raise RuntimeError(f"Esperados 4 vídeos confirmados, obtidos {len(results)}")
+          failed=[r for r in results if not r["thumbnailApplied"]]
+          if failed:
+              raise RuntimeError("CAPAS_NAO_APLICADAS: "+json.dumps(failed,ensure_ascii=False))
+          print("ALL_4_SCHEDULED_12H_AND_THUMBNAILS_CONFIRMED")
+          PY
+
+      - name: Guardar confirmação do agendamento
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fortnitemares-youtube-12h-results-${{ github.run_id }}
+          path: |
+            publish/youtube-schedule-confirmed.json
+            publish/master-youtube.json
+            publish/short-1-youtube.json
+            publish/short-2-youtube.json
+            publish/short-3-youtube.json
+            publish/master-v2-final-qa.json
+            publish/shorts-final-qa.json
+            publish/cover-qa.json
+            publish/thumbnail.jpg
+            publish/shorts/short_1_cover.jpg
+            publish/shorts/short_2_cover.jpg
+            publish/shorts/short_3_cover.jpg
+          if-no-files-found: warn
+          retention-days: 7
