@@ -30,6 +30,12 @@ HOOK_TOKENS = (
     "surpresa", "mud", "cheg", "volt", "exclusiv", "grátis", "gratis",
 )
 
+SHORT_STOP = {
+    "radar","games","game","battlefield","shorts","short","dos","das","de","do","da",
+    "em","no","na","nos","nas","e","o","a","os","as","um","uma","para","por","com",
+    "que","voce","você","vai","vem","agora","mais","sobre"
+}
+
 def load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -84,7 +90,7 @@ def headline_from_text(text, scene_no):
     first=re.split(r"[.!?]",raw,maxsplit=1)[0]
     words=[w for w in re.findall(r"[A-Za-zÀ-ÿ0-9'’-]+",first) if len(w)>2]
     title=" ".join(words[:7]).upper()[:48].rstrip(" -:|")
-    return title or f"CENA {scene_no}: CONTEXTO OFICIAL"
+    return title or "CONTEXTO OFICIAL"
 
 
 def role_allowed(scene, asset):
@@ -170,6 +176,64 @@ def pick_shorts(scenes):
         if idx not in picks:picks.append(idx)
         if len(picks)==3:break
     return (picks+[0,0,0])[:3]
+
+def hook_terms(text):
+    return {
+        token for token in norm(text).split()
+        if len(token) >= 3 and token not in SHORT_STOP and not token.isdigit()
+    }
+
+def hook_scene_score(hook, scene):
+    hook_set=hook_terms(hook)
+    scene_text=" ".join([
+        str(scene.get("title") or ""),
+        str(scene.get("subtitle") or ""),
+        " ".join(str(b.get("text") or "") for b in (scene.get("beats") or [])),
+    ])
+    scene_set=hook_terms(scene_text)
+    overlap=sorted(hook_set & scene_set)
+    hook_stems={x[:5] for x in hook_set if len(x)>=5}
+    scene_stems={x[:5] for x in scene_set if len(x)>=5}
+    stem_overlap=sorted(hook_stems & scene_stems)
+    score=(len(overlap)*10)+(len(stem_overlap)*4)
+    for number in re.findall(r"\\b\\d+\\b", str(hook)):
+        if re.search(rf"\\b{re.escape(number)}\\b", scene_text):
+            score+=3
+    return score, overlap, stem_overlap
+
+def pick_shorts_for_hooks(scenes, hooks):
+    if len(hooks) != 3:
+        raise RuntimeError(f"QUALITY_BLOCK: Diretor V4 exige exatamente 3 hooks aprovados; recebeu {len(hooks)}")
+    def scene_duration(scene):
+        return sum(float(b.get("duration") or 0) for b in (scene.get("beats") or []))
+    eligible_indexes=[i for i,s in enumerate(scenes) if 8.0 <= scene_duration(s) <= 60.0]
+    pool=eligible_indexes if len(eligible_indexes)>=3 else list(range(len(scenes)))
+    picks=[]
+    matches=[]
+    for hook in hooks:
+        ranked=[]
+        for idx in pool:
+            if idx in picks:
+                continue
+            score,overlap,stems=hook_scene_score(hook,scenes[idx])
+            ranked.append((score,short_score(scenes[idx],idx,len(scenes)),-idx,idx,overlap,stems))
+        if not ranked:
+            raise RuntimeError(f"QUALITY_BLOCK: sem cena disponível para o hook aprovado: {hook}")
+        ranked.sort(reverse=True)
+        score,editorial_score,_,idx,overlap,stems=ranked[0]
+        if score <= 0:
+            raise RuntimeError(f"QUALITY_BLOCK: hook sem correspondência semântica com a narração: {hook}")
+        picks.append(idx)
+        matches.append({
+            "hook":hook,
+            "scene_index":idx,
+            "scene_title":scenes[idx].get("title"),
+            "semantic_score":score,
+            "overlap_terms":overlap,
+            "overlap_stems":stems,
+            "editorial_score":editorial_score,
+        })
+    return picks,matches
 
 def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"):
     plan=load(plan_path); clips=load(clips_path); timings=load("output/voice-timings.json")
@@ -293,14 +357,19 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             "avg_beat_seconds":round(sum(float(b.get("duration") or 0) for b in beats)/max(1,len(beats)),3),
         })
 
-    picks=pick_shorts(scenes)
+    hooks=[str(x or "").strip() for x in (plan.get("short_hooks") or []) if str(x or "").strip()]
+    picks,short_matches=pick_shorts_for_hooks(scenes,hooks)
 
     plan["premium_version"]="PREMIUM_V4_DIRECTOR_CUT"
     plan["director_policy"]="phrase_level_semantic_direction; variable_pacing; selective_keyword_overlays; independent_shorts; pro_score_gate"
     Path(plan_path).write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding="utf-8")
 
     Path("output/short-picks.json").write_text(json.dumps({
-        "version":"PREMIUM_V4_DIRECTOR_CUT","scene_indexes":picks
+        "version":"PREMIUM_V4_DIRECTOR_CUT",
+        "scene_indexes":picks,
+        "expected_hooks":hooks,
+        "semantic_matches":short_matches,
+        "selection_policy":"exact_approved_hook_to_semantically_matching_scene; unique_scenes; block_zero_overlap",
     },ensure_ascii=False,indent=2),encoding="utf-8")
 
     manifest={
@@ -322,6 +391,8 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         "intro_policy":"full_intro_first",
         "cold_open_seconds":0.0,
         "short_scene_indexes":picks,
+        "short_hooks":hooks,
+        "short_semantic_matches":short_matches,
         "asset_usage":{str(k):v for k,v in sorted(usage.items())},
         "moving_footage_seconds":round(moving,3),
         "body_seconds":round(total,3),
