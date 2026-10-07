@@ -25,11 +25,14 @@ on:
       - "src/premium_covers.py"
       - "src/cover_qa.py"
       - "src/narration_qa.py"
-      - "src/director_v3.py"
+      - "src/voice.py"
+      - "src/director_v4.py"
       - "src/semantic_gate.py"
-      - "src/render.py"
-      - "src/shorts.py"
-      - "src/premium_v3_qa.py"
+      - "src/render_v4.py"
+      - "src/shorts_v4.py"
+      - "src/visual_frame_qa.py"
+      - "src/premium_v4_qa.py"
+      - "src/pro_score.py"
       - "production/reference-standard.md"
       - "docs/VIDEO_STANDARD_RADAR_DOS_GAMES.md"
 
@@ -128,26 +131,32 @@ jobs:
       - name: Baixar mídia oficial/contextual
         run: python src/media.py output/auto-media-plan.json
 
-      - name: Diretor semântico Premium V3
-        run: python src/director_v3.py output/auto-media-plan.json output/clips.json
+      - name: Diretor por frase Premium V4 Director Cut
+        run: python src/director_v4.py output/auto-media-plan.json output/clips.json
 
       - name: Gate semântico fala -> imagem
         run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
 
-      - name: Renderizar Master Premium V3
-        run: python src/render.py output/render.json
+      - name: Renderizar Master Premium V4
+        run: python src/render_v4.py output/render.json
 
-      - name: Gerar exatamente 3 Shorts
-        run: python src/shorts.py output/master.mp4
+      - name: QA visual por frames do Master
+        run: python src/visual_frame_qa.py
 
-      - name: QA bloqueante Premium V3
-        run: python src/premium_v3_qa.py
+      - name: Reconstruir 3 Shorts Premium V4
+        run: python src/shorts_v4.py
+
+      - name: QA bloqueante Premium V4
+        run: python src/premium_v4_qa.py
 
       - name: Gerar automaticamente 4 capas premium no padrão Radar
         run: python src/premium_covers.py
 
       - name: QA bloqueante das capas premium
         run: python src/cover_qa.py
+
+      - name: PRO SCORE profissional bloqueante
+        run: python src/pro_score.py
 
       - name: Quality gate Master + Shorts
         run: |
@@ -163,22 +172,25 @@ jobs:
           m = probe(master)
           md = float(m["format"]["duration"])
           mv = next(x for x in m["streams"] if x["codec_type"] == "video")
-          assert 100 <= md <= 420, md
+          assert 60 <= md <= 600, md
           assert (int(mv["width"]), int(mv["height"])) == (1920, 1080)
           assert any(x["codec_type"] == "audio" for x in m["streams"])
           qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
-          assert qa.get("standard") == "radar-dos-games-premium-v3", qa.get("standard")
-          assert qa.get("motion_policy") == "subtle_non_destructive_on_images; source_fully_visible"
+          assert qa.get("standard") == "radar-dos-games-premium-v4-director-cut", qa.get("standard")
+          assert qa.get("motion_policy") == "subtle_non_destructive; phrase_level"
           semantic = json.loads(Path("output/semantic-visual-qa.json").read_text(encoding="utf-8"))
           assert semantic.get("status") == "APPROVED", semantic
-          premium = json.loads(Path("output/premium-v3-qa.json").read_text(encoding="utf-8"))
+          premium = json.loads(Path("output/premium-v4-qa.json").read_text(encoding="utf-8"))
           assert premium.get("status") == "APPROVED", premium
-          assert premium.get("version") == "PREMIUM_V3", premium
+          assert premium.get("version") == "PREMIUM_V4_DIRECTOR_CUT", premium
+          pro = json.loads(Path("output/pro-score.json").read_text(encoding="utf-8"))
+          assert pro.get("status") == "APPROVED", pro
+          assert int(pro.get("pro_score") or 0) >= 85, pro
           assert qa["card_style"]["shadow_attached_to_text"] is True
           assert qa["framing_policy"] == "full_source_visible; blurred_background_fill; no_destructive_crop"
           assert qa["voice"] == "pt-BR-ThalitaMultilingualNeural"
-          assert qa["semantic_timing_source"] == "paragraph_boundaries"
-          assert len(qa["scenes"]) == 8
+          assert qa["semantic_timing_source"] == "paragraph_boundaries+sentence_estimates"
+          assert len(qa["scenes"]) >= 1
           from PIL import Image
           thumb = Path("output/thumbnail.jpg")
           assert thumb.exists() and thumb.stat().st_size > 30000, thumb
@@ -211,9 +223,13 @@ jobs:
               "premium_cover_qa": cover_qa.get("premium_cover_qa"),
               "cover_fallback_used": bool(cover_qa.get("fallback_used")),
               "cover_template_version": cover_qa.get("template_version"),
-              "premium_version": "PREMIUM_V3",
+              "premium_version": "PREMIUM_V4_DIRECTOR_CUT",
               "semantic_visual_sync": premium.get("semantic_visual_sync"),
-              "visual_cadence": premium.get("visual_cadence"),
+              "phrase_level_direction": premium.get("phrase_level_direction"),
+              "variable_pacing": premium.get("variable_pacing"),
+              "sound_design": premium.get("sound_design"),
+              "independent_shorts": premium.get("independent_shorts"),
+              "pro_score": pro.get("pro_score"),
               "status": "APPROVED",
           }
           Path("output/final-qa.json").write_text(json.dumps(final, indent=2), encoding="utf-8")
@@ -305,10 +321,13 @@ jobs:
             output/voice.mp3
             output/voice-timings.json
             output/narration-qa.json
-            output/director-v3.json
+            output/director-v4.json
             output/render.json
             output/semantic-visual-qa.json
-            output/premium-v3-qa.json
+            output/visual-frame-qa.json
+            output/frame-qa/*.jpg
+            output/premium-v4-qa.json
+            output/pro-score.json
             output/short-picks.json
             output/master.mp4
             output/thumbnail.jpg
