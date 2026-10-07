@@ -47,6 +47,7 @@ jobs:
           cp production/bgs-2026-strict-v2/covers/short-2-crazy-taxi.jpg output/shorts/short_2_cover.jpg
           cp production/bgs-2026-strict-v2/covers/short-3-six-games.jpg output/shorts/short_3_cover.jpg
 
+      # Capas aprovadas: validar decodificação e dimensões, sem exigir tamanho arbitrário em KB.
       - name: Validar pacote e capas antes de publicar
         run: |
           python - <<'PY'
