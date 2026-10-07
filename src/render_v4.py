@@ -199,7 +199,7 @@ def normalize_intro(src,dest,limit_seconds=0):
     vf=f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=black,fps={FPS},setsar=1,format=yuv420p"
     af="aresample=48000"
     if limit_seconds and limit_seconds>0.35:
-        af += f",afade=t=out:st={max(0,limit_seconds-.18):.3f}:d=.18"
+        af += f",afade=t=out:st={max(0,limit_seconds-.18):.3f}:d=0.18"
     cmd += ["-vf",vf,"-af",af,"-c:v","libx264","-preset","veryfast","-crf","20",
             "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)]
     sh(cmd)
