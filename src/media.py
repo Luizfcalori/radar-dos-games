@@ -46,6 +46,51 @@ def download(url,dest,referer=None):
     except Exception as e:print('download failed',url,e)
     dest.unlink(missing_ok=True);return None
 
+def official_remote_clip(url,dest,referer='https://www.rockstargames.com/'):
+    """Extrai um trecho utilizável de MP4 oficial remoto sem baixar o arquivo inteiro.
+
+    Feito para CDNs oficiais de publisher que oferecem masters muito grandes. O FFmpeg
+    usa seek/range HTTP e gera um asset local 720p leve, preservando gameplay em movimento.
+    """
+    low=url.lower()
+    if 'gtavi_an_extended_look' in low:
+        start=300
+        seconds=55
+    elif 'trailer_2' in low:
+        start=22
+        seconds=50
+    elif 'trailer_1' in low:
+        start=12
+        seconds=45
+    else:
+        start=8
+        seconds=40
+    headers=(
+        'User-Agent: Mozilla/5.0 AppleWebKit/537.36 Chrome/129 Safari/537.36\r\n'
+        f'Referer: {referer or "https://www.rockstargames.com/"}\r\n'
+        'Origin: https://www.rockstargames.com\r\n'
+        'Accept: */*\r\n'
+    )
+    vf='scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,fps=30,format=yuv420p'
+    commands=[
+        ['ffmpeg','-y','-loglevel','error','-headers',headers,'-ss',str(start),'-i',url,'-t',str(seconds),
+         '-map','0:v:0','-an','-vf',vf,'-c:v','libx264','-preset','veryfast','-crf','21','-movflags','+faststart',str(dest)],
+        ['ffmpeg','-y','-loglevel','error','-headers',headers,'-i',url,'-ss',str(start),'-t',str(seconds),
+         '-map','0:v:0','-an','-vf',vf,'-c:v','libx264','-preset','veryfast','-crf','21','-movflags','+faststart',str(dest)]
+    ]
+    for cmd in commands:
+        try:
+            subprocess.run(cmd,check=True,timeout=360)
+            info=probe_info(dest)
+            if info and float(info.get('duration',0))>=15:
+                print('official remote clip success',url,info,flush=True)
+                return info
+        except Exception as e:
+            print('official remote clip failed',url,type(e).__name__,e,flush=True)
+        dest.unlink(missing_ok=True)
+    return None
+
+
 def stream_download(url,dest,referer='https://store.steampowered.com/'):
     """Baixa HLS/DASH direto do CDN, sem depender do YouTube."""
     headers=f'User-Agent: Mozilla/5.0\r\nReferer: {referer}\r\n'
@@ -290,6 +335,9 @@ def main(path):
             else:
                 allow_images=bool(item.get('allow_images_from_page',False) and wanted=='image')
                 candidates=[(u,'official_page_discovery','') for u in discover(url,allow_images=allow_images)]
+            for fallback in item.get('fallback_urls',[]) or []:
+                if isinstance(fallback,str) and fallback.startswith('http'):
+                    candidates.append((fallback,'official_fallback_source','fallback'))
         got=0
         for u,evidence,label in candidates[:60]:
             if u in seen:continue
@@ -306,6 +354,12 @@ def main(path):
                 except Exception as e:print('image download failed',u,e);info=None
             elif isstream:info=stream_download(u,dest)
             elif isdrive:info=gdrive_download(u,dest)
+            elif (
+                wanted=='video'
+                and clean.endswith(VIDEO_EXTS)
+                and ('rockstargames.com/vi/downloads/videos/' in low or 'media-rockstargames-com.akamaized.net/vi/downloads/videos/' in low)
+            ):
+                info=official_remote_clip(u,dest,source if str(source).startswith('http') else 'https://www.rockstargames.com/')
             elif 'youtube.com' in low or 'youtu.be' in low:info=ytdlp(u,dest)
             else:info=download(u,dest,source if str(source).startswith('http') else None)
             if not info:dest.unlink(missing_ok=True);continue
