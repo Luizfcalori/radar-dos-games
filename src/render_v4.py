@@ -159,7 +159,30 @@ def make_sfx_track(duration_seconds,events,dest):
             chunk += struct.pack("<h",int(v*32767))
         wf.writeframes(bytes(chunk))
 
+def approved_music_bed():
+    for candidate in (
+        Path("assets/audio/radar-bed.mp3"),
+        Path("assets/audio/radar-bed.wav"),
+        Path("assets/audio/radar-bed.m4a"),
+    ):
+        if candidate.exists() and candidate.stat().st_size>20000:
+            return candidate
+    return None
+
 def mix_voice_sfx(visuals,voice,sfx,dest):
+    bed=approved_music_bed()
+    if bed:
+        sh([
+            "ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),
+            "-stream_loop","-1","-i",str(bed),
+            "-filter_complex",
+            f"[1:a]{VOICE_CHAIN}[voice];[2:a]volume=0.72[sfx];"
+            "[3:a]volume=0.10[bed];[bed][voice]sidechaincompress=threshold=0.015:ratio=12:attack=18:release=260[ducked];"
+            "[voice][ducked][sfx]amix=inputs=3:weights='1 0.55 0.45':normalize=0,alimiter=limit=0.92[a]",
+            "-map","0:v:0","-map","[a]","-shortest","-c:v","copy",
+            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)
+        ])
+        return "approved_bed_with_voice_ducking"
     sh([
         "ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),
         "-filter_complex",
@@ -167,6 +190,7 @@ def mix_voice_sfx(visuals,voice,sfx,dest):
         "-map","0:v:0","-map","[a]","-shortest","-c:v","copy",
         "-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)
     ])
+    return "ducking_ready_no_approved_bed"
 
 def normalize_intro(src,dest,limit_seconds=0):
     cmd=["ffmpeg","-y","-v","error","-i",str(src)]
@@ -251,7 +275,7 @@ def render(manifest_path):
     sfx=tmp/"editorial-sfx.wav"
     make_sfx_track(cursor,sfx_events,sfx)
     body=tmp/"body_av.mp4"
-    mix_voice_sfx(visuals,Path(m["voice"]),sfx,body)
+    music_policy=mix_voice_sfx(visuals,Path(m["voice"]),sfx,body)
 
     intro_norm=tmp/"intro-sting.mp4"
     intro_limit=float(m.get("intro_sting_seconds") or 0)
@@ -289,9 +313,10 @@ def render(manifest_path):
             "voice_chain":"compression+loudnorm+limiter",
             "editorial_sfx":"subtle_generated_impacts",
             "sfx_events":len(sfx_events),
-            "music_bed":"not_forced_without_approved_licensed_asset",
+            "music_bed":music_policy,
         },
         "editing_policy":"phrase_level_beats; variable_pacing; selective_keyword_overlays",
+        "card_style":{"shadow_attached_to_text":True,"position":"lower_third","single_entry_per_scene":True},
         "scenes":qa_scenes,
         "probe":probe,
     }
