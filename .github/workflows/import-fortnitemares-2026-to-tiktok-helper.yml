@@ -1,0 +1,172 @@
+name: Import Fortnitemares 2026 Shorts to TikTok Helper
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-fortnitemares-2026-to-tiktok-helper.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Baixar Shorts STRICT aprovados
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-fortnitemares-2026-strict-sync
+          path: strict
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37619936984
+
+      - name: Baixar capas premium aprovadas
+        uses: actions/download-artifact@v4
+        with:
+          name: premium-covers-test-37624320741
+          path: covers
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37624320741
+
+      - name: Validar pacote e preparar assets
+        run: |
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          from PIL import Image
+
+          qa=json.loads(Path("strict/final-qa.json").read_text(encoding="utf-8"))
+          assert qa.get("status")=="APPROVED_STRICT",qa
+          assert qa.get("semantic_visual_sync")=="APPROVED",qa
+          assert qa.get("exact_topic_media_coverage")=="APPROVED",qa
+          assert qa.get("shorts_semantic_selection")=="APPROVED",qa
+
+          cqa=json.loads(Path("covers/cover-qa.json").read_text(encoding="utf-8"))
+          assert cqa.get("status")=="APPROVED_PREMIUM",cqa
+          assert cqa.get("fallback_used") is False,cqa
+
+          ids=["jwXtn0b0rYA","CRXm8kVDCUo","FCP-BVHY_sk"]
+          out=Path("tiktok-assets"); out.mkdir(exist_ok=True)
+          for i,vid in enumerate(ids,1):
+              src=Path(f"strict/shorts/short_{i}.mp4")
+              cover=Path(f"covers/shorts/short_{i}_cover.jpg")
+              assert src.exists() and src.stat().st_size>500_000,src
+              assert cover.exists() and cover.stat().st_size>10_000,cover
+              with Image.open(cover) as im:
+                  assert im.size==(1080,1920),(cover,im.size)
+              shutil.copy2(src,out/f"fortnitemares-2026-{vid}.mp4")
+              shutil.copy2(cover,out/f"fortnitemares-2026-{vid}.jpg")
+              print("ASSET_OK",i,vid)
+          PY
+
+      - name: Publicar MP4s e capas na release do TikTok Helper
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-assets/*.mp4 tiktok-assets/*.jpg --clobber
+
+      - name: Inserir os 3 Shorts no app
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8"))
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+
+          items=[
+            {
+              "id":"yt-jwXtn0b0rYA",
+              "title":"FREDDY KRUEGER ESTÁ NO FORTNITE! 😱",
+              "media_url":f"{base}/fortnitemares-2026-jwXtn0b0rYA.mp4",
+              "thumbnail_url":f"{base}/fortnitemares-2026-jwXtn0b0rYA.jpg",
+              "post_text":"FREDDY KRUEGER ESTÁ NO FORTNITE! 😱\n\nAs Garras do Pesadelo chegaram ao Fortnitemares 2026.\n\n#RadarDosGames #Fortnite #FreddyKrueger #Fortnitemares2026 #Gaming #TikTokGames",
+              "status":"approved",
+              "youtube_id":"jwXtn0b0rYA",
+              "youtube_url":"https://www.youtube.com/shorts/jwXtn0b0rYA",
+              "source":"fortnitemares_2026_strict_approved",
+              "source_run_id":37619936984,
+              "short_number":1,
+              "approved_at":now
+            },
+            {
+              "id":"yt-CRXm8kVDCUo",
+              "title":"FNAF VIROU CHEFE NO FORTNITE! 🤯",
+              "media_url":f"{base}/fortnitemares-2026-CRXm8kVDCUo.mp4",
+              "thumbnail_url":f"{base}/fortnitemares-2026-CRXm8kVDCUo.jpg",
+              "post_text":"FNAF VIROU CHEFE NO FORTNITE! 🤯\n\nOs animatrônicos de Five Nights at Freddy's chegaram como chefes no Fortnitemares 2026.\n\n#RadarDosGames #Fortnite #FNAF #FiveNightsAtFreddys #Fortnitemares2026 #TikTokGames",
+              "status":"approved",
+              "youtube_id":"CRXm8kVDCUo",
+              "youtube_url":"https://www.youtube.com/shorts/CRXm8kVDCUo",
+              "source":"fortnitemares_2026_strict_approved",
+              "source_run_id":37619936984,
+              "short_number":2,
+              "approved_at":now
+            },
+            {
+              "id":"yt-FCP-BVHY_sk",
+              "title":"HORDE RUSH VOLTOU NO FORTNITE! 🎃",
+              "media_url":f"{base}/fortnitemares-2026-FCP-BVHY_sk.mp4",
+              "thumbnail_url":f"{base}/fortnitemares-2026-FCP-BVHY_sk.jpg",
+              "post_text":"HORDE RUSH VOLTOU NO FORTNITE! 🎃\n\nA Horda Impetuosa está de volta no Fortnitemares 2026.\n\n#RadarDosGames #Fortnite #HordeRush #Fortnitemares2026 #Gaming #TikTokGames",
+              "status":"approved",
+              "youtube_id":"FCP-BVHY_sk",
+              "youtube_url":"https://www.youtube.com/shorts/FCP-BVHY_sk",
+              "source":"fortnitemares_2026_strict_approved",
+              "source_run_id":37619936984,
+              "short_number":3,
+              "approved_at":now
+            }
+          ]
+
+          ids={x["id"] for x in items}
+          ytids={x["youtube_id"] for x in items}
+          old=[x for x in q.get("items",[]) if x.get("id") not in ids and x.get("youtube_id") not in ytids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(items+old)[:200]
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":3,"total":len(q["items"]),"ids":[x["id"] for x in items]},ensure_ascii=False))
+          PY
+
+      - name: Commitar fila atualizada
+        run: |
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          git commit -m "tiktok: add approved Fortnitemares 2026 Shorts to Helper"
+          git pull --rebase origin main
+          git push origin main
+
+      - name: Confirmar os 3 itens na fila
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          q=json.loads(Path("data/tiktok_queue.json").read_text(encoding="utf-8"))
+          wanted={"jwXtn0b0rYA","CRXm8kVDCUo","FCP-BVHY_sk"}
+          found=[x for x in q.get("items",[]) if x.get("youtube_id") in wanted]
+          assert len(found)==3,found
+          assert all(x.get("status")=="approved" and x.get("media_url") and x.get("thumbnail_url") for x in found),found
+          print(json.dumps({"status":"APPROVED","items":[{"title":x["title"],"youtube_id":x["youtube_id"],"media_url":x["media_url"]} for x in found]},ensure_ascii=False,indent=2))
+          PY
