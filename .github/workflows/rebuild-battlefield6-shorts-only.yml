@@ -28,13 +28,12 @@ jobs:
         with:
           ref: main
 
-      - name: Instalar ferramentas
+      - name: Validar ferramentas do runner e instalar somente dependências dos Shorts
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -U yt-dlp
+          ffmpeg -version | head -1
+          test -s /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+          python -m pip install --disable-pip-version-check --no-input \
+            edge-tts==7.2.3 requests==2.32.5 feedparser==6.0.12 "Pillow>=11.0,<13" yt-dlp
 
       - name: Baixar Master aprovado somente como referência
         uses: actions/download-artifact@v4
