@@ -1,0 +1,453 @@
+name: Radar dos Games - BGS 2026 Master + 3 Shorts 2026-10-07
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/produce-bgs-2026-10-07.yml"
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Limpar saída anterior
+        run: |
+          rm -rf output
+          mkdir -p output
+
+      - name: Instalar ferramentas gratuitas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp gdown
+
+      - name: Validar intro oficial permanente
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: Preparar pauta BGS 2026 com fontes oficiais
+        run: |
+          python - <<'PY'
+          import json, re, urllib.parse, urllib.request
+          from html.parser import HTMLParser
+          from pathlib import Path
+
+          source_home = "https://www.brasilgameshow.com.br/"
+          source_games = "https://www.brasilgameshow.com.br/games/"
+          source_guests = "https://www.brasilgameshow.com.br/convidados-internacionais/"
+          source_schedule = "https://www.brasilgameshow.com.br/programacao/"
+          source_location = "https://www.brasilgameshow.com.br/local-e-como-chegar/"
+          source_app = "https://www.brasilgameshow.com.br/app-oficial-guia-do-evento/"
+          source_exhibitors = "https://www.brasilgameshow.com.br/lista-de-expositores/"
+          source_b2b = "https://b2b.brasilgameshow.com.br/"
+
+          script = """A BGS 2026 começa nesta sexta-feira, 9 de outubro, e já tem um destaque perfeito para abrir o Radar: Alien: Isolation 2 aparece na lista oficial da feira com uma demo jogável. A sequência do survival horror da SEGA estará entre as atrações confirmadas, e o evento segue até segunda-feira, dia 12, no Distrito Anhembi, em São Paulo.
+
+          Esta será a décima sétima edição da Brasil Game Show. O evento ocupa o Distrito Anhembi e reúne jogos, tecnologia, campeonatos, criadores e empresas do setor. Na programação oficial, a sexta-feira abre com a BGS Conference, enquanto os demais dias trazem atrações em diferentes arenas e estandes.
+
+          A lista oficial de jogos e lançamentos já reúne nomes grandes. Entre eles estão Call of Duty: Modern Warfare 4, Nintendo Switch Sports Resort, Final Fantasy Resonance, Final Fantasy VII Revelation, EA Sports FC 27, Crazy Taxi: World Tour, Persona 4 Revival, Alien: Isolation 2, Total War: Warhammer 40,000 e Stranger Than Heaven. É uma seleção bem diversa, com ação, RPG, corrida, esporte e terror.
+
+          Um dos estandes para ficar de olho é o da SEGA. A página oficial da BGS lista seis jogos ligados à marca: Alien: Isolation 2, Crazy Taxi: World Tour, Persona 4 Revival, Total War: Warhammer 40,000, Stranger Than Heaven e Sonic Pico Park. O ponto mais interessante é que vários deles chegam com demonstrações ou experiências voltadas diretamente para quem estiver na feira.
+
+          Crazy Taxi: World Tour também ganha um destaque especial. O novo jogo resgata uma das franquias mais lembradas dos arcades da SEGA, e Kenji Kanno, produtor do projeto e criador do Crazy Taxi original, está confirmado entre os convidados internacionais da BGS. A programação oficial inclui ainda uma entrevista com Kanno no BGS Talks.
+
+          Alien: Isolation 2 não aparece sozinho. Al Hope, diretor criativo do jogo, e Archie Whitehead, artista principal de ambientes, também estão confirmados pela organização. Isso transforma a presença do título em algo maior do que apenas uma estação jogável, porque coloca parte da equipe de desenvolvimento cara a cara com o público brasileiro.
+
+          Fora dos jogos, a agenda inclui BGS Conference, BGS Talks, Meet and Greet, cosplay e competições. A programação publicada pela organização também mostra torneios de VALORANT, Fortnite e EA FC 27, além das finais do PlayStation Tournaments de Marvel Tōkon: Fighting Souls. O aplicativo oficial da BGS reúne mapa, agenda, atrações, expositores, jogos e brindes para quem estiver no evento.
+
+          Resumindo o radar: a BGS 2026 acontece de 9 a 12 de outubro no Distrito Anhembi, e a SEGA chega com seis jogos que ajudam a explicar por que esta edição merece atenção: Alien: Isolation 2, Crazy Taxi: World Tour, Persona 4 Revival, Total War: Warhammer 40,000, Stranger Than Heaven e Sonic Pico Park. Qual deles você testaria primeiro? Se curtiu, se inscreva no Radar dos Games e acompanhe nossa cobertura."""
+          script = "\n\n".join(x.strip() for x in script.split("\n\n")) + "\n"
+          Path("output/auto-script.txt").write_text(script, encoding="utf-8")
+
+          class ImgParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.images = []
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() != "img":
+                      return
+                  d = dict(attrs)
+                  alt = (d.get("alt") or "").strip()
+                  src = d.get("data-src") or d.get("data-lazy-src") or d.get("src") or ""
+                  if src:
+                      self.images.append((alt, src))
+
+          def fetch(url):
+              req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  return r.read(12*1024*1024).decode("utf-8","ignore")
+
+          def game_images():
+              try:
+                  p = ImgParser()
+                  p.feed(fetch(source_games))
+              except Exception as exc:
+                  print("BGS image scrape failed:", exc)
+                  return []
+              wanted = [
+                  ("Alien: Isolation 2", "alien_isolation_2"),
+                  ("Crazy Taxi: World Tour", "crazy_taxi_world_tour"),
+                  ("Persona 4 Revival", "persona_4_revival"),
+                  ("Total War: WARHAMMER 40,000", "total_war_warhammer_40000"),
+                  ("STRANGER THAN HEAVEN", "stranger_than_heaven"),
+                  ("SONIC PICO PARK", "sonic_pico_park"),
+              ]
+              out = []
+              for label, role in wanted:
+                  key = re.sub(r"[^a-z0-9]+", " ", label.lower()).strip()
+                  best = None
+                  for alt, src in p.images:
+                      altkey = re.sub(r"[^a-z0-9]+", " ", alt.lower()).strip()
+                      if key and (key in altkey or altkey in key):
+                          best = urllib.parse.urljoin(source_games, src)
+                          break
+                  if best:
+                      out.append({
+                          "type":"image","url":best,"role":role,"max_assets":1,
+                          "source_proof":source_games,
+                          "relevance_evidence":"bgs_official_game_image",
+                          "source_label":label
+                      })
+              return out
+
+          media = game_images()
+          media += [
+              {
+                  "type":"video",
+                  "url":"https://www.youtube.com/watch?v=ePi8tDdKuWw",
+                  "role":"crazy_taxi_official_trailer",
+                  "max_assets":1,
+                  "min_duration":20,
+                  "source_proof":"https://www.youtube.com/@SEGA",
+                  "relevance_evidence":"official_sega_youtube",
+                  "source_label":"Crazy Taxi: World Tour"
+              },
+              {
+                  "type":"video",
+                  "url":"https://www.youtube.com/watch?v=QeCItSg-wmI",
+                  "role":"total_war_official_trailer",
+                  "max_assets":1,
+                  "min_duration":20,
+                  "source_proof":"https://www.youtube.com/@officialwarhammer",
+                  "relevance_evidence":"official_warhammer_youtube",
+                  "source_label":"Total War: Warhammer 40,000"
+              },
+              {
+                  "type":"video",
+                  "url":source_b2b,
+                  "role":"bgs_official_video",
+                  "max_assets":1,
+                  "min_duration":12,
+                  "source_proof":source_b2b,
+                  "source_label":"Brasil Game Show"
+              },
+              {
+                  "type":"image",
+                  "url":source_guests,
+                  "role":"bgs_guest_images",
+                  "max_assets":3,
+                  "allow_images_from_page":True,
+                  "source_proof":source_guests,
+                  "blocked_tokens":["logo","favicon","icon","banner","footer","header"]
+              }
+          ]
+
+          titles = [
+              "ALIEN 2 NA BGS 2026",
+              "9 A 12 DE OUTUBRO",
+              "JOGOS E LANÇAMENTOS",
+              "SEGA LEVA 6 JOGOS",
+              "CRAZY TAXI ESTÁ DE VOLTA",
+              "EQUIPE DE ALIEN 2 NO BRASIL",
+              "CAMPEONATOS E ATRAÇÕES",
+              "OS 6 DESTAQUES DA SEGA",
+          ]
+          subtitles = [
+              "DEMO JOGÁVEL CONFIRMADA",
+              "DISTRITO ANHEMBI • SÃO PAULO",
+              "A LISTA OFICIAL DA FEIRA",
+              "TERROR • RPG • CORRIDA • ESTRATÉGIA",
+              "KENJI KANNO ESTÁ CONFIRMADO",
+              "AL HOPE + ARCHIE WHITEHEAD",
+              "BGS CONFERENCE • TALKS • ESPORTS",
+              "QUAL VOCÊ TESTARIA PRIMEIRO?",
+          ]
+          paragraphs = [x.strip() for x in script.split("\n\n") if x.strip()]
+          scenes = [
+              {"paragraph":i+1,"title":titles[i],"subtitle":subtitles[i],"media_indices":[]}
+              for i in range(8)
+          ]
+
+          plan = {
+              "topic":"BGS 2026",
+              "source":source_home,
+              "sources":[source_games,source_guests,source_schedule,source_location,source_app,source_exhibitors],
+              "minimum_assets":6,
+              "minimum_video_assets":2,
+              "minimum_unique_video_seconds":40,
+              "minimum_image_assets":4,
+              "media_policy":"official_bgs_images_plus_official_game_trailers; no_generic_stock; no_other_channels; preserve_full_frame",
+              "media":media,
+              "scenes":scenes
+          }
+          Path("output/auto-media-plan.json").write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
+          Path("output/selected.json").write_text(json.dumps({
+              "title":"BGS 2026 COMEÇA NESTA SEXTA! Os GAMES e NOVIDADES que você precisa conhecer",
+              "source":source_home,
+              "date_range":"2026-10-09/2026-10-12",
+              "venue":"Distrito Anhembi, São Paulo",
+              "editorial_focus":["Alien: Isolation 2","Crazy Taxi: World Tour","SEGA com 6 jogos"]
+          }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+          base_desc = """🎮 A BGS 2026 acontece de 9 a 12 de outubro no Distrito Anhembi, em São Paulo.
+
+          Neste vídeo, o Radar dos Games reúne os principais jogos, convidados e atrações já confirmados oficialmente, com destaque para Alien: Isolation 2, Crazy Taxi: World Tour e os seis jogos ligados ao estande da SEGA.
+
+          🔎 Fontes oficiais:
+          https://www.brasilgameshow.com.br/
+          https://www.brasilgameshow.com.br/games/
+          https://www.brasilgameshow.com.br/convidados-internacionais/
+          https://www.brasilgameshow.com.br/programacao/
+
+          #RadarDosGames #BGS2026 #BrasilGameShow #AlienIsolation2 #CrazyTaxi #SEGA"""
+          base_desc = "\n".join(x.strip() for x in base_desc.splitlines())
+
+          master = {
+              "title":"BGS 2026 COMEÇA NESTA SEXTA! Os GAMES e NOVIDADES que você precisa conhecer",
+              "description":base_desc,
+              "tags":["Radar dos Games","BGS 2026","Brasil Game Show","Alien Isolation 2","Crazy Taxi World Tour","SEGA","Persona 4 Revival","Total War Warhammer 40000","Sonic Pico Park"],
+              "privacy":"unlisted",
+              "containsSyntheticMedia":False,
+              "thumbnail":"output/thumbnail.jpg"
+          }
+          shorts = [
+              {
+                  "title":"ALIEN: ISOLATION 2 estará JOGÁVEL na BGS 2026! 😱 #Shorts",
+                  "description":"Alien: Isolation 2 aparece na lista oficial da BGS 2026 com demo jogável.\n\nFonte: https://www.brasilgameshow.com.br/games/\n\n#RadarDosGames #BGS2026 #AlienIsolation2 #Shorts",
+                  "tags":["Radar dos Games","BGS 2026","Alien Isolation 2","Shorts"],
+                  "privacy":"unlisted","containsSyntheticMedia":False,
+                  "thumbnail":"output/shorts/short_1_cover.jpg"
+              },
+              {
+                  "title":"CRAZY TAXI está de volta — e o criador vem ao Brasil! 🇧🇷 #Shorts",
+                  "description":"Kenji Kanno, criador do Crazy Taxi original e produtor de Crazy Taxi: World Tour, está confirmado na BGS 2026.\n\nFonte: https://www.brasilgameshow.com.br/convidados-internacionais/\n\n#RadarDosGames #BGS2026 #CrazyTaxi #SEGA #Shorts",
+                  "tags":["Radar dos Games","BGS 2026","Crazy Taxi World Tour","SEGA","Shorts"],
+                  "privacy":"unlisted","containsSyntheticMedia":False,
+                  "thumbnail":"output/shorts/short_2_cover.jpg"
+              },
+              {
+                  "title":"6 GAMES da SEGA para ficar de olho na BGS 2026 🎮 #Shorts",
+                  "description":"Alien: Isolation 2, Crazy Taxi: World Tour, Persona 4 Revival, Total War: Warhammer 40,000, Stranger Than Heaven e Sonic Pico Park estão na lista oficial da BGS 2026 ligados ao estande da SEGA.\n\nFonte: https://www.brasilgameshow.com.br/\n\n#RadarDosGames #BGS2026 #SEGA #Shorts",
+                  "tags":["Radar dos Games","BGS 2026","SEGA","Gaming","Shorts"],
+                  "privacy":"unlisted","containsSyntheticMedia":False,
+                  "thumbnail":"output/shorts/short_3_cover.jpg"
+              }
+          ]
+          Path("output/master-youtube.json").write_text(json.dumps(master, ensure_ascii=False, indent=2), encoding="utf-8")
+          for i, meta in enumerate(shorts,1):
+              Path(f"output/short-{i}-youtube.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Criar narração Thalita Multilingual PT-BR
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaMultilingualNeural \
+            --segments-json output/voice-timings.json
+
+      - name: Baixar mídia oficial BGS e jogos confirmados
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Montar manifesto semântico por cena
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          spec = json.loads(Path("output/auto-media-plan.json").read_text(encoding="utf-8"))
+          media = json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
+          assets = [a for a in media["assets"] if a.get("approved")]
+          assert len(assets) >= 6, f"QUALITY_BLOCK: assets={len(assets)}"
+
+          by_role = {}
+          for a in assets:
+              by_role.setdefault(a.get("role",""), []).append(int(a["index"]))
+          all_ids = [int(a["index"]) for a in assets]
+
+          def roles(*names):
+              out=[]
+              for n in names:
+                  out += by_role.get(n,[])
+              return out
+
+          scene_sets = [
+              roles("alien_isolation_2","bgs_guest_images"),
+              roles("bgs_official_video","bgs_guest_images"),
+              [x for r,vals in by_role.items() if r in {"persona_4_revival","stranger_than_heaven","sonic_pico_park","total_war_warhammer_40000"} for x in vals],
+              [x for r,vals in by_role.items() if r in {"alien_isolation_2","crazy_taxi_world_tour","persona_4_revival","total_war_warhammer_40000","stranger_than_heaven","sonic_pico_park"} for x in vals],
+              roles("crazy_taxi_official_trailer","crazy_taxi_world_tour"),
+              roles("alien_isolation_2","bgs_guest_images"),
+              roles("bgs_official_video","total_war_official_trailer"),
+              [x for r,vals in by_role.items() if r in {"alien_isolation_2","crazy_taxi_world_tour","persona_4_revival","total_war_warhammer_40000","stranger_than_heaven","sonic_pico_park","crazy_taxi_official_trailer","total_war_official_trailer"} for x in vals],
+          ]
+          for i, scene in enumerate(spec["scenes"]):
+              ids=[]
+              for x in scene_sets[i]:
+                  if x not in ids:
+                      ids.append(x)
+              if not ids:
+                  ids = all_ids[:3]
+              scene["media_indices"] = ids[:4]
+
+          manifest = {
+              "assets":assets,
+              "voice":"output/voice.mp3",
+              "voice_timings":"output/voice-timings.json",
+              "intro":"radar-dos-games-intro-oficial.mp4",
+              "scenes":spec["scenes"],
+              "output":"output/master.mp4"
+          }
+          Path("output/render.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+          Path("output/visual-qa.json").write_text(json.dumps({
+              "approved_assets":len(assets),
+              "video_assets":media.get("video_assets"),
+              "image_assets":media.get("image_assets"),
+              "unique_video_seconds":media.get("unique_video_seconds"),
+              "roles":{k:len(v) for k,v in by_role.items()},
+              "status":"READY_TO_RENDER"
+          }, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Renderizar Master no padrão aprovado
+        run: python src/render.py output/render.json
+
+      - name: Gerar capa Master no padrão Radar
+        run: |
+          TITLE=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path("output/master-youtube.json").read_text(encoding="utf-8"))["title"])
+          PY
+          )
+          python src/thumbnail.py output/master.mp4 "$TITLE" output/thumbnail.jpg
+
+      - name: Gerar exatamente 3 Shorts sem cortar fala
+        run: python src/shorts.py output/master.mp4
+
+      - name: Gerar capas dos 3 Shorts
+        run: |
+          python src/short_cover.py output/shorts/short_1.mp4 output/short-1-youtube.json output/shorts/short_1_cover.jpg 1
+          python src/short_cover.py output/shorts/short_2.mp4 output/short-2-youtube.json output/shorts/short_2_cover.jpg 2
+          python src/short_cover.py output/shorts/short_3.mp4 output/short-3-youtube.json output/shorts/short_3_cover.jpg 3
+
+      - name: Quality gate final bloqueante
+        run: |
+          python - <<'PY'
+          import glob, json, subprocess
+          from pathlib import Path
+          from PIL import Image
+
+          def probe(path):
+              return json.loads(subprocess.check_output([
+                  "ffprobe","-v","error","-show_streams","-show_format","-of","json",str(path)
+              ], text=True))
+
+          master=Path("output/master.mp4")
+          assert master.exists() and master.stat().st_size > 3_000_000
+          m=probe(master)
+          dur=float(m["format"]["duration"])
+          v=next(x for x in m["streams"] if x["codec_type"]=="video")
+          assert (int(v["width"]),int(v["height"]))==(1920,1080)
+          assert any(x["codec_type"]=="audio" for x in m["streams"])
+          assert 120 <= dur <= 480, dur
+
+          qa=json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
+          assert qa.get("voice")=="pt-BR-ThalitaMultilingualNeural", qa.get("voice")
+          assert len(qa.get("scenes",[]))==8
+
+          voice=json.loads(Path("output/voice-timings.json").read_text(encoding="utf-8"))
+          assert len(voice.get("segments",[]))==8
+
+          clips=json.loads(Path("output/clips.json").read_text(encoding="utf-8"))
+          assert clips.get("video_assets",0)>=2
+          assert clips.get("image_assets",0)>=4
+          assert clips.get("unique_video_seconds",0)>=40
+
+          thumb=Path("output/thumbnail.jpg")
+          assert thumb.exists() and thumb.stat().st_size > 30000
+          with Image.open(thumb) as im:
+              assert im.size==(1280,720)
+
+          shorts=sorted(glob.glob("output/shorts/short_*.mp4"))
+          assert len(shorts)==3
+          short_report=[]
+          for i,p in enumerate(shorts,1):
+              info=probe(p)
+              d=float(info["format"]["duration"])
+              sv=next(x for x in info["streams"] if x["codec_type"]=="video")
+              assert (int(sv["width"]),int(sv["height"]))==(1080,1920)
+              assert 10 <= d <= 65
+              assert any(x["codec_type"]=="audio" for x in info["streams"])
+              cover=Path(f"output/shorts/short_{i}_cover.jpg")
+              assert cover.exists() and cover.stat().st_size > 30000
+              with Image.open(cover) as im:
+                  assert im.size==(1080,1920)
+              short_report.append({"file":p,"seconds":round(d,2)})
+
+          final={
+              "status":"APPROVED",
+              "topic":"BGS 2026",
+              "master_seconds":round(dur,2),
+              "master_resolution":"1920x1080",
+              "voice":"pt-BR-ThalitaMultilingualNeural",
+              "shorts":short_report,
+              "thumbnail":"1280x720",
+              "short_covers":"1080x1920",
+              "video_assets":clips.get("video_assets"),
+              "image_assets":clips.get("image_assets"),
+              "unique_video_seconds":clips.get("unique_video_seconds")
+          }
+          Path("output/final-qa.json").write_text(json.dumps(final, ensure_ascii=False, indent=2), encoding="utf-8")
+          print(json.dumps(final, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Guardar pacote BGS 2026
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-bgs-2026-final
+          path: |
+            output/auto-script.txt
+            output/auto-media-plan.json
+            output/selected.json
+            output/clips.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/render.json
+            output/master.mp4
+            output/thumbnail.jpg
+            output/thumbnail-policy.json
+            output/qa.json
+            output/visual-qa.json
+            output/final-qa.json
+            output/master-youtube.json
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+            output/shorts/*.mp4
+            output/shorts/*_cover.jpg
+            output/shorts/*_cover-policy.json
+          retention-days: 7
