@@ -31,368 +31,268 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Find recent approved production artifacts not yet in the app
-        shell: bash
+      - name: Instalar ferramentas
         run: |
-          set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg unzip jq
-          mkdir -p candidates imported-assets
 
+      - name: Localizar pacotes aprovados ainda não importados
+        run: |
           python - <<'PY'
-          import json, os, re, subprocess, urllib.request, zipfile
+          import json, os, subprocess, urllib.request, zipfile
           from pathlib import Path
           from datetime import datetime, timezone, timedelta
 
-          repo=os.environ['REPO']
-          token=os.environ['GH_TOKEN']
-          qpath=Path('data/tiktok_queue.json')
-          queue=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
-          imported_runs={str(x.get('source_run_id')) for x in queue.get('items',[]) if x.get('source_run_id')}
+          repo=os.environ["REPO"]
+          token=os.environ["GH_TOKEN"]
+          qpath=Path("data/tiktok_queue.json")
+          queue=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old_items=queue.get("items") or []
+          imported_runs={str(x.get("source_run_id")) for x in old_items if x.get("source_run_id")}
+          imported_titles={str(x.get("title") or "").strip().casefold() for x in old_items if x.get("status")=="approved"}
 
           def api(path):
-              req=urllib.request.Request('https://api.github.com'+path,headers={
-                  'Authorization':f'Bearer {token}',
-                  'Accept':'application/vnd.github+json',
-                  'X-GitHub-Api-Version':'2022-11-28',
-                  'User-Agent':'RadarTikTokAutoImport/1.0',
-              })
+              req=urllib.request.Request(
+                  "https://api.github.com"+path,
+                  headers={
+                      "Authorization":f"Bearer {token}",
+                      "Accept":"application/vnd.github+json",
+                      "X-GitHub-Api-Version":"2022-11-28",
+                      "User-Agent":"RadarTikTokAutoImport/2.0",
+                  },
+              )
               with urllib.request.urlopen(req,timeout=30) as r:
                   return json.load(r)
 
-          runs=api(f'/repos/{repo}/actions/runs?status=success&per_page=30').get('workflow_runs',[])
-          cutoff=datetime.now(timezone.utc)-timedelta(hours=24)
+          runs=api(f"/repos/{repo}/actions/runs?status=success&per_page=40").get("workflow_runs",[])
+          cutoff=datetime.now(timezone.utc)-timedelta(hours=72)
           selected=[]
-          seen_artifact_families=set()
+          Path("candidates").mkdir(exist_ok=True)
 
           for run in runs:
-              rid=str(run.get('id') or '')
-              if not rid:
+              rid=str(run.get("id") or "")
+              if not rid or rid in imported_runs:
                   continue
-              created=run.get('created_at') or ''
+              created=run.get("created_at") or ""
               try:
-                  if datetime.fromisoformat(created.replace('Z','+00:00')) < cutoff:
+                  if datetime.fromisoformat(created.replace("Z","+00:00")) < cutoff:
                       continue
               except Exception:
                   pass
 
-              artifacts=api(f'/repos/{repo}/actions/runs/{rid}/artifacts?per_page=100').get('artifacts',[])
+              artifacts=api(f"/repos/{repo}/actions/runs/{rid}/artifacts?per_page=100").get("artifacts",[])
+              chosen=None
               for art in artifacts:
-                  if art.get('expired'):
+                  if art.get("expired"):
                       continue
-                  name=str(art.get('name') or '')
-                  # Ignore obvious non-production artifacts before downloading.
+                  name=str(art.get("name") or "")
                   low=name.lower()
-                  if any(x in low for x in ('youtube-upload-results','thumbnail-test','tiktok-helper','login-proof','debug')):
+                  if any(x in low for x in (
+                      "youtube-publish","youtube-12h","premium-covers-test","tiktok-helper",
+                      "tiktok-import","login-proof","debug","pages"
+                  )):
                       continue
-                  # Runs mais novos vêm primeiro. Pacotes de rerun do mesmo conteúdo
-                  # usam o mesmo nome-base e só mudam o sufixo numérico do run.
-                  # A família do pacote bloqueia importações antigas/duplicadas.
-                  family=re.sub(r'-\\d{8,}
-                  cmd=['gh','api',f'/repos/{repo}/actions/artifacts/{aid}/zip']
-                  with zpath.open('wb') as out:
-                      p=subprocess.run(cmd,stdout=out,stderr=subprocess.DEVNULL)
-                  if p.returncode!=0 or not zpath.exists() or zpath.stat().st_size<1000:
-                      zpath.unlink(missing_ok=True); continue
-
-                  d=Path('candidates')/f'{rid}-{aid}'
-                  d.mkdir(parents=True,exist_ok=True)
-                  try:
-                      with zipfile.ZipFile(zpath) as z: z.extractall(d)
-                  except Exception:
-                      continue
-
-                  qa=list(d.rglob('final-qa.json'))
-                  shorts=[next(iter(d.rglob(f'short_{n}.mp4')),None) for n in (1,2,3)]
-                  metas=[next(iter(d.rglob(f'short-{n}-youtube.json')),None) for n in (1,2,3)]
-                  if not qa or not all(shorts) or not all(metas):
-                      continue
-                  try:
-                      q=json.loads(qa[0].read_text(encoding='utf-8'))
-                  except Exception:
-                      continue
-                  if str(q.get('status') or '').upper()!='APPROVED':
-                      continue
-
-                  selected.append({
-                      'run_id':rid,'artifact_id':str(aid),'artifact_name':name,
-                      'dir':str(d),'shorts':[str(x) for x in shorts],
-                      'metas':[str(x) for x in metas],
-                  })
-                  seen_artifact_families.add(family)
-                  break
-
-          Path('/tmp/radar-tiktok-auto-import.json').write_text(json.dumps(selected,ensure_ascii=False,indent=2),encoding='utf-8')
-          print(json.dumps({'approved_packages_found':len(selected),'runs':[x['run_id'] for x in selected]},ensure_ascii=False))
-          PY
-
-      - name: Publish MP4s, previews and merge them into the TikTok Helper queue
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import json, os, re, shutil, subprocess, unicodedata
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          selected=json.loads(Path('/tmp/radar-tiktok-auto-import.json').read_text(encoding='utf-8'))
-          qpath=Path('data/tiktok_queue.json')
-          queue=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
-          old=queue.get('items') or []
-          now=datetime.now(timezone.utc).isoformat()
-          new=[]
-
-          def slugify(v):
-              v=unicodedata.normalize('NFKD',str(v)).encode('ascii','ignore').decode().lower()
-              v=re.sub(r'[^a-z0-9]+','-',v).strip('-')
-              return v[:55] or 'radar-games'
-
-          def clean_title(v):
-              v=re.sub(r'(?i)#shorts?\b','',str(v or ''))
-              return re.sub(r'\s+',' ',v).strip(' -|') or 'Radar dos Games'
-
-          for pkg in selected:
-              rid=str(pkg['run_id'])
-              first=json.loads(Path(pkg['metas'][0]).read_text(encoding='utf-8'))
-              slug=slugify(first.get('title') or pkg.get('artifact_name') or rid)
-
-              for n in (1,2,3):
-                  src=Path(pkg['shorts'][n-1]); meta=Path(pkg['metas'][n-1])
-                  data=json.loads(meta.read_text(encoding='utf-8'))
-                  title=clean_title(data.get('title'))
-                  stem=f'{slug}-{rid}-short-{n}'
-                  mp4=Path('imported-assets')/(stem+'.mp4')
-                  jpg=Path('imported-assets')/(stem+'.jpg')
-                  shutil.copy2(src,mp4)
-                  subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-ss','1','-i',str(src),'-frames:v','1','-vf','scale=720:-2',str(jpg)],check=True)
-
-                  desc=str(data.get('description') or '')
-                  tags=[]
-                  for t in re.findall(r'#([\wÀ-ÿ]+)',desc,flags=re.UNICODE):
-                      tag='#'+re.sub(r'[^\w]','',t,flags=re.UNICODE)
-                      if tag.lower() not in {'#shorts','#youtubeshorts'} and tag.lower() not in {x.lower() for x in tags}:
-                          tags.append(tag)
-                      if len(tags)>=4: break
-                  for g in ['#RadarDosGames','#Games','#Gaming','#TikTokGames']:
-                      if g.lower() not in {x.lower() for x in tags}: tags.append(g)
-
-                  new.append({
-                    'id':f'{slug}-approved-{rid}-short-{n}',
-                    'title':title,
-                    'media_asset':mp4.name,
-                    'thumbnail_asset':jpg.name,
-                    'post_text':title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(tags),
-                    'status':'approved','source_run_id':int(rid),'short_number':n,
-                    'approved_at':now,'source':'approved_production_artifact_auto',
-                  })
-
-          Path('/tmp/radar-tiktok-new-items.json').write_text(json.dumps(new,ensure_ascii=False,indent=2),encoding='utf-8')
-          print(json.dumps({'prepared':len(new)},ensure_ascii=False))
-          PY
-
-          shopt -s nullglob
-          files=(imported-assets/*.mp4 imported-assets/*.jpg)
-          if ((${#files[@]})); then
-            TAG=tiktok-approved-assets
-            gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title 'Radar dos Games - Shorts aprovados para TikTok' --notes 'Arquivos aprovados usados pelo Radar TikTok Helper.'
-            gh release upload "$TAG" "${files[@]}" --clobber
-          fi
-
-          python - <<'PY'
-          import json
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          qpath=Path('data/tiktok_queue.json')
-          q=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
-          new=json.loads(Path('/tmp/radar-tiktok-new-items.json').read_text(encoding='utf-8'))
-          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
-          for x in new:
-              x['media_url']=f"{base}/{x.pop('media_asset')}"
-              x['thumbnail_url']=f"{base}/{x.pop('thumbnail_asset')}"
-          ids={x['id'] for x in new}
-          old=[x for x in (q.get('items') or []) if x.get('id') not in ids]
-          if new:
-              q['version']=2
-              q['updated_at']=datetime.now(timezone.utc).isoformat()
-              q['items']=(new+old)[:200]
-              qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          print(json.dumps({'added':len(new),'total':len(q.get('items') or [])},ensure_ascii=False))
-          PY
-
-      - name: Commit queue only when new approved Shorts were imported
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name radar-tiktok-bot
-          git config user.email actions@users.noreply.github.com
-          git add data/tiktok_queue.json
-          if git diff --cached --quiet; then
-            echo 'No new approved production Shorts to import.'
-            exit 0
-          fi
-          git commit -m 'bot: auto-import approved production Shorts to TikTok Helper'
-          git pull --rebase origin main
-          git push origin main
-
-# forced-import: gta6-2026-10-06
-,'',low)
-                  if family in seen_artifact_families:
-                      continue
-                  if rid in imported_runs:
-                      seen_artifact_families.add(family)
-                      continue
-
-                  aid=art.get('id')
+                  aid=art.get("id")
                   if not aid:
                       continue
 
-                  zpath=Path('candidates')/f'{rid}-{aid}.zip'
-                  cmd=['gh','api',f'/repos/{repo}/actions/artifacts/{aid}/zip']
-                  with zpath.open('wb') as out:
-                      p=subprocess.run(cmd,stdout=out,stderr=subprocess.DEVNULL)
+                  zpath=Path("candidates")/f"{rid}-{aid}.zip"
+                  with zpath.open("wb") as out:
+                      p=subprocess.run(
+                          ["gh","api",f"/repos/{repo}/actions/artifacts/{aid}/zip"],
+                          stdout=out,stderr=subprocess.DEVNULL
+                      )
                   if p.returncode!=0 or not zpath.exists() or zpath.stat().st_size<1000:
-                      zpath.unlink(missing_ok=True); continue
+                      zpath.unlink(missing_ok=True)
+                      continue
 
-                  d=Path('candidates')/f'{rid}-{aid}'
+                  d=Path("candidates")/f"{rid}-{aid}"
                   d.mkdir(parents=True,exist_ok=True)
                   try:
-                      with zipfile.ZipFile(zpath) as z: z.extractall(d)
+                      with zipfile.ZipFile(zpath) as z:
+                          z.extractall(d)
                   except Exception:
                       continue
 
-                  qa=list(d.rglob('final-qa.json'))
-                  shorts=[next(iter(d.rglob(f'short_{n}.mp4')),None) for n in (1,2,3)]
-                  metas=[next(iter(d.rglob(f'short-{n}-youtube.json')),None) for n in (1,2,3)]
-                  if not qa or not all(shorts) or not all(metas):
+                  qas=list(d.rglob("final-qa.json"))
+                  shorts=[next(iter(d.rglob(f"short_{n}.mp4")),None) for n in (1,2,3)]
+                  metas=[next(iter(d.rglob(f"short-{n}-youtube.json")),None) for n in (1,2,3)]
+                  if not qas or not all(shorts) or not all(metas):
                       continue
                   try:
-                      q=json.loads(qa[0].read_text(encoding='utf-8'))
+                      qa=json.loads(qas[0].read_text(encoding="utf-8"))
                   except Exception:
                       continue
-                  if str(q.get('status') or '').upper()!='APPROVED':
+                  status=str(qa.get("status") or "").upper()
+                  if not status.startswith("APPROVED"):
                       continue
 
-                  selected.append({
-                      'run_id':rid,'artifact_id':str(aid),'artifact_name':name,
-                      'dir':str(d),'shorts':[str(x) for x in shorts],
-                      'metas':[str(x) for x in metas],
-                  })
+                  titles=[]
+                  duplicate=True
+                  for mp in metas:
+                      meta=json.loads(Path(mp).read_text(encoding="utf-8"))
+                      t=str(meta.get("title") or "")
+                      t=t.replace("#Shorts","").replace("#shorts","").strip(" -|")
+                      titles.append(t)
+                      if t.casefold() not in imported_titles:
+                          duplicate=False
+                  if duplicate:
+                      continue
+
+                  chosen={
+                      "run_id":rid,
+                      "artifact_id":str(aid),
+                      "artifact_name":name,
+                      "dir":str(d),
+                      "shorts":[str(x) for x in shorts],
+                      "metas":[str(x) for x in metas],
+                      "qa_status":status,
+                  }
                   break
 
-          Path('/tmp/radar-tiktok-auto-import.json').write_text(json.dumps(selected,ensure_ascii=False,indent=2),encoding='utf-8')
-          print(json.dumps({'approved_packages_found':len(selected),'runs':[x['run_id'] for x in selected]},ensure_ascii=False))
+              if chosen:
+                  selected.append(chosen)
+
+          Path("/tmp/radar-tiktok-auto-import.json").write_text(
+              json.dumps(selected,ensure_ascii=False,indent=2),encoding="utf-8"
+          )
+          print(json.dumps({
+              "approved_packages_found":len(selected),
+              "runs":[x["run_id"] for x in selected],
+              "qa_statuses":[x["qa_status"] for x in selected],
+          },ensure_ascii=False))
           PY
 
-      - name: Publish MP4s, previews and merge them into the TikTok Helper queue
-        shell: bash
+      - name: Preparar MP4s capas e itens da fila
         run: |
-          set -euo pipefail
+          mkdir -p imported-assets
           python - <<'PY'
-          import json, os, re, shutil, subprocess, unicodedata
+          import json, re, shutil, subprocess, unicodedata
           from datetime import datetime, timezone
           from pathlib import Path
 
-          selected=json.loads(Path('/tmp/radar-tiktok-auto-import.json').read_text(encoding='utf-8'))
-          qpath=Path('data/tiktok_queue.json')
-          queue=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
-          old=queue.get('items') or []
+          selected=json.loads(Path("/tmp/radar-tiktok-auto-import.json").read_text(encoding="utf-8"))
           now=datetime.now(timezone.utc).isoformat()
           new=[]
 
           def slugify(v):
-              v=unicodedata.normalize('NFKD',str(v)).encode('ascii','ignore').decode().lower()
-              v=re.sub(r'[^a-z0-9]+','-',v).strip('-')
-              return v[:55] or 'radar-games'
+              v=unicodedata.normalize("NFKD",str(v)).encode("ascii","ignore").decode().lower()
+              v=re.sub(r"[^a-z0-9]+","-",v).strip("-")
+              return v[:55] or "radar-games"
 
           def clean_title(v):
-              v=re.sub(r'(?i)#shorts?\b','',str(v or ''))
-              return re.sub(r'\s+',' ',v).strip(' -|') or 'Radar dos Games'
+              v=re.sub(r"(?i)#shorts?\b","",str(v or ""))
+              return re.sub(r"\s+"," ",v).strip(" -|") or "Radar dos Games"
 
           for pkg in selected:
-              rid=str(pkg['run_id'])
-              first=json.loads(Path(pkg['metas'][0]).read_text(encoding='utf-8'))
-              slug=slugify(first.get('title') or pkg.get('artifact_name') or rid)
+              rid=str(pkg["run_id"])
+              first=json.loads(Path(pkg["metas"][0]).read_text(encoding="utf-8"))
+              slug=slugify(first.get("title") or pkg.get("artifact_name") or rid)
+              d=Path(pkg["dir"])
 
               for n in (1,2,3):
-                  src=Path(pkg['shorts'][n-1]); meta=Path(pkg['metas'][n-1])
-                  data=json.loads(meta.read_text(encoding='utf-8'))
-                  title=clean_title(data.get('title'))
-                  stem=f'{slug}-{rid}-short-{n}'
-                  mp4=Path('imported-assets')/(stem+'.mp4')
-                  jpg=Path('imported-assets')/(stem+'.jpg')
+                  src=Path(pkg["shorts"][n-1])
+                  meta=json.loads(Path(pkg["metas"][n-1]).read_text(encoding="utf-8"))
+                  title=clean_title(meta.get("title"))
+                  stem=f"{slug}-{rid}-short-{n}"
+                  mp4=Path("imported-assets")/(stem+".mp4")
+                  jpg=Path("imported-assets")/(stem+".jpg")
                   shutil.copy2(src,mp4)
-                  subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-ss','1','-i',str(src),'-frames:v','1','-vf','scale=720:-2',str(jpg)],check=True)
 
-                  desc=str(data.get('description') or '')
+                  cover=next(iter(d.rglob(f"short_{n}_cover.jpg")),None)
+                  if cover and Path(cover).exists() and Path(cover).stat().st_size>1000:
+                      shutil.copy2(cover,jpg)
+                  else:
+                      subprocess.run([
+                          "ffmpeg","-hide_banner","-loglevel","error","-y",
+                          "-ss","1","-i",str(src),"-frames:v","1","-vf","scale=720:-2",str(jpg)
+                      ],check=True)
+
+                  desc=str(meta.get("description") or "")
                   tags=[]
-                  for t in re.findall(r'#([\wÀ-ÿ]+)',desc,flags=re.UNICODE):
-                      tag='#'+re.sub(r'[^\w]','',t,flags=re.UNICODE)
-                      if tag.lower() not in {'#shorts','#youtubeshorts'} and tag.lower() not in {x.lower() for x in tags}:
+                  for t in re.findall(r"#([\wÀ-ÿ]+)",desc,flags=re.UNICODE):
+                      tag="#"+re.sub(r"[^\w]","",t,flags=re.UNICODE)
+                      if tag.lower() not in {"#shorts","#youtubeshorts"} and tag.lower() not in {x.lower() for x in tags}:
                           tags.append(tag)
-                      if len(tags)>=4: break
-                  for g in ['#RadarDosGames','#Games','#Gaming','#TikTokGames']:
-                      if g.lower() not in {x.lower() for x in tags}: tags.append(g)
+                      if len(tags)>=5:
+                          break
+                  for g in ["#RadarDosGames","#Games","#Gaming","#TikTokGames"]:
+                      if g.lower() not in {x.lower() for x in tags}:
+                          tags.append(g)
 
                   new.append({
-                    'id':f'{slug}-approved-{rid}-short-{n}',
-                    'title':title,
-                    'media_asset':mp4.name,
-                    'thumbnail_asset':jpg.name,
-                    'post_text':title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(tags),
-                    'status':'approved','source_run_id':int(rid),'short_number':n,
-                    'approved_at':now,'source':'approved_production_artifact_auto',
+                      "id":f"{slug}-approved-{rid}-short-{n}",
+                      "title":title,
+                      "media_asset":mp4.name,
+                      "thumbnail_asset":jpg.name,
+                      "post_text":title+"\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n"+" ".join(tags),
+                      "status":"approved",
+                      "source_run_id":int(rid),
+                      "short_number":n,
+                      "approved_at":now,
+                      "source":"approved_production_artifact_auto",
                   })
 
-          Path('/tmp/radar-tiktok-new-items.json').write_text(json.dumps(new,ensure_ascii=False,indent=2),encoding='utf-8')
-          print(json.dumps({'prepared':len(new)},ensure_ascii=False))
+          Path("/tmp/radar-tiktok-new-items.json").write_text(
+              json.dumps(new,ensure_ascii=False,indent=2),encoding="utf-8"
+          )
+          print(json.dumps({"prepared":len(new)},ensure_ascii=False))
           PY
 
-          shopt -s nullglob
-          files=(imported-assets/*.mp4 imported-assets/*.jpg)
-          if ((${#files[@]})); then
-            TAG=tiktok-approved-assets
-            gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title 'Radar dos Games - Shorts aprovados para TikTok' --notes 'Arquivos aprovados usados pelo Radar TikTok Helper.'
-            gh release upload "$TAG" "${files[@]}" --clobber
+      - name: Publicar arquivos na release do TikTok Helper
+        run: |
+          set -- imported-assets/*.mp4 imported-assets/*.jpg
+          if [ ! -e "$1" ]; then
+            echo "Nenhum novo asset para publicar."
+            exit 0
           fi
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" "$@" --clobber
 
+      - name: Atualizar fila do TikTok Helper
+        run: |
           python - <<'PY'
           import json
           from datetime import datetime, timezone
           from pathlib import Path
 
-          qpath=Path('data/tiktok_queue.json')
-          q=json.loads(qpath.read_text(encoding='utf-8')) if qpath.exists() else {'version':2,'items':[]}
-          new=json.loads(Path('/tmp/radar-tiktok-new-items.json').read_text(encoding='utf-8'))
-          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          new=json.loads(Path("/tmp/radar-tiktok-new-items.json").read_text(encoding="utf-8"))
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+
+          existing=q.get("items") or []
+          existing_titles={str(x.get("title") or "").strip().casefold() for x in existing if x.get("status")=="approved"}
+          merged=[]
           for x in new:
-              x['media_url']=f"{base}/{x.pop('media_asset')}"
-              x['thumbnail_url']=f"{base}/{x.pop('thumbnail_asset')}"
-          ids={x['id'] for x in new}
-          old=[x for x in (q.get('items') or []) if x.get('id') not in ids]
-          if new:
-              q['version']=2
-              q['updated_at']=datetime.now(timezone.utc).isoformat()
-              q['items']=(new+old)[:200]
-              qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          print(json.dumps({'added':len(new),'total':len(q.get('items') or [])},ensure_ascii=False))
+              if x["title"].strip().casefold() in existing_titles:
+                  continue
+              x["media_url"]=f"{base}/{x.pop('media_asset')}"
+              x["thumbnail_url"]=f"{base}/{x.pop('thumbnail_asset')}"
+              merged.append(x)
+              existing_titles.add(x["title"].strip().casefold())
+
+          if merged:
+              ids={x["id"] for x in merged}
+              old=[x for x in existing if x.get("id") not in ids]
+              q["version"]=2
+              q["updated_at"]=datetime.now(timezone.utc).isoformat()
+              q["items"]=(merged+old)[:200]
+              qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+
+          print(json.dumps({"added":len(merged),"total":len(q.get("items") or [])},ensure_ascii=False))
           PY
 
-      - name: Commit queue only when new approved Shorts were imported
-        shell: bash
+      - name: Commitar somente quando houver novos Shorts
         run: |
-          set -euo pipefail
           git config user.name radar-tiktok-bot
           git config user.email actions@users.noreply.github.com
           git add data/tiktok_queue.json
           if git diff --cached --quiet; then
-            echo 'No new approved production Shorts to import.'
+            echo "No new approved production Shorts to import."
             exit 0
           fi
-          git commit -m 'bot: auto-import approved production Shorts to TikTok Helper'
+          git commit -m "bot: auto-import approved production Shorts to TikTok Helper"
           git pull --rebase origin main
           git push origin main
-
-# forced-import: gta6-2026-10-06
-
-# forced-import: gears-eday-launch-2026-10-06
