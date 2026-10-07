@@ -192,14 +192,11 @@ def mix_voice_sfx(visuals,voice,sfx,dest):
     ])
     return "ducking_ready_no_approved_bed"
 
-def normalize_intro(src,dest,limit_seconds=0):
+def normalize_intro(src,dest):
+    """Normaliza a intro oficial sem cortar, atrasar ou aplicar fade de encurtamento."""
     cmd=["ffmpeg","-y","-v","error","-i",str(src)]
-    if limit_seconds and limit_seconds>0:
-        cmd += ["-t",f"{limit_seconds:.3f}"]
     vf=f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=black,fps={FPS},setsar=1,format=yuv420p"
     af="aresample=48000"
-    if limit_seconds and limit_seconds>0.35:
-        af += f",afade=t=out:st={max(0,limit_seconds-.18):.3f}:d=0.18"
     cmd += ["-vf",vf,"-af",af,"-c:v","libx264","-preset","veryfast","-crf","20",
             "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)]
     sh(cmd)
@@ -277,21 +274,21 @@ def render(manifest_path):
     body=tmp/"body_av.mp4"
     music_policy=mix_voice_sfx(visuals,Path(m["voice"]),sfx,body)
 
-    intro_norm=tmp/"intro-sting.mp4"
-    intro_limit=float(m.get("intro_sting_seconds") or 0)
-    normalize_intro(intro,intro_norm,intro_limit)
+    # Regra permanente do Radar: a intro oficial completa é sempre o primeiro conteúdo do Master.
+    # Campos antigos de manifesto (intro_sting_seconds/cold_open_seconds) são deliberadamente ignorados.
+    intro_norm=tmp/"intro-full.mp4"
+    normalize_intro(intro,intro_norm)
+    intro_seconds=probe_duration(intro_norm)
+    source_intro_seconds=probe_duration(intro)
+    if intro_seconds <= 0 or source_intro_seconds <= 0:
+        raise RuntimeError("QUALITY_BLOCK: intro oficial inválida")
+    if abs(intro_seconds-source_intro_seconds) > 0.25:
+        raise RuntimeError(
+            f"QUALITY_BLOCK: intro oficial foi alterada de duração ({source_intro_seconds:.3f}s -> {intro_seconds:.3f}s)"
+        )
 
-    cold=float(m.get("cold_open_seconds") or 0)
-    final_parts=[]
-    if cold>=2.0 and cold < probe_duration(body)-1:
-        cold_p=tmp/"cold-open.mp4"; rest_p=tmp/"body-rest.mp4"
-        trim_av(body,cold_p,0,cold)
-        trim_av(body,rest_p,cold,0)
-        final_parts=[cold_p,intro_norm,rest_p]
-        timeline="cold_open_then_intro_sting_then_body"
-    else:
-        final_parts=[intro_norm,body]
-        timeline="intro_sting_then_body"
+    final_parts=[intro_norm,body]
+    timeline="full_intro_first_then_body"
     concat_av(final_parts,out,tmp)
 
     probe=json.loads(subprocess.check_output([
@@ -305,8 +302,10 @@ def render(manifest_path):
         "voice":timings.get("voice"),
         "semantic_timing_source":timings.get("source"),
         "timeline_policy":timeline,
-        "cold_open_seconds":cold,
-        "intro_sting_seconds":round(probe_duration(intro_norm),3),
+        "intro_policy":"full_intro_first; no_cold_open; no_intro_trimming",
+        "cold_open_seconds":0.0,
+        "intro_seconds":round(intro_seconds,3),
+        "source_intro_seconds":round(source_intro_seconds,3),
         "framing_policy":"full_source_visible; blurred_background_fill; no_destructive_crop",
         "motion_policy":"subtle_non_destructive; phrase_level",
         "sound_design":{
