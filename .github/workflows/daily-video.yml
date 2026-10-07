@@ -183,6 +183,11 @@ jobs:
           premium = json.loads(Path("output/premium-v4-qa.json").read_text(encoding="utf-8"))
           assert premium.get("status") == "APPROVED", premium
           assert premium.get("version") == "PREMIUM_V4_DIRECTOR_CUT", premium
+          assert premium.get("real_headlines") == "APPROVED", premium
+          assert premium.get("gameplay_moving_footage") == "APPROVED", premium
+          assert int(premium.get("video_assets") or 0) >= 1, premium
+          assert float(premium.get("unique_video_seconds") or 0) >= 15, premium
+          assert float(premium.get("moving_footage_ratio") or 0) >= 0.35, premium
           pro = json.loads(Path("output/pro-score.json").read_text(encoding="utf-8"))
           assert pro.get("status") == "APPROVED", pro
           assert int(pro.get("pro_score") or 0) >= 85, pro
@@ -229,6 +234,13 @@ jobs:
               "variable_pacing": premium.get("variable_pacing"),
               "sound_design": premium.get("sound_design"),
               "independent_shorts": premium.get("independent_shorts"),
+              "real_headlines": premium.get("real_headlines"),
+              "gameplay_moving_footage": premium.get("gameplay_moving_footage"),
+              "video_assets": premium.get("video_assets"),
+              "unique_video_seconds": premium.get("unique_video_seconds"),
+              "moving_footage_seconds": premium.get("moving_footage_seconds"),
+              "moving_footage_ratio": premium.get("moving_footage_ratio"),
+              "video_scene_count": premium.get("video_scene_count"),
               "pro_score": pro.get("pro_score"),
               "status": "APPROVED",
           }
