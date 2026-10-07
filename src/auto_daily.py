@@ -683,6 +683,7 @@ def main():
     (OUT / "auto-script.txt").write_text(script + "\n", encoding="utf-8")
 
     media_items = []
+    video_position = 0
     for i, (typ, url) in enumerate(selected_media, 1):
         role = f"official_gameplay_or_trailer_{i:02d}" if typ == "video" else f"official_context_{i:02d}"
         item = {
@@ -694,9 +695,13 @@ def main():
             "relevance_evidence": "official_source_page_discovered_asset",
         }
         if typ == "video":
-            # Clipes oficiais curtos (5s+) ainda são úteis no V3: o render usa
-            # cortes de 3-6s e nunca precisa esticar um único trecho como cena inteira.
+            # Clipes oficiais curtos (5s+) são suficientes para os beats do Diretor V4.
             item["min_duration"] = 5
+            if manual:
+                fallbacks = manual.get("video_fallback_urls") or []
+                if video_position < len(fallbacks):
+                    item["fallback_urls"] = [fallbacks[video_position]]
+            video_position += 1
         media_items.append(item)
 
     plan = {
