@@ -451,3 +451,5 @@ jobs:
             output/shorts/*_cover.jpg
             output/shorts/*_cover-policy.json
           retention-days: 7
+
+# trigger: run BGS 2026 production
