@@ -546,15 +546,30 @@ def main():
     script = make_script(selected, parser)
     (OUT / "auto-script.txt").write_text(script + "\n", encoding="utf-8")
 
-    media_items = [
-        {"type": typ, "url": url, "role": f"official_context_{i:02d}"}
-        for i, (typ, url) in enumerate(selected_media, 1)
-    ]
+    media_items = []
+    for i, (typ, url) in enumerate(selected_media, 1):
+        item = {
+            "type": typ,
+            "url": url,
+            "role": f"official_context_{i:02d}",
+            "max_assets": 1,
+            "source_proof": selected["url"],
+            "relevance_evidence": "official_source_page_discovered_asset",
+        }
+        if typ == "video":
+            # Clipes oficiais curtos (5s+) ainda são úteis no V3: o render usa
+            # cortes de 3-6s e nunca precisa esticar um único trecho como cena inteira.
+            item["min_duration"] = 5
+        media_items.append(item)
+
     plan = {
         "topic": pt_headline(selected, parser),
         "source": selected["url"],
         "minimum_assets": 2,
-        "media_policy": "prefer_video_plus_images; interleave_when_available; graceful_single_type_fallback",
+        "minimum_video_assets": 0,
+        "minimum_unique_video_seconds": 0,
+        "minimum_image_assets": 0,
+        "media_policy": "prefer_video_plus_images; accept_official_video_5s_plus; graceful_single_type_fallback; premium_v3_motion_for_images",
         "media": media_items,
         "scenes": make_scenes(selected, selected_media, script),
     }
