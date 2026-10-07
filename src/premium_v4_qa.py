@@ -9,6 +9,10 @@ def load(path):
     if not p.exists():raise RuntimeError(f"QUALITY_BLOCK: arquivo ausente {path}")
     return json.loads(p.read_text(encoding="utf-8"))
 
+def norm_short_title(value):
+    value=re.sub(r"(?i)\\s*#shorts?\\b","",str(value or ""))
+    return re.sub(r"\\s+"," ",value).strip().casefold()
+
 def main():
     plan=load("output/auto-media-plan.json")
     director=load("output/director-v4.json")
@@ -16,6 +20,7 @@ def main():
     semantic=load("output/semantic-visual-qa.json")
     render=load("output/qa.json")
     shorts=load("output/shorts/manifest.json")
+    picks=load("output/short-picks.json")
     frames=load("output/visual-frame-qa.json")
     timings=load("output/voice-timings.json")
 
@@ -81,10 +86,30 @@ def main():
 
     srows=shorts.get("shorts") or []
     assert len(srows)==3,len(srows)
-    for row in srows:
+    expected_hooks=[str(x or "").strip() for x in (picks.get("expected_hooks") or [])]
+    manifest_hooks=[str(x or "").strip() for x in (shorts.get("expected_hooks") or [])]
+    matches=picks.get("semantic_matches") or []
+    if len(expected_hooks)!=3 or any(not x for x in expected_hooks):
+        raise RuntimeError("QUALITY_BLOCK: short-picks sem exatamente 3 hooks aprovados")
+    if [norm_short_title(x) for x in manifest_hooks] != [norm_short_title(x) for x in expected_hooks]:
+        raise RuntimeError("QUALITY_BLOCK: manifest dos Shorts divergiu dos hooks aprovados")
+    if len(matches)!=3:
+        raise RuntimeError("QUALITY_BLOCK: seleção semântica dos Shorts incompleta")
+    for i,(row,hook,match) in enumerate(zip(srows,expected_hooks,matches),1):
         assert row.get("render_policy")=="rebuilt_from_source_assets_not_master_crop",row
         assert row.get("boundary_policy")=="independent_scene_voice_complete",row
         assert float(row.get("duration") or 0)>=8,row
+        if norm_short_title(row.get("title")) != norm_short_title(hook):
+            raise RuntimeError(f"QUALITY_BLOCK: Short {i} saiu com título diferente do hook aprovado: {row.get('title')} != {hook}")
+        if norm_short_title(row.get("approved_hook")) != norm_short_title(hook):
+            raise RuntimeError(f"QUALITY_BLOCK: Short {i} perdeu o hook aprovado no manifesto")
+        if int(match.get("scene_index",-1)) != int(row.get("scene_index",-2)):
+            raise RuntimeError(f"QUALITY_BLOCK: Short {i} renderizou cena diferente da seleção semântica")
+        if float(match.get("semantic_score") or 0) <= 0:
+            raise RuntimeError(f"QUALITY_BLOCK: Short {i} sem correspondência semântica entre hook e narração")
+        meta=load(f"output/short-{i}-youtube.json")
+        if norm_short_title(meta.get("title")) != norm_short_title(hook):
+            raise RuntimeError(f"QUALITY_BLOCK: metadata do Short {i} diverge do hook aprovado")
 
     sound=render.get("sound_design") or {}
     assert sound.get("voice_chain")=="compression+loudnorm+limiter",sound
@@ -97,6 +122,9 @@ def main():
         "variable_pacing":"APPROVED",
         "sound_design":"APPROVED",
         "independent_shorts":"APPROVED",
+        "short_hooks_exact":"APPROVED",
+        "short_semantic_selection":"APPROVED",
+        "approved_short_hooks":expected_hooks,
         "visual_frame_qa":"APPROVED",
         "real_headlines":"APPROVED",
         "gameplay_moving_footage":"APPROVED",
