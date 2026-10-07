@@ -145,9 +145,9 @@ def mix_audio(visuals,voice,sfx,dest):
     bed=approved_music_bed()
     if bed:
         sh(["ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),"-stream_loop","-1","-i",str(bed),
-            "-filter_complex",f"[1:a]{VOICE_CHAIN}[v];[2:a]volume=.68[s];[3:a]volume=.10[bed];"
-            "[bed][v]sidechaincompress=threshold=.015:ratio=12:attack=18:release=240[ducked];"
-            "[v][ducked][s]amix=inputs=3:weights='1 .55 .45':normalize=0,alimiter=limit=.92[a]",
+            "-filter_complex",f"[1:a]{VOICE_CHAIN},asplit=2[vmain][vsc];[2:a]volume=.68[s];[3:a]volume=.10[bed];"
+            "[bed][vsc]sidechaincompress=threshold=.015:ratio=12:attack=18:release=240[ducked];"
+            "[vmain][ducked][s]amix=inputs=3:weights='1 .55 .45':normalize=0,alimiter=limit=.92[a]",
             "-map","0:v:0","-map","[a]","-shortest","-c:v","copy","-c:a","aac","-b:a","160k","-ar","48000","-ac","2",
             "-movflags","+faststart",str(dest)])
         return "approved_bed_with_voice_ducking"
