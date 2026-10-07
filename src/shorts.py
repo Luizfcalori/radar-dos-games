@@ -152,6 +152,16 @@ def pick_cards(cards):
             {"title": "VOCÊ PRECISA VER ISSO", "subtitle": "DESTAQUE DO RADAR DOS GAMES", "scene_index": 1},
             {"title": "MAIS UM DESTAQUE", "subtitle": "VÍDEO COMPLETO NO CANAL", "scene_index": 2},
         ]
+    picks_file = Path("output/short-picks.json")
+    if picks_file.exists():
+        try:
+            data = json.loads(picks_file.read_text(encoding="utf-8"))
+            picks = [int(x) for x in data.get("scene_indexes", [])]
+            if len(picks) == 3 and all(0 <= i < len(cards) for i in picks):
+                print("SHORT_SEMANTIC_PICKS", picks, flush=True)
+                return [cards[i] for i in picks]
+        except Exception as exc:
+            print(f"Aviso: short-picks.json inválido ({exc}); usando seleção automática.", file=sys.stderr)
     if len(cards) >= 3:
         picks = [0, len(cards) // 2, len(cards) - 1]
         return [cards[i] for i in picks]
