@@ -73,8 +73,11 @@ jobs:
           for p, expected in covers:
               f = Path(p)
               assert f.exists() and f.stat().st_size > 1_000, (p, "capa ausente/pequena")
+              raw = f.read_bytes()
+              assert raw[:2] == b"\\xff\\xd8" and raw[-2:] == b"\\xff\\xd9", (p, "JPEG incompleto")
               with Image.open(f) as im:
                   assert im.size == expected, (p, im.size, expected)
+                  im.verify()
               print("COVER_OK", p, expected, f.stat().st_size)
 
           qa = json.loads(Path("output/final-qa.json").read_text(encoding="utf-8"))
