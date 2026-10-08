@@ -110,87 +110,105 @@ def prepare():
     print(json.dumps({"status":"PREPARED","words":word_count,"paragraphs":len(blocks),
                       "visual_policy":"verified Rockstar GTA6 extended only; explicit leaked frames excluded"}))
 
-def ensure_source():
+def scene_assets():
+    """Each narration scene is locked to its own original Rockstar GTA VI clip."""
     clips=load(OUT/"clips.json")
-    vids=[a for a in clips.get("assets",[]) if a.get("type")=="video"]
-    extended=[a for a in vids if "tJbzMqJGH4k" in str(a.get("url")) and float(a.get("duration",0))>=1500]
-    if not extended:
-        raise RuntimeError("QUALITY_BLOCK: gameplay oficial Extended Look 26 minutos não foi adquirido na íntegra; não trocar por trailer aleatório")
-    asset=extended[0]
-    if float(asset.get("duration") or 0)<1500:raise RuntimeError("QUALITY_BLOCK: footage principal truncado")
-    return int(asset["index"]),asset
+    vids=[a for a in clips.get("assets",[]) if a.get("type")=="video"
+        and "media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look" in str(a.get("url") or "")]
+    b=load(BRIEF)
+    if len(vids)!=len(b["scene_titles"]):
+        raise RuntimeError(f"QUALITY_BLOCK: não foram encontrados os {len(b['scene_titles'])} clipes Rockstar por cena: {len(vids)}")
+    out={}
+    for n in range(1,len(b["scene_titles"])+1):
+        role=f"gta6_rockstar_scene_{n:02d}"
+        match=[a for a in vids if a.get("role")==role and float(a.get("duration") or 0)>=20]
+        if len(match)!=1:
+            raise RuntimeError("QUALITY_BLOCK: clipe oficial da cena %02d ausente"%n)
+        out[n]=match[0]
+    return out
 
 def direct():
     import director_v4
     director_v4.main()
-    b=load(BRIEF);plan=load(OUT/"auto-media-plan.json")
-    clips=load(OUT/"clips.json")
-    source_idx,asset=ensure_source()
+    b=load(BRIEF)
+    plan=load(OUT/"auto-media-plan.json")
     scenes=plan["scenes"]
-    if len(scenes)!=len(b["scene_seeks"]):raise RuntimeError("QUALITY_BLOCK: mismatch scene count")
+    asset_for_scene=scene_assets()
+    if len(scenes)!=len(b["scene_titles"]):
+        raise RuntimeError("QUALITY_BLOCK: 16 cenas obrigatórias GTA 6")
     rows=[]
-    for i,scene in enumerate(scenes):
-        scene["title"]=b["scene_titles"][i][:47]
+    uses={}
+    for i,scene in enumerate(scenes,1):
+        asset=asset_for_scene[i]
+        media_index=int(asset["index"])
+        scene["title"]=b["scene_titles"][i-1][:47]
         scene["subtitle"]="GTA VI - ANÁLISE DO VAZAMENTO"
         scene["allowed_roles"]=[asset["role"]]
         scene.pop("allowed_role_prefixes",None)
-        base=float(b["scene_seeks"][i])
-        beats=scene["beats"]
-        for k,beat in enumerate(beats):
-            beat["media_index"]=source_idx
-            # The fixed source offset is supported by the official Extended
-            # Look frame gallery timecode; no random seek into other subject.
-            # Keep cuts within a tightly bounded six-second semantic window.
-            seek=base+(k%3)*1.35
-            beat["source_seek"]=round(min(seek,float(asset["duration"])-float(beat["duration"])-2),3)
-            beat["source_kind"]="OFFICIAL_GTA_VI_EXTENDED_LOOK"
-            rows.append({"scene":i+1,"phrase":beat.get("phrase"),"beat":k+1,
-                         "source_seek":beat["source_seek"],"duration":beat["duration"],
-                         "text":beat.get("text","")[:150],
-                         "source":asset["url"]})
-        scene["media_indices"]=[source_idx]
-        scene["semantic_subject"]=f"gta6_leak_{i+1:02d}"
-    plan["minimum_unique_video_seconds"]=1200
-    plan["minimum_video_assets"]=1
+        scene["semantic_subject"]=f"gta6_special_scene_{i:02d}"
+        for k,beat in enumerate(scene["beats"]):
+            d=float(beat["duration"])
+            clip_seconds=float(asset["duration"])
+            room=max(0.0,clip_seconds-d-0.5)
+            if room<0.1:raise RuntimeError(f"QUALITY_BLOCK: clipe da cena {i} menor que beat")
+            # Timecoded local clip bound to this precise subject; prevents
+            # random seek into any other game or unrelated section.
+            offset=round(min(room, max(0,(k*2.31)%room)),3)
+            beat["media_index"]=media_index
+            beat["source_seek"]=offset
+            beat["source_kind"]="ROCKSTAR_GTA_VI_OFFICIAL_2026_08_27"
+            rows.append({
+                "scene":i,"beat":k+1,"phrase":beat.get("phrase"),
+                "source_original_timestamp":asset["source_seek_original"],
+                "source_local_timestamp":offset,
+                "media_index":media_index,"duration":d,"text":beat.get("text","")[:150],
+                "source":asset["url"]
+            })
+            uses[str(media_index)]=uses.get(str(media_index),0)+1
+        scene["media_indices"]=[media_index]
     save(OUT/"auto-media-plan.json",plan)
     manifest=load(OUT/"render.json")
     manifest["scenes"]=scenes
     save(OUT/"render.json",manifest)
-    # Preserve official V4 time, footage and scene reports after the binding.
     report=load(OUT/"director-v4.json")
-    report["source_lock"]="official_rockstar_gta_vi_extended_look_timecoded_per_beat"
-    report["asset_usage"]={str(source_idx):sum(len(s["beats"]) for s in scenes)}
-    for i,s in enumerate(scenes):
-        report["scenes"][i]["media_indices"]=[source_idx]
-        report["scenes"][i]["video_beats"]=len(s["beats"])
-    save(OUT/"director-v4.json",report)
+    report["source_lock"]="ROCKSTAR_GTA_VI_2026_08_27_TIME_CODED_16_SCENE_ONLY"
+    report["asset_usage"]=uses
+    for i,scene in enumerate(scenes):
+        report["scenes"][i]["media_indices"]=scene["media_indices"]
+        report["scenes"][i]["video_beats"]=len(scene["beats"])
     picks=[int(i)-1 for i in b["short_scene_numbers"]]
     hooks=b["short_hooks"]
-    if len(set(picks))!=3 or len(hooks)!=3:raise RuntimeError("QUALITY_BLOCK: Shorts devem vir de 3 cenas únicas")
-    matches=[{"hook":hook,"scene_index":idx,"scene_title":scenes[idx]["title"],
-              "semantic_score":100,"overlap_terms":["gta","vi"],"overlap_stems":["gta"],"editorial_score":100}
-             for idx,hook in zip(picks,hooks)]
+    if len(set(picks))!=3 or len(hooks)!=3:
+        raise RuntimeError("QUALITY_BLOCK: Shorts devem ter três cenas únicas")
+    matches=[]
+    for idx,hook in zip(picks,hooks):
+        score,overlap,stems=director_v4.hook_scene_score(hook,scenes[idx])
+        if score<=0:
+            raise RuntimeError(f"QUALITY_BLOCK: hook do Short não combina com a cena escolhida: {hook}")
+        matches.append({"hook":hook,"scene_index":idx,
+              "scene_title":scenes[idx]["title"],"semantic_score":score,
+              "overlap_terms":overlap,"overlap_stems":stems,"editorial_score":score})
     save(OUT/"short-picks.json",{
         "version":"PREMIUM_V4_DIRECTOR_CUT","scene_indexes":picks,
         "expected_hooks":hooks,"semantic_matches":matches,
-        "selection_policy":"EXPLICIT_EDITORIAL_SCENE_LOCK_NO_GENERIC_SUBSTITUTION"
+        "selection_policy":"MANUAL_16_SCENE_GAMEPLAY_SOURCE_LOCK; SEMANTIC_SCORE_COMPUTED"
     })
     report["short_scene_indexes"]=picks
     report["short_hooks"]=hooks
     report["short_semantic_matches"]=matches
     save(OUT/"director-v4.json",report)
     save(OUT/"gta6-leak-visual-sync-qa.json",{
-        "status":"APPROVED",
-        "scope":"ONLY_ONE_OFF_GTA6_OCT8",
-        "main_source":asset["url"],
-        "main_source_duration":asset["duration"],
-        "no_leaked_explicit_footage":True,
-        "no_other_game":True,
-        "note":"Timecode validation based on official Extended Look frame gallery. Leaked gameplay itself was not used.",
+        "status":"SOURCE_BINDINGS_APPROVED_HUMAN_REVIEW_REQUIRED",
+        "scope":"GTA VI CYBERLEEK REVIEW ONLY",
+        "main_source":"https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4",
+        "main_source_duration":1608.0,
+        "no_leaked_explicit_footage":True,"no_other_game":True,
+        "note":"Official Aug 27 footage aligned to similar topics but does not depict today's leaked scenes. Human review required before publishing.",
         "beats":rows
     })
-    print(json.dumps({"status":"BOUND","beats":len(rows),"source":asset["url"],
-                      "short_scene_indexes":picks,"min_video_ratio":1.0},ensure_ascii=False))
+    print(json.dumps({"status":"SOURCE_LOCKED",
+        "scenes":len(scenes),"beats":len(rows),"short_scene_indexes":picks,
+        "source":"Rockstar official Aug 27 extended look; original scenes from today not included"},ensure_ascii=False))
 
 def master():
     import render_v4
@@ -237,7 +255,7 @@ def final_review():
     from pathlib import Path
     b=load(BRIEF)
     report=load(OUT/"gta6-leak-visual-sync-qa.json")
-    assert report["status"]=="APPROVED"
+    assert report["status"].startswith("SOURCE_BINDINGS_APPROVED")
     q=load(OUT/"qa.json")
     duration=float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration",
                                             "-of","csv=p=0","output/master.mp4"],text=True).strip())
