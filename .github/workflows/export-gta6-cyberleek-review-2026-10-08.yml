@@ -40,7 +40,7 @@ jobs:
           cp "$SRC/master.mp4" GTA6-Master-REVIEW.mp4
           for i in 1 2 3; do cp "$SRC/shorts/short_$i.mp4" "GTA6-Short-$i-REVIEW.mp4"; done
           cp "$SRC/thumbnail.jpg" GTA6-Master-Capa.jpg
-          for i in 1 2 3; do cp "$SRC/shorts/short_"$i"_cover.jpg" "GTA6-Short-$i-Capa.jpg"; done
+          for i in 1 2 3; do cp "$SRC/shorts/short_${i}_cover.jpg" "GTA6-Short-${i}-Capa.jpg"; done
           cp "$SRC/gta6-special-final-review.json" gta6-final-qa.json
           echo "All eight media files present; editorial approval not implied."
 
