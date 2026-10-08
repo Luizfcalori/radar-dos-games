@@ -12,16 +12,16 @@ permissions:
 
 jobs:
   export:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.id == 37793625832 && github.event.workflow_run.conclusion == 'success') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.id == 37799357707 && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Baixar pacote original aprovado
         uses: actions/download-artifact@v4
         with:
-          name: radar-daily-auto-37793625832
+          name: radar-daily-auto-37799357707
           repository: Luizfcalori/radar-dos-games
-          run-id: 37793625832
+          run-id: 37799357707
           github-token: ${{ github.token }}
           path: review
 
