@@ -1,0 +1,80 @@
+name: "Export GTA 6 Oct 8 review MP4s separately (NOT PUBLISHED)"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/export-gta6-cyberleek-review-2026-10-08.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Baixar artefato GTA VI renderizado e auditado tecnicamente
+        uses: actions/download-artifact@v4
+        with:
+          name: gta6-cyberleek-2026-10-08-review-37812102922
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37812102922
+          github-token: ${{ github.token }}
+          path: review
+
+      - name: Conferir arquivos e empacotar MP4s individuais para revisão humana
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -s review/output/master.mp4 ]; then
+            SRC="review/output"
+          else
+            SRC="review"
+          fi
+          for f in master.mp4 thumbnail.jpg shorts/short_1.mp4 shorts/short_2.mp4 shorts/short_3.mp4 shorts/short_1_cover.jpg shorts/short_2_cover.jpg shorts/short_3_cover.jpg gta6-special-final-review.json; do
+            test -s "$SRC/$f" || { echo "QUALITY_BLOCK: missing $SRC/$f"; exit 1; }
+          done
+          cp "$SRC/master.mp4" GTA6-Master-REVIEW.mp4
+          for i in 1 2 3; do cp "$SRC/shorts/short_$i.mp4" "GTA6-Short-$i-REVIEW.mp4"; done
+          cp "$SRC/thumbnail.jpg" GTA6-Master-Capa.jpg
+          for i in 1 2 3; do cp "$SRC/shorts/short_$i_cover.jpg" "GTA6-Short-$i-Capa.jpg"; done
+          cp "$SRC/gta6-special-final-review.json" gta6-final-qa.json
+          echo "All eight media files present; editorial approval not implied."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gta6-master-2026-10-08-review
+          path: GTA6-Master-REVIEW.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gta6-short-1-2026-10-08-review
+          path: GTA6-Short-1-REVIEW.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gta6-short-2-2026-10-08-review
+          path: GTA6-Short-2-REVIEW.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gta6-short-3-2026-10-08-review
+          path: GTA6-Short-3-REVIEW.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gta6-covers-2026-10-08-review
+          path: |
+            GTA6-Master-Capa.jpg
+            GTA6-Short-1-Capa.jpg
+            GTA6-Short-2-Capa.jpg
+            GTA6-Short-3-Capa.jpg
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gta6-quality-report-2026-10-08
+          path: gta6-final-qa.json
+          retention-days: 7
