@@ -10,8 +10,8 @@ def load(path):
     return json.loads(p.read_text(encoding="utf-8"))
 
 def norm_short_title(value):
-    value=re.sub(r"(?i)\s*#shorts?\b","",str(value or ""))
-    return re.sub(r"\s+"," ",value).strip().casefold()
+    value=re.sub(r"(?i)\\s*#shorts?\\b","",str(value or ""))
+    return re.sub(r"\\s+"," ",value).strip().casefold()
 
 def main():
     plan=load("output/auto-media-plan.json")

@@ -67,14 +67,6 @@ def accent_from_asset(path,image_mode,seek=0):
         return f"0x{r:02X}{g:02X}{b:02X}"
     except:return "0x00DCC8"
 
-def visual_short_headline(headline):
-    """Legenda visual curta sem alterar título editorial nem metadados."""
-    h=" ".join(str(headline).upper().split())
-    if "GRÁTIS DE 8 A 12" in h: return "ARC RAIDERS GRÁTIS\n8 A 12 DE OUTUBRO"
-    if "PENDOLA PASS" in h: return "NOVO MAPA\nPENDOLA PASS"
-    if "BULLY, SKULKER E HYDRA" in h: return "BULLY, SKULKER\nE HYDRA"
-    return wrapped(h,18,2)
-
 def render_vertical_piece(asset,duration,dest,piece_no,headline="",keyword="",first=False,last=False):
     path=Path(asset["path"]); image_mode=is_image(asset)
     if image_mode: inp=["-loop","1","-i",str(path)]
@@ -98,10 +90,10 @@ def render_vertical_piece(asset,duration,dest,piece_no,headline="",keyword="",fi
         f"drawbox=x=72:y=440:w=936:h=1120:color={accent}@0.22:t=3",
     ]
     if first:
-        h=esc(visual_short_headline(headline))
+        h=esc(wrapped(headline,23,2))
         filters += [
             "drawbox=x=56:y=150:w=968:h=270:color=black@0.86:t=fill:enable='between(t,0,3.0)'",
-            f"drawtext=fontfile='{FONT}':text='{h}':x=(w-text_w)/2:y=205:fontsize=41:fontcolor=white:"
+            f"drawtext=fontfile='{FONT}':text='{h}':x=(w-text_w)/2:y=205:fontsize=55:fontcolor=white:"
             "borderw=2:bordercolor=black@0.8:line_spacing=12:expansion=none:enable='between(t,0,3.0)'",
         ]
     if keyword:
