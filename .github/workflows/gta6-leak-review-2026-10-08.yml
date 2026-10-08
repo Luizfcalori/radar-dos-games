@@ -36,8 +36,10 @@ jobs:
           test ! -e src/arc_frozen_sync.py
           ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
 
-      - name: "Preparar roteiro GTA 6; 16 cenas; exatos 3 hooks"
-        run: python src/gta6_leak_special_oct08.py prepare
+      - name: "Validar código isolado e preparar roteiro GTA 6; 16 cenas; exatos 3 hooks"
+        run: |
+          python -m py_compile src/gta6_leak_special_oct08.py src/gta6_leak_media_oct08.py
+          python src/gta6_leak_special_oct08.py prepare
 
       - name: "Bloquear narração privada, meta e indiretas"
         run: python src/narration_qa.py output/auto-script.txt
@@ -48,8 +50,8 @@ jobs:
             --voice pt-BR-ThalitaMultilingualNeural \
             --segments-json output/voice-timings.json
 
-      - name: "Capturar somente vídeos originais GTA VI da Rockstar"
-        run: python src/media.py output/auto-media-plan.json
+      - name: "Capturar cenas diretamente do MP4 oficial Rockstar - sem YouTube com bloqueio de idade"
+        run: python src/gta6_leak_media_oct08.py
 
       - name: "Montar beats semânticos com gameplay e timecodes oficiais"
         run: python src/gta6_leak_special_oct08.py direct
