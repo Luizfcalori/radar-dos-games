@@ -70,9 +70,9 @@ def accent_from_asset(path,image_mode,seek=0):
 def visual_short_headline(headline):
     """Legenda visual curta sem alterar título editorial nem metadados."""
     h=" ".join(str(headline).upper().split())
-    if "GRÁTIS DE 8 A 12" in h: return "ARC RAIDERS GRÁTIS\\n8 A 12 DE OUTUBRO"
-    if "PENDOLA PASS" in h: return "NOVO MAPA\\nPENDOLA PASS"
-    if "BULLY, SKULKER E HYDRA" in h: return "BULLY, SKULKER\\nE HYDRA"
+    if "GRÁTIS DE 8 A 12" in h: return "ARC RAIDERS GRÁTIS\n8 A 12 DE OUTUBRO"
+    if "PENDOLA PASS" in h: return "NOVO MAPA\nPENDOLA PASS"
+    if "BULLY, SKULKER E HYDRA" in h: return "BULLY, SKULKER\nE HYDRA"
     return wrapped(h,18,2)
 
 def render_vertical_piece(asset,duration,dest,piece_no,headline="",keyword="",first=False,last=False):
