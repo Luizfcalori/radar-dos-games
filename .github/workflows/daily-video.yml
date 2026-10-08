@@ -344,6 +344,7 @@ jobs:
             output/director-v4.json
             output/render.json
             output/semantic-visual-qa.json
+            output/arc-visual-sync-qa.json
             output/visual-frame-qa.json
             output/frame-qa/*.jpg
             output/premium-v4-qa.json
