@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-08T16:01:48.663284+00:00",
-  "total_discovered": 53,
-  "ready_for_tiktok": 52,
+  "updated_at": "2026-10-08T21:17:18.768126+00:00",
+  "total_discovered": 56,
+  "ready_for_tiktok": 55,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "6ceqhYs3LQc",
+      "youtube_url": "https://www.youtube.com/shorts/6ceqhYs3LQc",
+      "title": "GTA 6: TUNAGEM DE CARROS E CORRIDA DE RUA",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "hVgnaktP2jc",
+      "youtube_url": "https://www.youtube.com/shorts/hVgnaktP2jc",
+      "title": "GTA 6 EM PRIMEIRA PESSOA: O QUE O VAZAMENTO INDICA",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "I4Ii6KhO6Ug",
+      "youtube_url": "https://www.youtube.com/shorts/I4Ii6KhO6Ug",
+      "title": "25 MINUTOS DE GTA 6: A CORRIDA DE MOTO NA LAMA",
+      "status": "approved"
+    },
     {
       "youtube_id": "uQ3dihNPQw0",
       "youtube_url": "https://www.youtube.com/shorts/uQ3dihNPQw0",
