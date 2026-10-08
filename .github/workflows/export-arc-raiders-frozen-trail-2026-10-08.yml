@@ -1,0 +1,84 @@
+name: Export ARC Raiders Frozen Trail review files
+
+on:
+  workflow_run:
+    workflows: ["Radar dos Games - Daily Auto Master + 3 Shorts"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  export:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.id == 37793625832 && github.event.workflow_run.conclusion == 'success') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Baixar pacote original aprovado
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-37793625832
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37793625832
+          github-token: ${{ github.token }}
+          path: review
+
+      - name: Conferir 4 videos e 4 capas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s review/output/master.mp4 || test -s review/master.mp4
+          if [ -f review/output/master.mp4 ]; then
+            SRC=review/output
+          else
+            SRC=review
+          fi
+          for f in "$SRC/master.mp4" "$SRC/thumbnail.jpg" "$SRC/shorts/short_1.mp4" "$SRC/shorts/short_2.mp4" "$SRC/shorts/short_3.mp4" "$SRC/shorts/short_1_cover.jpg" "$SRC/shorts/short_2_cover.jpg" "$SRC/shorts/short_3_cover.jpg" "$SRC/final-qa.json"; do
+            test -s "$f"
+          done
+          cp "$SRC/master.mp4" master.mp4
+          cp "$SRC/thumbnail.jpg" master-cover.jpg
+          cp "$SRC/shorts/short_1.mp4" short-1.mp4
+          cp "$SRC/shorts/short_2.mp4" short-2.mp4
+          cp "$SRC/shorts/short_3.mp4" short-3.mp4
+          cp "$SRC/shorts/short_1_cover.jpg" short-1-cover.jpg
+          cp "$SRC/shorts/short_2_cover.jpg" short-2-cover.jpg
+          cp "$SRC/shorts/short_3_cover.jpg" short-3-cover.jpg
+          cp "$SRC/final-qa.json" final-qa.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arc-frozen-trail-master
+          path: master.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arc-frozen-trail-short-1
+          path: short-1.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arc-frozen-trail-short-2
+          path: short-2.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arc-frozen-trail-short-3
+          path: short-3.mp4
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arc-frozen-trail-covers
+          path: |
+            master-cover.jpg
+            short-1-cover.jpg
+            short-2-cover.jpg
+            short-3-cover.jpg
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arc-frozen-trail-final-qa
+          path: final-qa.json
+          retention-days: 7
