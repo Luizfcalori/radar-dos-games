@@ -344,6 +344,18 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     if video_scenes<min(MIN_VIDEO_SCENES,len(scenes)):
         raise RuntimeError(f"QUALITY_BLOCK: gameplay presente em somente {video_scenes} cenas")
 
+    # Curadoria especial por frase só para ARC Raiders Frozen Trail.
+    # O restante do padrão Premium V4 permanece intocado.
+    if "ARC RAIDERS FROZEN TRAIL" in str(plan.get("topic") or "").upper():
+        from arc_frozen_sync import curate
+        curate(scenes, assets)
+        total,moving,video_scenes=footage_stats()
+        moving_ratio=(moving/total) if total else 0.0
+        if moving_ratio+1e-9<MIN_MOVING_FOOTAGE_RATIO:
+            raise RuntimeError(f"QUALITY_BLOCK: Frozen Trail com apenas {moving_ratio:.1%} de footage")
+        if video_scenes<MIN_VIDEO_SCENES:
+            raise RuntimeError("QUALITY_BLOCK: Frozen Trail sem 3 cenas de vídeo")
+
     scene_report=[]
     for i,scene in enumerate(scenes,1):
         beats=scene.get("beats") or []
