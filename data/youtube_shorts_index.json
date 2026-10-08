@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-07T17:48:11.585233+00:00",
-  "total_discovered": 47,
-  "ready_for_tiktok": 46,
+  "updated_at": "2026-10-08T16:01:48.663284+00:00",
+  "total_discovered": 53,
+  "ready_for_tiktok": 52,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,42 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "uQ3dihNPQw0",
+      "youtube_url": "https://www.youtube.com/shorts/uQ3dihNPQw0",
+      "title": "BATTLEFIELD 6 CHEGA AO GAME PASS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Lz4qghei38c",
+      "youtube_url": "https://www.youtube.com/shorts/Lz4qghei38c",
+      "title": "BATTLEFIELD 6: TEMPORADA 5 VAI PARA VEGAS",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Djecjc9_zwA",
+      "youtube_url": "https://www.youtube.com/shorts/Djecjc9_zwA",
+      "title": "GAME PASS ULTIMATE: O QUE VOCÊ GANHA NO BATTLEFIELD 6",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "HRLzhVvxdRY",
+      "youtube_url": "https://www.youtube.com/shorts/HRLzhVvxdRY",
+      "title": "JASON, LUCIA E LEONIDA: O QUE JÁ SABEMOS",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "AXvICN8q8Vo",
+      "youtube_url": "https://www.youtube.com/shorts/AXvICN8q8Vo",
+      "title": "GTA VI: DATA, PRÉ-CARGA E PLATAFORMAS",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "_6tSnifRzIw",
+      "youtube_url": "https://www.youtube.com/shorts/_6tSnifRzIw",
+      "title": "GTA VI NO XBOX CLOUD? O QUE FOI CONFIRMADO",
+      "status": "approved"
+    },
     {
       "youtube_id": "jwXtn0b0rYA",
       "youtube_url": "https://www.youtube.com/shorts/jwXtn0b0rYA",
