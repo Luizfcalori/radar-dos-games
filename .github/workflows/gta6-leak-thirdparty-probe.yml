@@ -1,0 +1,35 @@
+name: GTA VI leak - third party SFW footage audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/gta6-leak-thirdparty-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install media inspection tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          pip install -U yt-dlp
+      - name: Probe independent third-party video mirrors and sample early non-explicit candidate footage
+        run: python src/gta6_leak_thirdparty_probe.py
+      - name: Preserve only previews and source availability (NOT leaked footage)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gta6-leak-thirdparty-safety-audit-${{ github.run_id }}
+          path: |
+            output/gta6-thirdparty-probe/report.json
+            output/gta6-thirdparty-probe/sample_*.jpg
+          retention-days: 2
+          if-no-files-found: warn
