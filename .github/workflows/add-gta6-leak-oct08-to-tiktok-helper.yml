@@ -1,0 +1,145 @@
+name: Add GTA 6 Oct 08 Leak Shorts to Radar TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-gta6-leak-oct08-to-tiktok-helper.yml'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  group: add-gta6-leak-oct08-to-tiktok-helper
+  cancel-in-progress: false
+jobs:
+  queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Fetch exact GTA VI Oct 08 Master plus three Shorts source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gta6-cyberleek-2026-10-08-review-37812102922
+          path: gta6-source
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37812102922
+          github-token: ${{ github.token }}
+      - name: Prepare videos, covers, metadata, duration QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          mkdir -p tiktok-oct08
+          if [ -s gta6-source/output/shorts/short_1.mp4 ]; then SRC=gta6-source/output; else SRC=gta6-source; fi
+          for i in 1 2 3; do
+            test -s "$SRC/shorts/short_${i}.mp4"
+            test -s "$SRC/shorts/short_${i}_cover.jpg"
+            test -s "$SRC/short-${i}-youtube.json"
+            cp "$SRC/shorts/short_${i}.mp4" "tiktok-oct08/gta6-leak-2026-10-08-short-${i}.mp4"
+            cp "$SRC/shorts/short_${i}_cover.jpg" "tiktok-oct08/gta6-leak-2026-10-08-short-${i}.jpg"
+            duration=$(ffprobe -v error -show_entries format=duration -of default=nokey=1:noprint_wrappers=1 "tiktok-oct08/gta6-leak-2026-10-08-short-${i}.mp4")
+            awk "BEGIN {if ($duration < 5 || $duration > 180) exit 1}"
+            echo "VALID_SHORT_${i}_DURATION=$duration"
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('gta6-source/output') if Path('gta6-source/output/short-1-youtube.json').exists() else Path('gta6-source')
+          for i in range(1,4):
+              obj=json.loads((root/f'short-{i}-youtube.json').read_text(encoding='utf8'))
+              assert obj.get('title') and obj.get('description')
+              print('META_OK',i,obj['title'])
+          PY
+      - name: Upload three MP4s plus covers to existing TikTok Helper release
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts para TikTok" --notes "Vídeos para download e postagem manual no app Radar TikTok Helper"
+          gh release upload "$TAG" tiktok-oct08/* --clobber
+      - name: Verify MP4 URLs are accessible
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          for i in 1 2 3; do
+            curl --location --fail --retry 3 --max-time 90 --range 0-1023 "$base/gta6-leak-2026-10-08-short-${i}.mp4" -o /dev/null
+            curl --location --fail --retry 3 --max-time 90 --range 0-1023 "$base/gta6-leak-2026-10-08-short-${i}.jpg" -o /dev/null
+            echo "TIKTOK_HELPER_ASSET_OK short${i}"
+          done
+      - name: Merge exactly three entries at top of existing queue without duplication
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime,timezone
+          queue_path=Path('data/tiktok_queue.json')
+          queue=json.loads(queue_path.read_text(encoding='utf-8')) if queue_path.exists() else {'version':2,'items':[]}
+          items=queue.get('items') or []
+          now=datetime.now(timezone.utc).isoformat()
+          source=Path('gta6-source/output') if Path('gta6-source/output/short-1-youtube.json').exists() else Path('gta6-source')
+          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+          youtube_ids=['I4Ii6KhO6Ug','6ceqhYs3LQc','hVgnaktP2jc']
+          captions=[
+            'GTA 6: corrida de moto na lama! 🏍️💥 Veja um dos momentos que chamou atenção nas imagens analisadas do jogo.\n\n🎮 Siga o Radar dos Games para mais!\n\n#GTA6 #GTAVI #RockstarGames #Moto #Gameplay #RadarDosGames #TikTokGames',
+            'GTA 6: carros tunados e corrida de rua! 🏎️🔥 Veja o que apareceu nas imagens analisadas.\n\n🎮 Siga o Radar dos Games para mais!\n\n#GTA6 #GTAVI #Carros #Tunagem #CorridaDeRua #RockstarGames #RadarDosGames #TikTokGames',
+            'GTA 6 em primeira pessoa! 👀🚗 O que as imagens analisadas mostram sobre a experiência no jogo?\n\n🎮 Siga o Radar dos Games para mais!\n\n#GTA6 #GTAVI #PrimeiraPessoa #Gameplay #ViceCity #RockstarGames #RadarDosGames #TikTokGames'
+          ]
+          new=[]
+          for i in range(1,4):
+            meta=json.loads((source/f'short-{i}-youtube.json').read_text(encoding='utf-8'))
+            yt=youtube_ids[i-1]
+            new.append({
+              'id':f'gta6-leak-2026-10-08-short-{i}',
+              'title':meta['title'].strip(),
+              'media_url':f'{base}/gta6-leak-2026-10-08-short-{i}.mp4',
+              'thumbnail_url':f'{base}/gta6-leak-2026-10-08-short-{i}.jpg',
+              'post_text':captions[i-1],
+              'status':'approved',
+              'source_run_id':37812102922,
+              'short_number':i,
+              'approved_at':now,
+              'source':'gta6_oct08_original_artifact',
+              'youtube_id':yt,
+              'youtube_url':f'https://www.youtube.com/shorts/{yt}',
+              'synced_at':now,
+            })
+          ids={x['id'] for x in new}
+          youtube_ids={x['youtube_id'] for x in new}
+          queue['version']=2
+          queue['source_channel']='https://www.youtube.com/@Radardosgamesbr/shorts'
+          queue['updated_at']=now
+          queue['items']=new+[x for x in items if str(x.get('id')) not in ids and str(x.get('youtube_id')) not in youtube_ids]
+          queue_path.parent.mkdir(parents=True,exist_ok=True)
+          queue_path.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'app':'Radar TikTok Helper','new':3,'total':len(queue['items']),'new_entries':[{'title':x['title'],'id':x['id'],'media_url':x['media_url']} for x in new]},ensure_ascii=False,indent=2))
+          PY
+      - name: Commit TikTok Helper queue update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo 'Queue already up to date'
+          else
+            git commit -m "feat: add GTA VI leak Oct 08 three Shorts to TikTok Helper"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Summary
+        if: always()
+        run: |
+          echo '### GTA VI Oct 08 to TikTok Helper' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Three original Shorts for manual TikTok posting, without changing main production workflow.' >> "$GITHUB_STEP_SUMMARY"
