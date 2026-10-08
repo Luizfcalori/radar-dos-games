@@ -1,0 +1,120 @@
+name: "GTA VI - Cyberleek 08 Oct - Master + 3 Shorts - review only"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/gta6-leak-review-2026-10-08.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: gta6-cyberleek-one-off-20261008
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Instalar editor e voz gratuitos - padrão Radar V4"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+
+      - name: "Validar intro oficial e bloqueio editorial do ARC"
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          test ! -e src/arc_frozen_sync.py
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: "Preparar roteiro GTA 6; 16 cenas; exatos 3 hooks"
+        run: python src/gta6_leak_special_oct08.py prepare
+
+      - name: "Bloquear narração privada, meta e indiretas"
+        run: python src/narration_qa.py output/auto-script.txt
+
+      - name: "Narração Thalita Multilingual PT-BR"
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaMultilingualNeural \
+            --segments-json output/voice-timings.json
+
+      - name: "Capturar somente vídeos originais GTA VI da Rockstar"
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: "Montar beats semânticos com gameplay e timecodes oficiais"
+        run: python src/gta6_leak_special_oct08.py direct
+
+      - name: "Gate de cenas GTA VI, sem conteúdo de outros jogos"
+        run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
+
+      - name: "Master V4 com intro completa e cenas ligadas à narração"
+        run: python src/gta6_leak_special_oct08.py master
+
+      - name: "QA visual frame a frame"
+        run: python src/visual_frame_qa.py
+
+      - name: "Três Shorts independentes GTA VI"
+        run: python src/gta6_leak_special_oct08.py shorts
+
+      - name: "QA Premium V4 obrigatório"
+        run: python src/premium_v4_qa.py
+
+      - name: "Capas oficiais Radar para Master e 3 Shorts"
+        run: python src/premium_covers.py
+
+      - name: "QA de capas"
+        run: python src/cover_qa.py
+
+      - name: "PRO SCORE bloqueante"
+        run: python src/pro_score.py
+
+      - name: "Validação final: 6-7 min, shorts, fontes, narração"
+        run: python src/gta6_leak_special_oct08.py review
+
+      - name: "Pacote de revisão - NUNCA PUBLICAR AUTOMATICAMENTE"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gta6-cyberleek-2026-10-08-review-${{ github.run_id }}
+          path: |
+            output/auto-script.txt
+            output/auto-media-plan.json
+            output/selected.json
+            output/clips.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/narration-qa.json
+            output/director-v4.json
+            output/semantic-visual-qa.json
+            output/gta6-leak-visual-sync-qa.json
+            output/gta6-special-final-review.json
+            output/visual-frame-qa.json
+            output/premium-v4-qa.json
+            output/pro-score.json
+            output/cover-qa.json
+            output/qa.json
+            output/render.json
+            output/short-picks.json
+            output/shorts/manifest.json
+            output/master.mp4
+            output/thumbnail.jpg
+            output/shorts/short_1.mp4
+            output/shorts/short_2.mp4
+            output/shorts/short_3.mp4
+            output/shorts/short_*_cover.jpg
+            output/master-youtube.json
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+          retention-days: 7
+          if-no-files-found: warn
