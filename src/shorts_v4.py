@@ -194,6 +194,10 @@ def mix_audio(visuals,voice,sfx,dest):
     return cinematic_mix(visuals,voice,sfx,dest)
 
 def main():
+    try:
+        from repetition_policy import replace_short_repeats, validate_short
+    except ModuleNotFoundError:
+        from src.repetition_policy import replace_short_repeats, validate_short
     manifest=load("output/render.json"); timings=load("output/voice-timings.json"); picks=load("output/short-picks.json")
     scenes=manifest.get("scenes") or []; assets={int(a["index"]):a for a in manifest.get("assets") or []}
     segments=timings.get("segments") or []; indexes=[int(x) for x in picks.get("scene_indexes") or []]
@@ -205,9 +209,11 @@ def main():
     report=[]
 
     for short_no,scene_index in enumerate(indexes,1):
-        scene=scenes[scene_index]; seg=segments[scene_index]; beats=scene.get("beats") or []
+        scene=scenes[scene_index]; seg=segments[scene_index]
+        beats=replace_short_repeats(scene,assets)
         hook=expected_hooks[short_no-1]
         if not beats:raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} sem beats V4")
+        validate_short(beats,assets)
         tmp=out/f"v4_{short_no}"; tmp.mkdir(exist_ok=True)
         pieces=[]; events=[]; cursor=0.0; accents=[]
         for n,beat in enumerate(beats,1):
@@ -241,6 +247,11 @@ def main():
             "music_bed":music_policy,
             "layout_profile":SHORTS_LAYOUT_ID,
             "title_layout":title_layout(hook),
+            "media_beats":[{"media_index":int(b["media_index"]),
+                            "duration":float(b["duration"]),
+                            "text":str(b.get("text") or ""),
+                            "source_window":b.get("source_window")}
+                           for b in beats],
         })
 
     payload={
