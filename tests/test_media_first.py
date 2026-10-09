@@ -39,7 +39,7 @@ class MediaFirstTests(unittest.TestCase):
             compile_storyboard(self.plan,self.clips,{},self.outline)
     def test_different_role_cannot_be_silently_substituted(self):
         with self.assertRaises(RuntimeError):
-            eligible({"title":"Cena","allowed_roles":["not_in_downloads"]},{7:self.assets[0]})
+            eligible({"title":"Cena","allowed_roles":["not_in_downloads"],"media_first_assets":[7]},{7:self.assets[0]})
     def test_url_hints_not_automated_visual_truth(self):
         self.assertGreater(relevance("O ambiente é Vegas",self.assets[1],"Battlefield 6"),0)
         self.assertEqual(relevance("armas e monstros",self.assets[0],"Battlefield 6"),0)
