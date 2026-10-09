@@ -756,7 +756,7 @@ def main():
             "type": "video",
             "steam_app_id": steam_id,
             "role": "official_steam_gameplay",
-            "max_assets": 2,
+            "max_assets": 8,
             "min_duration": 5,
             "source_proof": f"https://store.steampowered.com/app/{steam_id}/",
             "relevance_evidence": "steam_exact_app_direct_stream",

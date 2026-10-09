@@ -24,14 +24,22 @@ CATEGORIES = {
     "weapons": "close up of a rifle or a revolver weapon in a video game",
     "equipment": "a grappling hook or other climbing equipment in a video game",
     "interface": "video game inventory menu, upgrade skill tree or rewards interface",
+    "hacking": "video game hacking scanner interface targeting an enemy with quickhacks",
+    "stealth": "first person video game sneaking unseen past guards",
+    "driving": "driving a car or motorcycle on a street in a video game",
+    "cyberware": "cybernetic body implants and a cyberware upgrade menu in a video game",
     "title_card": "a promotional title card with large text and a logo",
 }
 SCENE_WORDS = {
+    "hacking": ("hacking", "hack", "netrunner", "invasao digital"),
+    "stealth": ("furtiv", "esgueir", "silencios"),
+    "driving": ("dirigir", "dirige", "direcao", "perseguic", "veiculo", "carro", "moto"),
+    "cyberware": ("implante", "cibernetic", "cyberware"),
     "snow": ("neve", "congelad", "frio", "montanha", "pendola", "freeze", "geleira"),
     "robot": ("robo", "maquina", "bully", "skulker", "hydra", "emperor", "inimig"),
     "combat": ("combate", "luta", "ataque", "confront", "tiro", "batalha"),
     "airship": ("frigate", "nave", "aerea", "ceu"),
-    "settlement": ("vila", "cidade", "praca", "outpost", "observatorio", "predio"),
+    "settlement": ("vila", "cidade", "metropole", "arranha", "beco", "bairro", "praca", "outpost", "observatorio", "predio"),
     "weapons": ("arma", "revolver", "fuzil", "bantam", "stiletto", "arsenal"),
     "equipment": ("gancho", "grappling", "corda", "tether", "granada"),
     "interface": ("habilidade", "inventario", "recompens", "skill", "passe", "pass"),
@@ -50,12 +58,13 @@ def scene_categories(text):
     but does not describe a spaceship. False matches must not block a valid
     media-first scene merely because CLIP has no spaceship footage.
     """
-    tokens=re.findall(r"[a-z0-9]+", ascii_text(text))
+    normalized=ascii_text(text)
+    tokens=re.findall(r"[a-z0-9]+", normalized)
     exact={"nave", "ceu", "pass", "vila"}
     return [
         cat for cat, words in SCENE_WORDS.items()
         if any(
-            token==word if word in exact else token.startswith(word)
+            (word in normalized if " " in word else token==word if word in exact else token.startswith(word))
             for token in tokens for word in words
         )
     ]

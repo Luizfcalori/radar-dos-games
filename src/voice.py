@@ -20,6 +20,11 @@ from pathlib import Path
 
 import edge_tts
 
+try:
+    from pronunciation import spoken_text, measured_phrases
+except ModuleNotFoundError:
+    from src.pronunciation import spoken_text, measured_phrases
+
 VOICE = "pt-BR-ThalitaMultilingualNeural"
 
 
@@ -131,8 +136,11 @@ def prepare_narration(text: str) -> str:
 
 async def synthesize_one(text: str, output: Path, voice: str):
     output.parent.mkdir(parents=True, exist_ok=True)
-    communicate = edge_tts.Communicate(text, voice, rate="+0%", pitch="+0Hz")
-    await communicate.save(str(output))
+    speech = spoken_text(text)
+    communicate = edge_tts.Communicate(speech, voice, rate="+0%", pitch="+0Hz", boundary="WordBoundary")
+    metadata = output.with_suffix(".words.jsonl")
+    await communicate.save(str(output), str(metadata))
+    return [json.loads(line) for line in metadata.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
 def duration(path: Path) -> float:
@@ -197,7 +205,7 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
 
     for i, paragraph in enumerate(paragraphs, 1):
         seg = seg_dir / f"segment_{i:02d}.mp3"
-        await synthesize_one(paragraph, seg, voice)
+        word_events = await synthesize_one(paragraph, seg, voice)
         d = duration(seg)
         segments.append(
             {
@@ -209,7 +217,7 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
                 "file": str(seg),
             }
         )
-        phrases.extend(_sentence_timings(paragraph, cursor, d, i))
+        phrases.extend(measured_phrases(paragraph, word_events, cursor, d, i))
         cursor += d
 
     concat_file = seg_dir / "concat.txt"
@@ -227,7 +235,8 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
         "segments": segments,
         "phrases": phrases,
         "duration": round(duration(out), 3),
-        "source": "paragraph_boundaries+sentence_estimates",
+        "source": "paragraph_boundaries+tts_word_boundaries",
+        "pronunciation_policy": "THALITA_SPEECH_ONLY_LEXICON_V1",
         "editorial_revision": "natural_script+cross_scene_dedupe+varied_cta+no_canned_expansion",
     }
     Path(segments_json).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

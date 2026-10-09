@@ -74,9 +74,7 @@ def choose_windows(seconds, duration):
                 windows.append({"start": round(pos, 3), "end": round(end, 3),
                                 "duration": round(end - pos, 3)})
             pos = end + 0.3
-    # Retain a spread of windows rather than just the opening of the trailer.
-    if len(windows) > 24:
-        windows = [windows[round(i * (len(windows) - 1) / 23)] for i in range(24)]
+    # Retain all usable intervals; dropping most of a long gameplay forces reuse.
     return windows
 
 

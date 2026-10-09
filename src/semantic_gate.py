@@ -8,6 +8,14 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
     clips=json.loads(Path(clips_path).read_text(encoding="utf-8"))
     assets={int(a["index"]):a for a in clips.get("assets",[]) if a.get("approved")}
     report=[]
+    try:
+        from continuity import validate_video_beats
+        from vision_semantics import scene_categories
+    except ModuleNotFoundError:
+        from src.continuity import validate_video_beats
+        from src.vision_semantics import scene_categories
+    if plan.get("continuity_policy"):
+        validate_video_beats([b for s in plan.get("scenes",[]) for b in s.get("beats",[])],assets)
 
     for scene in plan.get("scenes",[]):
         subject=(scene.get("semantic_subject") or "").strip()
@@ -23,6 +31,21 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
             for beat in scene.get("beats") or []:
                 if int(beat["media_index"]) not in allowed:
                     raise RuntimeError("QUALITY_BLOCK: frase com vídeo diferente da decupagem")
+        if plan.get("continuity_policy"):
+            for beat in scene.get("beats",[]):
+                idx=int(beat["media_index"])
+                if assets[idx].get("type")!="video":continue
+                selected_window=beat["source_window"]
+                expected=set(scene_categories(beat.get("text","")))
+                requirements=(scene.get("phrase_subjects") or {}).get(str(beat.get("phrase",1)),[])
+                windows=[w for w in scene.get("visual_windows",{}).get(str(idx),[])
+                         if float(w["start"])<=float(selected_window["start"])+0.002
+                         and float(w["end"])+0.002>=float(selected_window["end"])]
+                valid=[w for w in windows if "title_card" not in w.get("semantic_categories",[])
+                       and (not expected or expected & set(w.get("semantic_categories",[])))
+                       and (not requirements or (w.get("reviewed") is True and w.get("evidence")
+                            and set(requirements)<=set(w.get("subjects",[]))))]
+                if not valid:raise RuntimeError("QUALITY_BLOCK: fala sem evidência visual no intervalo escolhido")
         selected=[]
         for idx in ids:
             if idx not in assets:
@@ -50,6 +73,8 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
     result={
         "status":"APPROVED",
         "policy":"EVERY_SCENE_MUST_MATCH_NARRATION_SUBJECT",
+        "continuity_policy":plan.get("continuity_policy"),
+        "evidence_limit":"Broad category classification is a suggestion; exact object names need reviewed shot evidence",
         "scenes":report
     }
     Path(out_path).write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")

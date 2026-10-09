@@ -30,9 +30,10 @@ class ClassicShortLayoutTests(unittest.TestCase):
         self.assertNotIn("force_original_aspect_ratio=increase[fg]", f)
         self.assertEqual(shorts_v4.SHORTS_LAYOUT_ID, "RADAR_SHORTS_CLASSIC_V1")
 
+    @patch.object(shorts_v4, "probe_duration", return_value=0.5)
     @patch.object(shorts_v4, "accent_from_asset", return_value="0xE06080")
     @patch.object(shorts_v4, "sh")
-    def test_all_beats_have_identical_classic_frame(self, run, accent):
+    def test_all_beats_have_identical_classic_frame(self, run, accent, duration):
         asset = {"type":"image", "path":"placeholder.png"}
         for idx in (1,2,3):
             shorts_v4.render_vertical_piece(asset, 0.5, Path("ignored.mp4"), idx,
@@ -65,6 +66,7 @@ class ClassicShortLayoutTests(unittest.TestCase):
             shorts_v4.render_vertical_piece(
                 {"type": "video", "path": str(source)}, 0.4, dest, 1,
                 headline="GTA 6 NA RETA FINAL",
+                source_window={"start":0.0,"end":0.4},
             )
             info = json.loads(subprocess.check_output([
                 "ffprobe", "-v", "error", "-show_streams", "-of", "json", str(dest)

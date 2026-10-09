@@ -33,6 +33,9 @@ on:
       - "src/narration_qa.py"
       - "src/voice.py"
       - "src/director_v4.py"
+      - "src/continuity.py"
+      - "src/pronunciation.py"
+      - "production/pronunciations.json"
       - "src/repetition_policy.py"
       - "src/semantic_gate.py"
       - "src/cinematic.py"
@@ -57,7 +60,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate-code:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - run: pip install -r requirements.txt pytest
+      - run: python -m pytest -q tests
+
   produce:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -224,7 +240,7 @@ jobs:
           assert qa["card_style"]["shadow_attached_to_text"] is True
           assert qa["framing_policy"] == "full_source_visible; blurred_background_fill; no_destructive_crop"
           assert qa["voice"] == "pt-BR-ThalitaMultilingualNeural"
-          assert qa["semantic_timing_source"] == "paragraph_boundaries+sentence_estimates"
+          assert qa["semantic_timing_source"] == "paragraph_boundaries+tts_word_boundaries"
           assert len(qa["scenes"]) >= 1
           from PIL import Image
           thumb = Path("output/thumbnail.jpg")

@@ -308,77 +308,51 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     usage=Counter(); previous=None; scene_report=[]; phrase_total=0
     static_tracker=StaticTracker(); timeline_seconds=0.0
 
+    try:
+        from continuity import VideoTimeline, POLICY
+    except ModuleNotFoundError:
+        from src.continuity import VideoTimeline, POLICY
+    timeline=VideoTimeline(assets)
     for i,(scene,segment) in enumerate(zip(scenes,segments),1):
-        if generic and not scene.get("allowed_roles") and not scene.get("allowed_role_prefixes"):
-            scene["allowed_role_prefixes"]=["official_context_"]
         scene["semantic_subject"]=scene.get("semantic_subject") or f"scene_{i:02d}"
-        current_title=str(scene.get("title") or "").strip()
-        if not current_title or re.fullmatch(r"DESTAQUE\s*\d*", current_title, re.I):
+        title=str(scene.get("title") or "").strip()
+        if not title or re.fullmatch(r"DESTAQUE\s*\d*",title,re.I):
             scene["title"]=headline_from_text(segment.get("text",""),i)
-        if re.fullmatch(r"DESTAQUE\s*\d*", str(scene.get("title") or "").strip(), re.I):
-            raise RuntimeError(f"QUALITY_BLOCK: headline genérica proibida na cena {i}: {scene.get('title')}")
-
         rows=phrases_for_paragraph(timings,i,segment)
-        beats=[]; scene_ids=[]
+        beats=[]
+        allowed=eligible(scene,assets)
         for phrase in rows:
-            duration=float(phrase.get("duration") or 0)
-            target=phrase_target(phrase.get("text",""))
-            count=beat_count(duration,target)
-            beat_duration=duration/count if count else duration
-            allowed=eligible(scene,assets)
-            for n in range(count):
-                phrase_text=phrase.get("text","")
-                # A source-specific still appears only when its labeled subject is
-                # mentioned in THIS phrase; never fill generic footage with posters.
-                stills=[a for a in allowed
-                        if static_tracker.can_use(a,phrase_text,i,timeline_seconds,beat_duration)]
-                videos=[a for a in allowed if a.get("type")=="video" and (
-                    plan.get("visual_inspection_policy")!="FULL_FRAME_TECHNICAL_SCAN_V1"
-                    or any(float(w["end"])-float(w["start"])>=beat_duration+.10
-                           for w in (scene.get("visual_windows") or {}).get(str(a["index"]),[]))
-                )]
-                # Visual specificity wins once (Bully / rewards / weapon);
-                # otherwise moving footage is the default. No recycled stills.
-                stills.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])],
-                                          int(a["index"])))
-                videos.sort(key=lambda a:(int(a["index"])==previous,
-                                         usage[int(a["index"])],int(a["index"])))
-                if stills and (n==0 or not videos):
-                    picked=stills[0]
-                elif videos:
-                    picked=videos[0]
-                elif stills:
-                    picked=stills[0]
+            remaining=float(phrase["duration"]); consumed=0.0
+            phrase_text=phrase.get("text","")
+            requirements=(scene.get("phrase_subjects") or {}).get(str(phrase.get("sentence",1)),[])
+            while remaining>0.001:
+                stills=[a for a in allowed if not requirements and static_tracker.can_use(
+                    a,phrase_text,i,timeline_seconds,min(remaining,3.5))]
+                stills.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
+                # A source-labeled still may illustrate its subject once, never
+                # silently replace footage when the footage inventory runs out.
+                if stills and consumed==0 and remaining<=3.5:
+                    picked=stills[0];d=remaining;window=None;evidence="official_image_subject_label"
                 else:
-                    raise RuntimeError(
-                        f"QUALITY_BLOCK: cena {i} frase {phrase.get('sentence')} "
-                        "sem mídia inédita e correspondente; pesquisar mais material")
-                asset_id=int(picked["index"])
-                static_tracker.record(picked,i,timeline_seconds,beat_duration)
-                timeline_seconds+=beat_duration
-                beats.append({
-                    "phrase":int(phrase.get("sentence") or 1),
-                    "text":phrase.get("text",""),
-                    "start":round(float(phrase.get("start") or 0)+(beat_duration*n),3),
-                    "end":round(float(phrase.get("start") or 0)+(beat_duration*(n+1)),3),
-                    "duration":round(beat_duration,3),
-                    "media_index":asset_id,
-                    "transition":"hard_cut" if n else ("micro_dip" if i>1 else "opening_after_full_intro"),
-                    "keyword_overlay":keyword_overlay(phrase.get("text","")) if n==0 and intensity(phrase.get("text",""))>=1 else "",
-                    "intensity":intensity(phrase.get("text","")),
-                })
-                scene_ids.append(asset_id); usage[asset_id]+=1; previous=asset_id
-
-        scene["media_indices"]=list(dict.fromkeys(scene_ids))
+                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
+                    window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
+                    evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
+                idx=int(picked["index"])
+                beat={"phrase":int(phrase.get("sentence") or 1),"text":phrase_text,
+                      "start":round(float(phrase["start"])+consumed,6),
+                      "end":round(float(phrase["start"])+consumed+d,6),
+                      "duration":round(d,6),"media_index":idx,
+                      "transition":"hard_cut","keyword_overlay":"","intensity":intensity(phrase_text),
+                      "visual_evidence":evidence}
+                if window: beat["source_window"]=window
+                beats.append(beat)
+                static_tracker.record(picked,i,timeline_seconds,d)
+                timeline_seconds+=d;consumed+=d;remaining-=d;usage[idx]+=1;previous=idx
         scene["beats"]=beats
-        scene["editing"]={
-            "version":"PREMIUM_V4_DIRECTOR_CUT",
-            "phrase_level":True,
-            "variable_pacing":True,
-            "card_once_per_scene":True,
-            "motion_profile":"subtle_non_destructive",
-            "transition_policy":"hard_cut_inside_subject; micro_dip_on_scene_change",
-        }
+        scene["media_indices"]=list(dict.fromkeys(b["media_index"] for b in beats))
+        scene["editing"]={"version":"PREMIUM_V4_DIRECTOR_CUT","phrase_level":True,
+                          "variable_pacing":True,"card_once_per_scene":True,
+                          "motion_profile":"subtle_non_destructive","continuity_policy":POLICY}
         phrase_total+=len(rows)
 
     def footage_stats():
@@ -398,55 +372,10 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     if not video_assets:
         raise RuntimeError("QUALITY_BLOCK: Master sem gameplay/vídeo oficial em movimento")
 
-    # Cada cena que aceita vídeo recebe pelo menos um beat em movimento.
-    for scene in scenes:
-        vids=[a for a in eligible(scene,assets) if a.get("type")=="video"]
-        beats=scene.get("beats") or []
-        if vids and beats and not any(assets.get(int(b.get("media_index") or 0),{}).get("type")=="video" for b in beats):
-            pick=min(vids,key=lambda a:(usage[int(a["index"])],int(a["index"])))
-            beats[0]["media_index"]=int(pick["index"]);usage[int(pick["index"])]+=1
-
-    # Se ainda houver pouca gameplay/footage, converte beats de imagem permitidos
-    # até atingir o piso editorial do Radar.
-    total,moving,video_scenes=footage_stats()
-    target=total*MIN_MOVING_FOOTAGE_RATIO
-    if moving<target:
-        for scene in scenes:
-            vids=[a for a in eligible(scene,assets) if a.get("type")=="video"]
-            if not vids:continue
-            for beat in scene.get("beats") or []:
-                if moving>=target:break
-                old=assets.get(int(beat.get("media_index") or 0),{})
-                if old.get("type")=="video":continue
-                pick=min(vids,key=lambda a:(usage[int(a["index"])],int(a["index"])))
-                beat["media_index"]=int(pick["index"]);usage[int(pick["index"])]+=1
-                moving+=float(beat.get("duration") or 0)
-            if moving>=target:break
-
-    # Bind every video beat to an actual non-black timeline window.
-    # This runs AFTER footage-ratio adjustments so those substitutions are
-    # subject to the same restrictions as the director's original selections.
-    source_usage=Counter()
-    for scene in scenes:
-        windows_by_id=scene.get("visual_windows") or {}
-        for beat in scene.get("beats") or []:
-            idx=int(beat["media_index"])
-            if assets.get(idx, {}).get("type") != "video":
-                continue
-            if plan.get("visual_inspection_policy") != "FULL_FRAME_TECHNICAL_SCAN_V1":
-                continue
-            windows=[w for w in windows_by_id.get(str(idx), [])
-                     if float(w["end"])-float(w["start"]) >= float(beat["duration"])+0.10]
-            if not windows:
-                raise RuntimeError(f"QUALITY_BLOCK: vídeo {idx} sem janela limpa para beat de {beat['duration']}s")
-            window=windows[source_usage[idx] % len(windows)]
-            source_usage[idx]+=1
-            beat["source_window"]={"start":float(window["start"]), "end":float(window["end"])}
-        scene["media_indices"]=list(dict.fromkeys(int(b["media_index"]) for b in (scene.get("beats") or [])))
-
     # Fail before rendering costly footage if substitutions reintroduced
     # repeated stills or captions unrelated to the narration.
     repetition_qa=validate_master(scenes,assets)
+    plan["continuity_policy"]=POLICY
 
     total,moving,video_scenes=footage_stats()
     moving_ratio=(moving/total) if total else 0.0

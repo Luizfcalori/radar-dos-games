@@ -148,7 +148,13 @@ def validate_master(scenes,assets):
                 report.append({"scene":scene_no,"image":idx,"seconds":round(d,3)})
             tracker.record(asset,scene_no,cursor,d)
             cursor+=d
-    return {"status":"APPROVED","policy":"MASTER_STATIC_LIMITS_V1",
+    try:
+        from continuity import validate_video_beats
+    except ModuleNotFoundError:
+        from src.continuity import validate_video_beats
+    video_qa=validate_video_beats([b for s in scenes for b in s.get("beats",[])],assets,
+        require_windows=any((s.get("editing") or {}).get("continuity_policy") for s in scenes))
+    return {"status":"APPROVED","policy":"MASTER_STATIC_AND_VIDEO_LIMITS_V2","video":video_qa,
             "static_uses":report,"total_seconds":round(cursor,3)}
 
 
@@ -172,7 +178,12 @@ def validate_short(beats,assets):
         if seconds[key]>MAX_STATIC_TOTAL_SECONDS_SHORT+0.001:
             raise RuntimeError(f"QUALITY_BLOCK: imagem {idx} domina o Short")
         seen.add(key)
-    return {"status":"APPROVED","images_used":len(seen)}
+    try:
+        from continuity import validate_video_beats
+    except ModuleNotFoundError:
+        from src.continuity import validate_video_beats
+    video_qa=validate_video_beats(beats,assets,require_windows=False)
+    return {"status":"APPROVED","images_used":len(seen),"video":video_qa}
 
 
 def replace_short_repeats(scene,assets):

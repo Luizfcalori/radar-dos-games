@@ -130,3 +130,12 @@ Masters e os três Shorts passam a usar `RADAR_CINEMATIC_V1` por padrão.
 - Shorts V4 recebem mixagem própria a partir da voz e mídias originais. O fallback legado recorta o Master já tratado, sem aplicar uma segunda trilha ou uma segunda correção de cor.
 - Trilha ausente bloqueia o render; gate V4 exige trilha com ducking e perfil cinematográfico nos dois formatos.
 - Módulo compartilhado: `src/cinematic.py`.
+
+## Continuidade e pronúncia — padrão aprovado em 09/10/2026
+
+- Aplicar `PHRASE_VISUAL_CONTINUITY_V1` ao Master e aos Shorts V4. Reservar intervalos de origem globalmente no Master; continuar o mesmo trecho quando compatível com a próxima fala. Nunca reiniciar uma fonte ou usar loop para preencher duração. Shorts podem reutilizar o trecho do Master, mas não repeti-lo dentro do mesmo Short.
+- Usar os limites de palavras reais do TTS para delimitar frases. Manter o áudio de cada parágrafo numa única síntese e conservar voz, intro, trilha, identidade, layout e agenda aprovados.
+- Buscar vídeos oficiais distintos, evitando variantes do mesmo trailer. Falta de material correspondente bloqueia a produção e exige ampliar fontes ou revisar o roteiro.
+- Classificação visual automática por categorias é uma sugestão, não prova de identidade de uma arma, personagem ou ação específica. Para identificação exata, revisar os frames e registrar `reviewed: true`, `evidence` e `subjects` na janela de `visual_windows`, com os identificadores exigidos em `phrase_subjects` (chaves correspondem aos números das frases). Nunca marcar revisão sem inspecionar o conteúdo.
+- Manter nomes originais em roteiros, títulos e legendas. `production/pronunciations.json` altera apenas o texto enviado à voz. Cyberpunk recebe a orientação fonética `Sáiber pânk`; a voz continua Thalita Multilingual. Novos nomes em inglês precisam de amostra de escuta e, se necessário, entrada no glossário. Não prometer pronúncia perfeita de todo nome desconhecido.
+- Push de código executa testes; produção continua disponível pelo acionamento manual e agenda existentes. Não iniciar uma produção só para validar uma alteração de código.

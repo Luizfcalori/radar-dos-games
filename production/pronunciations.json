@@ -1,0 +1,7 @@
+{
+  "policy": "THALITA_SPEECH_ONLY_LEXICON_V1",
+  "note": "Aliases are pronunciation hints for the free Edge backend, not IPA or guaranteed native pronunciation. Keep editorial spelling unchanged. Review new names before adding them.",
+  "aliases": {
+    "Cyberpunk": "Sáiber pânk"
+  }
+}

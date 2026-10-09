@@ -93,7 +93,7 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             matched_videos=videos
         picks=[]
         if matched_videos:
-            picks.append(min(matched_videos,key=rank))
+            picks.extend(sorted(matched_videos,key=rank))
         if matched_stills:
             picks.extend(matched_stills)
         elif images and visual_inventory is None:

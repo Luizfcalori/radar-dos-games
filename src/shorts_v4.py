@@ -152,10 +152,13 @@ def render_vertical_piece(asset, duration, dest, piece_no, headline="", keyword=
     if image_mode:
         inp = ["-loop", "1", "-i", str(path)]
     else:
-        seek = float(source_window["start"]) if source_window else seek_for(path, piece_no, duration)
+        if not source_window: raise RuntimeError("QUALITY_BLOCK: Short sem intervalo explícito")
+        seek = float(source_window["start"])
         if source_window and seek+duration>float(source_window["end"])+0.01:
             raise RuntimeError("QUALITY_BLOCK: Short extrapolou janela visual aprovada")
-        inp = ["-stream_loop", "-1"]
+        if seek+duration>probe_duration(path)+0.04:
+            raise RuntimeError("QUALITY_BLOCK: fonte curta no Short, loop proibido")
+        inp = []
         if seek > 0:
             inp += ["-ss", f"{seek:.3f}"]
         inp += ["-i", str(path)]
@@ -167,6 +170,8 @@ def render_vertical_piece(asset, duration, dest, piece_no, headline="", keyword=
     sh(["ffmpeg", "-y", "-v", "error", *inp, "-t", f"{duration:.3f}", "-filter_complex", fc,
         "-map", "[v]", "-an", "-r", str(FPS), "-c:v", "libx264", "-preset", "veryfast",
         "-crf", "20", "-pix_fmt", "yuv420p", str(dest)])
+    if abs(probe_duration(dest)-duration)>0.08:
+        raise RuntimeError("QUALITY_BLOCK: duração do corte vertical incompleta")
     return accent
 
 
@@ -220,7 +225,7 @@ def main():
             idx=int(beat["media_index"]); asset=assets[idx]; d=float(beat["duration"])
             p=tmp/f"piece_{n:02d}.mp4"
             accents.append(render_vertical_piece(
-                asset,d,p,n,headline=hook,
+                asset,(round((cursor+d)*FPS)-round(cursor*FPS))/FPS,p,n,headline=hook,
                 keyword=beat.get("keyword_overlay",""),
                 first=n==1,last=n==len(beats),
                 source_window=beat.get("source_window"),

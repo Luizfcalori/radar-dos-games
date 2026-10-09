@@ -323,7 +323,7 @@ def blocked_candidate(url,item):
 
 def main(path):
     spec=json.loads(Path(path).read_text(encoding='utf-8'));out=Path('output/media');out.mkdir(parents=True,exist_ok=True)
-    assets=[];errors=[];seq=0;seen=set()
+    assets=[];errors=[];seq=0;seen=set();seen_movie_sources=set()
     for item in spec.get('media',[]):
         wanted=item.get('type','video');role=item.get('role','');max_assets=int(item.get('max_assets',4));candidates=[]
         if item.get('steam_app_id'):
@@ -341,6 +341,8 @@ def main(path):
         got=0
         for u,evidence,label in candidates[:60]:
             if u in seen:continue
+            movie_key=(source,label) if item.get("steam_app_id") and label else None
+            if movie_key and movie_key in seen_movie_sources:continue
             low=u.lower();clean=low.split('?')[0];isimg=clean.endswith(IMAGE_EXTS) or bool(item.get('force_image',False) and wanted=='image');isstream=clean.endswith(STREAM_EXTS);isdrive='drive.google.com/file/d/' in low
             if wanted=='video' and isimg:continue
             if wanted=='image' and not isimg:continue
@@ -368,6 +370,7 @@ def main(path):
                 if float(info.get('duration',0))<min_d:
                     print('duration reject',info.get('duration'),u);dest.unlink(missing_ok=True);continue
             seen.add(u)
+            if movie_key:seen_movie_sources.add(movie_key)
             assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u,'source':source,
                            'relevance_evidence':evidence,'source_label':label,'approved':True,'duration':float(info.get('duration',0)),
                            'width':int(info.get('width',0)),'height':int(info.get('height',0))})

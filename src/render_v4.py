@@ -73,10 +73,13 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
     if image_mode:
         inp=["-loop","1","-i",str(path)]
     else:
-        seek=float(source_window["start"]) if source_window else video_seek(path,piece_no,duration)
+        if not source_window: raise RuntimeError("QUALITY_BLOCK: vídeo sem intervalo explícito")
+        seek=float(source_window["start"])
         if source_window and seek+duration>float(source_window["end"])+0.01:
             raise RuntimeError("QUALITY_BLOCK: corte extrapolou janela visual aprovada")
-        inp=["-stream_loop","-1"]
+        if seek+duration>probe_duration(path)+0.04:
+            raise RuntimeError("QUALITY_BLOCK: fonte menor que o corte, loop proibido")
+        inp=[]
         if seek>0:inp += ["-ss",f"{seek:.3f}"]
         inp += ["-i",str(path)]
 
@@ -138,6 +141,9 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
         "-filter_complex",fc,"-map","[v]","-an","-r",str(FPS),
         "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p",str(dest)
     ])
+
+    if abs(probe_duration(dest)-duration)>0.08:
+        raise RuntimeError("QUALITY_BLOCK: duração renderizada não corresponde ao corte")
 
 def make_sfx_track(duration_seconds,events,dest):
     """Cria impactos curtíssimos e discretos nos pontos editoriais fortes."""
@@ -218,7 +224,7 @@ def render(manifest_path):
             global_piece+=1
             p=tmp/f"scene_{scene_no:02d}_beat_{beat_no:02d}.mp4"
             render_piece(
-                assets[idx],d,p,global_piece,
+                assets[idx],(round((cursor+d)*FPS)-round(cursor*FPS))/FPS,p,global_piece,
                 card={"title":scene.get("title",""),"subtitle":scene.get("subtitle","")},
                 keyword=beat.get("keyword_overlay",""),
                 scene_first=(beat_no==1),
