@@ -1,0 +1,34 @@
+name: Radar Media First - Regression
+on:
+  push:
+    branches: [main, "feature/radar-media-first-*"]
+    paths:
+      - "src/media_first.py"
+      - "src/auto_daily.py"
+      - "src/director_v4.py"
+      - "src/semantic_gate.py"
+      - "src/premium_v4_qa.py"
+      - "tests/test_media_first.py"
+      - ".github/workflows/media-first-regression.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  media-first:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify syntax and media-before-narration pipeline
+        run: |
+          python -m compileall -q src/media_first.py src/auto_daily.py src/director_v4.py src/semantic_gate.py src/premium_v4_qa.py
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('.github/workflows/daily-video.yml').read_text()
+          actions=['python src/auto_daily.py','python src/media.py output/auto-media-plan.json','python src/media_first.py','python src/narration_qa.py output/auto-script.txt','python src/voice.py output/auto-script.txt','python src/director_v4.py','python src/semantic_gate.py']
+          idx=[s.index(x) for x in actions]
+          assert idx==sorted(idx),idx
+          print('Order: media first; voice after storyboard')
+          PY
+      - name: Test semantic storyboard binding
+        run: python -m unittest discover -s tests -p 'test_media_first.py' -v

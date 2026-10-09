@@ -14,6 +14,11 @@ def norm_short_title(value):
     return re.sub(r"\\s+"," ",value).strip().casefold()
 
 def main():
+    storyboard=load("output/media-first-storyboard.json")
+    import hashlib
+    actual=hashlib.sha256(Path("output/auto-script.txt").read_bytes()).hexdigest()
+    if storyboard.get("policy")!="MEDIA_FIRST_V1" or storyboard.get("status")!="APPROVED" or storyboard.get("script_sha256")!=actual:
+        raise RuntimeError("QUALITY_BLOCK: roteiro ou decupagem media-first inválidos")
     plan=load("output/auto-media-plan.json")
     director=load("output/director-v4.json")
     clips=load("output/clips.json")

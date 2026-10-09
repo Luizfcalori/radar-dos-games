@@ -118,3 +118,11 @@ Masters e os três Shorts passam a usar `RADAR_CINEMATIC_V1` por padrão.
 - Shorts V4 recebem mixagem própria a partir da voz e mídias originais. O fallback legado recorta o Master já tratado, sem aplicar uma segunda trilha ou uma segunda correção de cor.
 - Trilha ausente bloqueia o render; gate V4 exige trilha com ducking e perfil cinematográfico nos dois formatos.
 - Módulo compartilhado: `src/cinematic.py`.
+
+## Fluxo oficial media-first — 09/10/2026
+
+Pesquisar e planejar mídia → baixar e verificar os arquivos reais → fazer a decupagem das cenas → finalizar roteiro → QA editorial → sintetizar Thalita PT-BR → Director V4 por frase → bloqueio semântico por beat → Master e 3 Shorts → QA e publicação conforme regras existentes.
+
+`src/media_first.py` gera `output/media-first-storyboard.json` e somente então `output/auto-script.txt`. As cenas utilizam apenas índices de material efetivamente baixado. Se não houver um papel visual correspondente, a produção bloqueia — jamais substitui por material aleatório. As prévias são guardadas para revisão e a sinalização `source_level_only` não equivale a reconhecimento automático de ações/personagens na imagem. Roteiros manuais aprovados permanecem intactos.
+
+Permanecem obrigatórios: intro integral, mixagem cinematográfica, Thalita, Master 1920×1080, 3 Shorts 1080×1920 no layout clássico aprovado, capas oficiais e qualidade bloqueante Premium V4. Nenhum serviço pago adicional.

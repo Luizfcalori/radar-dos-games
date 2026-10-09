@@ -105,6 +105,8 @@ def eligible(scene, assets):
     vals=[a for a in assets.values() if a.get("approved",True) and role_allowed(scene,a)]
     if vals:
         return vals
+    if scene.get("allowed_roles") or scene.get("allowed_role_prefixes"):
+        raise RuntimeError(f"QUALITY_BLOCK: cena {scene.get('title')} sem mídia da decupagem; fallback proibido")
     return [a for a in assets.values() if a.get("approved",True)]
 
 def choose(scene, assets, usage, previous, count):

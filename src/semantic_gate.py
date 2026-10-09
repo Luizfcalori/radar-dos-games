@@ -7,6 +7,8 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
     plan=json.loads(Path(plan_path).read_text(encoding="utf-8"))
     clips=json.loads(Path(clips_path).read_text(encoding="utf-8"))
     assets={int(a["index"]):a for a in clips.get("assets",[]) if a.get("approved")}
+    if plan.get("media_first_policy")!="MEDIA_FIRST_V1":
+        raise RuntimeError("QUALITY_BLOCK: decupagem antes da narração ausente")
     report=[]
 
     for scene in plan.get("scenes",[]):
@@ -16,6 +18,12 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
         ids=[int(x) for x in scene.get("media_indices",[])]
         if not ids:
             raise RuntimeError(f"QUALITY_BLOCK: cena {scene.get('paragraph')} sem media_indices")
+        allowed={int(x) for x in scene.get("media_first_assets",[])}
+        if not allowed or not set(ids).issubset(allowed):
+            raise RuntimeError(f"QUALITY_BLOCK: cena fora da decupagem: {scene.get('paragraph')}")
+        for beat in scene.get("beats") or []:
+            if int(beat["media_index"]) not in allowed:
+                raise RuntimeError("QUALITY_BLOCK: frase com vídeo diferente da decupagem")
         selected=[]
         for idx in ids:
             if idx not in assets:

@@ -20,6 +20,7 @@ on:
       - ".github/workflows/daily-video.yml"
       - "src/auto_daily.py"
       - "src/media.py"
+      - "src/media_first.py"
       - "src/research.py"
       - "production/manual-brief.json"
       - "src/thumbnail.py"
@@ -80,9 +81,6 @@ jobs:
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
-      - name: QA editorial da narração
-        run: python src/narration_qa.py output/auto-script.txt
-
       - name: Aplicar agenda nativa do YouTube
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
         run: |
@@ -126,14 +124,20 @@ jobs:
           print(json.dumps(schedule, ensure_ascii=False, indent=2))
           PY
 
-      - name: Criar narração Thalita PT-BR com timings semânticos
+      - name: Baixar e validar mídia antes da narração
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Decupar material baixado e finalizar roteiro
+        run: python src/media_first.py
+
+      - name: QA editorial do roteiro definitivo
+        run: python src/narration_qa.py output/auto-script.txt
+
+      - name: Narrar após decupagem com a voz Thalita PT-BR
         run: |
           python src/voice.py output/auto-script.txt output/voice.mp3 \
             --voice pt-BR-ThalitaMultilingualNeural \
             --segments-json output/voice-timings.json
-
-      - name: Baixar mídia oficial/contextual
-        run: python src/media.py output/auto-media-plan.json
 
       - name: Diretor por frase Premium V4 Director Cut
         run: python src/director_v4.py output/auto-media-plan.json output/clips.json
@@ -338,6 +342,9 @@ jobs:
             output/research.json
             output/selected.json
             output/auto-script.txt
+            output/auto-script-outline.txt
+            output/media-first-storyboard.json
+            output/media-first-frames/*.jpg
             output/auto-media-plan.json
             output/clips.json
             output/voice.mp3

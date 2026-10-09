@@ -680,7 +680,8 @@ def main():
         parser = winner["parser"]
         selected_media = winner["media"]
         script = make_script(selected, parser)
-    (OUT / "auto-script.txt").write_text(script + "\n", encoding="utf-8")
+    # Apenas o esboço; a narração final só existe após a decupagem da mídia.
+    (OUT / "auto-script-outline.txt").write_text(script + "\n", encoding="utf-8")
 
     planned_scenes = make_scenes(selected, selected_media, script)
     if manual:
