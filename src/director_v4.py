@@ -514,7 +514,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         "scenes":scene_report,
     }
     Path("output/anti-repetition-director.json").write_text(
-        json.dumps(repetition_qa,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+        json.dumps(repetition_qa,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     Path("output/director-v4.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps(result,ensure_ascii=False,indent=2))
 
