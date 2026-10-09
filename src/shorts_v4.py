@@ -111,14 +111,16 @@ def classic_short_filter(headline, accent):
     )
 
 
-def render_vertical_piece(asset, duration, dest, piece_no, headline="", keyword="", first=False, last=False):
+def render_vertical_piece(asset, duration, dest, piece_no, headline="", keyword="", first=False, last=False, source_window=None):
     """Maintain the full classic layout throughout EVERY beat, no timed title/CTA."""
     path = Path(asset["path"])
     image_mode = is_image(asset)
     if image_mode:
         inp = ["-loop", "1", "-i", str(path)]
     else:
-        seek = seek_for(path, piece_no, duration)
+        seek = float(source_window["start"]) if source_window else seek_for(path, piece_no, duration)
+        if source_window and seek+duration>float(source_window["end"])+0.01:
+            raise RuntimeError("QUALITY_BLOCK: Short extrapolou janela visual aprovada")
         inp = ["-stream_loop", "-1"]
         if seek > 0:
             inp += ["-ss", f"{seek:.3f}"]
@@ -181,6 +183,7 @@ def main():
                 asset,d,p,n,headline=hook,
                 keyword=beat.get("keyword_overlay",""),
                 first=n==1,last=n==len(beats),
+                source_window=beat.get("source_window"),
             ))
             pieces.append(p)
             if n>1 or int(beat.get("intensity",0))>=2:events.append((cursor,max(1,int(beat.get("intensity",1)))))
