@@ -128,6 +128,9 @@ jobs:
       - name: Baixar e validar mídia antes da narração
         run: python src/media.py output/auto-media-plan.json
 
+      - name: Inspecionar todos os frames e localizar cortes aproveitáveis
+        run: python src/visual_inspector.py
+
       - name: Decupar material baixado e finalizar roteiro
         run: python src/media_first.py
 
@@ -346,6 +349,7 @@ jobs:
             output/auto-script.txt
             output/auto-script-outline.txt
             output/media-first-storyboard.json
+            output/visual-inventory.json
             output/media-first-frames/*.jpg
             output/auto-media-plan.json
             output/clips.json
