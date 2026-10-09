@@ -91,7 +91,12 @@ def classify(inventory, clips, plan):
         for i,window in enumerate(row.get("usable_windows",[])):
             middle=(float(window["start"])+float(window["end"]))/2
             try:
-                images.append(extract_keyframe(paths[int(row["index"])],middle))
+                keyframe=extract_keyframe(paths[int(row["index"])],middle)
+                preview_dir=OUT/"vision-frames"
+                preview_dir.mkdir(parents=True,exist_ok=True)
+                keyframe.save(preview_dir/f"asset_{row['index']}_window_{i:02d}.jpg",
+                              format="JPEG",quality=84)
+                images.append(keyframe)
                 keys.append((int(row["index"]),i))
             except (OSError,subprocess.CalledProcessError,subprocess.TimeoutExpired) as exc:
                 raise RuntimeError(f"QUALITY_BLOCK: sem keyframe da janela {row['index']}:{i}: {exc}") from exc
