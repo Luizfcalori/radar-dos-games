@@ -8,6 +8,7 @@ on:
       - "src/vision_semantics.py"
       - "src/render_v4.py"
       - "src/shorts_v4.py"
+      - "tests/test_short_title_scene.py"
       - "tests/test_visual_inspector.py"
       - "src/voice.py"
       - "src/auto_daily.py"
@@ -41,3 +42,5 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_media_first.py' -v
           python -m unittest discover -s tests -p 'test_visual_inspector.py' -v
+          python -m pip install --quiet 'Pillow>=11,<13'
+          python -m unittest discover -s tests -p 'test_short_title_scene.py' -v
