@@ -1,4 +1,8 @@
 """Regression tests for the user-approved full-frame GTA6 Shorts layout."""
+import json
+import shutil
+import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -43,6 +47,31 @@ class ClassicShortLayoutTests(unittest.TestCase):
         self.assertEqual(filters[1],filters[2])
         self.assertIn("CONFIRA O CONTEÚDO COMPLETO",filters[2])
         self.assertIn("VÍDEO COMPLETO NO CANAL",filters[1])
+
+    @unittest.skipUnless(
+        shutil.which("ffmpeg") and shutil.which("ffprobe")
+        and Path(shorts_v4.FONT).exists() and Path(shorts_v4.FONT_REG).exists(),
+        "FFmpeg and DejaVu fonts required",
+    )
+    def test_synthetic_video_renders_with_approved_frame(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "sample.mp4"
+            dest = Path(folder) / "short.mp4"
+            subprocess.run([
+                "ffmpeg", "-v", "error", "-y", "-f", "lavfi",
+                "-i", "testsrc2=size=640x360:rate=30", "-t", "1",
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", str(source)
+            ], check=True)
+            shorts_v4.render_vertical_piece(
+                {"type": "video", "path": str(source)}, 0.4, dest, 1,
+                headline="GTA 6 NA RETA FINAL",
+            )
+            info = json.loads(subprocess.check_output([
+                "ffprobe", "-v", "error", "-show_streams", "-of", "json", str(dest)
+            ], text=True))
+            video = next(stream for stream in info["streams"] if stream["codec_type"]=="video")
+            self.assertEqual((video["width"],video["height"]), (1080,1920))
+            self.assertGreater(dest.stat().st_size, 1000)
 
 if __name__ == "__main__":
     unittest.main()

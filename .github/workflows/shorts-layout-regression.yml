@@ -1,0 +1,32 @@
+name: Radar Shorts — Classic Layout Regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/shorts_v4.py"
+      - "src/cinematic.py"
+      - "tests/test_shorts_v4_layout.py"
+      - ".github/workflows/shorts-layout-regression.yml"
+  pull_request:
+    paths:
+      - "src/shorts_v4.py"
+      - "src/cinematic.py"
+      - "tests/test_shorts_v4_layout.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  layout-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install FFmpeg and approved free fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Regression test classic GTA6 Shorts layout and real FFmpeg render
+        run: python -m unittest discover -s tests -p 'test_shorts_v4_layout.py' -v
