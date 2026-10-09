@@ -8,7 +8,9 @@ import subprocess
 import sys
 import textwrap
 import wave
+from itertools import combinations
 from pathlib import Path
+from PIL import ImageFont
 
 try:
     from cinematic import COLOR_FILTER, mix as cinematic_mix, write_credit
@@ -73,10 +75,43 @@ def accent_from_asset(path,image_mode,seek=0):
 
 SHORTS_LAYOUT_ID = "RADAR_SHORTS_CLASSIC_V1"
 
+def title_layout(headline):
+    """Pixel-accurate fail-closed short title layout, no cropped text."""
+    words=" ".join(str(headline or "").upper().split()).split()
+    if not words:
+        raise RuntimeError("QUALITY_BLOCK: Shorts sem título")
+    for fontsize in (52,50,48,46,44,42,40,38):
+        font=ImageFont.truetype(FONT,fontsize)
+        for count in (1,2,3):
+            candidates=[]
+            for cuts in combinations(range(1,len(words)),count-1):
+                p=(0,)+cuts+(len(words),)
+                lines=[" ".join(words[p[i]:p[i+1]]) for i in range(count)]
+                widths=[font.getlength(line) for line in lines]
+                if max(widths)>940:
+                    continue
+                # Balanced full hook: no ellipsis and no oversized headline.
+                score=(max(widths)-min(widths))**2
+                candidates.append((score,lines))
+            if candidates:
+                lines=min(candidates,key=lambda x:x[0])[1]
+                assert " ".join(lines)==" ".join(words)
+                return {"lines":lines,"fontsize":fontsize,"max_width":940}
+    raise RuntimeError(f"QUALITY_BLOCK: título de Short não cabe no layout: {headline}")
+
+
 
 def classic_short_filter(headline, accent):
     """Approved 02/10 layout, retained on every V4 beat (08/10 GTA6 reference)."""
-    h = esc(wrapped(headline, 24, 2))
+    title=title_layout(headline)
+    base_y=155 if len(title["lines"])<=2 else 141
+    spacing=70 if len(title["lines"])<=2 else 66
+    headline_filters=",".join(
+        f"drawtext=fontfile='{FONT}':text='{esc(line)}':x=(w-text_w)/2:"
+        f"y={base_y+i*spacing}:fontsize={title['fontsize']}:"
+        "fontcolor=white:borderw=2:bordercolor=black@0.7:expansion=none"
+        for i,line in enumerate(title["lines"])
+    )
     # Keep the approved source image entirely visible inside the framed central panel.
     # Apply the cinematic grade BEFORE text and overlays so branding stays crisp.
     return (
@@ -94,8 +129,7 @@ def classic_short_filter(headline, accent):
         f"{COLOR_FILTER}[tmp];"
         f"[tmp]drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x=48:y=55:fontsize=32:"
         "fontcolor=white:borderw=2:bordercolor=black@0.7:expansion=none,"
-        f"drawtext=fontfile='{FONT}':text='{h}':x=(w-text_w)/2:y=155:fontsize=52:"
-        "fontcolor=white:borderw=2:bordercolor=black@0.7:line_spacing=12:expansion=none,"
+        f"{headline_filters},"
         "drawbox=x=170:y=1040:w=740:h=64:color=black@0.86:t=fill,"
         f"drawtext=fontfile='{FONT}':text='CONFIRA O CONTEÚDO COMPLETO':"
         f"x=(w-text_w)/2:y=1053:fontsize=30:fontcolor={accent}:"
@@ -206,6 +240,7 @@ def main():
             "beats":len(beats),"accent":accents[0] if accents else "0xFFFFFF",
             "music_bed":music_policy,
             "layout_profile":SHORTS_LAYOUT_ID,
+            "title_layout":title_layout(hook),
         })
 
     payload={
