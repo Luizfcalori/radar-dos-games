@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-09T14:39:48.493147+00:00",
-  "total_discovered": 59,
-  "ready_for_tiktok": 58,
+  "updated_at": "2026-10-09T19:45:17.083109+00:00",
+  "total_discovered": 62,
+  "ready_for_tiktok": 61,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "CqyVOF9LTuw",
+      "youtube_url": "https://www.youtube.com/shorts/CqyVOF9LTuw",
+      "title": "EDGERUNNERS 2 ESTREIA EM 20 DE OUTUBRO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "37osk6O4LHY",
+      "youtube_url": "https://www.youtube.com/shorts/37osk6O4LHY",
+      "title": "CYBERPUNK 2077 VAI VIRAR FILME COM A PARAMOUNT!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "EOHihFvkZf8",
+      "youtube_url": "https://www.youtube.com/shorts/EOHihFvkZf8",
+      "title": "CYBERPUNK 2 JÁ ESTÁ EM DESENVOLVIMENTO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "B_3mb5rhp7o",
       "youtube_url": "https://www.youtube.com/shorts/B_3mb5rhp7o",
