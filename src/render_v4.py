@@ -66,14 +66,16 @@ def video_seek(path,piece_no,duration):
     if room<=.2:return 0.0
     return round((piece_no*5.83)%room,3)
 
-def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=False):
+def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=False,source_window=None):
     path=Path(asset["path"])
     if not path.exists():raise RuntimeError(f"Asset ausente: {path}")
     image_mode=is_image(asset)
     if image_mode:
         inp=["-loop","1","-i",str(path)]
     else:
-        seek=video_seek(path,piece_no,duration)
+        seek=float(source_window["start"]) if source_window else video_seek(path,piece_no,duration)
+        if source_window and seek+duration>float(source_window["end"])+0.01:
+            raise RuntimeError("QUALITY_BLOCK: corte extrapolou janela visual aprovada")
         inp=["-stream_loop","-1"]
         if seek>0:inp += ["-ss",f"{seek:.3f}"]
         inp += ["-i",str(path)]
@@ -220,6 +222,7 @@ def render(manifest_path):
                 card={"title":scene.get("title",""),"subtitle":scene.get("subtitle","")},
                 keyword=beat.get("keyword_overlay",""),
                 scene_first=(beat_no==1),
+                source_window=beat.get("source_window"),
             )
             pieces.append(p); scene_paths.append(str(p)); sequence.append(idx)
             if (beat_no==1 and scene_no>1) or int(beat.get("intensity",0))>=2:
