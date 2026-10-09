@@ -160,6 +160,9 @@ jobs:
       - name: Gate semântico fala -> imagem
         run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
 
+      - name: Gate anti-repetição antes do render do Master
+        run: python src/repetition_policy.py output/auto-media-plan.json output/clips.json
+
       - name: Renderizar Master Premium V4
         run: python src/render_v4.py output/render.json
 
@@ -386,6 +389,8 @@ jobs:
             output/director-v4.json
             output/render.json
             output/semantic-visual-qa.json
+            output/anti-repetition-director.json
+            output/anti-repetition-qa.json
             output/visual-frame-qa.json
             output/frame-qa/*.jpg
             output/premium-v4-qa.json
