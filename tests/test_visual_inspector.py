@@ -35,6 +35,20 @@ class VisualInspectorTests(unittest.TestCase):
         self.assertEqual(rows[1]["duplicate_of"], 1)
         self.assertEqual(rows[1]["usable_windows"], [])
 
+    def test_semantic_scene_categories_and_reject_title_cards(self):
+        from src.vision_semantics import scene_categories, usable_for_scene
+        self.assertIn("snow", scene_categories("O mapa congelado de Pendola Pass"))
+        self.assertIn("weapons", scene_categories("O revólver Bantam e a Stiletto"))
+        self.assertIn("robot", scene_categories("As máquinas Bully e Skulker"))
+        windows = [
+            {"start": 0, "end": 7, "semantic_categories": ["snow"]},
+            {"start": 7, "end": 14, "semantic_categories": ["title_card", "snow"]},
+            {"start": 14, "end": 21, "semantic_categories": ["weapons"]},
+        ]
+        chosen = usable_for_scene(windows, ["snow"])
+        self.assertEqual(len(chosen), 1)
+        self.assertEqual(chosen[0]["start"], 0)
+
     def test_visual_inventory_limits_candidate_clips(self):
         from src.media_first import compile_storyboard
         import tempfile
