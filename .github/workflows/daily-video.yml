@@ -21,6 +21,7 @@ on:
       - "src/auto_daily.py"
       - "src/media.py"
       - "src/media_first.py"
+      - "src/voice.py"
       - "src/research.py"
       - "production/manual-brief.json"
       - "src/thumbnail.py"
@@ -137,6 +138,7 @@ jobs:
         run: |
           python src/voice.py output/auto-script.txt output/voice.mp3 \
             --voice pt-BR-ThalitaMultilingualNeural \
+            --prepared \
             --segments-json output/voice-timings.json
 
       - name: Diretor por frase Premium V4 Director Cut

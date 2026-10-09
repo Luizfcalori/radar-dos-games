@@ -126,7 +126,11 @@ def main():
     clips=json.loads((OUT/"clips.json").read_text(encoding="utf-8"))
     selected=json.loads((OUT/"selected.json").read_text(encoding="utf-8"))
     outline=(OUT/"auto-script-outline.txt").read_text(encoding="utf-8")
-    plan,script,storyboard=compile_storyboard(plan,clips,selected,outline)
+    # Preserve the existing voice-editor cleanup, but execute it BEFORE binding
+    # scene-to-file roles and SHA so voice no longer modifies the approved script.
+    from voice import prepare_narration
+    prepared=prepare_narration(outline)
+    plan,script,storyboard=compile_storyboard(plan,clips,selected,prepared)
     storyboard["preview_frames"]=previews(storyboard["assets"])
     (OUT/"auto-media-plan.json").write_text(json.dumps(plan,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     (OUT/"auto-script.txt").write_text(script,encoding="utf-8")

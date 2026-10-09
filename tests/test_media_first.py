@@ -33,6 +33,15 @@ class MediaFirstTests(unittest.TestCase):
         for s in plan["scenes"]:
             self.assertEqual(s["media_first_assets"],[7,13])
             self.assertEqual(len(s["allowed_roles"]),2)
+    def test_final_script_digest_is_byte_stable(self):
+        plan,script,report=compile_storyboard(self.plan,self.clips,{},self.outline)
+        data=script.encode("utf-8")
+        self.assertEqual(report["script_sha256"],hashlib.sha256(data).hexdigest())
+        self.assertTrue(script.endswith("\n"))
+    def test_metadata_hashtag_does_not_change_approved_hook(self):
+        from src.premium_v4_qa import norm_short_title
+        self.assertEqual(norm_short_title("BATTLEFIELD 6 CHEGA AO GAME PASS! #Shorts"),
+                         norm_short_title("BATTLEFIELD 6 CHEGA AO GAME PASS!"))
     def test_missing_media_blocks(self):
         self.assets[0]["path"]="/nonexistent/radar-test-asset.mp4"
         with self.assertRaises(RuntimeError):

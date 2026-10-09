@@ -240,8 +240,15 @@ if __name__ == "__main__":
     p.add_argument("output")
     p.add_argument("--voice", default=VOICE)
     p.add_argument("--segments-json")
+    p.add_argument("--prepared", action="store_true", help="Narrar o roteiro já revisado e decupado sem o reescrever")
     a = p.parse_args()
     text_path = Path(a.text_file)
-    text = prepare_narration(text_path.read_text(encoding="utf-8"))
-    text_path.write_text(text + "\n", encoding="utf-8")
+    original = text_path.read_text(encoding="utf-8")
+    if a.prepared:
+        if not original.strip() or not original.endswith("\n"):
+            raise RuntimeError("QUALITY_BLOCK: roteiro media-first final ausente ou sem quebra de linha")
+        text = original.rstrip("\n")
+    else:
+        text = prepare_narration(original)
+        text_path.write_text(text + "\n", encoding="utf-8")
     asyncio.run(synthesize(text, a.output, a.voice, a.segments_json))
