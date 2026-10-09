@@ -299,8 +299,14 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     assets={int(a["index"]):a for a in clips.get("assets",[]) if a.get("approved",True)}
     if not assets: raise RuntimeError("QUALITY_BLOCK: V4 sem assets aprovados")
 
+    try:
+        from repetition_policy import StaticTracker, match_score, validate_master
+    except ModuleNotFoundError:
+        from src.repetition_policy import StaticTracker, match_score, validate_master
+
     generic=all(str(a.get("role") or "").startswith("official_context_") for a in assets.values())
     usage=Counter(); previous=None; scene_report=[]; phrase_total=0
+    static_tracker=StaticTracker(); timeline_seconds=0.0
 
     for i,(scene,segment) in enumerate(zip(scenes,segments),1):
         if generic and not scene.get("allowed_roles") and not scene.get("allowed_role_prefixes"):
@@ -318,12 +324,38 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             duration=float(phrase.get("duration") or 0)
             target=phrase_target(phrase.get("text",""))
             count=beat_count(duration,target)
-            ids=choose(scene,assets,usage,previous,min(MAX_ASSETS_PER_SCENE,max(1,count)),
-                       phrase_text=phrase.get("text",""))
-            if not ids: raise RuntimeError(f"QUALITY_BLOCK: V4 cena {i} frase {phrase.get('sentence')} sem mídia")
             beat_duration=duration/count if count else duration
+            allowed=eligible(scene,assets)
             for n in range(count):
-                asset_id=ids[n%len(ids)]
+                phrase_text=phrase.get("text","")
+                # A source-specific still appears only when its labeled subject is
+                # mentioned in THIS phrase; never fill generic footage with posters.
+                stills=[a for a in allowed
+                        if static_tracker.can_use(a,phrase_text,i,timeline_seconds,beat_duration)]
+                videos=[a for a in allowed if a.get("type")=="video" and (
+                    plan.get("visual_inspection_policy")!="FULL_FRAME_TECHNICAL_SCAN_V1"
+                    or any(float(w["end"])-float(w["start"])>=beat_duration+.10
+                           for w in (scene.get("visual_windows") or {}).get(str(a["index"]),[]))
+                )]
+                # Visual specificity wins once (Bully / rewards / weapon);
+                # otherwise moving footage is the default. No recycled stills.
+                stills.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])],
+                                          int(a["index"])))
+                videos.sort(key=lambda a:(int(a["index"])==previous,
+                                         usage[int(a["index"])],int(a["index"])))
+                if stills and (n==0 or not videos):
+                    picked=stills[0]
+                elif videos:
+                    picked=videos[0]
+                elif stills:
+                    picked=stills[0]
+                else:
+                    raise RuntimeError(
+                        f"QUALITY_BLOCK: cena {i} frase {phrase.get('sentence')} "
+                        "sem mídia inédita e correspondente; pesquisar mais material")
+                asset_id=int(picked["index"])
+                static_tracker.record(picked,i,timeline_seconds,beat_duration)
+                timeline_seconds+=beat_duration
                 beats.append({
                     "phrase":int(phrase.get("sentence") or 1),
                     "text":phrase.get("text",""),
@@ -412,6 +444,10 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             beat["source_window"]={"start":float(window["start"]), "end":float(window["end"])}
         scene["media_indices"]=list(dict.fromkeys(int(b["media_index"]) for b in (scene.get("beats") or [])))
 
+    # Fail before rendering costly footage if substitutions reintroduced
+    # repeated stills or captions unrelated to the narration.
+    repetition_qa=validate_master(scenes,assets)
+
     total,moving,video_scenes=footage_stats()
     moving_ratio=(moving/total) if total else 0.0
     if moving_ratio+1e-9<MIN_MOVING_FOOTAGE_RATIO:
@@ -477,6 +513,8 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         "gameplay_policy":"official_video_required; moving_footage_ratio_gte_35pct",
         "scenes":scene_report,
     }
+    Path("output/anti-repetition-director.json").write_text(
+        json.dumps(repetition_qa,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
     Path("output/director-v4.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps(result,ensure_ascii=False,indent=2))
 
