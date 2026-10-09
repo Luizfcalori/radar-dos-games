@@ -140,3 +140,18 @@ Antes de sintetizar qualquer narração:
 **Limites de interpretação:** a análise técnica percorre cada frame; a análise semântica de IA usa quadros-chave representativos, para não exceder o orçamento gratuito de CPU. CLIP oferece **sugestões de categorias**, não comprovação de que um robô específico seja Bully, Hydra etc. Identidade exata requer referências oficiais rotuladas e/ou revisão humana. A aprovação automática da compatibilidade de tema não substitui a visualização dos arquivos finais pelo responsável.
 
 **Segurança editorial:** não substituir vídeo ausente por material de outro tema, não ocultar avisos de qualidade, manter intro oficial integral/áudio, Thalita, padrão cinematográfico de Masters e Shorts, capas aprovadas e nenhum upload público sem autorização. Faltas de mídia ou do modelo de visão provocam bloqueio em vez de fingir aprovação.
+
+
+## Bloqueio de repetição excessiva — 09/10/2026
+
+Implementação em `src/repetition_policy.py`, usada pelo Diretor Premium V4 e pelo QA final.
+- Imagens oficiais de assunto específico: máximo **1 aparição no Master**, quando o rótulo da fonte coincide com a frase narrada.
+- Outras imagens estáticas: máximo **2 aparições no Master**, **8 segundos totais**, **3,5 s por corte**, com distância mínima entre usos de **3 cenas** e **25 segundos**.
+- Em cada Short, a mesma imagem estática aparece no máximo **uma vez** e por no máximo **3,5 s**.
+- Arquivos de imagem idênticos sob URLs/índices diferentes são identificados pelo hash do conteúdo; mudar o nome do arquivo não burla a trava.
+- Rótulos oficiais precisam corresponder à frase exata. A palavra isolada "Pass" não autoriza uma imagem de Reward Pass em um trecho sobre Pendola Pass.
+- O diretor acompanha os usos durante a construção de cada beat; os Shorts reconstroem suas próprias escolhas, substituindo repetições por vídeo válido do assunto.
+- O QA refaz a contagem pelo manifesto real do Master e de cada Short. Se não houver material sem repetição suficiente, a produção bloqueia para buscar mais mídia — **nunca desativa o controle para publicar**.
+- Relatórios: `output/anti-repetition-director.json` antes de renderizar e `output/anti-repetition-qa.json` depois dos Shorts.
+
+Padrões preservados: intro oficial integral, voz Thalita PT-BR, tratamento cinematográfico, 3 Shorts independentes com layout aprovado e capas oficiais.
