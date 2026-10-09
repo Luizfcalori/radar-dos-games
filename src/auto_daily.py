@@ -731,6 +731,22 @@ def main():
             video_position += 1
         media_items.append(item)
 
+    # Optional exact-subject stills curated from the game's official notes.
+    # This is a generic schema; no hardcoded game, no inference from unrelated media.
+    if manual:
+        for i, visual in enumerate(manual.get("visual_reference_images") or [], 1):
+            if not isinstance(visual, dict) or not str(visual.get("url","")).startswith("https://"):
+                continue
+            media_items.append({
+                "type": "image",
+                "url": visual["url"],
+                "role": f"official_subject_reference_{i:02d}",
+                "source_label": str(visual.get("label") or "").strip()[:90],
+                "max_assets": 1,
+                "source_proof": visual.get("source_proof") or selected["url"],
+                "relevance_evidence": "publisher_curated_subject_specific_still",
+            })
+
     # For an explicitly curated manual brief, prefer original game media on
     # Steam's own CDN when its exact app ID is supplied. This does not alter
     # automatic editorial discovery or other productions.
