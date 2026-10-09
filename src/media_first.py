@@ -72,21 +72,40 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
     for i,(scene,text) in enumerate(zip(scenes,paragraphs),1):
         def rank(a):
             return (-relevance(text,a,topic),usage[int(a["index"])],int(a["index"]))
-        picks=[min(videos,key=rank)]
-        if images:
-            # Exact article-image labels provide stronger subject evidence
-            # than an anonymous Steam video.
-            matches=sorted(images,key=rank)
-            if relevance(text,matches[0],topic)>0:
-                picks.append(matches[0])
-            elif visual_inventory is None:
-                picks.append(matches[0])
+        matches=sorted(images,key=rank) if images else []
+        matched_still=matches[0] if matches and relevance(text,matches[0],topic)>0 else None
+        semantic_ready=bool((visual_inventory or {}).get("semantic_model_policy"))
+        expected=[]
+        window_options={}
+        if semantic_ready:
+            from vision_semantics import scene_categories, usable_for_scene
+            expected=scene_categories(text)
+            for vid in videos:
+                candidate_windows=inspected[int(vid["index"])]["usable_windows"]
+                window_options[int(vid["index"])]=usable_for_scene(candidate_windows,expected)
+            # Broad categories are hints, not proof of game-specific identity.
+            matched_videos=[a for a in videos if window_options[int(a["index"])]]
+        else:
+            matched_videos=videos
+        picks=[]
+        if matched_videos:
+            picks.append(min(matched_videos,key=rank))
+        if matched_still:
+            picks.append(matched_still)
+        elif images and visual_inventory is None:
+            picks.append(matches[0])
+        if not picks:
+            raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem vídeo reconhecido nem imagem oficial identificável")
+        if semantic_ready and expected and not matched_videos and not matched_still:
+            raise RuntimeError(f"QUALITY_BLOCK: cena {i} não corresponde ao conteúdo visual identificado")
         indices=[int(a["index"]) for a in picks]
         roles=list(dict.fromkeys(str(a["role"]) for a in picks))
         for idx in indices:usage[idx]+=1
         scene.update({
-            "visual_windows": {str(a["index"]): inspected.get(int(a["index"]), {}).get("usable_windows", [])
+            "visual_windows": {str(a["index"]): window_options.get(int(a["index"]),
+                                inspected.get(int(a["index"]), {}).get("usable_windows", []))
                                for a in picks if a["type"]=="video"} if visual_inventory else {},
+            "vision_categories": expected,
             "preferred_media_indices": [int(a["index"]) for a in picks
                                         if a["type"]=="image" and relevance(text,a,topic)>0],
             "media_indices":indices,
@@ -119,6 +138,8 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
     plan["media_first_policy"]="MEDIA_FIRST_V1"
     if visual_inventory:
         plan["visual_inspection_policy"]="FULL_FRAME_TECHNICAL_SCAN_V1"
+        if visual_inventory.get("semantic_model_policy"):
+            plan["semantic_model_policy"]=visual_inventory["semantic_model_policy"]
         storyboard["visual_inspection_policy"]="FULL_FRAME_TECHNICAL_SCAN_V1"
         storyboard["source_frames_analyzed"]=sum(x.get("frames_analyzed",0)
                                                  for x in inspected.values())
