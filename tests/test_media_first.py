@@ -49,6 +49,18 @@ class MediaFirstTests(unittest.TestCase):
     def test_different_role_cannot_be_silently_substituted(self):
         with self.assertRaises(RuntimeError):
             eligible({"title":"Cena","allowed_roles":["not_in_downloads"],"media_first_assets":[7]},{7:self.assets[0]})
+    def test_same_role_clips_are_not_interchangeable(self):
+        # Two clips from the Steam CDN can have one role but different IDs.
+        # A scene bound to clip 7 must never silently receive clip 19.
+        alternate=dict(self.assets[0],index=19,source_label="second trailer")
+        scene={"title":"Cena congelada","allowed_roles":["official_gameplay_01"],
+               "media_first_assets":[7]}
+        results=eligible(scene,{7:self.assets[0],19:alternate})
+        self.assertEqual([int(a["index"]) for a in results],[7])
+        with self.assertRaises(RuntimeError):
+            eligible({**scene,"media_first_assets":[123]},
+                     {7:self.assets[0],19:alternate})
+
     def test_url_hints_not_automated_visual_truth(self):
         self.assertGreater(relevance("O ambiente é Vegas",self.assets[1],"Battlefield 6"),0)
         self.assertEqual(relevance("armas e monstros",self.assets[0],"Battlefield 6"),0)
