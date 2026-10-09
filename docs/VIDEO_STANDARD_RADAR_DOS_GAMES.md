@@ -126,3 +126,17 @@ Pesquisar e planejar mídia → baixar e verificar os arquivos reais → fazer a
 `src/media_first.py` gera `output/media-first-storyboard.json` e somente então `output/auto-script.txt`. As cenas utilizam apenas índices de material efetivamente baixado. Se não houver um papel visual correspondente, a produção bloqueia — jamais substitui por material aleatório. As prévias são guardadas para revisão e a sinalização `source_level_only` não equivale a reconhecimento automático de ações/personagens na imagem. Roteiros manuais aprovados permanecem intactos.
 
 Permanecem obrigatórios: intro integral, mixagem cinematográfica, Thalita, Master 1920×1080, 3 Shorts 1080×1920 no layout clássico aprovado, capas oficiais e qualidade bloqueante Premium V4. Nenhum serviço pago adicional.
+
+
+## Visual-first V2 — Inspeção quadro a quadro e categorias com IA gratuita (09/10/2026)
+
+Antes de sintetizar qualquer narração:
+1. `src/media.py` baixa as mídias oficiais reais;
+2. `src/visual_inspector.py` decodifica **todos os frames** dos vídeos em baixa resolução para medir escuridão, movimento, baixa textura, mudanças bruscas e duplicatas; registra janelas com timecodes em `output/visual-inventory.json`;
+3. `src/vision_semantics.py` usa CLIP de pesos abertos **em CPU** para comparar quadros-chave dessas janelas com classes amplas (neve, robôs, combate, armas, equipamento, cidade, interface, nave e cartelas), escrevendo `output/vision-semantic-report.json`. Nenhuma API paga;
+4. `src/media_first.py` escolhe apenas vídeos/janelas com categorias visuais compatíveis com o roteiro preliminar, prioriza stills oficiais com rótulos verificáveis para objetos/nomes específicos e pode **bloquear** cenas sem mídia compatível;
+5. somente então é gerado o roteiro definitivo e a voz Thalita. O Diretor V4 vincula cada beat aos timecodes aprovados, reaproveitados no Master e nos Shorts.
+
+**Limites de interpretação:** a análise técnica percorre cada frame; a análise semântica de IA usa quadros-chave representativos, para não exceder o orçamento gratuito de CPU. CLIP oferece **sugestões de categorias**, não comprovação de que um robô específico seja Bully, Hydra etc. Identidade exata requer referências oficiais rotuladas e/ou revisão humana. A aprovação automática da compatibilidade de tema não substitui a visualização dos arquivos finais pelo responsável.
+
+**Segurança editorial:** não substituir vídeo ausente por material de outro tema, não ocultar avisos de qualidade, manter intro oficial integral/áudio, Thalita, padrão cinematográfico de Masters e Shorts, capas aprovadas e nenhum upload público sem autorização. Faltas de mídia ou do modelo de visão provocam bloqueio em vez de fingir aprovação.
