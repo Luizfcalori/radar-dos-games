@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-08T21:17:18.768126+00:00",
-  "total_discovered": 56,
-  "ready_for_tiktok": 55,
+  "updated_at": "2026-10-09T14:39:48.493147+00:00",
+  "total_discovered": 59,
+  "ready_for_tiktok": 58,
   "waiting_media": [
     {
       "youtube_id": "XA-YklCtg1k",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "B_3mb5rhp7o",
+      "youtube_url": "https://www.youtube.com/shorts/B_3mb5rhp7o",
+      "title": "BULLY, SKULKER E HYDRA: TRÊS NOVOS INIMIGOS",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Q22j9kObFaA",
+      "youtube_url": "https://www.youtube.com/shorts/Q22j9kObFaA",
+      "title": "PENDOLA PASS: O NOVO MAPA CONGELADO DE ARC RAIDERS",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "cVyqPG-eCIg",
+      "youtube_url": "https://www.youtube.com/shorts/cVyqPG-eCIg",
+      "title": "ARC RAIDERS GRÁTIS ATÉ 12 DE OUTUBRO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "6ceqhYs3LQc",
       "youtube_url": "https://www.youtube.com/shorts/6ceqhYs3LQc",
