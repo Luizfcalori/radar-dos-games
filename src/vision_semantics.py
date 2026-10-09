@@ -44,8 +44,21 @@ def ascii_text(value):
 
 
 def scene_categories(text):
-    s=ascii_text(text)
-    return [cat for cat, words in SCENE_WORDS.items() if any(word in s for word in words)]
+    """Match category terms at word starts, never inside unrelated names.
+
+    Example: the producer surname 'Bonaventura' contains the letters 'nave',
+    but does not describe a spaceship. False matches must not block a valid
+    media-first scene merely because CLIP has no spaceship footage.
+    """
+    tokens=re.findall(r"[a-z0-9]+", ascii_text(text))
+    exact={"nave", "ceu", "pass", "vila"}
+    return [
+        cat for cat, words in SCENE_WORDS.items()
+        if any(
+            token==word if word in exact else token.startswith(word)
+            for token in tokens for word in words
+        )
+    ]
 
 
 def usable_for_scene(windows, expected):
