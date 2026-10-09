@@ -122,7 +122,9 @@ def eligible(scene, assets):
 
 def choose(scene, assets, usage, previous, count):
     vals=eligible(scene,assets)
+    preferred={int(x) for x in scene.get("preferred_media_indices") or []}
     vals.sort(key=lambda a:(
+        0 if int(a["index"]) in preferred else 1,
         0 if a.get("type")=="video" else 1,
         usage[int(a["index"])],
         int(a["index"]),
@@ -347,7 +349,25 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                 moving+=float(beat.get("duration") or 0)
             if moving>=target:break
 
+    # Bind every video beat to an actual non-black timeline window.
+    # This runs AFTER footage-ratio adjustments so those substitutions are
+    # subject to the same restrictions as the director's original selections.
+    source_usage=Counter()
     for scene in scenes:
+        windows_by_id=scene.get("visual_windows") or {}
+        for beat in scene.get("beats") or []:
+            idx=int(beat["media_index"])
+            if assets.get(idx, {}).get("type") != "video":
+                continue
+            if plan.get("visual_inspection_policy") != "FULL_FRAME_TECHNICAL_SCAN_V1":
+                continue
+            windows=[w for w in windows_by_id.get(str(idx), [])
+                     if float(w["end"])-float(w["start"]) >= float(beat["duration"])+0.10]
+            if not windows:
+                raise RuntimeError(f"QUALITY_BLOCK: vídeo {idx} sem janela limpa para beat de {beat['duration']}s")
+            window=windows[source_usage[idx] % len(windows)]
+            source_usage[idx]+=1
+            beat["source_window"]={"start":float(window["start"]), "end":float(window["end"])}
         scene["media_indices"]=list(dict.fromkeys(int(b["media_index"]) for b in (scene.get("beats") or [])))
 
     total,moving,video_scenes=footage_stats()
