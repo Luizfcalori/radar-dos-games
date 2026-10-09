@@ -1,112 +1,57 @@
 {
-  "valid_until": "2026-10-10T12:00:00Z",
-  "content_id": "manual-arc-raiders-frozen-trail-2-0-2026-10-09-fresh",
-  "title": "ARC Raiders",
-  "headline": "ARC RAIDERS FROZEN TRAIL 2.0: NOVO MAPA, INIMIGOS, ARMAS E TESTE GRÁTIS",
-  "primary_source": "https://arcraiders.com/news/frozen-trail-2-0-update",
+  "valid_until": "2026-10-10T05:00:00Z",
+  "content_id": "manual-cyberpunk-2077-paramount-movie-2026-10-09-01",
+  "title": "Cyberpunk 2077",
+  "headline": "CYBERPUNK 2077 VAI VIRAR FILME! PARAMOUNT REVELA LIVE-ACTION E FUTURO DE NIGHT CITY",
+  "primary_source": "https://www.reuters.com/business/media-telecom/paramount-develop-cyberpunk-2077-film-lifting-cd-projekt-reds-shares-2026-10-09/",
   "media_source_urls": [
-    "https://arcraiders.com/news/frozen-trail-is-live",
-    "https://arcraiders.com/news/frozen-trail-2-0-update",
-    "https://arcraiders.com/es/news/frozen-trail-content-preview",
-    "https://arcraiders.com/",
-    "https://jp.nexon.com/news/136007?category=0&keyword=id"
+    "https://www.cyberpunk.net/pt/en/cyberpunk-2077",
+    "https://www.cyberpunk.net/en/edgerunners2",
+    "https://www.cyberpunk.net/pt/en/phantom-liberty",
+    "https://press.cdprojektred.com/en/224/808",
+    "https://www.playstation.com/pt-br/games/cyberpunk-2077/"
   ],
   "source_urls": [
-    "https://arcraiders.com/news/frozen-trail-2-0-update",
-    "https://arcraiders.com/news/frozen-trail-is-live",
-    "https://arcraiders.com/es/news/frozen-trail-content-preview",
-    "https://jp.nexon.com/news/136007?category=0&keyword=id"
+    "https://www.reuters.com/business/media-telecom/paramount-develop-cyberpunk-2077-film-lifting-cd-projekt-reds-shares-2026-10-09/",
+    "https://www.gematsu.com/2026/10/cyberpunk-2077-live-action-film-in-development-at-paramount-pictures",
+    "https://www.cyberpunk.net/en/edgerunners2",
+    "https://www.cdprojekt.com/en/media/news/cyberpunk-edgerunners-2-premiere-date-announced-alongside-new-trailer/",
+    "https://www.cyberpunk.net/pt/en/cyberpunk-2077",
+    "https://www.cyberpunk.net/en/news/49150/cyberpunk-2077-phantom-liberty-out-now"
   ],
   "short_hooks": [
-    "ARC RAIDERS GRÁTIS ATÉ 12 DE OUTUBRO!",
-    "PENDOLA PASS: O NOVO MAPA CONGELADO DE ARC RAIDERS",
-    "BULLY, SKULKER E HYDRA: TRÊS NOVOS INIMIGOS"
+    "CYBERPUNK 2077 VAI VIRAR FILME COM A PARAMOUNT!",
+    "EDGERUNNERS 2 ESTREIA EM 20 DE OUTUBRO!",
+    "CYBERPUNK 2 JÁ ESTÁ EM DESENVOLVIMENTO!"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=KjiJDylLdZA"
+    "https://www.youtube.com/watch?v=1gvGn8NtIpE",
+    "https://www.youtube.com/watch?v=Ugb80d5lxEM",
+    "https://www.youtube.com/watch?v=reABCMNGM3w",
+    "https://www.youtube.com/watch?v=IBTK8PGe_Oo"
+  ],
+  "steam_app_id": 1091500,
+  "approved_for_publish": false,
+  "editorial_rules": [
+    "Foco factual na notícia de 8 de outubro; não inventar elenco, trailer ou data do filme.",
+    "Filmagem/gameplay do jogo é contexto do universo, não cenas do filme anunciado.",
+    "Usar vídeo oficial de Edgerunners 2 exclusivamente nas falas sobre o anime.",
+    "Sem imagens repetidas excessivamente; exigir sincronismo semântico por frase e QA.",
+    "Intro Radar oficial integral, voz Thalita PT-BR, cinematic V4, master e 3 Shorts, 4 capas."
   ],
   "script_blocks": [
-    "ARC Raiders acaba de receber Frozen Trail, a maior atualização desde o lançamento. O mundo acima de Speranza ficou ainda mais perigoso: novas máquinas patrulham o céu e as montanhas, um mapa inteiramente novo desafia os sobreviventes e equipamentos inéditos prometem mudar a maneira como cada expedição acontece. O pacote 2.0 chegou em 8 de outubro e não é só uma coleção de itens. Ele mexe na exploração, nos confrontos, nas recompensas e até no jeito de construir o personagem.",
-    "Para quem está chegando agora, ARC Raiders é uma aventura multijogador de extração. Você deixa a segurança subterrânea de Speranza, procura recursos na superfície e precisa escapar com tudo que conseguiu encontrar. O problema é que máquinas chamadas ARC dominam o ambiente, e outros jogadores também podem disputar o mesmo saque. Cada encontro obriga a decidir entre lutar, negociar, desviar ou bater em retirada. Frozen Trail amplia essas escolhas com ameaças e rotas novas.",
-    "O principal cenário da atualização é Pendola Pass, uma região italiana coberta de neve, além das montanhas que cercam o Rust Belt. O local conserva vestígios de uma vila antiga e da infraestrutura do projeto Exodus: há uma praça abandonada, um supermercado, observatório e instalações ferroviárias soterradas. No centro desse mistério está um Emperor gigantesco que caiu. Explorar seus restos pode render tecnologia rara, mas também atrai um verdadeiro exército de máquinas para a região.",
-    "Pendola Pass não é apenas bonito. Ondas de frio intenso, chamadas Flash Freeze, podem obrigar os sobreviventes a buscar abrigo. A região mistura áreas abertas, estruturas fechadas e caminhos verticais, aumentando a importância da posição e da movimentação. A saída também ganha uma solução própria: as gôndolas balísticas, que podem levar os Raiders para longe da região. E o sistema de zonas de saque dinâmicas torna algumas rotas menos previsíveis de uma partida para a outra.",
-    "Entre as maiores ameaças está a Frigate, uma enorme nave ARC que passa a fazer parte das operações mais difíceis. Invadir seu interior não significa apenas derrotar um inimigo grande no horizonte. É preciso abrir caminhos, avançar pelos compartimentos da estrutura e enfrentar máquinas em espaços apertados, enquanto outros Raiders podem estar tentando chegar ao mesmo objetivo. O tamanho e a altitude da operação criam um risco diferente das expedições habituais, especialmente quando o saque mais valioso aparece.",
-    "Três máquinas inéditas também chegam para complicar qualquer encontro. O Bully é agressivo e avança rapidamente, pressionando quem fica parado ou exposto. O Skulker prefere emboscadas, esconde-se e reaparece para atacar quando a defesa está menos preparada. Já a Hydra é uma ameaça armada com múltiplas frentes de ataque, feita para pressionar grupos e proteger áreas estratégicas. Contra esse trio, conhecer cobertura, movimentação e distância de combate pode ser mais importante do que apenas disparar sem parar.",
-    "No arsenal, duas armas novas merecem atenção. A Stiletto é um fuzil de assalto, pensado para ampliar as possibilidades de combate com armas longas. A Bantam é um revólver que entra como alternativa de menor raridade à Anvil. E a própria Anvil muda de categoria: passa de incomum para rara, uma decisão de equilíbrio depois de se destacar contra jogadores e máquinas. São mudanças que mexem tanto na escolha de equipamentos quanto no valor de cada expedição.",
-    "A grande novidade de mobilidade é o Grappling Hook, um gancho que permite subir, descer e atravessar espaços usando a física da corda. Em uma região de grandes desníveis, isso abre oportunidades para alcançar posições altas, escapar de inimigos ou surpreender um grupo adversário. O Tether Launcher também chega para conectar pontos e restringir movimento, enquanto a Yank Grenade pode puxar objetos ou alvos. Não são ferramentas para enfeitar o inventário: criam decisões práticas no meio da ação.",
-    "Fora da superfície, o novo Outpost amplia o espaço de preparação. Ele é desbloqueado por um projeto específico e pode crescer com módulos e móveis. A estação de pesquisa abre espaço para reforçar armamentos por meio das chamadas Amplified Weapons, com aprimoramentos que mudam o desempenho de determinadas armas. Ao mesmo tempo, projetos de decoração podem ser encontrados em expedições. A ideia é que até uma exploração sem grandes confrontos possa contribuir para melhorar e personalizar sua base.",
-    "A árvore de habilidades foi reorganizada e recebeu novas opções, justamente porque muitos jogadores sentiam pouca diferença entre certas escolhas. Agora há decisões mais marcantes entre caminhos e habilidades, permitindo especializações mais claras. O sistema de missões também evolui, com vinte e duas tarefas inéditas. Para quem já joga há meses, o interesse está em experimentar estratégias novas; para quem começa agora, há mais maneiras de desenvolver seu próprio estilo sem depender de uma única construção.",
-    "Outro ajuste importante aparece nas recompensas. Os antigos Raider Decks dão lugar ao Reward Pass, que usa pontos de recompensa. O primeiro passe Frozen Trail tem sessenta níveis e trilhas gratuita e premium. As recompensas antigas não desaparecem: elas são organizadas no Legacy Pass. Só é possível avançar em um passe ativo por vez, então vale escolher qual conjunto de objetivos combina com o momento. Também chegaram padrões de personalização para armas e melhorias de espaço no inventário.",
-    "Frozen Trail vem com correções de animação, áudio, movimentação e desempenho. Entre os ajustes anunciados, o escudo pesado recebeu menos penalidade para deslocamento e a Snap Hook passou por mudanças para diferenciar seu papel do novo Grappling Hook. O jogo também amplia o limite de armazenamento para trezentos e vinte e oito espaços, sem contar bônus específicos. A combinação de dezenas de alterações deve afetar tanto as disputas entre jogadores quanto os encontros com máquinas mais pesadas.",
-    "E existe uma oportunidade importante para quem ainda não comprou o jogo: ARC Raiders está liberado para experimentar gratuitamente entre oito e doze de outubro, no PC via Steam, PlayStation e Xbox. A Embark também divulgou um período de desconto. Isso não transforma ARC Raiders definitivamente em gratuito; é uma janela promocional para conhecer a experiência. Um jogador novo pode até explorar Pendola Pass com a ajuda de amigos que já desbloquearam o mapa.",
-    "Depois do teste gratuito, a próxima experiência planejada é um beta temporário de matchmaking PvE, anunciado para o período de treze a vinte de outubro. Nesse modo experimental, a proposta é concentrar os confrontos nas máquinas e na exploração, com diferenças de comportamento e recompensas em comparação ao ambiente tradicional. É um teste, não uma mudança permanente confirmada. Com novo cenário, ameaças, progressão e modos em avaliação, Frozen Trail representa um grande momento para ARC Raiders. Qual dessas novidades mais desperta sua vontade de voltar à superfície? Acompanhe o Radar dos Games para as próximas notícias."
-  ],
-  "steam_app_id": 1808500,
-  "visual_reference_images": [
-    {
-      "label": "Pendola Pass mapa congelado neve",
-      "url": "https://assets.arcraiders.com/media/2-1-1024x576.png",
-      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
-    },
-    {
-      "label": "Frigate nave ARC",
-      "url": "https://assets.arcraiders.com/media/fdfc9dd9-190e-ArcRaiders_ScreenShot_16x9_Frigate-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
-    },
-    {
-      "label": "Bully inimigo ARC maquina",
-      "url": "https://assets.arcraiders.com/media/0e53db8b-2ff0-ArcRaiders_ScreenShot_Bully_16x9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
-    },
-    {
-      "label": "Skulker inimigo ARC maquina",
-      "url": "https://assets.arcraiders.com/media/c83fa8f9-0b7d-AR_Bumper_ARC_Skulker_16_9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
-    },
-    {
-      "label": "Hydra inimigo ARC maquina",
-      "url": "https://assets.arcraiders.com/media/a6a68676-3b59-AR_Bumper_ARC_Hydra_16_9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
-    },
-    {
-      "label": "Stiletto arma fuzil",
-      "url": "https://assets.arcraiders.com/media/8d30b481-cc19-AR_Bumper_Weapon_Stiletto_16_9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
-    },
-    {
-      "label": "Bantam arma revolver",
-      "url": "https://assets.arcraiders.com/media/840002ea-b0ea-AR_Bumper_Weapon_Bantam_16_9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
-    },
-    {
-      "label": "Grappling Hook gancho mobilidade",
-      "url": "https://assets.arcraiders.com/media/d77a737d-0e92-AR_Bumper_Gadgets_GrapplingHook_16_9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
-    },
-    {
-      "label": "Tether Launcher equipamento",
-      "url": "https://assets.arcraiders.com/media/aa0aa1dc-2c28-AR_Bumper_Gadgets_TetherLauncher_16_9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
-    },
-    {
-      "label": "Outpost base de pesquisa",
-      "url": "https://assets.arcraiders.com/media/a95a4336-726e-ArcRaiders_ScreenShot_Outpost_16x9_02-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
-    },
-    {
-      "label": "Arvore de habilidades Skill Tree",
-      "url": "https://assets.arcraiders.com/media/22be1512-3f29-ArcRaiders_ScreenShot_SkillTree_16x9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
-    },
-    {
-      "label": "Reward Pass recompensas Premium",
-      "url": "https://assets.arcraiders.com/media/1e342c8a-4bfc-ARCRaiders_RewardPass-Infographic_Premium_Legal_SHARE_500kb-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
-    },
-    {
-      "label": "Teste gratuito ARC Raiders outubro",
-      "url": "https://assets.arcraiders.com/media/4da91ab3-b3a0-ArcRaiders_PlayForFree_16x9-1024x576.jpg",
-      "source_proof": "https://arcraiders.com/news/frozen-trail-is-live"
-    }
+    "Night City está prestes a chegar aos cinemas. A Paramount Pictures está desenvolvendo um filme em live-action ambientado no universo de Cyberpunk 2077, em parceria com a CD PROJEKT RED. A notícia foi revelada em oito de outubro de 2026 e colocou uma das maiores franquias de RPG novamente no centro das atenções. O produtor Lorenzo di Bonaventura, conhecido pelo trabalho com a franquia Transformers, está envolvido no projeto. Mas que história esse universo pode contar fora dos videogames, e por que o momento desse anúncio é tão importante?",
+    "O filme de Cyberpunk 2077 ainda está em desenvolvimento e não tem data de estreia anunciada. Tampouco foram revelados diretor, elenco ou sinopse. Isso significa que ainda não sabemos se V ou Johnny Silverhand serão personagens centrais, nem se Keanu Reeves participará. A parceria sinaliza interesse em transformar o universo do jogo em uma grande produção cinematográfica, mas não significa que um trailer já esteja disponível. O que existe por enquanto é o anúncio de um projeto e um mundo ficcional enorme para explorar.",
+    "Para entender o tamanho da notícia, é preciso conhecer Night City. Cyberpunk 2077 se passa em uma metrópole onde megacorporações concentram influência, modificações cibernéticas fazem parte da vida cotidiana e a tecnologia pode tanto libertar quanto controlar as pessoas. Arranha-céus iluminados, becos perigosos, gangues e bairros completamente diferentes convivem em um mesmo mapa. O cenário mistura ambição, desigualdade e sobrevivência. E é justamente essa atmosfera que abre possibilidades para um filme de ação, suspense ou drama sem que a história precise copiar cada missão do jogo.",
+    "No centro do jogo está V, um mercenário que tenta construir sua própria lenda. Tudo muda quando um biochip experimental acaba colocando em sua mente a consciência digital de Johnny Silverhand, um rebelde associado ao passado turbulento da cidade. Interpretado por Keanu Reeves no videogame, Johnny passa a disputar espaço com V enquanto ambos procuram uma saída para uma situação cada vez mais desesperadora. A relação entre os dois dá força ao enredo porque não se resume a tiroteios: envolve identidade, memória, lealdade e o preço de continuar vivo em Night City.",
+    "A jogabilidade também ajuda a explicar a força de Cyberpunk 2077. É possível construir estilos diferentes de combate, investir em furtividade, usar implantes cibernéticos, armas de fogo e habilidades de invasão digital. Um netrunner pode neutralizar equipamentos e desestabilizar inimigos sem partir imediatamente para o confronto. Já personagens voltados à ação podem explorar velocidade, armamentos e melhorias corporais. Nas ruas, perseguições, contratos e encontros inesperados criam histórias próprias. Não é apenas o visual futurista: são as escolhas do jogador que transformam cada passagem pela cidade.",
+    "O universo ganhou outra camada com Phantom Liberty, a expansão de espionagem ambientada em Dogtown. Nessa região mais isolada e perigosa, V se envolve em uma operação de alto risco ligada ao governo dos Novos Estados Unidos da América. A presidente Rosalind Myers, o agente Solomon Reed e outros personagens entram em uma trama de alianças frágeis, informações secretas e decisões difíceis. Idris Elba interpreta Reed. A expansão mostra como Cyberpunk consegue mudar de escala: de conflitos pessoais nas ruas para uma história de espionagem com consequências políticas.",
+    "Nem sempre a trajetória do jogo foi tranquila. Lançado em 2020, Cyberpunk 2077 enfrentou uma estreia problemática, especialmente pelas falhas técnicas em determinadas plataformas. Nos anos seguintes, a CD PROJEKT RED lançou correções e grandes mudanças em sistemas de combate, progressão e apresentação. A atualização 2.0 e Phantom Liberty foram momentos importantes dessa reconstrução. O interesse renovado no jogo ajuda a explicar a força da marca. A obra que começou cercada de controvérsias se transformou em uma franquia capaz de sustentar novos projetos e conquistar outros públicos.",
+    "Os números reforçam esse alcance. Segundo informações divulgadas em 2026, Cyberpunk 2077 ultrapassou quarenta milhões de cópias vendidas, enquanto Phantom Liberty chegou a quinze milhões. São resultados expressivos para uma experiência focada em narrativa e mundo aberto. Com o filme em desenvolvimento, a Paramount passa a explorar uma propriedade com público internacional e identidade visual reconhecível. Mas isso também cria um desafio: o público já conhece a intensidade, os personagens e a liberdade de Night City. Uma adaptação precisa encontrar uma história própria à altura dessas expectativas.",
+    "Um ponto essencial é que o filme não foi anunciado como reprodução cena por cena da campanha. Sem uma sinopse oficial, não existe confirmação sobre o protagonista ou os acontecimentos que serão adaptados. Night City, por si só, permite acompanhar mercenários, investigadores, executivos, moradores comuns ou pessoas consumidas por tecnologia. A pergunta mais interessante talvez nem seja quem estará no elenco, mas qual parte dessa sociedade a produção vai escolher explorar. A resposta só virá com informações futuras dos responsáveis pelo projeto.",
+    "E o universo Cyberpunk não vai esperar pelos cinemas para crescer. Cyberpunk: Edgerunners 2 estreia em vinte de outubro de 2026, exclusivamente na Netflix. A nova temporada é apresentada como uma história independente de dez episódios, produzida pela CD PROJEKT RED em colaboração com o estúdio de animação TRIGGER. O foco está em novos personagens, conflitos e nas consequências de tentar sobreviver em uma cidade que costuma cobrar caro pelos sonhos de seus habitantes. O trailer oficial já prepara esse retorno.",
+    "Em Edgerunners 2, o ex-mercenário Weak procura um sentido para a vida depois de perder seus implantes, enquanto o nômade D segue um caminho de vingança que o aproxima de segredos corporativos. A produção promete temas de legado, obsessão, família e sobrevivência, com um elenco de personagens diferente da história anterior. Isso reforça uma característica do cenário: Night City é maior do que qualquer protagonista. Cada nova narrativa pode mostrar uma região e uma consequência diferente de viver em um mundo dominado por dinheiro e modificações tecnológicas.",
+    "Os videogames também têm futuro reservado. Cyberpunk 2, continuação em desenvolvimento pela CD PROJEKT RED, ainda não possui data de lançamento anunciada. Um relatório de 2026 apontava cento e oitenta e quatro desenvolvedores trabalhando no projeto em trinta e um de julho. Isso não significa que o jogo esteja próximo de estrear, e o estúdio ainda não detalhou publicamente todo o seu conteúdo. Mesmo assim, a combinação de nova produção cinematográfica, anime e sequência em andamento mostra que a empresa está construindo uma franquia para vários formatos.",
+    "Com filme em desenvolvimento, estreia de Edgerunners 2 se aproximando e uma continuação dos jogos no horizonte, Cyberpunk 2077 vive uma nova fase. A Paramount vai conseguir traduzir a personalidade de Night City para uma produção live-action? Uma história inédita funcionaria melhor do que adaptar V e Johnny Silverhand? E qual personagem vocês gostariam de ver nas telonas? Contem nos comentários. Inscrevam-se no Radar dos Games para acompanhar os próximos anúncios, trailers e novidades desse universo onde a tecnologia é poderosa, mas cada escolha tem um preço."
   ]
 }
