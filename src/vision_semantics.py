@@ -28,7 +28,7 @@ CATEGORIES = {
 }
 SCENE_WORDS = {
     "snow": ("neve", "congelad", "frio", "montanha", "pendola", "freeze", "geleira"),
-    "robot": ("robo", "maquina", "arc", "bully", "skulker", "hydra", "emperor", "inimig"),
+    "robot": ("robo", "maquina", "bully", "skulker", "hydra", "emperor", "inimig"),
     "combat": ("combate", "luta", "ataque", "confront", "tiro", "batalha"),
     "airship": ("frigate", "nave", "aerea", "ceu"),
     "settlement": ("vila", "cidade", "praca", "outpost", "observatorio", "predio"),
