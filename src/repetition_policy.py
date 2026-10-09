@@ -25,7 +25,8 @@ STOP={"arc","raiders","game","games","jogo","jogos","radar","dos","das","uma",
       "para","with","the","from","official","oficial","screen","screenshot",
       "image","images","media","frame","frozen","trail","update","novo",
       "nova","news","2026","16x9","1024x576","jpg","jpeg","png","webp",
-      "gameplay","trailer","raider","raid","raiders","imagem","foto","shot"}
+      "gameplay","trailer","raider","raid","raiders","imagem","foto","shot",
+      "pass","passe","passes","premium"}
 ALIASES={
     "recompensas":"reward","recompensa":"reward","premios":"reward",
     "recompensar":"reward","premio":"reward","passes":"pass","passe":"pass",
