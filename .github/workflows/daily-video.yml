@@ -33,6 +33,7 @@ on:
       - "src/narration_qa.py"
       - "src/voice.py"
       - "src/director_v4.py"
+      - "src/repetition_policy.py"
       - "src/semantic_gate.py"
       - "src/cinematic.py"
       - "assets/audio/**"
