@@ -65,60 +65,74 @@ def accent_from_asset(path,image_mode,seek=0):
             if s<.34 or v<.3:continue
             key=int(h*12)%12; rec=buckets.setdefault(key,[0,0,0,0])
             weight=s*(.5+v); rec[0]+=r*weight; rec[1]+=g*weight; rec[2]+=b*weight; rec[3]+=weight
-        if not buckets:return "0x00DCC8"
+        if not buckets:return "0xFFFFFF"
         rec=max(buckets.values(),key=lambda x:x[3]); w=rec[3]
         r,g,b=[max(0,min(255,round(x/w))) for x in rec[:3]]
         return f"0x{r:02X}{g:02X}{b:02X}"
-    except:return "0x00DCC8"
+    except:return "0xFFFFFF"
 
-def render_vertical_piece(asset,duration,dest,piece_no,headline="",keyword="",first=False,last=False):
-    path=Path(asset["path"]); image_mode=is_image(asset)
-    if image_mode: inp=["-loop","1","-i",str(path)]
-    else:
-        seek=seek_for(path,piece_no,duration); inp=["-stream_loop","-1"]
-        if seek>0:inp += ["-ss",f"{seek:.3f}"]
-        inp += ["-i",str(path)]
-    accent=accent_from_asset(path,image_mode,0)
-    fg_scale="940:1040"
-    base=(
-        f"[0:v]fps={FPS},split=2[bg0][fg0];"
-        f"[bg0]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=30:15,"
-        "eq=brightness=-0.20:saturation=0.86[bg];"
-        f"[fg0]scale={fg_scale}:force_original_aspect_ratio=decrease,setsar=1[fg];"
-        f"[bg]drawbox=x=0:y=0:w={W}:h=118:color=0x020A23@0.96:t=fill[canvas];"
-        f"[canvas][fg]overlay=x='(W-w)/2+5*sin(t*.65)':y='510+(1040-h)/2+4*cos(t*.47)',{COLOR_FILTER}[tmp];"
+SHORTS_LAYOUT_ID = "RADAR_SHORTS_CLASSIC_V1"
+
+
+def classic_short_filter(headline, accent):
+    """Approved 02/10 layout, retained on every V4 beat (08/10 GTA6 reference)."""
+    h = esc(wrapped(headline, 24, 2))
+    # Keep the approved source image entirely visible inside the framed central panel.
+    # Apply the cinematic grade BEFORE text and overlays so branding stays crisp.
+    return (
+        f"[0:v]fps={FPS},split=2[base][fg0];"
+        f"[base]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+        "boxblur=28:14,eq=brightness=-0.18:saturation=0.85[bg];"
+        "[fg0]scale=900:600:force_original_aspect_ratio=decrease,setsar=1[fg];"
+        "[bg]drawbox=x=0:y=0:w=1080:h=112:color=0x020A23@0.98:t=fill,"
+        "drawbox=x=0:y=112:w=1080:h=285:color=black@0.96:t=fill,"
+        "drawbox=x=25:y=470:w=1030:h=535:color=0x020A23@0.94:t=fill,"
+        f"drawbox=x=96:y=525:w=888:h=430:color={accent}@0.96:t=8,"
+        f"drawbox=x=110:y=539:w=860:h=402:color={accent}@0.42:t=3[canvas];"
+        "[canvas][fg]overlay=x='(W-w)/2+5*sin(t*0.70)':"
+        "y='575+(430-h)/2+4*cos(t*0.55)',"
+        f"{COLOR_FILTER}[tmp];"
+        f"[tmp]drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x=48:y=55:fontsize=32:"
+        "fontcolor=white:borderw=2:bordercolor=black@0.7:expansion=none,"
+        f"drawtext=fontfile='{FONT}':text='{h}':x=(w-text_w)/2:y=155:fontsize=52:"
+        "fontcolor=white:borderw=2:bordercolor=black@0.7:line_spacing=12:expansion=none,"
+        "drawbox=x=170:y=1040:w=740:h=64:color=black@0.86:t=fill,"
+        f"drawtext=fontfile='{FONT}':text='CONFIRA O CONTEÚDO COMPLETO':"
+        f"x=(w-text_w)/2:y=1053:fontsize=30:fontcolor={accent}:"
+        "borderw=1:bordercolor=black@0.8:expansion=none,"
+        "drawbox=x=250:y=1505:w=580:h=58:color=black@0.86:t=fill,"
+        f"drawtext=fontfile='{FONT_REG}':text='VÍDEO COMPLETO NO CANAL':"
+        "x=(w-text_w)/2:y=1517:fontsize=29:fontcolor=white:"
+        "borderw=1:bordercolor=black@0.8:expansion=none,"
+        "drawbox=x=245:y=1569:w=590:h=64:color=black@0.9:t=fill,"
+        f"drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':"
+        "x=(w-text_w)/2:y=1580:fontsize=36:fontcolor=0xF4FF00:"
+        "borderw=1:bordercolor=black@0.9:expansion=none,format=yuv420p[v]"
     )
-    filters=[
-        f"[tmp]drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x=42:y=54:fontsize=32:fontcolor=white:"
-        "borderw=2:bordercolor=black@0.7:expansion=none",
-        f"drawbox=x=72:y=440:w=936:h=1120:color={accent}@0.22:t=3",
-    ]
-    if first:
-        h=esc(wrapped(headline,23,2))
-        filters += [
-            "drawbox=x=56:y=150:w=968:h=270:color=black@0.86:t=fill:enable='between(t,0,3.0)'",
-            f"drawtext=fontfile='{FONT}':text='{h}':x=(w-text_w)/2:y=205:fontsize=55:fontcolor=white:"
-            "borderw=2:bordercolor=black@0.8:line_spacing=12:expansion=none:enable='between(t,0,3.0)'",
-        ]
-    if keyword:
-        k=esc(keyword[:22])
-        filters += [
-            "drawbox=x=190:y=1575:w=700:h=72:color=black@0.80:t=fill:enable='between(t,0.15,1.65)'",
-            f"drawtext=fontfile='{FONT}':text='{k}':x=(w-text_w)/2:y=1590:fontsize=36:fontcolor=0xF4FF00:"
-            "borderw=2:bordercolor=black@0.8:expansion=none:enable='between(t,0.15,1.65)'",
-        ]
-    if last:
-        start=max(0.0,duration-2.2)
-        filters += [
-            f"drawbox=x=165:y=1685:w=750:h=96:color=black@0.86:t=fill:enable='gte(t,{start:.3f})'",
-            f"drawtext=fontfile='{FONT_REG}':text='VÍDEO COMPLETO NO RADAR DOS GAMES':x=(w-text_w)/2:y=1715:"
-            f"fontsize=28:fontcolor=white:borderw=1:bordercolor=black@0.8:expansion=none:enable='gte(t,{start:.3f})'",
-        ]
-    fc=base+",".join(filters)+",format=yuv420p[v]"
-    sh(["ffmpeg","-y","-v","error",*inp,"-t",f"{duration:.3f}","-filter_complex",fc,
-        "-map","[v]","-an","-r",str(FPS),"-c:v","libx264","-preset","veryfast","-crf","20",
-        "-pix_fmt","yuv420p",str(dest)])
+
+
+def render_vertical_piece(asset, duration, dest, piece_no, headline="", keyword="", first=False, last=False):
+    """Maintain the full classic layout throughout EVERY beat, no timed title/CTA."""
+    path = Path(asset["path"])
+    image_mode = is_image(asset)
+    if image_mode:
+        inp = ["-loop", "1", "-i", str(path)]
+    else:
+        seek = seek_for(path, piece_no, duration)
+        inp = ["-stream_loop", "-1"]
+        if seek > 0:
+            inp += ["-ss", f"{seek:.3f}"]
+        inp += ["-i", str(path)]
+
+    accent = accent_from_asset(path, image_mode, 0)
+    # keyword, first and last remain accepted for pipeline compatibility. No
+    # transient graphics may cover the approved permanent title, media or CTA.
+    fc = classic_short_filter(headline, accent)
+    sh(["ffmpeg", "-y", "-v", "error", *inp, "-t", f"{duration:.3f}", "-filter_complex", fc,
+        "-map", "[v]", "-an", "-r", str(FPS), "-c:v", "libx264", "-preset", "veryfast",
+        "-crf", "20", "-pix_fmt", "yuv420p", str(dest)])
     return accent
+
 
 def sfx_track(duration,events,dest):
     rate=48000; frames=max(1,int(math.ceil(duration*rate))); samples=[0.0]*frames
@@ -186,18 +200,20 @@ def main():
             "approved_hook":hook,
             "scene_title":scene.get("title"),
             "subtitle":scene.get("subtitle"),
-            "beats":len(beats),"accent":accents[0] if accents else "0x00DCC8",
+            "beats":len(beats),"accent":accents[0] if accents else "0xFFFFFF",
             "music_bed":music_policy,
+            "layout_profile":SHORTS_LAYOUT_ID,
         })
 
     payload={
         "standard":"radar-dos-games-shorts-premium-v4-director-cut",
         "premium_version":"PREMIUM_V4_DIRECTOR_CUT",
         "cinematic_profile":"RADAR_CINEMATIC_V1",
+        "layout_profile":SHORTS_LAYOUT_ID,
         "color_filter":COLOR_FILTER,
         "source_policy":"independent_rebuild_from_approved_assets",
         "resolution":[W,H],"fps":FPS,
-        "hook_policy":"exact_approved_hook_on_first_frame; semantic_scene_match; phrase_level_visuals; selective_keywords",
+        "hook_policy":"exact_approved_hook_persistent_all_beats; semantic_scene_match; phrase_level_visuals; classic_fixed_layout",
         "expected_hooks":expected_hooks,
         "sound_design":"compression+loudnorm+limiter+subtle_editorial_sfx",
         "shorts":report,

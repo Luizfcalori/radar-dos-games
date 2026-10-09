@@ -75,3 +75,12 @@ Masters e os três Shorts passam a usar `RADAR_CINEMATIC_V1` por padrão.
 - Shorts V4 recebem mixagem própria a partir da voz e mídias originais. O fallback legado recorta o Master já tratado, sem aplicar uma segunda trilha ou uma segunda correção de cor.
 - Trilha ausente bloqueia o render; gate V4 exige trilha com ducking e perfil cinematográfico nos dois formatos.
 - Módulo compartilhado: `src/cinematic.py`.
+
+
+## Restauração obrigatória do layout interno dos Shorts — 08/10/2026
+
+- O V4 (`src/shorts_v4.py`) deve renderizar **RADAR_SHORTS_CLASSIC_V1** em cada beat, com a mesma composição do modelo aprovado e do Short GTA 6 enviado como referência.
+- Cabeçalho azul escuro `RADAR DOS GAMES`, headline grande **persistente** em bloco preto, moldura com mídia inteira no centro e cor contextual, faixa `CONFIRA O CONTEÚDO COMPLETO` e CTA inferior permanente em duas linhas (`VÍDEO COMPLETO NO CANAL` / `RADAR DOS GAMES`).
+- Os textos e o quadro não desaparecem no meio do Short; a troca entre imagens/gameplays altera apenas a mídia contextual, preservando o layout.
+- Cor cinematográfica e mixagem via `src/cinematic.py`, seleção semântica dos beats e voz Thalita continuam ativas. Não reintroduzir recortes destrutivos.
+- `src/premium_v4_qa.py` bloqueia renderizações sem o perfil visual **RADAR_SHORTS_CLASSIC_V1** nos três Shorts.
