@@ -205,29 +205,57 @@ def pick_shorts(scenes):
         if len(picks)==3:break
     return (picks+[0,0,0])[:3]
 
-def hook_terms(text):
-    return {
-        token for token in norm(text).split()
-        if len(token) >= 3 and token not in SHORT_STOP and not token.isdigit()
+def canonical_hook_tokens(text):
+    """Normalize obvious Portuguese equivalents without matching game names."""
+    aliases={
+        "gratis":"free_trial","gratuito":"free_trial","gratuita":"free_trial",
+        "gratuitamente":"free_trial","gratuidade":"free_trial",
+        "congelado":"snowy","congelada":"snowy","neve":"snowy",
+        "nevado":"snowy","nevada":"snowy","gelado":"snowy",
+        "gelada":"snowy","frio":"snowy","fria":"snowy",
+        "12":"doze",
     }
+    return [aliases.get(t,t) for t in norm(text).split()]
+
+
+def hook_terms(text):
+    generic=SHORT_STOP | {"arc","raiders","jogo","jogos","novo","nova",
+                          "novos","novas","frozen","trail","atualizacao"}
+    return {token for token in canonical_hook_tokens(text)
+            if len(token)>=3 and token not in generic}
+
+
+def scene_short_text(scene):
+    # A beat is an editorial cut, NOT a new phrase; count each sentence once.
+    seen=set()
+    lines=[str(scene.get("title") or ""),str(scene.get("subtitle") or "")]
+    for b in scene.get("beats") or []:
+        text=str(b.get("text") or "")
+        key=(b.get("phrase"),text)
+        if text and key not in seen:
+            seen.add(key)
+            lines.append(text)
+    return " ".join(lines)
+
 
 def hook_scene_score(hook, scene):
     hook_set=hook_terms(hook)
-    scene_text=" ".join([
-        str(scene.get("title") or ""),
-        str(scene.get("subtitle") or ""),
-        " ".join(str(b.get("text") or "") for b in (scene.get("beats") or [])),
-    ])
-    scene_set=hook_terms(scene_text)
+    scene_text=scene_short_text(scene)
+    tokens=canonical_hook_tokens(scene_text)
+    scene_set=set(tokens)
     overlap=sorted(hook_set & scene_set)
-    hook_stems={x[:5] for x in hook_set if len(x)>=5}
-    scene_stems={x[:5] for x in scene_set if len(x)>=5}
+    # Specific terms are more valuable than common channel/game adjectives.
+    counts=Counter(tokens)
+    score=sum(20+min(2,counts[x]-1)*4 for x in overlap)
+    first_words=set(tokens[:75])
+    score+=sum(12 for x in overlap if x in first_words)
+    # Substring stems help grammatical inflections only for meaningful terms.
+    hook_stems={x[:6] for x in hook_set if len(x)>=6}
+    scene_stems={x[:6] for x in scene_set if len(x)>=6}
     stem_overlap=sorted(hook_stems & scene_stems)
-    score=(len(overlap)*10)+(len(stem_overlap)*4)
-    for number in re.findall(r"\\b\\d+\\b", str(hook)):
-        if re.search(rf"\\b{re.escape(number)}\\b", scene_text):
-            score+=3
+    score+=sum(2 for x in stem_overlap if not any(x==t[:6] for t in overlap))
     return score, overlap, stem_overlap
+
 
 def pick_shorts_for_hooks(scenes, hooks):
     if len(hooks) != 3:
