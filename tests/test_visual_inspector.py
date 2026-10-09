@@ -61,7 +61,7 @@ class VisualInspectorTests(unittest.TestCase):
                 {"index": 1, "type": "video", "usable_windows": [{"start": 5, "end": 12}]},
                 {"index": 2, "type": "video", "duplicate_of": 1, "usable_windows": []},
             ]}
-            outline = "As máquinas avançam.\\n\\nO Bully ataca rapidamente.\\n\\nNova atualização chegou."
+            outline = "As máquinas avançam.\n\nO Bully ataca rapidamente.\n\nNova atualização chegou."
             built, text, report = compile_storyboard(plan,
                 {"assets": assets, "publishable_media": True}, {}, outline, inventory)
             self.assertTrue(text)
