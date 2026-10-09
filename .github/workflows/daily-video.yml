@@ -21,6 +21,8 @@ on:
       - "src/auto_daily.py"
       - "src/media.py"
       - "src/media_first.py"
+      - "src/visual_inspector.py"
+      - "src/vision_semantics.py"
       - "src/voice.py"
       - "src/research.py"
       - "production/manual-brief.json"
@@ -67,6 +69,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -U yt-dlp
+          # Open-source zero-shot visual recognition, CPU only; no paid API.
+          python -m pip install --quiet torch==2.5.1+cpu torchvision==0.20.1+cpu --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install --quiet transformers==4.46.3
 
       - name: Validar intro oficial permanente
         run: |
@@ -130,6 +135,11 @@ jobs:
 
       - name: Inspecionar todos os frames e localizar cortes aproveitáveis
         run: python src/visual_inspector.py
+
+      - name: Identificar categorias visuais dos quadros-chave com IA gratuita
+        env:
+          HF_HUB_DISABLE_TELEMETRY: "1"
+        run: python src/vision_semantics.py
 
       - name: Decupar material baixado e finalizar roteiro
         run: python src/media_first.py
@@ -350,6 +360,7 @@ jobs:
             output/auto-script-outline.txt
             output/media-first-storyboard.json
             output/visual-inventory.json
+            output/vision-semantic-report.json
             output/media-first-frames/*.jpg
             output/auto-media-plan.json
             output/clips.json
