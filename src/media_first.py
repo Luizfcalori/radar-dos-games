@@ -73,7 +73,8 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         def rank(a):
             return (-relevance(text,a,topic),usage[int(a["index"])],int(a["index"]))
         matches=sorted(images,key=rank) if images else []
-        matched_still=matches[0] if matches and relevance(text,matches[0],topic)>0 else None
+        matched_stills=[a for a in matches if relevance(text,a,topic)>0][:4]
+        matched_still=matched_stills[0] if matched_stills else None
         semantic_ready=bool((visual_inventory or {}).get("semantic_model_policy"))
         expected=[]
         window_options={}
@@ -93,8 +94,8 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         picks=[]
         if matched_videos:
             picks.append(min(matched_videos,key=rank))
-        if matched_still:
-            picks.append(matched_still)
+        if matched_stills:
+            picks.extend(matched_stills)
         elif images and visual_inventory is None:
             picks.append(matches[0])
         if not picks:
