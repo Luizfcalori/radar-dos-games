@@ -1,49 +1,44 @@
 {
-  "valid_until": "2026-10-09T03:00:00Z",
-  "content_id": "manual-battlefield-6-game-pass-2026-10-07",
-  "title": "Battlefield 6",
-  "headline": "BATTLEFIELD 6 NO GAME PASS: DATA, BENEFÍCIOS E A TEMPORADA 5",
-  "primary_source": "https://news.xbox.com/pt-br/2026/10/07/xbox-game-pass-outubro-wave-1/",
+  "valid_until": "2026-10-09T06:00:00Z",
+  "content_id": "manual-arc-raiders-frozen-trail-2-0-2026-10-09-fresh",
+  "title": "ARC Raiders",
+  "headline": "ARC RAIDERS FROZEN TRAIL 2.0: NOVO MAPA, INIMIGOS, ARMAS E TESTE GRÁTIS",
+  "primary_source": "https://arcraiders.com/news/frozen-trail-2-0-update",
   "media_source_urls": [
-    "https://www.ea.com/games/battlefield/battlefield-6/features/bf6-media-hub",
-    "https://www.ea.com/pt-br/games/battlefield/battlefield-6",
-    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-6-community-update-siege-of-vegas-incoming",
-    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-season-5-and-beyond",
-    "https://news.xbox.com/pt-br/2026/10/07/xbox-game-pass-outubro-wave-1/"
+    "https://arcraiders.com/news/frozen-trail-is-live",
+    "https://arcraiders.com/news/frozen-trail-2-0-update",
+    "https://arcraiders.com/es/news/frozen-trail-content-preview",
+    "https://arcraiders.com/",
+    "https://jp.nexon.com/news/136007?category=0&keyword=id"
   ],
   "source_urls": [
-    "https://news.xbox.com/pt-br/2026/10/07/xbox-game-pass-outubro-wave-1/",
-    "https://www.ea.com/pt-br/games/battlefield/battlefield-6",
-    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-season-5-and-beyond",
-    "https://www.ea.com/pt-br/games/battlefield/battlefield-6/news/battlefield-6-community-update-siege-of-vegas-incoming",
-    "https://www.ea.com/games/battlefield/battlefield-6/news"
+    "https://arcraiders.com/news/frozen-trail-2-0-update",
+    "https://arcraiders.com/news/frozen-trail-is-live",
+    "https://arcraiders.com/es/news/frozen-trail-content-preview",
+    "https://jp.nexon.com/news/136007?category=0&keyword=id"
   ],
   "short_hooks": [
-    "BATTLEFIELD 6 CHEGA AO GAME PASS!",
-    "GAME PASS ULTIMATE: O QUE VOCÊ GANHA NO BATTLEFIELD 6",
-    "BATTLEFIELD 6: TEMPORADA 5 VAI PARA VEGAS"
-  ],
-  "script_blocks": [
-    "Battlefield 6 acaba de ganhar uma das notícias mais importantes para ampliar ainda mais sua base de jogadores: a Microsoft confirmou que o jogo entra no Xbox Game Pass no dia 13 de outubro. E não é só uma chegada ao catálogo. Ela acontece justamente quando Battlefield 6 completa um ano e se prepara para abrir o Ano 2 com a Temporada 5.",
-    "Segundo o anúncio oficial do Xbox, Battlefield 6 estará disponível em nuvem, Xbox Series X|S e PC. O acesso entra para assinantes do Game Pass Ultimate e do PC Game Pass. Para quem joga no console, o ponto central é o Ultimate; no PC, o jogo também chega pelo PC Game Pass.",
-    "A inclusão no catálogo está marcada para 13 de outubro. Isso coloca Battlefield 6 ao lado de outros títulos que chegam na mesma data, como Deep Dish Dungeon e Valor Mortis, mas aqui o peso é diferente: Battlefield já é uma franquia estabelecida e recebe uma nova porta de entrada exatamente no começo de uma nova fase do jogo.",
-    "Quem assina o Game Pass Ultimate também recebe os benefícios do EA Play incluídos na assinatura. No caso de Battlefield 6, a Microsoft destaca o EA Play Deployment Pack, o pacote da Temporada 5 e recompensas sazonais recorrentes. Assinantes ainda recebem dez por cento de desconto em compras digitais elegíveis da EA.",
-    "E o momento escolhido não é por acaso. A própria EA confirmou que outubro marca o primeiro aniversário de Battlefield 6. Durante esse primeiro ano, o jogo recebeu quatro temporadas de conteúdo, trouxe de volta mapas conhecidos da série e adicionou Guerra Naval, enquanto a equipe continuou ajustando progressão, combate, assistência de mira e balanceamento.",
-    "Agora começa a preparação para a Temporada 5, que a EA define como o início do Ano 2 de Battlefield 6 e REDSEC. A temporada vai levar a batalha para Las Vegas, com três novos mapas ao longo do período. Dois deles estarão disponíveis já no lançamento da temporada.",
-    "A proposta desses mapas é misturar combates de infantaria em espaços fechados com áreas maiores para armas combinadas. A EA fala em confrontos de curta distância, posições elevadas e batalhas com veículos terrestres e aéreos. É exatamente o tipo de contraste que sempre definiu os melhores momentos da série.",
-    "A Temporada 5 também vai trazer novas armas e ajustes importantes de jogabilidade. Veículos blindados receberão mudanças em regeneração de vida, dano direcional e pontos fracos, fazendo posicionamento e precisão contra blindados pesarem mais durante as partidas.",
-    "Outro destaque é o REDSEC. O modo recebe o Royale Rápido em versões solo e trio, pensado para encurtar as partidas e aumentar a frequência dos confrontos. A ideia foi testada no Battlefield Labs antes de chegar à temporada principal.",
-    "Mais adiante na Temporada 5, Battlefield 6 também deve receber navegador de servidores. Esse é um recurso muito pedido pela comunidade porque dá mais controle sobre onde e como entrar nas partidas, especialmente para quem prefere servidores, mapas ou regras específicas.",
-    "A EA também já confirmou que a Temporada 5 não encerra o plano de suporte. Em 2027, a equipe pretende continuar adicionando conteúdo e trabalhando em sistemas centrais, incluindo combate com veículos, mecânicas de tiro, explosivos, campo de tiro, animações de armas e balanceamento de fuzis de precisão.",
-    "Na prática, a chegada ao Game Pass pode funcionar como uma segunda grande janela de lançamento para Battlefield 6. Novos jogadores entram sem precisar comprar o jogo completo de imediato, enquanto veteranos recebem uma nova temporada e uma possível renovação na população dos servidores.",
-    "Para quem estava esperando uma boa hora para testar Battlefield 6, a data agora está marcada: 13 de outubro. Game Pass Ultimate no console e PC Game Pass no computador dão acesso ao jogo, e o Ultimate ainda carrega os benefícios do EA Play. A combinação de Game Pass, Temporada 5 e Ano 2 transforma outubro em um dos meses mais importantes do Battlefield desde o lançamento.",
-    "E agora queremos saber de vocês: a chegada ao Game Pass é suficiente para fazer você entrar ou voltar para Battlefield 6? E o que pesa mais para a Temporada 5: os mapas de Las Vegas, o Royale Rápido, as mudanças nos veículos ou o navegador de servidores? Comenta aí e acompanha o Radar dos Games para as próximas atualizações."
+    "ARC RAIDERS GRÁTIS ATÉ 12 DE OUTUBRO!",
+    "PENDOLA PASS: O NOVO MAPA CONGELADO DE ARC RAIDERS",
+    "BULLY, SKULKER E HYDRA: TRÊS NOVOS INIMIGOS"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=QdHfpnMgoU4",
-    "https://www.youtube.com/watch?v=wFGEMfyAQtI",
-    "https://www.youtube.com/watch?v=nMBBXqu0OLE",
-    "https://www.youtube.com/watch?v=XCMr55EjFew",
-    "https://www.youtube.com/watch?v=kF_c784jufE"
+    "https://www.youtube.com/watch?v=KjiJDylLdZA"
+  ],
+  "script_blocks": [
+    "ARC Raiders acaba de receber Frozen Trail, a maior atualização desde o lançamento. O mundo acima de Speranza ficou ainda mais perigoso: novas máquinas patrulham o céu e as montanhas, um mapa inteiramente novo desafia os sobreviventes e equipamentos inéditos prometem mudar a maneira como cada expedição acontece. O pacote 2.0 chegou em 8 de outubro e não é só uma coleção de itens. Ele mexe na exploração, nos confrontos, nas recompensas e até no jeito de construir o personagem.",
+    "Para quem está chegando agora, ARC Raiders é uma aventura multijogador de extração. Você deixa a segurança subterrânea de Speranza, procura recursos na superfície e precisa escapar com tudo que conseguiu encontrar. O problema é que máquinas chamadas ARC dominam o ambiente, e outros jogadores também podem disputar o mesmo saque. Cada encontro obriga a decidir entre lutar, negociar, desviar ou bater em retirada. Frozen Trail amplia essas escolhas com ameaças e rotas novas.",
+    "O principal cenário da atualização é Pendola Pass, uma região italiana coberta de neve, além das montanhas que cercam o Rust Belt. O local conserva vestígios de uma vila antiga e da infraestrutura do projeto Exodus: há uma praça abandonada, um supermercado, observatório e instalações ferroviárias soterradas. No centro desse mistério está um Emperor gigantesco que caiu. Explorar seus restos pode render tecnologia rara, mas também atrai um verdadeiro exército de máquinas para a região.",
+    "Pendola Pass não é apenas bonito. Ondas de frio intenso, chamadas Flash Freeze, podem obrigar os sobreviventes a buscar abrigo. A região mistura áreas abertas, estruturas fechadas e caminhos verticais, aumentando a importância da posição e da movimentação. A saída também ganha uma solução própria: as gôndolas balísticas, que podem levar os Raiders para longe da região. E o sistema de zonas de saque dinâmicas torna algumas rotas menos previsíveis de uma partida para a outra.",
+    "Entre as maiores ameaças está a Frigate, uma enorme nave ARC que passa a fazer parte das operações mais difíceis. Invadir seu interior não significa apenas derrotar um inimigo grande no horizonte. É preciso abrir caminhos, avançar pelos compartimentos da estrutura e enfrentar máquinas em espaços apertados, enquanto outros Raiders podem estar tentando chegar ao mesmo objetivo. O tamanho e a altitude da operação criam um risco diferente das expedições habituais, especialmente quando o saque mais valioso aparece.",
+    "Três máquinas inéditas também chegam para complicar qualquer encontro. O Bully é agressivo e avança rapidamente, pressionando quem fica parado ou exposto. O Skulker prefere emboscadas, esconde-se e reaparece para atacar quando a defesa está menos preparada. Já a Hydra é uma ameaça armada com múltiplas frentes de ataque, feita para pressionar grupos e proteger áreas estratégicas. Contra esse trio, conhecer cobertura, movimentação e distância de combate pode ser mais importante do que apenas disparar sem parar.",
+    "No arsenal, duas armas novas merecem atenção. A Stiletto é um fuzil de assalto, pensado para ampliar as possibilidades de combate com armas longas. A Bantam é um revólver que entra como alternativa de menor raridade à Anvil. E a própria Anvil muda de categoria: passa de incomum para rara, uma decisão de equilíbrio depois de se destacar contra jogadores e máquinas. São mudanças que mexem tanto na escolha de equipamentos quanto no valor de cada expedição.",
+    "A grande novidade de mobilidade é o Grappling Hook, um gancho que permite subir, descer e atravessar espaços usando a física da corda. Em uma região de grandes desníveis, isso abre oportunidades para alcançar posições altas, escapar de inimigos ou surpreender um grupo adversário. O Tether Launcher também chega para conectar pontos e restringir movimento, enquanto a Yank Grenade pode puxar objetos ou alvos. Não são ferramentas para enfeitar o inventário: criam decisões práticas no meio da ação.",
+    "Fora da superfície, o novo Outpost amplia o espaço de preparação. Ele é desbloqueado por um projeto específico e pode crescer com módulos e móveis. A estação de pesquisa abre espaço para reforçar armamentos por meio das chamadas Amplified Weapons, com aprimoramentos que mudam o desempenho de determinadas armas. Ao mesmo tempo, projetos de decoração podem ser encontrados em expedições. A ideia é que até uma exploração sem grandes confrontos possa contribuir para melhorar e personalizar sua base.",
+    "A árvore de habilidades foi reorganizada e recebeu novas opções, justamente porque muitos jogadores sentiam pouca diferença entre certas escolhas. Agora há decisões mais marcantes entre caminhos e habilidades, permitindo especializações mais claras. O sistema de missões também evolui, com vinte e duas tarefas inéditas. Para quem já joga há meses, o interesse está em experimentar estratégias novas; para quem começa agora, há mais maneiras de desenvolver seu próprio estilo sem depender de uma única construção.",
+    "Outro ajuste importante aparece nas recompensas. Os antigos Raider Decks dão lugar ao Reward Pass, que usa pontos de recompensa. O primeiro passe Frozen Trail tem sessenta níveis e trilhas gratuita e premium. As recompensas antigas não desaparecem: elas são organizadas no Legacy Pass. Só é possível avançar em um passe ativo por vez, então vale escolher qual conjunto de objetivos combina com o momento. Também chegaram padrões de personalização para armas e melhorias de espaço no inventário.",
+    "Frozen Trail vem com correções de animação, áudio, movimentação e desempenho. Entre os ajustes anunciados, o escudo pesado recebeu menos penalidade para deslocamento e a Snap Hook passou por mudanças para diferenciar seu papel do novo Grappling Hook. O jogo também amplia o limite de armazenamento para trezentos e vinte e oito espaços, sem contar bônus específicos. A combinação de dezenas de alterações deve afetar tanto as disputas entre jogadores quanto os encontros com máquinas mais pesadas.",
+    "E existe uma oportunidade importante para quem ainda não comprou o jogo: ARC Raiders está liberado para experimentar gratuitamente entre oito e doze de outubro, no PC via Steam, PlayStation e Xbox. A Embark também divulgou um período de desconto. Isso não transforma ARC Raiders definitivamente em gratuito; é uma janela promocional para conhecer a experiência. Um jogador novo pode até explorar Pendola Pass com a ajuda de amigos que já desbloquearam o mapa.",
+    "Depois do teste gratuito, a próxima experiência planejada é um beta temporário de matchmaking PvE, anunciado para o período de treze a vinte de outubro. Nesse modo experimental, a proposta é concentrar os confrontos nas máquinas e na exploração, com diferenças de comportamento e recompensas em comparação ao ambiente tradicional. É um teste, não uma mudança permanente confirmada. Com novo cenário, ameaças, progressão e modos em avaliação, Frozen Trail representa um grande momento para ARC Raiders. Qual dessas novidades mais desperta sua vontade de voltar à superfície? Acompanhe o Radar dos Games para as próximas notícias."
   ]
 }
