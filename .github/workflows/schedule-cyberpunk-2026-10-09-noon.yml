@@ -1,0 +1,235 @@
+name: Schedule Cyberpunk 2077 Master and 3 Shorts for Oct 09 noon
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/schedule-cyberpunk-2026-10-09-noon.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: cyberpunk-oct09-noon-schedule
+  cancel-in-progress: false
+
+jobs:
+  schedule:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install YouTube and image libraries
+        run: python -m pip install --disable-pip-version-check --no-input google-api-python-client==2.184.0 google-auth==2.41.1 Pillow==11.3.0 requests==2.32.5
+      - name: Download exactly completed Cyberpunk run (no rerender)
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-37936603792
+          path: approved
+          github-token: ${{ github.token }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 37936603792
+      - name: Verify files and replace clipped covers with safe official-source designs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps, ImageDraw, ImageFont, ImageFilter
+          import io, json, requests
+          root=Path("approved")
+          def locate(name):
+              for p in (root/name,root/"output"/name):
+                  if p.is_file() and p.stat().st_size>0:return p
+              raise RuntimeError("Missing production asset "+name)
+          final=json.loads(locate("final-qa.json").read_text(encoding="utf-8"))
+          selected=json.loads(locate("selected.json").read_text(encoding="utf-8"))
+          assert final.get("status")=="APPROVED" and final.get("pro_score",0)>=85
+          assert "cyberpunk" in str(selected.get("title","")).lower()
+          assert selected.get("manual_brief") is True
+          for p in ["master.mp4","shorts/short_1.mp4","shorts/short_2.mp4","shorts/short_3.mp4"]:
+              assert locate(p).stat().st_size>500000
+          sources=[
+            ("thumbnail.jpg","https://cdn-l-cyberpunk.cdprojektred.com/cyberpunk2077/nightcity/Cyberpunk2077_Above_it_all_RGB@1x.jpg",("CYBERPUNK 2077","VAI VIRAR FILME!"),(1280,720),"PARAMOUNT + CD PROJEKT RED"),
+            ("shorts/short_1_cover.jpg","https://cdn-l-cyberpunk.cdprojektred.com/cyberpunk2077/story/Cyberpunk2077_Just_around_the_corner_RGB@1x.jpg",("CYBERPUNK 2077","VAI VIRAR FILME!"),(1080,1920),"PARAMOUNT PREPARA ADAPTACAO"),
+            ("shorts/short_2_cover.jpg","local:media-first-frames/asset_15.jpg",("EDGERUNNERS 2","20 DE OUTUBRO"),(1080,1920),"NOVO ANIME DE NIGHT CITY"),
+            ("shorts/short_3_cover.jpg","https://cdn-l-cyberpunk.cdprojektred.com/cyberpunk2077/story/Cyberpunk2077_Outnumbered_But_Not_Outgunned_RGB@1x.jpg",("CYBERPUNK 2","EM DESENVOLVIMENTO"),(1080,1920),"O FUTURO DE NIGHT CITY"),
+          ]
+          bold="/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed-Bold.ttf"
+          regular="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+          out=root/"covers-fixed";out.mkdir(parents=True,exist_ok=True)
+          def fit(draw,text,max_width,starting):
+              for size in range(starting,28,-2):
+                  font=ImageFont.truetype(bold,size)
+                  if draw.textbbox((0,0),text,font=font,stroke_width=2)[2]<=max_width:return font
+              raise RuntimeError("Cover text cannot fit: "+text)
+          for rel,url,headings,(w,h),sub in sources:
+              if url.startswith("local:"):
+                  p=locate(url.split(":",1)[1])
+                  with Image.open(p) as src: image=src.convert("RGB").copy()
+              else:
+                  res=requests.get(url,timeout=30,headers={"User-Agent":"Mozilla/5.0"})
+                  res.raise_for_status()
+                  with Image.open(io.BytesIO(res.content)) as src:image=src.convert("RGB").copy()
+              assert image.width>200 and image.height>140,(rel,image.size)
+              background=ImageOps.fit(image,(w,h),method=Image.Resampling.LANCZOS,centering=(.5,.5)).convert("RGBA")
+              mask=Image.new("L",(1,h))
+              mask.putdata([int(10+217*max(0,(y/h-.23)/.75)**1.1) for y in range(h)])
+              mask=mask.resize((w,h))
+              overlay=Image.new("RGBA",(w,h),(1,5,12,0));overlay.putalpha(mask)
+              background=Image.alpha_composite(background,overlay)
+              draw=ImageDraw.Draw(background)
+              margin=int(w*.064)
+              # Brand lockup and accent rule always stay inside the safety margin.
+              badge_font=ImageFont.truetype(regular,int(w*.032))
+              draw.rounded_rectangle((margin,margin,margin+int(w*.37),margin+int(w*.062)),radius=9,fill=(3,7,14,228),outline=(67,244,54,255),width=3)
+              draw.text((margin+15,margin+9),"RADAR DOS GAMES",font=badge_font,fill="white")
+              font_size=int(w*(.073 if w>1100 else .080))
+              txt_y=int(h*(.62 if h>1000 else .58))
+              line_gap=int(font_size*.22)
+              for pos,line in enumerate(headings):
+                  line=line.upper()
+                  font=fit(draw,line,w-2*margin,font_size)
+                  bbox=draw.textbbox((0,0),line,font=font,stroke_width=3)
+                  line_height=bbox[3]-bbox[1]
+                  if line_height+txt_y>h-int(h*.16):raise RuntimeError("Headline outside safe region "+rel)
+                  draw.text((margin,txt_y),line,font=font,fill=((70,255,45,255) if pos else (255,255,255,255)),stroke_width=3,stroke_fill=(0,0,0,255))
+                  txt_y+=line_height+line_gap
+              subfont=fit(draw,sub,w-2*margin,int(w*.035))
+              draw.line((margin,int(h*.90),w-margin,int(h*.90)),fill=(70,255,45,255),width=max(3,int(w*.006)))
+              draw.text((margin,int(h*.918)),sub,font=subfont,fill=(248,248,248,255),stroke_width=1,stroke_fill=(0,0,0,255))
+              target=out/Path(rel).name
+              background.convert("RGB").save(target,"JPEG",quality=92,optimize=True)
+              with Image.open(target) as img:
+                  assert img.size==(w,h)
+              print("COVER_FIXED",rel,"=>",target,target.stat().st_size)
+          print("SOURCE_RUN_LOCK",37936603792)
+          PY
+      - name: Upload scheduled videos, verify YouTube IDs and exact same publishAt
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json,os,time
+          from datetime import datetime,timezone
+          from pathlib import Path
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+          from googleapiclient.errors import HttpError
+          target="2026-10-09T15:00:00Z"
+          deadline=datetime.fromisoformat(target.replace("Z","+00:00"))
+          expected_id="UCSZJZE-E10SVdx42wrDeWhw"
+          for name in ("YT_CLIENT_ID","YT_CLIENT_SECRET","YT_REFRESH_TOKEN"):
+              if not os.environ.get(name):raise RuntimeError("Missing YouTube secret "+name)
+          creds=Credentials(None,refresh_token=os.environ["YT_REFRESH_TOKEN"],
+              token_uri="https://oauth2.googleapis.com/token",
+              client_id=os.environ["YT_CLIENT_ID"],client_secret=os.environ["YT_CLIENT_SECRET"],
+              scopes=["https://www.googleapis.com/auth/youtube.upload","https://www.googleapis.com/auth/youtube.readonly"])
+          yt=build("youtube","v3",credentials=creds)
+          channels=yt.channels().list(part="id,snippet,contentDetails",mine=True).execute().get("items",[])
+          if len(channels)!=1 or channels[0]["id"]!=expected_id or channels[0]["snippet"]["title"].strip().casefold()!="radar dos games":
+              raise RuntimeError("WRONG_CHANNEL_UPLOAD_BLOCKED")
+          root=Path("approved")
+          def locate(rel):
+              for p in (root/rel,root/"output"/rel):
+                  if p.is_file() and p.stat().st_size:return p
+              raise RuntimeError("Missing approved asset "+rel)
+          playlist=channels[0]["contentDetails"]["relatedPlaylists"]["uploads"]
+          already={};token=None
+          for _ in range(12):
+              page=yt.playlistItems().list(part="snippet,contentDetails",playlistId=playlist,maxResults=50,pageToken=token).execute()
+              for item in page.get("items",[]):
+                  title=item.get("snippet",{}).get("title","").strip().casefold()
+                  vid=item.get("contentDetails",{}).get("videoId")
+                  if title and vid: already[title]=vid
+              token=page.get("nextPageToken")
+              if not token:break
+          jobs=[
+              ("master","master.mp4","master-youtube.json","thumbnail.jpg"),
+              ("short1","shorts/short_1.mp4","short-1-youtube.json","short_1_cover.jpg"),
+              ("short2","shorts/short_2.mp4","short-2-youtube.json","short_2_cover.jpg"),
+              ("short3","shorts/short_3.mp4","short-3-youtube.json","short_3_cover.jpg")
+          ]
+          report=Path("cyberpunk-noon-youtube-results.json")
+          rows=[]
+          def save():
+              report.write_text(json.dumps({"source_run":37936603792,"target":"2026-10-09 12:00 America/Sao_Paulo","scheduled_utc":target,"items":rows},indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+          for key,video,meta_rel,cover in jobs:
+              meta=json.loads(locate(meta_rel).read_text(encoding="utf-8"))
+              title=meta["title"].strip()
+              existing_id=already.get(title.casefold())
+              if not existing_id and datetime.now(timezone.utc)>=deadline:
+                  rows.append({"key":key,"status":"NOT_UPLOADED_DEADLINE_PASSED"})
+                  save()
+                  raise RuntimeError("NOON_DEADLINE_PASSED: refusing late unscheduled publication")
+              if existing_id:
+                  vid=existing_id
+                  record=yt.videos().list(part="snippet,status",id=vid).execute().get("items",[])
+                  if not record or record[0]["snippet"]["channelId"]!=expected_id:
+                      raise RuntimeError("DUPLICATE_LOOKUP_MISMATCH "+key)
+                  status=record[0]["status"]
+                  if status.get("publishAt")!=target:
+                      if datetime.now(timezone.utc)>=deadline:
+                          raise RuntimeError("Cannot set past publishAt on existing video "+key)
+                      yt.videos().update(part="status",body={"id":vid,"status":{
+                          "privacyStatus":"private","publishAt":target,"selfDeclaredMadeForKids":False
+                      }}).execute()
+                  print("REUSED_EXISTING",key,vid)
+              else:
+                  desc=meta.get("description","")
+                  sidecar=locate(video+".music.json")
+                  credit=json.loads(sidecar.read_text(encoding="utf-8")).get("credit","")
+                  if credit and credit not in desc:desc=desc.rstrip()+"\n\n"+credit
+                  status={"privacyStatus":"private","publishAt":target,
+                      "selfDeclaredMadeForKids":False,"containsSyntheticMedia":bool(meta.get("containsSyntheticMedia",True))}
+                  request=yt.videos().insert(part="snippet,status",
+                      body={"snippet":{"title":title,"description":desc,"tags":meta.get("tags",[]),"categoryId":"20"},"status":status},
+                      media_body=MediaFileUpload(str(locate(video)),chunksize=8*1024*1024,resumable=True))
+                  result=None;retry=0
+                  while result is None:
+                      try:
+                          progress,result=request.next_chunk()
+                          retry=0
+                          if progress:print("UPLOAD_PROGRESS",key,round(progress.progress()*100,1),flush=True)
+                      except (TimeoutError,OSError):
+                          retry+=1
+                          if retry>5:raise
+                          time.sleep(min(3*2**(retry-1),30))
+                  vid=result["id"]
+                  already[title.casefold()]=vid
+                  print("UPLOADED_SCHEDULED",key,vid)
+              cover_file=root/"covers-fixed"/cover
+              if not cover_file.is_file():raise RuntimeError("Missing repaired cover "+cover)
+              thumb_ok=False;thumb_error=None
+              try:
+                  yt.thumbnails().set(videoId=vid,media_body=MediaFileUpload(str(cover_file),mimetype="image/jpeg",resumable=False)).execute()
+                  thumb_ok=True
+              except HttpError as exc:
+                  thumb_error="HTTP_"+str(exc.resp.status)
+                  print("THUMB_WARNING",key,thumb_error)
+              v=yt.videos().list(part="snippet,status",id=vid).execute().get("items",[])
+              if not v or v[0]["snippet"]["channelId"]!=expected_id:
+                  raise RuntimeError("UPLOADED_WRONG_CHANNEL "+key)
+              s=v[0]["status"]
+              if s.get("publishAt")!=target:
+                  raise RuntimeError("SCHEDULE_NOT_CONFIRMED "+key+" "+str(s))
+              row={"key":key,"video_id":vid,"url":"https://youtu.be/"+vid,"title":title,
+                "publishAt":s.get("publishAt"),"privacy":s.get("privacyStatus"),
+                "thumbnail_applied":thumb_ok,"thumbnail_warning":thumb_error,"scheduled":True}
+              rows.append(row);save()
+              print("YOUTUBE_SCHEDULE_CONFIRMED",json.dumps(row,ensure_ascii=False),flush=True)
+          if len(rows)!=4:raise RuntimeError("FOUR_VIDEOS_NOT_SCHEDULED")
+          print("CYBERPUNK_ALL_FOUR_SCHEDULED_12H_BRT")
+          PY
+      - name: Save proof and repaired cover previews even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyberpunk-noon-youtube-proof-${{ github.run_id }}
+          path: |
+            cyberpunk-noon-youtube-results.json
+            approved/covers-fixed/*.jpg
+          retention-days: 7
+          if-no-files-found: warn
