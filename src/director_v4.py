@@ -120,10 +120,23 @@ def eligible(scene, assets):
         return vals
     return [a for a in assets.values() if a.get("approved",True)]
 
-def choose(scene, assets, usage, previous, count):
+def phrase_asset_match(phrase, asset):
+    """Ground exact proper-noun media selection in official source labeling."""
+    from urllib.parse import unquote, urlparse
+    source=str(asset.get("source_label") or "")
+    filename=unquote(urlparse(str(asset.get("url") or "")).path).rsplit("/",1)[-1]
+    label_words=set(norm(source+" "+filename.replace("_"," ").replace("-"," ")).split())
+    phrase_words=set(norm(phrase).split())
+    stop={"arc", "raiders", "games", "gameplay", "official", "screen",
+          "screenshot", "media", "image", "trailer", "frozen", "trail"}
+    return len({w for w in label_words if len(w)>=4 and w not in stop} & phrase_words)
+
+
+def choose(scene, assets, usage, previous, count, phrase_text=""):
     vals=eligible(scene,assets)
     preferred={int(x) for x in scene.get("preferred_media_indices") or []}
     vals.sort(key=lambda a:(
+        -phrase_asset_match(phrase_text,a),
         0 if int(a["index"]) in preferred else 1,
         0 if a.get("type")=="video" else 1,
         usage[int(a["index"])],
@@ -277,7 +290,8 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             duration=float(phrase.get("duration") or 0)
             target=phrase_target(phrase.get("text",""))
             count=beat_count(duration,target)
-            ids=choose(scene,assets,usage,previous,min(MAX_ASSETS_PER_SCENE,max(1,count)))
+            ids=choose(scene,assets,usage,previous,min(MAX_ASSETS_PER_SCENE,max(1,count)),
+                       phrase_text=phrase.get("text",""))
             if not ids: raise RuntimeError(f"QUALITY_BLOCK: V4 cena {i} frase {phrase.get('sentence')} sem mídia")
             beat_duration=duration/count if count else duration
             for n in range(count):
