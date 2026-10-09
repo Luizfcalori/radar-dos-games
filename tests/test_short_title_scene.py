@@ -53,7 +53,7 @@ class ShortTitleAndSceneTests(unittest.TestCase):
                 font=ImageFont.truetype(FONT,layout["fontsize"])
                 self.assertTrue(all(font.getlength(line)<=940 for line in layout["lines"]))
                 filtergraph=classic_short_filter(hook,"0xFFFFFF")
-                self.assertEqual(filtergraph.count("fontfile='"+FONT+"':text='"),2+len(layout["lines"]))
+                self.assertEqual(filtergraph.count("fontfile='"+FONT+"':text='"),3+len(layout["lines"]))
 
 if __name__ == "__main__":
     unittest.main()
