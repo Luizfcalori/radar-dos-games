@@ -102,11 +102,22 @@ def role_allowed(scene, asset):
     return role in roles or any(role.startswith(p) for p in prefixes)
 
 def eligible(scene, assets):
+    # Restrict MEDIA_FIRST_V1 scenes to the exact clip IDs approved during
+    # decupagem. Different Steam clips may share a role and must not become
+    # interchangeable merely because their source/type labels match.
+    planned=scene.get("media_first_assets")
+    if planned is not None:
+        approved_ids={int(v) for v in planned}
+        vals=[a for a in assets.values()
+              if a.get("approved",True)
+              and int(a["index"]) in approved_ids
+              and role_allowed(scene,a)]
+        if not vals or any(idx not in assets for idx in approved_ids):
+            raise RuntimeError(f"QUALITY_BLOCK: cena {scene.get('title')} sem mídia da decupagem; fallback proibido")
+        return vals
     vals=[a for a in assets.values() if a.get("approved",True) and role_allowed(scene,a)]
     if vals:
         return vals
-    if scene.get("media_first_assets"):
-        raise RuntimeError(f"QUALITY_BLOCK: cena {scene.get('title')} sem mídia da decupagem; fallback proibido")
     return [a for a in assets.values() if a.get("approved",True)]
 
 def choose(scene, assets, usage, previous, count):
