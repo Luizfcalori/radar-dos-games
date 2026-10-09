@@ -30,6 +30,8 @@ on:
       - "src/voice.py"
       - "src/director_v4.py"
       - "src/semantic_gate.py"
+      - "src/cinematic.py"
+      - "assets/audio/**"
       - "src/render_v4.py"
       - "src/shorts_v4.py"
       - "src/visual_frame_qa.py"
@@ -349,6 +351,8 @@ jobs:
             output/premium-v4-qa.json
             output/pro-score.json
             output/short-picks.json
+            output/*.music.json
+            output/shorts/*.music.json
             output/master.mp4
             output/thumbnail.jpg
             output/thumbnail-policy.json

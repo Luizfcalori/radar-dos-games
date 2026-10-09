@@ -63,3 +63,15 @@ A capa do Short é separada do layout interno do vídeo. Para as capas verticais
 - As capas devem ser referenciadas automaticamente nos respectivos `short-1-youtube.json`, `short-2-youtube.json` e `short-3-youtube.json`.
 
 A regra de cor contextual descrita acima continua valendo somente para elementos internos do vídeo Short; não substitui a identidade verde fixa das capas.
+
+
+## Padrão cinematográfico oficial — aprovado em 08/10/2026
+
+Masters e os três Shorts passam a usar `RADAR_CINEMATIC_V1` por padrão.
+- Trilha Five Armies, de Kevin MacLeod, incluída no repositório, CC BY 4.0, com créditos automáticos nos metadados e no envio ao YouTube.
+- Música normalizada, baixa sob a voz, com ducking e fades; impactos discretos do diretor V4. Voz Thalita mantida, alvo -16 LUFS e limiter sem ganho automático.
+- Tratamento sutil de cor (contraste 1.025, saturação 0.94, brilho +0.008), aplicado à mídia antes dos textos. Não acrescentar faixas de cinema ou recortes destrutivos.
+- Intro oficial integral primeiro, com áudio original; a trilha começa no corpo do Master. Cards, sincronismo, identidade, formatos e agenda continuam os aprovados.
+- Shorts V4 recebem mixagem própria a partir da voz e mídias originais. O fallback legado recorta o Master já tratado, sem aplicar uma segunda trilha ou uma segunda correção de cor.
+- Trilha ausente bloqueia o render; gate V4 exige trilha com ducking e perfil cinematográfico nos dois formatos.
+- Módulo compartilhado: `src/cinematic.py`.

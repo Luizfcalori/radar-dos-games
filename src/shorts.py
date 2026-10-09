@@ -286,6 +286,9 @@ def make(src, out, start, length, card):
             "-movflags", "+faststart", str(out),
         ]
     )
+    source_credit=Path(str(src)+'.music.json')
+    if source_credit.exists():
+        Path(str(out)+'.music.json').write_bytes(source_credit.read_bytes())
     return accent
 
 

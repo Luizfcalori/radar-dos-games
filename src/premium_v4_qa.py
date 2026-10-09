@@ -115,6 +115,14 @@ def main():
     assert sound.get("voice_chain")=="compression+loudnorm+limiter",sound
     assert sound.get("editorial_sfx")=="subtle_generated_impacts",sound
 
+    if render.get('cinematic_profile') != 'RADAR_CINEMATIC_V1' or shorts.get('cinematic_profile') != 'RADAR_CINEMATIC_V1':
+        raise RuntimeError('QUALITY_BLOCK: tratamento cinematográfico ausente')
+    if sound.get('music_bed') != 'approved_bed_with_voice_ducking':
+        raise RuntimeError('QUALITY_BLOCK: Master sem trilha aprovada e ducking')
+    for short in shorts.get('shorts', []):
+        if short.get('music_bed') != 'approved_bed_with_voice_ducking':
+            raise RuntimeError('QUALITY_BLOCK: Short sem trilha aprovada e ducking')
+
     result={
         "status":"APPROVED","version":"PREMIUM_V4_DIRECTOR_CUT",
         "phrase_level_direction":"APPROVED",

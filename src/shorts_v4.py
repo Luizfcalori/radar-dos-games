@@ -10,11 +10,15 @@ import textwrap
 import wave
 from pathlib import Path
 
+try:
+    from cinematic import COLOR_FILTER, mix as cinematic_mix, write_credit
+except ModuleNotFoundError:
+    from src.cinematic import COLOR_FILTER, mix as cinematic_mix, write_credit
+
 W=1080; H=1920; FPS=30
 FONT="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_REG="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 IMAGE_EXT={".jpg",".jpeg",".png",".webp"}
-VOICE_CHAIN="acompressor=threshold=-20dB:ratio=2.4:attack=12:release=140,loudnorm=I=-16:LRA=6:TP=-1.2,alimiter=limit=0.92"
 
 def sh(cmd):
     print("+"," ".join(map(str,cmd)),flush=True); subprocess.run(cmd,check=True)
@@ -82,7 +86,7 @@ def render_vertical_piece(asset,duration,dest,piece_no,headline="",keyword="",fi
         "eq=brightness=-0.20:saturation=0.86[bg];"
         f"[fg0]scale={fg_scale}:force_original_aspect_ratio=decrease,setsar=1[fg];"
         f"[bg]drawbox=x=0:y=0:w={W}:h=118:color=0x020A23@0.96:t=fill[canvas];"
-        f"[canvas][fg]overlay=x='(W-w)/2+5*sin(t*.65)':y='510+(1040-h)/2+4*cos(t*.47)'[tmp];"
+        f"[canvas][fg]overlay=x='(W-w)/2+5*sin(t*.65)':y='510+(1040-h)/2+4*cos(t*.47)',{COLOR_FILTER}[tmp];"
     )
     filters=[
         f"[tmp]drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x=42:y=54:fontsize=32:fontcolor=white:"
@@ -119,11 +123,11 @@ def render_vertical_piece(asset,duration,dest,piece_no,headline="",keyword="",fi
 def sfx_track(duration,events,dest):
     rate=48000; frames=max(1,int(math.ceil(duration*rate))); samples=[0.0]*frames
     for when,intensity in events:
-        start=int(max(0,when)*rate); span=int(rate*.12); amp=.022+.004*min(4,intensity)
+        start=int(max(0,when)*rate); span=int(rate*.32); amp=.022+.004*min(4,intensity)
         for n in range(span):
             idx=start+n
             if idx>=frames:break
-            t=n/rate; env=math.exp(-24*t); freq=720-300*(n/max(1,span))
+            t=n/rate; env=math.exp(-24*t); freq=55-15*(n/max(1,span))
             samples[idx]+=amp*env*math.sin(2*math.pi*freq*t)
     with wave.open(str(dest),"wb") as wf:
         wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(rate)
@@ -136,26 +140,8 @@ def concat_visuals(paths,dest,tmp):
     listing.write_text("".join(f"file '{Path(p).resolve()}'\n" for p in paths),encoding="utf-8")
     sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),"-c","copy",str(dest)])
 
-def approved_music_bed():
-    for p in (Path("assets/audio/radar-bed.mp3"),Path("assets/audio/radar-bed.wav"),Path("assets/audio/radar-bed.m4a")):
-        if p.exists() and p.stat().st_size>20000:return p
-    return None
-
 def mix_audio(visuals,voice,sfx,dest):
-    bed=approved_music_bed()
-    if bed:
-        sh(["ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),"-stream_loop","-1","-i",str(bed),
-            "-filter_complex",f"[1:a]{VOICE_CHAIN},asplit=2[vmain][vsc];[2:a]volume=.68[s];[3:a]volume=.10[bed];"
-            "[bed][vsc]sidechaincompress=threshold=.015:ratio=12:attack=18:release=240[ducked];"
-            "[vmain][ducked][s]amix=inputs=3:weights='1 .55 .45':normalize=0,alimiter=limit=.92[a]",
-            "-map","0:v:0","-map","[a]","-shortest","-c:v","copy","-c:a","aac","-b:a","160k","-ar","48000","-ac","2",
-            "-movflags","+faststart",str(dest)])
-        return "approved_bed_with_voice_ducking"
-    sh(["ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),
-        "-filter_complex",f"[1:a]{VOICE_CHAIN}[v];[2:a]volume=.68[s];[v][s]amix=inputs=2:weights='1 .5':normalize=0,alimiter=limit=.92[a]",
-        "-map","0:v:0","-map","[a]","-shortest","-c:v","copy","-c:a","aac","-b:a","160k","-ar","48000","-ac","2",
-        "-movflags","+faststart",str(dest)])
-    return "ducking_ready_no_approved_bed"
+    return cinematic_mix(visuals,voice,sfx,dest)
 
 def main():
     manifest=load("output/render.json"); timings=load("output/voice-timings.json"); picks=load("output/short-picks.json")
@@ -207,6 +193,8 @@ def main():
     payload={
         "standard":"radar-dos-games-shorts-premium-v4-director-cut",
         "premium_version":"PREMIUM_V4_DIRECTOR_CUT",
+        "cinematic_profile":"RADAR_CINEMATIC_V1",
+        "color_filter":COLOR_FILTER,
         "source_policy":"independent_rebuild_from_approved_assets",
         "resolution":[W,H],"fps":FPS,
         "hook_policy":"exact_approved_hook_on_first_frame; semantic_scene_match; phrase_level_visuals; selective_keywords",

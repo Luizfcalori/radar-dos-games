@@ -8,6 +8,11 @@ import sys
 import wave
 from pathlib import Path
 
+try:
+    from cinematic import COLOR_FILTER, mix as cinematic_mix, write_credit
+except ModuleNotFoundError:
+    from src.cinematic import COLOR_FILTER, mix as cinematic_mix, write_credit
+
 FPS=30; W=1920; H=1080
 FONT="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_REG="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
@@ -16,7 +21,6 @@ WATERMARK_X="w-tw-44"; WATERMARK_Y=30; WATERMARK_SIZE=23
 CARD_X=62; CARD_Y=850; CARD_W=1240; CARD_H=138
 CARD_BG="black@0.68"; CARD_ACCENT="0x00DCC8@0.96"
 TITLE_X=102; TITLE_Y=869; SUBTITLE_X=102; SUBTITLE_Y=927
-VOICE_CHAIN="acompressor=threshold=-20dB:ratio=2.4:attack=12:release=140,loudnorm=I=-16:LRA=6:TP=-1.2,alimiter=limit=0.92"
 
 def sh(cmd):
     print("+"," ".join(map(str,cmd)),flush=True)
@@ -94,7 +98,7 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
             "[bg][fg]overlay=(W-w)/2:(H-h)/2,"
         )
 
-    filters=[
+    filters=[COLOR_FILTER,
         f"drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x={WATERMARK_X}:y={WATERMARK_Y}:"
         f"fontsize={WATERMARK_SIZE}:fontcolor=white@0.70:borderw=1:bordercolor=black@0.55:expansion=none"
     ]
@@ -141,14 +145,14 @@ def make_sfx_track(duration_seconds,events,dest):
     for event in events:
         start=max(0,int(float(event.get("time",0))*rate))
         intensity=max(1,min(4,int(event.get("intensity",1))))
-        span=int(rate*(0.11+0.02*intensity))
+        span=int(rate*(0.28+0.02*intensity))
         amp=0.018+0.006*intensity
         for n in range(span):
             idx=start+n
             if idx>=frames:break
             t=n/rate
             env=math.exp(-22*t)
-            freq=760-360*(n/max(1,span))
+            freq=55-15*(n/max(1,span))
             samples[idx]+=amp*env*math.sin(2*math.pi*freq*t)
     dest.parent.mkdir(parents=True,exist_ok=True)
     with wave.open(str(dest),"wb") as wf:
@@ -159,38 +163,8 @@ def make_sfx_track(duration_seconds,events,dest):
             chunk += struct.pack("<h",int(v*32767))
         wf.writeframes(bytes(chunk))
 
-def approved_music_bed():
-    for candidate in (
-        Path("assets/audio/radar-bed.mp3"),
-        Path("assets/audio/radar-bed.wav"),
-        Path("assets/audio/radar-bed.m4a"),
-    ):
-        if candidate.exists() and candidate.stat().st_size>20000:
-            return candidate
-    return None
-
 def mix_voice_sfx(visuals,voice,sfx,dest):
-    bed=approved_music_bed()
-    if bed:
-        sh([
-            "ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),
-            "-stream_loop","-1","-i",str(bed),
-            "-filter_complex",
-            f"[1:a]{VOICE_CHAIN},asplit=2[voice_main][voice_sc];[2:a]volume=0.72[sfx];"
-            "[3:a]volume=0.10[bed];[bed][voice_sc]sidechaincompress=threshold=0.015:ratio=12:attack=18:release=260[ducked];"
-            "[voice_main][ducked][sfx]amix=inputs=3:weights='1 0.55 0.45':normalize=0,alimiter=limit=0.92[a]",
-            "-map","0:v:0","-map","[a]","-shortest","-c:v","copy",
-            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)
-        ])
-        return "approved_bed_with_voice_ducking"
-    sh([
-        "ffmpeg","-y","-v","error","-i",str(visuals),"-i",str(voice),"-i",str(sfx),
-        "-filter_complex",
-        f"[1:a]{VOICE_CHAIN}[voice];[2:a]volume=0.72[sfx];[voice][sfx]amix=inputs=2:weights='1 0.55':normalize=0,alimiter=limit=0.92[a]",
-        "-map","0:v:0","-map","[a]","-shortest","-c:v","copy",
-        "-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)
-    ])
-    return "ducking_ready_no_approved_bed"
+    return cinematic_mix(visuals,voice,sfx,dest)
 
 def normalize_intro(src,dest):
     """Normaliza a intro oficial sem cortar, atrasar ou aplicar fade de encurtamento."""
@@ -290,6 +264,7 @@ def render(manifest_path):
     final_parts=[intro_norm,body]
     timeline="full_intro_first_then_body"
     concat_av(final_parts,out,tmp)
+    write_credit(out)
 
     probe=json.loads(subprocess.check_output([
         "ffprobe","-v","error","-show_entries","format=duration,size",
@@ -314,6 +289,8 @@ def render(manifest_path):
             "sfx_events":len(sfx_events),
             "music_bed":music_policy,
         },
+        "cinematic_profile":"RADAR_CINEMATIC_V1",
+        "color_filter":COLOR_FILTER,
         "editing_policy":"phrase_level_beats; variable_pacing; selective_keyword_overlays",
         "card_style":{"shadow_attached_to_text":True,"position":"lower_third","single_entry_per_scene":True},
         "scenes":qa_scenes,

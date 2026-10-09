@@ -8,6 +8,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+try:
+    from cinematic import credited_description
+except ModuleNotFoundError:
+    from src.cinematic import credited_description
+
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -116,7 +121,7 @@ def upload(path,meta):
     body={
         'snippet':{
             'title':meta['title'],
-            'description':meta['description'],
+            'description':credited_description(path,meta['description']),
             'tags':meta.get('tags',[]),
             'categoryId':'20',
         },
