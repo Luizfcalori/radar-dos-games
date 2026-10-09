@@ -1,0 +1,171 @@
+name: Add Cyberpunk 2077 Shorts to Radar TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-cyberpunk-oct09-to-tiktok-helper.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: add-cyberpunk-oct09-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: "37936603792"
+      SOURCE_ARTIFACT: radar-daily-auto-37936603792
+      BASE_URL: https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download original finished 3 Shorts, no rerender
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: cyberpunk-source
+          repository: Luizfcalori/radar-dos-games
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Validate original package and prepare TikTok MP4 files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-cyberpunk
+          python - <<'PY'
+          import json,shutil,subprocess
+          from pathlib import Path
+          source=Path('cyberpunk-source')
+          if (source/'output'/'final-qa.json').exists(): source=source/'output'
+          qa=json.loads((source/'final-qa.json').read_text(encoding='utf8'))
+          sel=json.loads((source/'selected.json').read_text(encoding='utf8'))
+          assert qa.get('status')=='APPROVED' and qa.get('pro_score',0)>=85,qa
+          assert 'cyberpunk' in sel.get('title','').lower(),sel.get('title')
+          assert sel.get('manual_brief') is True
+          assert len(qa.get('shorts') or [])==3
+          for n in (1,2,3):
+              src=source/'shorts'/f'short_{n}.mp4'
+              cover=source/'shorts'/f'short_{n}_cover.jpg'
+              meta=source/f'short-{n}-youtube.json'
+              assert src.is_file() and src.stat().st_size>500_000,src
+              assert cover.is_file() and cover.stat().st_size>1000,cover
+              assert meta.is_file() and json.loads(meta.read_text(encoding='utf8')).get('title')
+              dst=Path('tiktok-cyberpunk')/f'cyberpunk-2026-10-09-short-{n}.mp4'
+              jpg=Path('tiktok-cyberpunk')/f'cyberpunk-2026-10-09-short-{n}.jpg'
+              shutil.copyfile(src,dst);shutil.copyfile(cover,jpg)
+              print('VALIDATED_SHORT',n,'size',dst.stat().st_size,flush=True)
+          print('SOURCE_RUN_CONFIRMED',37936603792)
+          PY
+
+      - name: Upload 3 MP4 and previews to existing TikTok Helper release
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Downloads para publicacao manual no TikTok Helper."
+          gh release upload "$TAG" tiktok-cyberpunk/*.mp4 tiktok-cyberpunk/*.jpg --clobber
+
+      - name: Verify all six MP4 and image links
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 3 --max-time 120 --range 0-1023 "${BASE_URL}/cyberpunk-2026-10-09-short-${n}.${ext}" -o /dev/null
+              echo "REMOTE_OK short-${n}.${ext}"
+            done
+          done
+
+      - name: Merge 3 Cyberpunk cards on top without removing older Shorts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime,timezone
+          p=Path('data/tiktok_queue.json')
+          q=json.loads(p.read_text(encoding='utf8')) if p.exists() else {'version':2,'items':[]}
+          old=q.get('items') or []
+          now=datetime.now(timezone.utc).isoformat()
+          base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
+          source=Path('cyberpunk-source')
+          if (source/'output'/'final-qa.json').exists():source=source/'output'
+          youtube_ids=['37osk6O4LHY','CqyVOF9LTuw','EOHihFvkZf8']
+          captions=[
+            'CYBERPUNK 2077 VAI VIRAR FILME! 🎬🔥 A Paramount prepara um projeto live-action no universo de Night City. Elenco e estreia ainda não foram anunciados.\n\n🎮 Siga o Radar dos Games para novidades!\n\n#Cyberpunk2077 #Cyberpunk #NightCity #Paramount #CDProjektRed #RadarDosGames #TikTokGames',
+            'EDGERUNNERS 2 VEM AÍ! 🌆⚡ Uma nova história está chegando ao universo de Cyberpunk em 20 de outubro. Preparado para voltar a Night City?\n\n🎮 Siga o Radar dos Games!\n\n#CyberpunkEdgerunners #Edgerunners2 #Cyberpunk2077 #Anime #Netflix #RadarDosGames #TikTokGames',
+            'CYBERPUNK 2 JÁ ESTÁ EM DESENVOLVIMENTO! 🔥 O futuro de Night City está sendo preparado pela CD Projekt RED, mas ainda sem data de lançamento anunciada.\n\n🎮 Acompanhe o Radar dos Games!\n\n#Cyberpunk2 #Cyberpunk2077 #NightCity #CDProjektRed #RPG #RadarDosGames #TikTokGames',
+          ]
+          new=[]
+          for n in (1,2,3):
+              meta=json.loads((source/f'short-{n}-youtube.json').read_text(encoding='utf8'))
+              yt=youtube_ids[n-1]
+              new.append({
+                'id':f'cyberpunk-2026-10-09-short-{n}',
+                'title':meta['title'].replace('#Shorts','').strip(),
+                'media_url':f'{base}/cyberpunk-2026-10-09-short-{n}.mp4',
+                'thumbnail_url':f'{base}/cyberpunk-2026-10-09-short-{n}.jpg',
+                'post_text':captions[n-1],
+                'status':'approved','source_run_id':37936603792,'short_number':n,
+                'approved_at':now,'source':'cyberpunk_2026_10_09_completed_qa',
+                'youtube_id':yt,'youtube_url':f'https://www.youtube.com/shorts/{yt}',
+                'synced_at':now
+              })
+          ids={x['id'] for x in new}
+          ytids={x['youtube_id'] for x in new}
+          new_titles={x['title'].strip().casefold() for x in new}
+          preserved=[x for x in old if
+            str(x.get('id')) not in ids and
+            str(x.get('youtube_id')) not in ytids and
+            not (str(x.get('source_run_id'))=='37936603792' and
+                 str(x.get('title') or '').strip().casefold() in new_titles)]
+          q['version']=2
+          q['updated_at']=now
+          q['items']=new+preserved
+          p.write_text(json.dumps(q,indent=2,ensure_ascii=False)+'\n',encoding='utf8')
+          assert len(q['items'])==len(old)+3 or len(old)-len(preserved)+3==len(q['items'])
+          print(json.dumps({'added':3,'preserved':len(preserved),'total':len(q['items']),
+                'new_titles':[x['title'] for x in new]},ensure_ascii=False))
+          PY
+
+      - name: Commit new TikTok queue only, idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: add 3 Cyberpunk Shorts to Radar TikTok Helper"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Verify remote queue contains all three downloadable Cyberpunk items
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-remote.json
+          python - <<'PY'
+          import json
+          q=json.load(open('/tmp/tiktok-remote.json',encoding='utf8'))
+          new=[x for x in q.get('items',[]) if str(x.get('id','')).startswith('cyberpunk-2026-10-09-short-')]
+          assert len(new)==3
+          assert all(x.get('status')=='approved' and x.get('media_url','').endswith('.mp4') and x.get('post_text') for x in new)
+          print('TIKTOK_HELPER_CYBERPUNK_OK',len(new),'QUEUE_TOTAL',len(q['items']))
+          PY
