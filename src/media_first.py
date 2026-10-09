@@ -78,7 +78,10 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         expected=[]
         window_options={}
         if semantic_ready:
-            from vision_semantics import scene_categories, usable_for_scene
+            try:
+                from vision_semantics import scene_categories, usable_for_scene
+            except ModuleNotFoundError:
+                from src.vision_semantics import scene_categories, usable_for_scene
             expected=scene_categories(text)
             for vid in videos:
                 candidate_windows=inspected[int(vid["index"])]["usable_windows"]
