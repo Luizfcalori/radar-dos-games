@@ -120,6 +120,16 @@ def main():
         if norm_short_title(meta.get("title")) != norm_short_title(hook):
             raise RuntimeError(f"QUALITY_BLOCK: metadata do Short {i} diverge do hook aprovado")
 
+    # Check the actual render source beats for the Master and independently
+    # rebuilt Shorts. Do not trust director metadata without recounting images.
+    try:
+        from repetition_policy import qa_report
+    except ModuleNotFoundError:
+        from src.repetition_policy import qa_report
+    anti_spam=qa_report(plan_scenes,clips,srows)
+    Path("output/anti-repetition-qa.json").write_text(
+        json.dumps(anti_spam,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+
     sound=render.get("sound_design") or {}
     assert sound.get("voice_chain")=="compression+loudnorm+limiter",sound
     assert sound.get("editorial_sfx")=="subtle_generated_impacts",sound
@@ -142,6 +152,8 @@ def main():
         "short_hooks_exact":"APPROVED",
         "short_semantic_selection":"APPROVED",
         "approved_short_hooks":expected_hooks,
+        "anti_repetition":"APPROVED",
+        "image_reuse_policy":"limited_by_content_hash; exact_phrase; cooldown; shorts_once",
         "visual_frame_qa":"APPROVED",
         "real_headlines":"APPROVED",
         "gameplay_moving_footage":"APPROVED",
