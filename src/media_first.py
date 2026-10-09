@@ -52,13 +52,19 @@ def verify_assets(clips):
         raise RuntimeError("QUALITY_BLOCK: não há mídia em movimento aprovada suficiente")
     return found
 
-def compile_storyboard(plan,clips,selected,outline):
+def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
     assets=verify_assets(clips)
     paragraphs=[p.strip() for p in outline.split("\n\n") if p.strip()]
     scenes=plan.get("scenes") or []
     if len(scenes)!=len(paragraphs) or len(scenes)<3:
         raise RuntimeError("QUALITY_BLOCK: cenas e roteiro preliminar não correspondem")
-    videos=[a for a in assets if a["type"]=="video"]
+    inspected = {int(x["index"]): x for x in (visual_inventory or {}).get("assets", [])}
+    videos = [a for a in assets if a["type"]=="video"
+              and (visual_inventory is None or
+                   (inspected.get(int(a["index"]), {}).get("usable_windows") and
+                    not inspected.get(int(a["index"]), {}).get("duplicate_of")))]
+    if not videos:
+        raise RuntimeError("QUALITY_BLOCK: vídeos originais sem janelas aprovadas pela inspeção visual")
     images=[a for a in assets if a["type"]=="image"]
     usage=Counter()
     topic=plan.get("topic") or selected.get("title") or ""
@@ -68,17 +74,28 @@ def compile_storyboard(plan,clips,selected,outline):
             return (-relevance(text,a,topic),usage[int(a["index"])],int(a["index"]))
         picks=[min(videos,key=rank)]
         if images:
-            picks.append(min(images,key=rank))
+            # Exact article-image labels provide stronger subject evidence
+            # than an anonymous Steam video.
+            matches=sorted(images,key=rank)
+            if relevance(text,matches[0],topic)>0:
+                picks.append(matches[0])
+            elif visual_inventory is None:
+                picks.append(matches[0])
         indices=[int(a["index"]) for a in picks]
         roles=list(dict.fromkeys(str(a["role"]) for a in picks))
         for idx in indices:usage[idx]+=1
         scene.update({
+            "visual_windows": {str(a["index"]): inspected.get(int(a["index"]), {}).get("usable_windows", [])
+                               for a in picks if a["type"]=="video"} if visual_inventory else {},
+            "preferred_media_indices": [int(a["index"]) for a in picks
+                                        if a["type"]=="image" and relevance(text,a,topic)>0],
             "media_indices":indices,
             "media_first_assets":indices,
             "allowed_roles":roles,
             "allowed_role_prefixes":[],
             "semantic_subject":scene.get("title") or topic,
-            "visual_evidence":("filename_or_label" if relevance(text,picks[0],topic)
+            "visual_evidence":("official_image_subject_label"
+                               if any(a["type"]=="image" and relevance(text,a,topic)>0 for a in picks)
                                else "source_level_only"),
         })
         report.append({"scene":i,"media_indices":indices,"roles":roles,
@@ -100,6 +117,11 @@ def compile_storyboard(plan,clips,selected,outline):
         "scenes":report,
     }
     plan["media_first_policy"]="MEDIA_FIRST_V1"
+    if visual_inventory:
+        plan["visual_inspection_policy"]="FULL_FRAME_TECHNICAL_SCAN_V1"
+        storyboard["visual_inspection_policy"]="FULL_FRAME_TECHNICAL_SCAN_V1"
+        storyboard["source_frames_analyzed"]=sum(x.get("frames_analyzed",0)
+                                                 for x in inspected.values())
     return plan,script,storyboard
 
 def previews(assets):
@@ -130,7 +152,13 @@ def main():
     # scene-to-file roles and SHA so voice no longer modifies the approved script.
     from voice import prepare_narration
     prepared=prepare_narration(outline)
-    plan,script,storyboard=compile_storyboard(plan,clips,selected,prepared)
+    inventory_path=OUT/"visual-inventory.json"
+    if not inventory_path.is_file():
+        raise RuntimeError("QUALITY_BLOCK: inspeção frame a frame ausente antes da narração")
+    visual_inventory=json.loads(inventory_path.read_text(encoding="utf-8"))
+    if visual_inventory.get("status")!="ANALYZED":
+        raise RuntimeError("QUALITY_BLOCK: inspeção visual incompleta")
+    plan,script,storyboard=compile_storyboard(plan,clips,selected,prepared,visual_inventory)
     storyboard["preview_frames"]=previews(storyboard["assets"])
     (OUT/"auto-media-plan.json").write_text(json.dumps(plan,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     (OUT/"auto-script.txt").write_text(script,encoding="utf-8")
