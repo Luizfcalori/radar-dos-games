@@ -731,6 +731,21 @@ def main():
             video_position += 1
         media_items.append(item)
 
+    # For an explicitly curated manual brief, prefer original game media on
+    # Steam's own CDN when its exact app ID is supplied. This does not alter
+    # automatic editorial discovery or other productions.
+    if manual and str(manual.get("steam_app_id") or "").isdigit():
+        steam_id = int(manual["steam_app_id"])
+        media_items.insert(0, {
+            "type": "video",
+            "steam_app_id": steam_id,
+            "role": "official_steam_gameplay",
+            "max_assets": 2,
+            "min_duration": 5,
+            "source_proof": f"https://store.steampowered.com/app/{steam_id}/",
+            "relevance_evidence": "steam_exact_app_direct_stream",
+        })
+
     plan = {
         "topic": (manual.get("headline") if manual else pt_headline(selected, parser)),
         "source": selected["url"],
