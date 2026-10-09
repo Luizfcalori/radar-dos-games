@@ -49,7 +49,7 @@ defaults:
     shell: bash --noprofile --norc -eo pipefail {0}
 
 concurrency:
-  group: radar-dos-games-daily
+  group: ${{ github.event_name == 'push' && format('radar-dos-games-code-check-{0}', github.sha) || 'radar-dos-games-daily' }}
   cancel-in-progress: true
 
 jobs:
