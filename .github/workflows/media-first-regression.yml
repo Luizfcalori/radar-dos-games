@@ -1,7 +1,7 @@
 name: Radar Media First - Regression
 on:
   push:
-    branches: [main, "feature/radar-media-first-*"]
+    branches: [main, "feature/radar-media-first-*", "fix/media-first-*"]
     paths:
       - "src/media_first.py"
       - "src/voice.py"
