@@ -361,6 +361,7 @@ jobs:
             output/media-first-storyboard.json
             output/visual-inventory.json
             output/vision-semantic-report.json
+            output/vision-frames/*.jpg
             output/media-first-frames/*.jpg
             output/auto-media-plan.json
             output/clips.json
