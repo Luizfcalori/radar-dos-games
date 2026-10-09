@@ -1,5 +1,5 @@
 {
-  "valid_until": "2026-10-09T06:00:00Z",
+  "valid_until": "2026-10-10T12:00:00Z",
   "content_id": "manual-arc-raiders-frozen-trail-2-0-2026-10-09-fresh",
   "title": "ARC Raiders",
   "headline": "ARC RAIDERS FROZEN TRAIL 2.0: NOVO MAPA, INIMIGOS, ARMAS E TESTE GRÁTIS",
@@ -41,5 +41,72 @@
     "E existe uma oportunidade importante para quem ainda não comprou o jogo: ARC Raiders está liberado para experimentar gratuitamente entre oito e doze de outubro, no PC via Steam, PlayStation e Xbox. A Embark também divulgou um período de desconto. Isso não transforma ARC Raiders definitivamente em gratuito; é uma janela promocional para conhecer a experiência. Um jogador novo pode até explorar Pendola Pass com a ajuda de amigos que já desbloquearam o mapa.",
     "Depois do teste gratuito, a próxima experiência planejada é um beta temporário de matchmaking PvE, anunciado para o período de treze a vinte de outubro. Nesse modo experimental, a proposta é concentrar os confrontos nas máquinas e na exploração, com diferenças de comportamento e recompensas em comparação ao ambiente tradicional. É um teste, não uma mudança permanente confirmada. Com novo cenário, ameaças, progressão e modos em avaliação, Frozen Trail representa um grande momento para ARC Raiders. Qual dessas novidades mais desperta sua vontade de voltar à superfície? Acompanhe o Radar dos Games para as próximas notícias."
   ],
-  "steam_app_id": 1808500
+  "steam_app_id": 1808500,
+  "visual_reference_images": [
+    {
+      "label": "Pendola Pass mapa congelado neve",
+      "url": "https://assets.arcraiders.com/media/2-1-1024x576.png",
+      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
+    },
+    {
+      "label": "Frigate nave ARC",
+      "url": "https://assets.arcraiders.com/media/fdfc9dd9-190e-ArcRaiders_ScreenShot_16x9_Frigate-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
+    },
+    {
+      "label": "Bully inimigo ARC maquina",
+      "url": "https://assets.arcraiders.com/media/0e53db8b-2ff0-ArcRaiders_ScreenShot_Bully_16x9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
+    },
+    {
+      "label": "Skulker inimigo ARC maquina",
+      "url": "https://assets.arcraiders.com/media/c83fa8f9-0b7d-AR_Bumper_ARC_Skulker_16_9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
+    },
+    {
+      "label": "Hydra inimigo ARC maquina",
+      "url": "https://assets.arcraiders.com/media/a6a68676-3b59-AR_Bumper_ARC_Hydra_16_9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
+    },
+    {
+      "label": "Stiletto arma fuzil",
+      "url": "https://assets.arcraiders.com/media/8d30b481-cc19-AR_Bumper_Weapon_Stiletto_16_9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
+    },
+    {
+      "label": "Bantam arma revolver",
+      "url": "https://assets.arcraiders.com/media/840002ea-b0ea-AR_Bumper_Weapon_Bantam_16_9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
+    },
+    {
+      "label": "Grappling Hook gancho mobilidade",
+      "url": "https://assets.arcraiders.com/media/d77a737d-0e92-AR_Bumper_Gadgets_GrapplingHook_16_9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
+    },
+    {
+      "label": "Tether Launcher equipamento",
+      "url": "https://assets.arcraiders.com/media/aa0aa1dc-2c28-AR_Bumper_Gadgets_TetherLauncher_16_9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/es/news/frozen-trail-content-preview"
+    },
+    {
+      "label": "Outpost base de pesquisa",
+      "url": "https://assets.arcraiders.com/media/a95a4336-726e-ArcRaiders_ScreenShot_Outpost_16x9_02-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
+    },
+    {
+      "label": "Arvore de habilidades Skill Tree",
+      "url": "https://assets.arcraiders.com/media/22be1512-3f29-ArcRaiders_ScreenShot_SkillTree_16x9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
+    },
+    {
+      "label": "Reward Pass recompensas Premium",
+      "url": "https://assets.arcraiders.com/media/1e342c8a-4bfc-ARCRaiders_RewardPass-Infographic_Premium_Legal_SHARE_500kb-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/news/frozen-trail-2-0-update"
+    },
+    {
+      "label": "Teste gratuito ARC Raiders outubro",
+      "url": "https://assets.arcraiders.com/media/4da91ab3-b3a0-ArcRaiders_PlayForFree_16x9-1024x576.jpg",
+      "source_proof": "https://arcraiders.com/news/frozen-trail-is-live"
+    }
+  ]
 }
