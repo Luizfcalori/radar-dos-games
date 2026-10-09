@@ -288,7 +288,7 @@ jobs:
           brief=json.loads(Path("production/manual-brief.json").read_text(encoding="utf-8")) if manual else {}
           allowed=(not manual) or bool(brief.get("approved_for_publish",False))
           with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as fp:
-              fp.write("publish_allowed="+str(allowed).lower()+"\\n")
+              fp.write("publish_allowed="+str(allowed).lower()+"\n")
           print("Manual brief:",manual,"Publishing permitted:",allowed)
           PY
 
