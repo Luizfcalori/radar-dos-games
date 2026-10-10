@@ -13,7 +13,7 @@ plan=json.loads(planpath.read_text(encoding="utf-8"))
 clips=json.loads((out/"clips.json").read_text(encoding="utf-8"))
 assets=[a for a in clips.get("assets",[]) if a.get("approved") and a.get("type")=="video"]
 urls={
- "brazil":("qdStLWu0RAs","ci_eiuGio0M"),
+ "brazil":("qdStLWu0RAs",),
  "multiplayer":("a3mF9zwozJk",),
 }
 def matches(group):
