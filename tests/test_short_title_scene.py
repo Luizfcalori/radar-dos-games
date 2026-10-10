@@ -41,7 +41,7 @@ class ShortTitleAndSceneTests(unittest.TestCase):
 
     def test_title_layout_contains_all_words_inside_safe_width(self):
         from PIL import ImageFont
-        from src.shorts_v4 import FONT, title_layout, classic_short_filter
+        from src.shorts_v4 import FONT, title_layout, premium_conversion_short_filter
         hooks=["ARC RAIDERS GRÁTIS ATÉ 12 DE OUTUBRO!",
                "PENDOLA PASS: O NOVO MAPA CONGELADO DE ARC RAIDERS",
                "BULLY, SKULKER E HYDRA: TRÊS NOVOS INIMIGOS"]
@@ -52,8 +52,8 @@ class ShortTitleAndSceneTests(unittest.TestCase):
                 self.assertLessEqual(len(layout["lines"]),3)
                 font=ImageFont.truetype(FONT,layout["fontsize"])
                 self.assertTrue(all(font.getlength(line)<=940 for line in layout["lines"]))
-                filtergraph=classic_short_filter(hook,"0xFFFFFF")
-                self.assertEqual(filtergraph.count("fontfile='"+FONT+"':text='"),3+len(layout["lines"]))
+                filtergraph=premium_conversion_short_filter(hook,"0xFFFFFF")
+                self.assertEqual(filtergraph.count("fontfile='"+FONT+"':text='"),6+len(layout["lines"]))
 
 if __name__ == "__main__":
     unittest.main()
