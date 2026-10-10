@@ -65,7 +65,15 @@ class VideoTimeline:
                 if required_subjects and (not reviewed or not set(required_subjects)<=set(w.get('subjects',[]))):
                     continue
                 if expected and not (expected & cats): continue
-                for lo,hi in self.free(idx,w['start'],w['end']):
+                # Technical inspection bins can end at ceil(duration), a fraction
+                # beyond the actual last decodable frame. Never reserve beyond
+                # the probed media duration; keep the strict QA guard enabled.
+                source_end=float(asset.get('duration') or 0)
+                window_end=float(w['end'])
+                if source_end>0:
+                    window_end=min(window_end,source_end-EPS)
+                if window_end<=float(w['start'])+EPS: continue
+                for lo,hi in self.free(idx,w['start'],window_end):
                     room=hi-lo
                     if room<min(1.0,remaining)-EPS: continue
                     length=min(math.floor((room+1e-8)*30)/30,remaining,10.0)
