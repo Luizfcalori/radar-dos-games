@@ -325,6 +325,28 @@ def fallback():
             str(i)
         ],check=True)
 
+def apply_cover_opening(video, cover, duration=1.4):
+    """Use the exact exported cover as the opening image while preserving narration/audio."""
+    video=Path(video); cover=Path(cover)
+    temp=video.with_name(video.stem+".cover-opening.tmp.mp4")
+    before=ffprobe_duration(video)
+    subprocess.run([
+        "ffmpeg","-y","-v","error","-i",str(video),
+        "-loop","1","-framerate","30","-i",str(cover),
+        "-filter_complex",
+        f"[1:v]scale=1080:1920,setsar=1[cover];[0:v][cover]overlay=0:0:enable='lt(t,{duration:.3f})':eof_action=pass,format=yuv420p[v]",
+        "-map","[v]","-map","0:a?","-c:v","libx264","-preset","veryfast","-crf","18",
+        "-pix_fmt","yuv420p","-c:a","copy","-movflags","+faststart",str(temp)
+    ],check=True)
+    after=ffprobe_duration(temp)
+    if not temp.exists() or temp.stat().st_size<100_000 or abs(after-before)>0.12:
+        temp.unlink(missing_ok=True)
+        raise RuntimeError(f"abertura com capa falhou: {video.name}, duração {before:.3f}->{after:.3f}")
+    temp.replace(video)
+    return {"video":str(video),"cover":str(cover),"duration_seconds":duration,
+            "status":"APPROVED","policy":"exact_short_cover_overlay_at_t0; preserve_original_audio_and_duration"}
+
+
 def main():
     master=read_json(OUT/"master-youtube.json")
     shorts=[read_json(OUT/f"short-{i}-youtube.json") for i in range(1,4)]
@@ -349,6 +371,15 @@ def main():
         fallback_used=True
         fallback()
 
+    # A arte exportada é também o primeiro plano do MP4: facilita escolher o frame
+    # de capa nas plataformas e mantém a capa externa sincronizada com a abertura.
+    cover_openings=[]
+    for i in range(1,4):
+        cover_openings.append(apply_cover_opening(
+            OUT/"shorts"/f"short_{i}.mp4",
+            OUT/"shorts"/f"short_{i}_cover.jpg"
+        ))
+
     policy={
         "status":"APPROVED_WITH_FALLBACK" if fallback_used else "APPROVED_PREMIUM",
         "template_version":"radar-premium-auto-v1-2026-10-07",
@@ -356,6 +387,8 @@ def main():
         "fallback_used":fallback_used,
         "attempts":attempts,
         "sources":selected_sources,
+        "short_opening_policy":"exact_cover_as_first_1_4_seconds; cover_file_and_video_opening_match; preserve_audio_and_duration",
+        "short_openings":cover_openings,
         "outputs":{
             "master":"output/thumbnail.jpg",
             "short_1":"output/shorts/short_1_cover.jpg",
