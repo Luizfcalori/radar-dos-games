@@ -1,4 +1,4 @@
-name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium (revisao 12 QA semantico alinhado)"
+name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium (revisao 13 titulos FFmpeg seguros)"
 
 on:
   push:
@@ -79,6 +79,20 @@ jobs:
           else:
               raise AssertionError('Repeating a source interval must remain blocked')
           print('CONTINUITY_BOUNDS_AND_DEDUP_APPROVED',flush=True)
+          PY
+
+      - name: Validar graficos UTF-8 com apostrofo no FFmpeg
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from src.render_v4 import write_overlay_text
+          import subprocess
+          p=write_overlay_text(Path("output")/"text-drawtest.mp4","title","HABIB'S • FOGO DE CHÃO")
+          vf=f"drawtext=fontfile='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf':textfile='{p}':fontsize=28:x=20:y=20:fontcolor=white,format=yuv420p"
+          subprocess.run(["ffmpeg","-hide_banner","-v","error","-y",
+               "-f","lavfi","-i","color=c=black:s=320x180:r=30:d=0.1",
+               "-vf",vf,"-frames:v","1","output/text-drawtest.png"],check=True)
+          print("UTF8_TITLES_FFMPEG_APPROVED",flush=True)
           PY
 
       - name: Validar intro oficial permanente
