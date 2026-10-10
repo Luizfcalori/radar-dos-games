@@ -25,7 +25,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: radar-daily-auto-38085337562
-          path: .
+          path: output
           repository: Luizfcalori/radar-dos-games
           run-id: 38085337562
           github-token: ${{ secrets.GITHUB_TOKEN }}
