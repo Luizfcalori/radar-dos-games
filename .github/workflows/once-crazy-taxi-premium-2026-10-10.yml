@@ -8,6 +8,7 @@ on:
       - "src/shorts_v4.py"
       - "src/visual_frame_qa.py"
       - "specials/once_crazy_taxi_premium_2026_10_10.py"
+      - "src/blur_faces.py"
   workflow_dispatch:
 
 permissions:
@@ -47,6 +48,7 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-dejavu-core
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install --quiet opencv-python-headless
           pip install -U yt-dlp
           # Open-source zero-shot visual recognition, CPU only; no paid API.
           python -m pip install --quiet torch==2.5.1+cpu torchvision==0.20.1+cpu --index-url https://download.pytorch.org/whl/cpu
@@ -207,6 +209,9 @@ jobs:
 
       - name: Reconstruir 3 Shorts Premium V4
         run: python src/shorts_v4.py
+
+      - name: Desfocar rostos identificáveis no Master e nos 3 Shorts
+        run: python src/blur_faces.py
 
       - name: QA bloqueante Premium V4
         run: python src/premium_v4_qa.py
@@ -454,6 +459,7 @@ jobs:
             output/cover-qa.json
             output/qa.json
             output/final-qa.json
+            output/face-blur-qa.json
             output/shorts/manifest.json
             output/shorts/*.mp4
             output/shorts/*_cover.jpg
