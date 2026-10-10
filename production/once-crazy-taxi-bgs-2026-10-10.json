@@ -1,0 +1,56 @@
+{
+  "valid_until": "2026-10-16T03:00:00Z",
+  "content_id": "crazy-taxi-world-tour-bgs-map-brasil-2026-10-10",
+  "title": "Crazy Taxi: World Tour",
+  "headline": "CRAZY TAXI NO BRASIL! SEGA REVELA MAPA, LOJAS REAIS E MULTIPLAYER",
+  "primary_source": "https://www.gamersegames.com.br/2026/10/09/crazy-taxi-world-tour-acelera-no-brasil-com-a-revelacao-de-novo-mapa/",
+  "media_source_urls": [
+    "https://store.steampowered.com/app/2924540/Crazy_Taxi_World_Tour/?l=brazilian",
+    "https://crazytaxi-asia.sega.com/worldtour/en/",
+    "https://www.gematsu.com/2026/10/crazy-taxi-world-tour-welcome-to-brazil-trailer-screenshots",
+    "https://www.sega.co.jp/en/release/260608_1.html"
+  ],
+  "source_urls": [
+    "https://www.gamersegames.com.br/2026/10/09/crazy-taxi-world-tour-acelera-no-brasil-com-a-revelacao-de-novo-mapa/",
+    "https://www.sega.co.jp/en/release/260608_1.html",
+    "https://store.steampowered.com/app/2924540/Crazy_Taxi_World_Tour/?l=brazilian",
+    "https://sega.prezly.com/segars-crazy-taxi-is-back-and-going-global"
+  ],
+  "short_hooks": [
+    "CRAZY TAXI TERÁ MAPA BRASILEIRO!",
+    "HABIB'S E FOGO DE CHÃO NO CRAZY TAXI!",
+    "CRAZY TAXI VOLTA COM ARCADE E MULTIPLAYER!"
+  ],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=qdStLWu0RAs",
+    "https://www.youtube.com/watch?v=ci_eiuGio0M",
+    "https://www.youtube.com/watch?v=ePi8tDdKuWw"
+  ],
+  "steam_app_id": 2924540,
+  "approved_for_publish": false,
+  "editorial_rules": [
+    "Teste especial isolado; não alterar a pipeline diária nem acionar publicação.",
+    "As mídias devem ser apenas de Crazy Taxi: World Tour; segmentar trailer Brasil nas frases sobre Brasil.",
+    "Trailer antigo não deve ser tratado como imagens do mapa brasileiro.",
+    "Não repetir imagens em excesso nem gerar falso gameplay; verificar semântica de fala/imagem.",
+    "Intro oficial completa, Thalita Multilingual PT-BR, Master + 3 Shorts, capas, QA.",
+    "Shorts devem ser adaptados para o segundo padrão RADAR_PREMIUM_CONVERSAO_V1 com CTA sem sininho e sem arroba.",
+    "Confirmação de 2027 sem data específica; detalhes de multiplayer do teste podem mudar.",
+    "Para revisão apenas, não publicar automaticamente."
+  ],
+  "script_blocks": [
+    "Crazy Taxi vai colocar o Brasil no volante de uma das franquias de corrida mais lembradas da SEGA. Durante a Brasil Game Show de 2026, a empresa revelou um cenário brasileiro para Crazy Taxi: World Tour. E não é só um aceno aos fãs: o novo mapa faz parte da campanha principal. Neste especial do Radar dos Games, vamos conferir o que foi anunciado, como a série está evoluindo, quais modos já foram descritos e o que ainda precisa ser mostrado até o lançamento previsto para 2027.",
+    "A grande notícia chegou em nove de outubro, na apresentação da BGS. Kenji Kanno, criador do Crazy Taxi original e produtor desta nova aventura, apresentou o trailer de boas-vindas ao Brasil. A ideia é misturar avenidas movimentadas, áreas litorâneas e paisagens naturais em uma cidade com identidade própria. O mapa brasileiro é o quarto de cinco destinos da campanha World Tour, deixando um quinto local a ser revelado. Agora imagine tentar levar um passageiro no tempo certo em meio a toda essa movimentação.",
+    "A SEGA também confirmou a presença de lojas que muita gente reconhece na vida real. Habib's, Fogo de Chão e Fast Shop estarão representadas no cenário brasileiro. É um detalhe que combina com a tradição de Crazy Taxi: transformar o ambiente urbano em parte das próprias corridas. Vale prestar atenção às fachadas e aos lugares de parada quando surgirem mais imagens. A lista divulgada fala desses estabelecimentos, mas ainda não detalha quais serão as rotas de cada missão nem permite concluir que toda cidade real foi recriada.",
+    "O trailer mostra uma interpretação estilizada do Brasil, com o contraste entre ruas cheias de movimento e trechos próximos ao mar. Segundo Kenji Kanno, as paisagens urbanas variadas, a vida moderna e o litoral inspiraram a equipe. Isso pode criar momentos interessantes para o ritmo das partidas: uma corrida mais técnica em ruas apertadas e, logo depois, uma sequência rápida por avenidas abertas. Essa diferença de condução é uma expectativa a partir da proposta dos cenários; não significa que a SEGA tenha confirmado um sistema específico de trânsito ou de clima.",
+    "Para entender a importância desse retorno, vale lembrar por que Crazy Taxi virou um clássico. A série começou nos arcades em 1999 e ganhou muita popularidade no Dreamcast. Em vez de correr para chegar em primeiro lugar, o objetivo era encontrar passageiros e deixá-los no destino antes que o relógio acabasse. Saltos, atalhos, derrapagens e trajetos imprevisíveis faziam parte da diversão. Era uma mistura de pontuação, velocidade e improviso que exigia pensar rapidamente enquanto tudo acontecia ao mesmo tempo.",
+    "Crazy Taxi: World Tour promete conservar esse espírito, mas com uma campanha mais ampla. O protagonista é Axel, um dos rostos conhecidos da franquia. Na história anunciada, criminosos mascarados roubam seu táxi, e ele inicia uma viagem internacional para recuperar o veículo e investigar a organização por trás do crime. É uma motivação simples para conectar missões e cidades diferentes. Além de transportar passageiros, a descrição oficial menciona desafios extremos, tarefas paralelas e encontros com personagens excêntricos. A campanha deixa de ser apenas uma sequência de corridas sem contexto.",
+    "Outro ponto confirmado é a existência de cinco cidades com terrenos e desafios variados. O Brasil chega como um desses cenários; as outras localidades permitem dar ao jogo um aspecto de viagem internacional. A descrição oficial menciona manobras, saltos e derrapagens em alta velocidade, além de carros desbloqueáveis e opções de personalização. Ainda faltam detalhes sobre a quantidade final de veículos, o funcionamento completo das melhorias e os limites de exploração dos mapas. Por enquanto, é melhor separar os recursos anunciados das possibilidades que ainda são apenas expectativa.",
+    "E os jogadores que preferem a fórmula antiga não foram esquecidos. A SEGA confirmou um modo Arcade inspirado no estilo clássico: passageiros, cronômetro e a busca pela maior pontuação ou lucro possível. Essa modalidade é importante porque dá espaço para partidas curtas, competitivas e muito rejogáveis, mesmo dentro de um jogo com história. Quem conhece a série sabe que uma corrida aparentemente simples pode virar um desafio quando aparecem obstáculos, esquinas inesperadas e aquele passageiro que está longe demais para o tempo restante.",
+    "O multiplayer é uma das novidades mais interessantes. A SEGA anunciou modos online e realizou um teste fechado de rede em setembro de 2026. Na descrição do teste, Batalha de Corridas colocava até seis participantes competindo para transportar passageiros e acumular ganhos. Outra modalidade, Tiras e Táxis, organizava equipes de três contra três. A página também citava partidas ranqueadas e personalizadas. São informações de um teste, e por isso as regras finais podem mudar até o lançamento. Ainda assim, já indicam uma direção mais social para a franquia.",
+    "A personalização pode ser outra peça importante nessa evolução. A proposta oficial fala em desbloquear carros diferentes e alterar o visual ou as características da própria máquina. Em jogos de direção acelerada, isso abre espaço para estilos variados: escolher um carro que combine com uma sequência de curvas ou simplesmente montar um táxi cheio de personalidade. Mas é importante não inventar estatísticas de velocidade ou recursos de tunagem que ainda não foram explicados. O que está confirmado é a intenção de oferecer veículos e opções de customização.",
+    "Sobre lançamento, a previsão oficial continua sendo 2027, ainda sem dia ou mês confirmado. As plataformas anunciadas são PlayStation 5, Xbox Series X e S, Nintendo Switch 2 e PC, incluindo Steam e Xbox no PC. A SEGA também descreve suporte ao Xbox Play Anywhere. Para o público brasileiro, existe outro detalhe relevante: a página do jogo no Steam lista interface, dublagem e legendas em português do Brasil. Mesmo assim, a versão final e as características exatas devem ser conferidas novamente mais perto do lançamento.",
+    "Se juntarmos tudo, o novo Crazy Taxi tenta equilibrar três coisas: a nostalgia do arcade, uma aventura por vários países e modalidades competitivas online. O anúncio do Brasil dá um apelo especial para quem quer reconhecer referências do próprio cotidiano em um jogo da SEGA. Mas a pergunta decisiva continua sendo como essa mistura vai funcionar no controle, com tempo, velocidade, trânsito e missões convivendo na mesma experiência. Os trailers apresentam a proposta; uma avaliação definitiva depende do jogo completo.",
+    "E para você, o que seria mais divertido: atravessar um mapa brasileiro levando passageiros contra o relógio, encarar corridas online com amigos ou explorar a campanha do Axel? Conte nos comentários e diga também qual loja ou cidade brasileira gostaria de encontrar no jogo. Curta, inscreva-se e acompanhe o Radar dos Games para receber mais novidades sobre Crazy Taxi: World Tour e os próximos anúncios do mundo gamer."
+  ]
+}
