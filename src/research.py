@@ -15,6 +15,9 @@ FEEDS = [
     "https://blog.playstation.com/feed/",
     "https://www.nintendo.com/us/whatsnew/rss/",
     "https://store.steampowered.com/feeds/news.xml",
+    # Official Deadlock announcements feed; allows an explicit Deadlock topic
+    # lock without selecting an unrelated game from the global feed.
+    "https://store.steampowered.com/feeds/news/app/1422450/?cc=US&l=english",
 ]
 KEYS = (
     "release", "launch", "trailer", "gameplay", "update", "dlc", "beta", "demo",
