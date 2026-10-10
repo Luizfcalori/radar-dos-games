@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/once-radar-channel-invite-2026-10-09.yml"
+      - "specials/once_radar_channel_invite_2026_10_09.py"
   workflow_dispatch:
 
 permissions:
@@ -36,6 +37,16 @@ jobs:
           test -s promo-once/Radar_dos_Games_Convite_Exclusivo.mp4
           test -s promo-once/Radar_dos_Games_Convite_Capa.jpg
           test -s promo-once/production-report.json
+          grep -q 'Vocês gostam de jogos?' promo-once/narration.txt
+          grep -q 'gameplay' promo-once/narration.txt
+          python - <<'PY'
+          import json
+          p=json.load(open('promo-once/production-report.json'))
+          assert p['opening_language']=='pt-BR'
+          assert p['pronunciation']['english_phonemes']=='/geɪmpleɪ/'
+          assert p['pipeline_changes']=='NONE'
+          print("QA script PT-BR and English gameplay pronunciation approved")
+          PY
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of default=noprint_wrappers=1 promo-once/Radar_dos_Games_Convite_Exclusivo.mp4 | tee promo-once/qa-media.txt
           grep -qx 'width=1080' promo-once/qa-media.txt
           grep -qx 'height=1920' promo-once/qa-media.txt
