@@ -80,10 +80,17 @@ for idx,starts in brazil_allocations.items():
 # Reserve Brazil only for the three map paragraphs, and reserve official
 # multiplayer video for its own narration. Extended official game demos
 # cover the general campaign and drive sections without replaying Brazil.
-for idx in list(range(4,8))+list(range(9,len(scenes))):
+for idx in range(4,8):
     eligible=set(int(x) for x in scenes[idx].get("visual_windows",{}))
-    keep=eligible-brazil_all-multi
-    update_scene(idx,keep)
+    update_scene(idx,eligible-brazil_all-multi)
+
+# All dedicated multiplayer footage remains untouched until scene 9.
+# Later general gameplay / wrap-up may use whatever *unused* driving clips
+# remain from the verified multiplayer trailer; source intervals can never
+# repeat because the timeline reservation gate remains active.
+for idx in range(9,len(scenes)):
+    eligible=set(int(x) for x in scenes[idx].get("visual_windows",{}))
+    update_scene(idx,eligible-brazil_all)
 
 # Scene 9 focuses only on actual multiplayer footage.
 update_scene(8,multi)
