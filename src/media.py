@@ -296,6 +296,7 @@ def recursive_video_strings(obj):
     return vals
 
 def steam_candidates(app_id,wanted):
+    # Production retry is intentionally triggered by the commit message; publishing remains disabled for push events.
     """Descobre mídia do app exato; prioriza CDN Steam e usa vídeos embutidos em anúncios oficiais do próprio app como fallback."""
     app_id=int(app_id)
     api=f'https://store.steampowered.com/api/appdetails?appids={app_id}&cc=us&l=english'
