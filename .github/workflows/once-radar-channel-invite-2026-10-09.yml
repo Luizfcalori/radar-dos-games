@@ -34,8 +34,8 @@ jobs:
 
       - name: Quality check exported Short and artwork
         run: |
-          test -s promo-once/Radar_dos_Games_Convite_Exclusivo.mp4
-          test -s promo-once/Radar_dos_Games_Convite_Capa.jpg
+          test -s promo-once/Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4
+          test -s promo-once/Radar_dos_Games_Convite_Capa_V2.jpg
           test -s promo-once/production-report.json
           grep -q 'Vocês gostam de jogos?' promo-once/narration.txt
           grep -q 'gameplay' promo-once/narration.txt
@@ -45,13 +45,25 @@ jobs:
           assert p['opening_language']=='pt-BR'
           assert p['pronunciation']['english_phonemes']=='/geɪmpleɪ/'
           assert p['pipeline_changes']=='NONE'
+          assert p['reframe_profile']=='RADAR_PROMO_V2_ACTUAL_GAMEPLAY_CENTERED'
+          assert set(p['corrected_sources'])=={'gta6-leak-2026-10-08-short-2.mp4','battlefield6-2026-10-07-short-1.mp4'}
           print("QA script PT-BR and English gameplay pronunciation approved")
           PY
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of default=noprint_wrappers=1 promo-once/Radar_dos_Games_Convite_Exclusivo.mp4 | tee promo-once/qa-media.txt
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of default=noprint_wrappers=1 promo-once/Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4 | tee promo-once/qa-media.txt
           grep -qx 'width=1080' promo-once/qa-media.txt
           grep -qx 'height=1920' promo-once/qa-media.txt
           grep -qx 'r_frame_rate=30/1' promo-once/qa-media.txt
-          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1 promo-once/Radar_dos_Games_Convite_Exclusivo.mp4 | grep -q 'aac'
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1 promo-once/Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4 | grep -q 'aac'
+
+      - name: Sample 12-22 seconds for actual image quality visual review
+        run: |
+          for s in 12.5 15.5 18.5 21.5; do
+            ffmpeg -y -v error -ss "$s" -i promo-once/Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4 -frames:v 1 -vf scale=270:480 -q:v 12 "promo-once/reframe-$s.jpg"
+            echo "FRAME_START:$s"
+            base64 -w0 "promo-once/reframe-$s.jpg"
+            echo
+            echo "FRAME_END:$s"
+          done
 
       - name: Store review-only video, thumbnail, transcript and QA
         uses: actions/upload-artifact@v4
@@ -59,11 +71,12 @@ jobs:
           name: RADAR-DOS-GAMES-ONE-TIME-CANAL-PROMO-REVIEW
           retention-days: 25
           path: |
-            promo-once/Radar_dos_Games_Convite_Exclusivo.mp4
-            promo-once/Radar_dos_Games_Convite_Capa.jpg
+            promo-once/Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4
+            promo-once/Radar_dos_Games_Convite_Capa_V2.jpg
             promo-once/production-report.json
             promo-once/narration.txt
             promo-once/qa-media.txt
+            promo-once/reframe-*.jpg
 
       - name: Provide public direct MP4/JPG links for review (NOT YouTube)
         continue-on-error: true
@@ -72,4 +85,4 @@ jobs:
         run: |
           TAG="radar-channel-invite-oneoff-2026-10-09"
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --target "$GITHUB_SHA" --title "Radar dos Games | Convite exclusivo para revisão" --prerelease --notes "Short promocional exclusivo. Revisão antes de qualquer postagem. Trilha Five Armies — Kevin MacLeod, CC BY 4.0: https://creativecommons.org/licenses/by/4.0/."
-          gh release upload "$TAG" promo-once/Radar_dos_Games_Convite_Exclusivo.mp4 promo-once/Radar_dos_Games_Convite_Capa.jpg promo-once/production-report.json --clobber
+          gh release upload "$TAG" promo-once/Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4 promo-once/Radar_dos_Games_Convite_Capa_V2.jpg promo-once/production-report.json --clobber

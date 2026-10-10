@@ -6,8 +6,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT=Path("promo-once"); ROOT.mkdir(exist_ok=True)
 W,H,FPS=1080,1920,30
-VIDEO=ROOT/"Radar_dos_Games_Convite_Exclusivo.mp4"
-COVER=ROOT/"Radar_dos_Games_Convite_Capa.jpg"
+VIDEO=ROOT/"Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4"
+COVER=ROOT/"Radar_dos_Games_Convite_Capa_V2.jpg"
 GREEN=(151,255,37); WHITE=(243,247,253)
 FONT="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONTREG="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
@@ -30,6 +30,18 @@ SOURCES=[
  ("GEARS OF WAR: E-DAY", "gears-eday-2026-10-06-short-1.mp4"),
 ]
 SOURCE_BASE="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/"
+
+# Carefully measured from full-frame thumbnails of the original approved Shorts:
+# GTA footage fills roughly y=755..1295; Battlefield footage y=750..1160.
+# The former y=525..1025 crop displayed only the upper black letterboxing
+# and clipped the actual gameplay, especially from 00:12 to 00:22.
+# x:y:w:h for each exceptional original 1080x1920 source.
+SAFE_REFRAME={
+    "gta6-leak-2026-10-08-short-2.mp4":(65,755,950,540),
+    "battlefield6-2026-10-07-short-1.mp4":(65,720,950,540),
+}
+DEFAULT_CROP=(90,525,900,500)
+
 
 def run(cmd):
  print("CMD", " ".join(map(str,cmd))[:310], flush=True)
@@ -127,7 +139,10 @@ def make_clip(source,idx,length,label,n):
  bg=ROOT/"background.png";out=ROOT/f"cut_{idx:02}.mp4"
  # Extract central gameplay from previous approved Radar Short:
  # avoids stacking the old title/CTA over the new promotional identity.
- vf=("[0:v]fps=30,crop=900:500:90:525,scale=900:506:flags=lanczos,setsar=1,eq=contrast=1.025:saturation=0.94:brightness=0.008[fg];"
+ crop=SAFE_REFRAME.get(Path(source).name,DEFAULT_CROP)
+ x,y,w,h=crop
+ if x<0 or y<0 or x+w>1080 or y+h>1920: raise RuntimeError(f"QUALITY_BLOCK invalid crop {source} {crop}")
+ vf=(f"[0:v]fps=30,crop={w}:{h}:{x}:{y},scale=900:506:flags=lanczos,setsar=1,eq=contrast=1.025:saturation=0.94:brightness=0.008[fg];"
      "[1:v]format=rgba[base];[base][fg]overlay=x=90:y=612:shortest=1[composed];"
      "[2:v]format=rgba[brand];[composed][brand]overlay=0:0:shortest=1,format=yuv420p[out]")
  run(["ffmpeg","-y","-v","error","-ss",f"{1.2+idx*.63:.2f}","-i",source,
@@ -182,7 +197,10 @@ def main():
    "upload_status":"NOT_UPLOADED_TO_YOUTUBE_OR_TIKTOK",
    "pipeline_changes":"NONE",
    "pronunciation":{"original_word":"gameplay","speech_only":"guêim plêi","english_phonemes":"/geɪmpleɪ/"},
-   "opening_language":"pt-BR"}
+   "opening_language":"pt-BR",
+   "reframe_profile":"RADAR_PROMO_V2_ACTUAL_GAMEPLAY_CENTERED",
+   "corrected_sources":{k:list(v) for k,v in SAFE_REFRAME.items()},
+   "affected_seconds":[12,22]}
  (ROOT/"production-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf8")
  (ROOT/"narration.txt").write_text(SCRIPT,encoding="utf8")
  print("PRODUCTION_DONE",json.dumps(report,ensure_ascii=False),flush=True)
