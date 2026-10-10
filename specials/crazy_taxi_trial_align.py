@@ -47,15 +47,20 @@ def update_scene(scene_idx,keep,brazil_frame_windows=None):
 all_assets={int(a["index"]):a for a in clips.get("assets",[]) if a.get("approved")}
 clips_indexes=set(all_assets)
 
-brazil=set(media_for_video("qdStLWu0RAs"))
-multi=set(media_for_video("a3mF9zwozJk"))
+# Main Brazil trailer from SEGA; Portuguese edition can provide additional
+# independent Brazil-specific clips without passing unrelated maps as Brazil.
+brazil=set(media_for_video("DeSxlArFZcl"))
+brazil_aux=set(media_for_video("DeR77bLFCnT"))
+brazil_all=brazil|brazil_aux
+# Official multiplayer gameplay versions (GameSpot and The Game Awards).
+multi=set(media_for_video("DcecHgCkZa0"))|set(media_for_video("Dcei4hNuXN6"))
 if not brazil or not multi:
     raise RuntimeError("QUALITY_BLOCK: required verified Brazil and multiplayer trailers missing")
 
 # Prevent global source exhaustion: intro/setup must NOT consume Brazil footage.
 for idx in (0,):
     eligible=set(int(x) for x in scenes[idx].get("visual_windows",{}))
-    update_scene(idx,eligible-brazil-multi)
+    update_scene(idx,eligible-brazil_all-multi)
 
 # Dedicated scenes 2, 3, 4 each show Brazil-specific official material.
 # Brazil promo was manually reviewed window by window. The final 52.7s
@@ -69,7 +74,7 @@ brazil_allocations={
     3:[22.7,30.2],
 }
 for idx,starts in brazil_allocations.items():
-    update_scene(idx,brazil,brazil_frame_windows=starts)
+    update_scene(idx,brazil_all,brazil_frame_windows=starts)
     scenes[idx]["semantic_subject"]="Official Brazil map trailer | SEGA BGS 2026"
 
 # Reserve Brazil only for the three map paragraphs, and reserve official
@@ -77,7 +82,7 @@ for idx,starts in brazil_allocations.items():
 # cover the general campaign and drive sections without replaying Brazil.
 for idx in list(range(4,8))+list(range(9,len(scenes))):
     eligible=set(int(x) for x in scenes[idx].get("visual_windows",{}))
-    keep=eligible-brazil-multi
+    keep=eligible-brazil_all-multi
     update_scene(idx,keep)
 
 # Scene 9 focuses only on actual multiplayer footage.
@@ -100,7 +105,7 @@ needed=words/2.55
 print(json.dumps({"available_unique_video_seconds":round(usable,1),
                   "narration_seconds_estimate":round(needed,1),
                   "source_usable_seconds_by_asset":{str(k):round(v,1) for k,v in duration_by_asset.items()},
-                  "brazil_indices":sorted(brazil),"multiplayer_indices":sorted(multi)},
+                  "brazil_indices":sorted(brazil_all),"multiplayer_indices":sorted(multi)},
                  ensure_ascii=False),flush=True)
 if usable<needed*0.985:
     raise RuntimeError(
