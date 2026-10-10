@@ -385,27 +385,57 @@ def contextual_terms(candidate, parser):
 
 
 def make_script(candidate, parser):
+    """Build a source-grounded PT-BR outline; never turn extracted keywords into prose."""
     title = pt_headline(candidate, parser)
     src = source_name(candidate["url"])
     game = game_name(candidate.get("title", "")) or "o jogo"
-    corpus = " ".join([candidate.get("summary", "")] + parser.paragraphs[:20])
-    kws = keywords(candidate.get("title", "") + " " + corpus, 8)
-    plats = platforms(corpus + " " + candidate.get("title", ""))
-    dates = dates_and_numbers(corpus + " " + candidate.get("title", ""))
-    focus = ", ".join(kws[:4]) if kws else "as principais novidades anunciadas"
-    extra = ", ".join(kws[4:7]) if len(kws) > 4 else "novos detalhes do projeto"
-    plat_txt = ", ".join(plats) if plats else "as plataformas confirmadas pela empresa"
-    date_txt = ", ".join(dates[:3]) if dates else "a janela divulgada pela empresa"
-
+    raw_title = sentence(candidate.get("title", ""))
+    corpus = clean(" ".join([candidate.get("summary", "")] + parser.paragraphs[:20]))
+    full = raw_title + " " + corpus
+    plats = platforms(full)
+    month_names = {
+        "january":"janeiro", "february":"fevereiro", "march":"março",
+        "april":"abril", "may":"maio", "june":"junho", "july":"julho",
+        "august":"agosto", "september":"setembro", "october":"outubro",
+        "november":"novembro", "december":"dezembro",
+    }
+    launch_date = None
+    date_match = re.search(
+        r"\b(?:launches|launching|launch(?:e)? on|release(?:s)? on)\s+"
+        r"(January|February|March|April|May|June|July|August|September|October|November|December)"
+        r"\s+(\d{1,2})(?:,\s*(20\d{2}))?\b",
+        full, re.I
+    )
+    if date_match:
+        launch_date = f"{int(date_match.group(2))} de {month_names[date_match.group(1).lower()]}"
+        if date_match.group(3):
+            launch_date += f" de {date_match.group(3)}"
+    lower = full.casefold()
+    has_characters = any(x in lower for x in ("new characters", "characters revealed", "personagens novos", "novos personagens"))
+    has_update = any(x in lower for x in ("update", "patch", "atualização", "atualizacao"))
+    has_trailer = any(x in lower for x in ("trailer", "gameplay", "latest trailer"))
+    platform_text = ", ".join(plats) if plats else ""
     blocks = [
-        f"{title}. A {src} confirmou a novidade, e {game} ganhou novos detalhes que já chamam a atenção de quem acompanha o jogo.",
-        f"Entre os principais destaques estão {focus}. O anúncio mexe diretamente com a experiência de {game} e ajuda a entender o que muda daqui para frente.",
-        f"{extra} também aparecem entre as informações divulgadas. Juntos, esses detalhes deixam o anúncio mais completo e dão uma ideia melhor do que os jogadores podem esperar.",
-        f"Em relação à disponibilidade, {game} aparece ligado a {plat_txt}. Esse ponto é importante porque versão, plataforma e lançamento podem mudar bastante a experiência de cada público.",
-        f"A referência de lançamento ou atualização é {date_txt}. Até aqui, essa é a janela oficial divulgada para a novidade.",
-        f"Na prática, o que mais chama atenção é como {focus} pode mudar a experiência de quem já joga ou de quem estava esperando um bom motivo para conhecer {game}.",
-        f"O material oficial também traz elementos de gameplay, trailers ou imagens de {game}, reforçando os principais pontos anunciados e deixando mais claro o tamanho da novidade.",
-        f"E agora fica a pergunta para vocês: qual parte dessa novidade de {game} mais chamou a atenção? Conta nos comentários e acompanhem o Radar dos Games para as próximas notícias.",
+        f"{title}. A {src} publicou a informação em sua fonte oficial, e o assunto é {game}.",
+        (f"A publicação informa que o lançamento está previsto para {launch_date}. Essa é a data indicada no material consultado."
+         if launch_date else
+         f"O texto oficial reúne detalhes específicos sobre {game}. O resumo fica limitado ao que a publicação realmente informa."),
+        (f"O anúncio também revela novos personagens para {game}. Esse é um dos pontos destacados pela própria publicação."
+         if has_characters else
+         (f"A notícia trata de uma atualização de {game}, conforme o material oficial."
+          if has_update else
+          f"A publicação acrescenta contexto sobre {game}, sem confirmar recursos que não estejam descritos na fonte.")),
+        (f"Sobre plataformas, o material cita {platform_text}. A confirmação deve ficar restrita às plataformas mencionadas oficialmente."
+         if platform_text else
+         "A disponibilidade por plataforma só deve ser afirmada quando estiver explícita no anúncio oficial."),
+        (f"O artigo também apresenta material visual associado à notícia{', incluindo trailer ou gameplay' if has_trailer else ''}. Essas imagens ajudam a contextualizar o anúncio, mas não comprovam detalhes que o texto não confirma."
+         if parser.media else
+         "A publicação consultada é a referência principal para conferir os detalhes anunciados."),
+        (f"Para quem acompanha {game}, a informação mais concreta é o que a fonte confirmou sobre lançamento e conteúdo."
+         if launch_date or has_characters else
+         f"Para quem acompanha {game}, vale separar os fatos publicados de qualquer especulação sobre o futuro do projeto."),
+        "Até que a fonte oficial divulgue outros dados, recursos, modos ou datas não mencionados aqui devem continuar tratados como não confirmados.",
+        f"E agora queremos saber: qual parte deste anúncio mais chamou sua atenção? Comente, acompanhe o Radar dos Games e inscreva-se para receber as próximas notícias."
     ]
     return "\n\n".join(blocks)
 
