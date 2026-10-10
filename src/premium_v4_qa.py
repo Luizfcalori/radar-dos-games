@@ -89,8 +89,12 @@ def main():
         assert int(row.get("beats") or 0)>=1,row
         cadence.append({"scene":row.get("scene"),"beats":row.get("beats"),"avg_beat":avg})
 
-    if shorts.get("layout_profile") != "RADAR_SHORTS_CLASSIC_V1":
+    if shorts.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
         raise RuntimeError("QUALITY_BLOCK: layout clássico aprovado dos Shorts ausente")
+    if shorts.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
+        raise RuntimeError("QUALITY_BLOCK: padrão visual Premium Conversão não aplicado")
+    if shorts.get("hook_policy") != "exact_approved_hook_persistent_all_beats; semantic_scene_match; phrase_level_visuals; premium_conversion_fixed_layout":
+        raise RuntimeError("QUALITY_BLOCK: política de layout Premium ausente")
     srows=shorts.get("shorts") or []
     assert len(srows)==3,len(srows)
     expected_hooks=[str(x or "").strip() for x in (picks.get("expected_hooks") or [])]
@@ -103,8 +107,10 @@ def main():
     if len(matches)!=3:
         raise RuntimeError("QUALITY_BLOCK: seleção semântica dos Shorts incompleta")
     for i,(row,hook,match) in enumerate(zip(srows,expected_hooks,matches),1):
-        if row.get("layout_profile") != "RADAR_SHORTS_CLASSIC_V1":
-            raise RuntimeError(f"QUALITY_BLOCK: Short {i} não usa o layout clássico")
+        if row.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
+            raise RuntimeError(f"QUALITY_BLOCK: Short {i} não usa o padrão Premium Conversão")
+        if row.get("cta") != ["INSCREVA-SE AGORA", "DEIXE O LIKE", "RADAR DOS GAMES"]:
+            raise RuntimeError(f"QUALITY_BLOCK: CTA multiplataforma aprovado ausente no Short {i}")
         assert row.get("render_policy")=="rebuilt_from_source_assets_not_master_crop",row
         assert row.get("boundary_policy")=="independent_scene_voice_complete",row
         assert float(row.get("duration") or 0)>=8,row
