@@ -1,4 +1,4 @@
-name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium (revisao 8 Instagram validado)"
+name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium (revisao 9 limites de clipes)"
 
 on:
   push:
@@ -58,6 +58,27 @@ jobs:
           assert not is_instagram_video_url("https://www.youtube.com/watch?v=qdStLWu0RAs")
           assert not is_instagram_video_url("https://evil.instagram.com/reel/DeSxlArFZcl/")
           print("INSTAGRAM_ROUTE_READY — public media only, isolated review",flush=True)
+          PY
+
+      - name: Verificar limite fisico e bloqueio de repeticao de clipes
+        run: |
+          python - <<'PY'
+          from src.continuity import VideoTimeline
+          a={'index':1,'type':'video','duration':10.05,
+             'role':'test','url':'https://example.com/test.mp4'}
+          scene={'visual_windows':{'1':[{'start':8.,'end':11.,
+                   'semantic_categories':[]}]}}
+          t=VideoTimeline({1:a})
+          _,start,seconds,proof=t.choose(scene,'trecho visual',3.,[a])
+          assert start+seconds <= 10.05
+          assert proof['reserved_end'] <= 10.05
+          try:
+              t.reserve(1,start,seconds)
+          except RuntimeError as e:
+              assert 'repetido' in str(e)
+          else:
+              raise AssertionError('Repeating a source interval must remain blocked')
+          print('CONTINUITY_BOUNDS_AND_DEDUP_APPROVED',flush=True)
           PY
 
       - name: Validar intro oficial permanente
