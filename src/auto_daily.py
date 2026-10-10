@@ -417,7 +417,7 @@ def make_script(candidate, parser):
     platform_text = ", ".join(plats) if plats else ""
     blocks = [
         f"{title}. A {src} publicou a informação em sua fonte oficial, e o assunto é {game}.",
-        (f"A publicação informa que o lançamento está previsto para {launch_date}. Essa é a data indicada no material consultado."
+        (f"A publicação informa que o lançamento de {game} está previsto para {launch_date}. Essa é a data indicada no material consultado."
          if launch_date else
          f"O texto oficial reúne detalhes específicos sobre {game}. O resumo fica limitado ao que a publicação realmente informa."),
         (f"O anúncio também revela novos personagens para {game}. Esse é um dos pontos destacados pela própria publicação."
@@ -425,17 +425,17 @@ def make_script(candidate, parser):
          (f"A notícia trata de uma atualização de {game}, conforme o material oficial."
           if has_update else
           f"A publicação acrescenta contexto sobre {game}, sem confirmar recursos que não estejam descritos na fonte.")),
-        (f"Sobre plataformas, o material cita {platform_text}. A confirmação deve ficar restrita às plataformas mencionadas oficialmente."
+        (f"Sobre plataformas de {game}, o material cita {platform_text}. A confirmação deve ficar restrita às plataformas mencionadas oficialmente."
          if platform_text else
          "A disponibilidade por plataforma só deve ser afirmada quando estiver explícita no anúncio oficial."),
-        (f"O artigo também apresenta material visual associado à notícia{', incluindo trailer ou gameplay' if has_trailer else ''}. Essas imagens ajudam a contextualizar o anúncio, mas não comprovam detalhes que o texto não confirma."
+        (f"O artigo também apresenta material visual associado à notícia sobre {game}{', incluindo trailer ou gameplay' if has_trailer else ''}. Essas imagens ajudam a contextualizar o anúncio, mas não comprovam detalhes que o texto não confirma."
          if parser.media else
          "A publicação consultada é a referência principal para conferir os detalhes anunciados."),
         (f"Para quem acompanha {game}, a informação mais concreta é o que a fonte confirmou sobre lançamento e conteúdo."
          if launch_date or has_characters else
          f"Para quem acompanha {game}, vale separar os fatos publicados de qualquer especulação sobre o futuro do projeto."),
-        "Até que a fonte oficial divulgue outros dados, recursos, modos ou datas não mencionados aqui devem continuar tratados como não confirmados.",
-        f"E agora queremos saber: qual parte deste anúncio mais chamou sua atenção? Comente, acompanhe o Radar dos Games e inscreva-se para receber as próximas notícias."
+        "Até que a fonte oficial divulgue outros dados sobre {game}, recursos, modos ou datas não mencionados aqui devem continuar tratados como não confirmados.",
+        f"E agora queremos saber: qual parte deste anúncio sobre {game} mais chamou sua atenção? Comente, acompanhe o Radar dos Games e inscreva-se para receber as próximas notícias."
     ]
     return "\n\n".join(blocks)
 
