@@ -3,6 +3,11 @@
 import html,json,os,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 
+try:
+    from instagram_media import is_instagram_video_url, download_public_instagram
+except ModuleNotFoundError:
+    from src.instagram_media import is_instagram_video_url, download_public_instagram
+
 VIDEO_EXTS=('.mp4','.mov','.webm','.m4v')
 STREAM_EXTS=('.m3u8','.mpd')
 IMAGE_EXTS=('.jpg','.jpeg','.png','.webp')
@@ -330,7 +335,7 @@ def main(path):
             candidates=steam_candidates(item['steam_app_id'],wanted);source=f"steam_app:{item['steam_app_id']}"
         else:
             url=item['url'];source=item.get('source_proof') or url;low=url.lower().split('?')[0]
-            if low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS) or bool(item.get('force_image',False)) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url:
+            if low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS) or bool(item.get('force_image',False)) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url or (wanted=='video' and is_instagram_video_url(url)):
                 candidates=[(url,item.get('relevance_evidence','direct_source'),item.get('source_label',''))]
             else:
                 allow_images=bool(item.get('allow_images_from_page',False) and wanted=='image')
@@ -362,6 +367,7 @@ def main(path):
                 and ('rockstargames.com/vi/downloads/videos/' in low or 'media-rockstargames-com.akamaized.net/vi/downloads/videos/' in low)
             ):
                 info=official_remote_clip(u,dest,source if str(source).startswith('http') else 'https://www.rockstargames.com/')
+            elif is_instagram_video_url(u) and wanted=='video':info=download_public_instagram(u,dest,probe_info)
             elif 'youtube.com' in low or 'youtu.be' in low:info=ytdlp(u,dest)
             else:info=download(u,dest,source if str(source).startswith('http') else None)
             if not info:dest.unlink(missing_ok=True);continue
