@@ -1,96 +1,33 @@
 # Padrão oficial dos Shorts — Radar dos Games
 
-Referência aprovada em 02/10/2026: `THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK #Shorts - Radar dos Games`.
+**Padrão oficial atualizado em 10/10/2026: RADAR_PREMIUM_CONVERSAO_V1 para TODOS os Shorts informativos, promocionais e institucionais.** A aprovação do usuário substitui a regra anterior que reservava o Premium Conversão apenas para convites/campanhas. Não voltar ao layout clássico como padrão sem nova aprovação explícita.
 
-## Especificação técnica
+## Identidade e composição obrigatórias
 
-- Formato: 9:16
-- Resolução: 1080 × 1920
-- Frame rate: 30 fps
-- Vídeo: H.264 / yuv420p
-- Áudio: AAC estéreo, normalizado em -16 LUFS
-- Duração-alvo: aproximadamente 22 segundos por Short
-- Quantidade por Master: exatamente 3
-- Origem: sempre derivados do Master correspondente
+- Formato vertical 9:16, 1080 × 1920, 30 fps, H.264/yuv420p e áudio AAC estéreo.
+- Cabeçalho Radar dos Games em azul-escuro, acentos verde neon e alto contraste.
+- Gameplay/mídia contextual centralizada dentro de moldura; preservar a ação e evitar recortes destrutivos que cortem personagens, texto ou informação importante.
+- Fundo gamer/tech escurecido e cinematográfico, bloco de título grande e legível em tela de celular, rodapé limpo e assinatura RADAR DOS GAMES.
+- CTA visível: **INSCREVA-SE AGORA** e **DEIXE O LIKE**. Assinatura: **RADAR DOS GAMES**.
+- **Não incluir** “ATIVE O SININHO”, **@radardosgamesbr**, nomes/logos de plataformas (YouTube, TikTok, Instagram, Facebook, Kwai) nem endereço exclusivo de uma rede no visual exportável.
+- Trilha cinematográfica sob a voz, ducking/fades, mixagem equilibrada e tratamento de cor consistente.
+- Voz Thalita Multilingual PT-BR; revisar pronúncia de nomes e termos em inglês sem traduzir nomes próprios.
+- O texto narrado deve corresponder à mídia realmente exibida. Selecionar e inspecionar as mídias antes de fechar a narração; priorizar gameplay em movimento e cenas semanticamente correspondentes ao hook.
+- Gerar exatamente 3 Shorts por Master, cada um com hook e trecho próprios, sem repetição visual desnecessária.
+- Gerar automaticamente uma capa vertical premium para cada Short, com arte oficial/aprovada do jogo, branding Radar, verde neon como destaque e headline grande. A capa é separada do layout interno do vídeo.
+- Padrão gratuito: não depender de serviços pagos, templates pagos ou recursos que exijam créditos.
 
-## Layout visual obrigatório
+## QA obrigatório antes de publicar
 
-1. Cabeçalho superior escuro com `RADAR DOS GAMES` em branco.
-2. Headline principal em caixa alta, centralizada, branca, dentro de uma área preta no topo.
-3. Fundo vertical contextual derivado da própria mídia, desfocado e escurecido.
-4. Gameplay/imagem contextual no centro, preservando enquadramento; não usar crop vertical destrutivo.
-5. Moldura/acento ao redor da mídia principal usando uma cor contextual retirada do próprio vídeo/jogo.
-6. Faixa contextual curta logo abaixo da mídia usando a mesma cor de destaque contextual.
-7. CTA inferior em duas linhas:
-   - `VÍDEO COMPLETO NO CANAL` em branco.
-   - `RADAR DOS GAMES` em destaque.
-8. Nada de logos de terceiros, templates pagos ou elementos visuais que dependam de créditos.
+- Confirmar 1080 × 1920, 30 fps, áudio presente, duração válida e exatamente três Shorts.
+- Confirmar CTA aprovado e ausência de “ATIVE O SININHO”, @radardosgamesbr e branding exclusivo de plataforma.
+- Conferir que gameplay, título, narração e cena estão alinhados; headlines devem ser específicas, nunca “Destaque 1”/“Cena 2”.
+- Confirmar mixagem cinematográfica, voz inteligível, dicção dos termos em inglês, capas e metadados.
+- Fallback técnico só pode ser usado se registrado no QA; não deve redefinir o padrão visual oficial.
 
-## Regra de cor
+## Histórico e compatibilidade
 
-- **Ciano NÃO é uma cor fixa do padrão.** Ele apareceu na referência aprovada porque combinava com aquele corte específico.
-- A estrutura/composição é fixa; a cor de destaque é variável e deve acompanhar a identidade visual do jogo ou do trecho.
-- O gerador deve extrair localmente uma cor forte da própria mídia usando FFmpeg/Python.
-- Se não houver uma cor útil no trecho, usar branco neutro como fallback em vez de impor ciano ou qualquer outra cor fixa.
-
-## Conteúdo
-
-- Cada Short deve usar um trecho diferente do Master.
-- Quando existir `output/qa.json`, usar os títulos/subtítulos das cenas do Master para preencher headline e faixa contextual.
-- Seleção padrão de trechos: aproximadamente 12%, 42% e 72% do Master.
-- Gameplay contextual tem prioridade sobre imagem estática quando disponível no Master.
-
-## Regra do projeto
-
-Este é o padrão oficial dos Shorts até nova aprovação explícita. O gerador em `src/shorts.py` deve permanecer compatível com `python src/shorts.py <master.mp4>` e produzir exatamente três arquivos em `output/shorts/`.
-
-
-## Capa vertical do Short — padrão oficial aprovado em 06/10/2026
-
-A capa do Short é separada do layout interno do vídeo. Para as capas verticais, a identidade visual é fixa e deve seguir o modelo aprovado pelo usuário:
-
-- Resolução obrigatória: 1080 × 1920.
-- Badge `RADAR DOS GAMES` no topo.
-- Verde neon Radar como cor dominante de branding e destaque.
-- Headline muito grande, pesada, de alto impacto, combinando branco + verde.
-- Fundo com ação forte e arte oficial do jogo.
-- Painel metálico/tech escuro na região inferior para headline/subheadline.
-- Visual gamer premium, dramático, agressivo e otimizado para clique.
-- Adaptar personagens, cenário e atmosfera ao jogo atual sem alterar a linguagem visual da marca.
-- Não usar vermelho como cor dominante do branding da capa.
-- Gerador oficial: `src/short_cover.py`.
-- Arquivos esperados: `output/shorts/short_1_cover.jpg`, `short_2_cover.jpg`, `short_3_cover.jpg`.
-- As capas devem ser referenciadas automaticamente nos respectivos `short-1-youtube.json`, `short-2-youtube.json` e `short-3-youtube.json`.
-
-A regra de cor contextual descrita acima continua valendo somente para elementos internos do vídeo Short; não substitui a identidade verde fixa das capas.
-
-
-## Padrão cinematográfico oficial — aprovado em 08/10/2026
-
-Masters e os três Shorts passam a usar `RADAR_CINEMATIC_V1` por padrão.
-- Trilha Five Armies, de Kevin MacLeod, incluída no repositório, CC BY 4.0, com créditos automáticos nos metadados e no envio ao YouTube.
-- Música normalizada, baixa sob a voz, com ducking e fades; impactos discretos do diretor V4. Voz Thalita mantida, alvo -16 LUFS e limiter sem ganho automático.
-- Tratamento sutil de cor (contraste 1.025, saturação 0.94, brilho +0.008), aplicado à mídia antes dos textos. Não acrescentar faixas de cinema ou recortes destrutivos.
-- Intro oficial integral primeiro, com áudio original; a trilha começa no corpo do Master. Cards, sincronismo, identidade, formatos e agenda continuam os aprovados.
-- Shorts V4 recebem mixagem própria a partir da voz e mídias originais. O fallback legado recorta o Master já tratado, sem aplicar uma segunda trilha ou uma segunda correção de cor.
-- Trilha ausente bloqueia o render; gate V4 exige trilha com ducking e perfil cinematográfico nos dois formatos.
-- Módulo compartilhado: `src/cinematic.py`.
-
-
-## Restauração obrigatória do layout interno dos Shorts — 08/10/2026
-
-- O V4 (`src/shorts_v4.py`) deve renderizar **RADAR_SHORTS_CLASSIC_V1** em cada beat, com a mesma composição do modelo aprovado e do Short GTA 6 enviado como referência.
-- Cabeçalho azul escuro `RADAR DOS GAMES`, headline grande **persistente** em bloco preto, moldura com mídia inteira no centro e cor contextual, faixa `CONFIRA O CONTEÚDO COMPLETO` e CTA inferior permanente em duas linhas (`VÍDEO COMPLETO NO CANAL` / `RADAR DOS GAMES`).
-- Os textos e o quadro não desaparecem no meio do Short; a troca entre imagens/gameplays altera apenas a mídia contextual, preservando o layout.
-- Cor cinematográfica e mixagem via `src/cinematic.py`, seleção semântica dos beats e voz Thalita continuam ativas. Não reintroduzir recortes destrutivos.
-- `src/premium_v4_qa.py` bloqueia renderizações sem o perfil visual **RADAR_SHORTS_CLASSIC_V1** nos três Shorts.
-
-
-## Modelo 2 — RADAR PREMIUM CONVERSÃO (aprovado em 09/10/2026)
-
-- Segundo modelo **oficial e independente**, reservado a convites, ações institucionais e campanhas de divulgação/engajamento; **não substitui** `RADAR_SHORTS_CLASSIC_V1` para os três Shorts informativos gerados diariamente.
-- Layout: cabeçalho RADAR DOS GAMES em azul-escuro, título branco + verde neon, gameplay enquadrada integralmente em moldura, bloco inferior destacado, trilha cinematográfica e locução Thalita PT-BR.
-- CTA do modelo aprovado: `INSCREVA-SE AGORA` e `DEIXE O LIKE`, com `RADAR DOS GAMES` como assinatura. O usuário retirou expressamente `ATIVE O SININHO` e `@radardosgamesbr` da peça.
-- **Multiplataforma:** não inserir `YouTube`, `TikTok`, `Instagram`, `Facebook`, `Kwai` ou endereço/arroba exclusivo de uma rede no visual padrão exportável. O objetivo é usar o mesmo vídeo em todas as redes. Caso futuramente se deseje linguagem `SIGA O RADAR DOS GAMES` no lugar de `INSCREVA-SE AGORA`, isso depende de nova aprovação explícita.
-- Render isolado: `specials/once_radar_channel_invite_2026_10_09.py` com seu próprio workflow; não alterar a geração padrão de Masters, Shorts, thumbnails, publicação e agenda.
-- Referência completa: [RADAR PREMIUM CONVERSÃO](RADAR_PREMIUM_CONVERSAO.md).
+- Este padrão Premium substitui, a partir de 10/10/2026, o antigo RADAR_SHORTS_CLASSIC_V1 como padrão visual de saída.
+- O gerador deve continuar produzindo exatamente três arquivos em `output/shorts/` e manter compatibilidade com a pipeline de produção.
+- A capa vertical usa `src/short_cover.py`/geração premium existente e deve ser referenciada nos metadados correspondentes.
+- Referência de composição e CTA: [RADAR PREMIUM CONVERSÃO](RADAR_PREMIUM_CONVERSAO.md).
