@@ -88,6 +88,12 @@ for idx in list(range(4,8))+list(range(9,len(scenes))):
 # Scene 9 focuses only on actual multiplayer footage.
 update_scene(8,multi)
 scenes[8]["semantic_subject"]="Official Crazy Taxi multiplayer trailer | SEGA 2026"
+# GameSpot and The Game Awards both carry SEGA's multiplayer reveal. CLIP
+# sometimes labels these actual racing shots as 'driving' or 'arcade' rather
+# than multiplayer; permit those *visible* categories only within the two
+# original, provenance-verified multiplayer trailer assets.
+scenes[8]["verified_source_fallback_categories"]=["driving","arcade"]
+scenes[8]["verified_source_fallback_reason"]="SEGA multiplayer trailer from GameSpot/The Game Awards shows gameplay driving"
 
 # Scene 10 onward can use any visually matching leftover footage. Do not loop.
 
