@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-10T09:14:47.921263+00:00",
-  "total_discovered": 63,
-  "ready_for_tiktok": 61,
+  "updated_at": "2026-10-10T22:45:46.110259+00:00",
+  "total_discovered": 66,
+  "ready_for_tiktok": 64,
   "waiting_media": [
     {
       "youtube_id": "BQ30QQNY9kw",
@@ -17,6 +17,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "Tgud1D_uQpw",
+      "youtube_url": "https://www.youtube.com/shorts/Tgud1D_uQpw",
+      "title": "LYSSA SONY CHARACTERS TAMBÉM APARECEM",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "YDf73lbX-CI",
+      "youtube_url": "https://www.youtube.com/shorts/YDf73lbX-CI",
+      "title": "WARHAMMER SURVIVORS DETALHES LANÇAMENTO GANHA",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "yvrZ7lV8ZnI",
+      "youtube_url": "https://www.youtube.com/shorts/yvrZ7lV8ZnI",
+      "title": "WARHAMMER SURVIVORS ENTRE PRINCIPAIS DESTAQUES",
+      "status": "approved"
+    },
     {
       "youtube_id": "BQ30QQNY9kw",
       "youtube_url": "https://www.youtube.com/shorts/BQ30QQNY9kw",
