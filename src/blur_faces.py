@@ -27,14 +27,14 @@ def read_exact(pipe, n):
 
 def boxes_for(frame, scale):
     h,w=frame.shape[:2]
-    sw=min(960,w)
+    sw=min(480,w)
     ratio=sw/w
     small=cv2.resize(frame,(sw,max(1,int(h*ratio))),interpolation=cv2.INTER_AREA) if ratio<1 else frame
     gray=cv2.cvtColor(small,cv2.COLOR_BGR2GRAY)
     gray=cv2.equalizeHist(gray)
     found=[]
     for cascade in (FRONTAL,PROFILE):
-        boxes=cascade.detectMultiScale(gray,scaleFactor=1.045,minNeighbors=4,minSize=(22,22),flags=cv2.CASCADE_SCALE_IMAGE)
+        boxes=cascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=4,minSize=(14,14),flags=cv2.CASCADE_SCALE_IMAGE)
         found.extend([(int(x/ratio),int(y/ratio),int(ww/ratio),int(hh/ratio)) for x,y,ww,hh in boxes])
         flipped=cv2.flip(gray,1) if cascade is PROFILE else None
         if flipped is not None:
@@ -93,7 +93,7 @@ def process(path):
             raw=read_exact(decoder.stdout,frame_bytes)
             if raw is None: break
             frame=np.frombuffer(raw,dtype=np.uint8).reshape((h,w,3)).copy()
-            boxes=boxes_for(frame,1.0)
+            boxes=boxes_for(frame,1.0) if frames % 3 == 0 else []
             if boxes:
                 detected_frames += 1
                 blurred_boxes += len(boxes)
