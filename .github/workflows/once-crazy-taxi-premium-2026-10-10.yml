@@ -1,4 +1,4 @@
-name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium (revisao 6)"
+name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium (revisao 7 Instagram)"
 
 on:
   push:
@@ -48,6 +48,17 @@ jobs:
           # Open-source zero-shot visual recognition, CPU only; no paid API.
           python -m pip install --quiet torch==2.5.1+cpu torchvision==0.20.1+cpu --index-url https://download.pytorch.org/whl/cpu
           python -m pip install --quiet transformers==4.46.3
+
+      - name: Verificar rota gratuita do Instagram
+        run: |
+          python - <<'PY'
+          from src.instagram_media import is_instagram_video_url
+          assert is_instagram_video_url("https://www.instagram.com/segaofficial/reel/DeSxlArFZcl/")
+          assert is_instagram_video_url("https://www.instagram.com/ignbrasil/reel/Dcg94D4vNXh/")
+          assert not is_instagram_video_url("https://www.youtube.com/watch?v=qdStLWu0RAs")
+          assert not is_instagram_video_url("https://evil.instagram.com/reel/DeSxlArFZcl/")
+          print("INSTAGRAM_ROUTE_READY — public media only, isolated review",flush=True)
+          PY
 
       - name: Validar intro oficial permanente
         run: |
@@ -283,6 +294,7 @@ jobs:
           PY
 
       - name: Verificar OAuth/canal do YouTube
+        if: ${{ steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
