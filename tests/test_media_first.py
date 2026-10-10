@@ -33,6 +33,9 @@ class MediaFirstTests(unittest.TestCase):
         for s in plan["scenes"]:
             self.assertEqual(s["media_first_assets"],[7,13])
             self.assertEqual(len(s["allowed_roles"]),2)
+        # Hashed filenames still receive a topic label only because the image
+        # is served from the exact official article URL.
+        self.assertEqual(self.assets[1]["source_label"],"Battlefield 6")
     def test_final_script_digest_is_byte_stable(self):
         plan,script,report=compile_storyboard(self.plan,self.clips,{},self.outline)
         data=script.encode("utf-8")
