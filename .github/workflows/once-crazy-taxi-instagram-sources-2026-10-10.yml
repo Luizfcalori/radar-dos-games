@@ -1,0 +1,117 @@
+name: "ONE-OFF Crazy Taxi Instagram Public Source Extraction"
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/once-crazy-taxi-instagram-sources-2026-10-10.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: crazy-taxi-ig-sources-isolated
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Install public-media extraction tools
+        run: |
+          python -m pip install -q --upgrade yt-dlp gallery-dl
+          ffmpeg -version | head -n 1
+
+      - name: Test public reels without cookies or login
+        continue-on-error: true
+        shell: bash
+        run: |
+          mkdir -p instagram-media
+          cat > /tmp/crazy_taxi_instagram_extract.py <<'PY'
+          import json, pathlib, subprocess, hashlib, shlex, sys
+          from datetime import datetime, timezone
+          root=pathlib.Path("instagram-media")
+          sources=[
+            ("sega-official-brazil","https://www.instagram.com/segaofficial/reel/DeSxlArFZcl/","Official Brazil map trailer"),
+            ("sega-brasil-brazil","https://www.instagram.com/segabroficial/reel/DeR77bLFCnT/","Official Portuguese Brazil map promo"),
+            ("revista-arkade-brazil","https://www.instagram.com/revistaarkade/reel/DeSGmNWBX4t/","Brazil map, stores, and BGS"),
+            ("gamestart-brazil","https://www.instagram.com/gamestart_br/reel/DeSOJC6iGmx/","Brazil trailer editorial coverage"),
+            ("ign-brasil-gameplay","https://www.instagram.com/ignbrasil/reel/Dcg94D4vNXh/","Gameplay preview, not Brazil-specific"),
+            ("sucumba-brazil","https://www.instagram.com/sucumba.games/reel/DeSJZbdRN30/","BGS Brazil trailer coverage"),
+          ]
+          def run(cmd,timeout):
+            try:
+              result=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=timeout)
+              return {"returncode":result.returncode,"log":result.stdout[-2600:]}
+            except Exception as exc:
+              return {"returncode":-1,"log":str(exc)[:1200]}
+          def probe(f):
+            p=subprocess.run(["ffprobe","-v","error","-show_entries","format=duration,size:stream=codec_type,codec_name,width,height","-of","json",str(f)],capture_output=True,text=True,timeout=15)
+            if p.returncode: return None
+            try:
+              obj=json.loads(p.stdout)
+              if not any(s.get("codec_type")=="video" for s in obj.get("streams",[])):return None
+              if float(obj.get("format",{}).get("duration") or 0)<3:return None
+              return obj
+            except Exception:return None
+          report=[]
+          for slug,url,purpose in sources:
+            folder=root/slug
+            folder.mkdir(exist_ok=True)
+            tries=[]
+            cmds=[
+              ["yt-dlp","--no-playlist","--no-progress","--socket-timeout","15","--retries","1",
+               "--extractor-retries","1","--max-filesize","110M","--restrict-filenames",
+               "-o",str(folder/"yt-%(id)s.%(ext)s"),url],
+              ["gallery-dl","-d",str(folder/"gallery"),url],
+            ]
+            valid=[]
+            for cmd in cmds:
+              res=run(cmd,65)
+              tries.append({"tool":cmd[0],**res})
+              for f in folder.rglob("*"):
+                if f.is_file() and f.suffix.lower() in (".mp4",".webm",".mov",".mkv"):
+                  p=probe(f)
+                  if p and f not in [e["file"] for e in valid]:
+                    valid.append({"file":f,"probe":p})
+              if valid:break
+            files=[]
+            for v in valid[:3]:
+              f=v["file"]; p=v["probe"]
+              sec=float(p["format"]["duration"])
+              shot=folder/(f.stem+"-preview.jpg")
+              run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss",str(min(2,sec/3)),"-i",str(f),"-frames:v","1","-vf","scale=640:-2",str(shot)],25)
+              h=hashlib.sha256()
+              with f.open("rb") as inp:
+                for buf in iter(lambda:inp.read(1048576),b""):h.update(buf)
+              vs=next(s for s in p["streams"] if s["codec_type"]=="video")
+              files.append({"path":str(f),"seconds":round(sec,2),"width":vs.get("width"),"height":vs.get("height"),"bytes":f.stat().st_size,"sha256":h.hexdigest(),"preview":str(shot) if shot.exists() else None})
+            report.append({"source":slug,"url":url,"purpose":purpose,"status":"DOWNLOADED" if files else "BLOCKED","files":files,"tries":tries})
+            print(json.dumps({"source":slug,"status":report[-1]["status"],"files":files,"attempts":[{"tool":t["tool"],"code":t["returncode"],"message":t["log"][-360:]} for t in tries]},ensure_ascii=False),flush=True)
+          (root/"audit-report.json").write_text(json.dumps({"audited_at":datetime.now(timezone.utc).isoformat(),"sources":report},ensure_ascii=False,indent=2))
+          with open(root/"summary.md","w") as output:
+            output.write("# Crazy Taxi Instagram Extraction Audit\n\n")
+            output.write("No Instagram login or cookies used. Reuse only with appropriate rights/source credit.\n\n")
+            for item in report:
+              output.write(f'- {item["source"]}: {item["status"]} | {item["url"]}\n')
+          print("TOTAL_DOWNLOADED",sum(len(x["files"]) for x in report))
+          PY
+          python /tmp/crazy_taxi_instagram_extract.py
+
+      - name: Save audit and verified public source media
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crazy-taxi-instagram-source-extraction
+          path: instagram-media/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Print summary
+        if: always()
+        shell: bash
+        run: |
+          if test -f instagram-media/summary.md; then
+            cat instagram-media/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
