@@ -1,0 +1,27 @@
+name: Inspect Radar promotional Short framing - one-off
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/once-radar-invite-frame-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frame-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch current promo and inspect 00:12-00:22
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euxo pipefail
+          gh release download radar-channel-invite-oneoff-2026-10-09 -R Luizfcalori/radar-dos-games -p Radar_dos_Games_Convite_Exclusivo.mp4 -D .
+          for s in 12.5 15.5 18.5 21.5; do
+            ffmpeg -y -v error -ss "$s" -i Radar_dos_Games_Convite_Exclusivo.mp4 -frames:v 1 -vf scale=270:480 -q:v 13 "review-$s.jpg"
+            echo "FRAME_START:$s"
+            base64 -w0 "review-$s.jpg"
+            echo
+            echo "FRAME_END:$s"
+          done
