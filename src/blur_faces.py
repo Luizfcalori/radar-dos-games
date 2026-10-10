@@ -56,6 +56,9 @@ def boxes_for(frame, scale):
         if any(abs(cx-(xx+ww/2)) < max(bw,ww)*0.55 and abs(cy-(yy+hh/2)) < max(bh,hh)*0.55 for xx,yy,ww,hh in merged):
             continue
         merged.append(b)
+    # Presenter face is large in the centered portrait panel; ignore small game/NPC faces.
+    if w >= 1600:
+        merged=[b for b in merged if b[2] >= 120]
     return merged
 
 def blur_box(frame, box):
