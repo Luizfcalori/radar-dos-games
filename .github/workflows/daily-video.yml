@@ -19,6 +19,7 @@ on:
     paths:
       - ".github/workflows/daily-video.yml"
       - "src/auto_daily.py"
+      - "src/research.py"
       - "src/media.py"
       - "src/media_first.py"
       - "src/visual_inspector.py"
