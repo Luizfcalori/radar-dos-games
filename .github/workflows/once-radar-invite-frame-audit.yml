@@ -29,3 +29,12 @@ jobs:
             echo
             echo "FRAME_END:$s"
           done
+          for src in gta6-leak-2026-10-08-short-2.mp4 battlefield6-2026-10-07-short-1.mp4 fortnitemares-2026-jwXtn0b0rYA.mp4; do
+            gh release download tiktok-approved-assets -R Luizfcalori/radar-dos-games -p "$src" -D .
+            ffmpeg -y -v error -ss 3 -i "$src" -frames:v 1 -vf scale=270:480 -q:v 13 "source-$src.jpg"
+            echo "SOURCE_START:$src"
+            base64 -w0 "source-$src.jpg"
+            echo
+            echo "SOURCE_END:$src"
+          done
+
