@@ -169,8 +169,9 @@ jobs:
           python - <<'PY'
           import json
           q=json.load(open("/tmp/tiktok-remote.json",encoding="utf-8"))
-          items=[x for x in q.get("items",[]) if str(x.get("id","")).startswith("warhammer-survivors-2026-10-10-short-")]
-          assert len(items)==3, f"Expected 3 Warhammer Shorts, found {len(items)}"
-          assert all(x.get("status")=="approved" and x.get("media_url","").endswith(".mp4") and x.get("post_text") for x in items)
-          print("TIKTOK_HELPER_WARHAMMER_OK",len(items),"QUEUE_TOTAL",len(q["items"]))
+          items=[x for x in q.get("items",[]) if str(x.get("source_run_id",""))=="38085337562" and str(x.get("short_number","")) in {"1","2","3"}]
+          items_by_number={str(x.get("short_number")):x for x in items}
+          assert set(items_by_number)=={"1","2","3"}, f"Expected 3 Warhammer Shorts, found {[x.get('short_number') for x in items]}"
+          assert all(items_by_number[n].get("status")=="approved" and items_by_number[n].get("media_url","").endswith(".mp4") and items_by_number[n].get("post_text") for n in ("1","2","3"))
+          print("TIKTOK_HELPER_WARHAMMER_OK",len(items_by_number),"QUEUE_TOTAL",len(q["items"]))
           PY
