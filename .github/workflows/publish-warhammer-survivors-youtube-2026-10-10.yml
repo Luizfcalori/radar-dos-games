@@ -1,0 +1,146 @@
+name: YouTube - Publicar pacote aprovado Warhammer Survivors 2026-10-10
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-warhammer-survivors-youtube-2026-10-10.yml"
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Baixar pacote final aprovado
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-38085337562
+          path: .
+          repository: Luizfcalori/radar-dos-games
+          run-id: 38085337562
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Instalar dependências
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install -q -r requirements.txt
+
+      - name: Validar pacote e preparar agendamento de amanhã
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, time, timedelta, timezone
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          root=Path("output")
+          required=[
+            root/"master.mp4", root/"master-youtube.json", root/"thumbnail.jpg",
+            root/"shorts/short_1.mp4", root/"short-1-youtube.json",
+            root/"shorts/short_2.mp4", root/"short-2-youtube.json",
+            root/"shorts/short_3.mp4", root/"short-3-youtube.json",
+          ]
+          missing=[str(p) for p in required if not p.is_file() or p.stat().st_size < 1000]
+          if missing:
+            raise SystemExit("Pacote incompleto; upload bloqueado: "+", ".join(missing))
+          zone=ZoneInfo("America/Sao_Paulo")
+          target=datetime.now(zone).date()+timedelta(days=1)
+          entries=[
+            ("master-youtube.json",time(12,0),"output/thumbnail.jpg"),
+            ("short-1-youtube.json",time(13,0),None),
+            ("short-2-youtube.json",time(14,0),None),
+            ("short-3-youtube.json",time(15,0),None),
+          ]
+          summary=[]
+          for fn,slot,thumb in entries:
+            p=root/fn
+            meta=json.loads(p.read_text(encoding="utf-8"))
+            if not meta.get("title") or not meta.get("description"):
+              raise SystemExit(f"Metadados incompletos: {p}")
+            local=datetime.combine(target,slot,tzinfo=zone)
+            meta["privacy"]="private"
+            meta["publishAt"]=local.astimezone(timezone.utc).isoformat().replace("+00:00","Z")
+            if thumb:
+              meta["thumbnail"]=thumb
+              meta["use_existing_thumbnail"]=True
+            p.write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
+            summary.append({"file":fn,"title":meta["title"],"publishAt":meta["publishAt"]})
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Validar canal e bloquear duplicatas antes de qualquer upload
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python src/check_youtube.py
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          scopes=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube.readonly']
+          creds=Credentials(None,refresh_token=os.environ['YT_REFRESH_TOKEN'],
+            token_uri='https://oauth2.googleapis.com/token',
+            client_id=os.environ['YT_CLIENT_ID'],client_secret=os.environ['YT_CLIENT_SECRET'],scopes=scopes)
+          yt=build('youtube','v3',credentials=creds)
+          channels=yt.channels().list(part='id,snippet,contentDetails',mine=True).execute().get('items',[])
+          if len(channels)!=1 or channels[0]['id']!='UCSZJZE-E10SVdx42wrDeWhw' or channels[0]['snippet']['title'].strip().casefold()!='radar dos games':
+            raise SystemExit('Canal inesperado; upload bloqueado.')
+          playlist=channels[0]['contentDetails']['relatedPlaylists']['uploads']
+          existing=set(); token=None
+          for _ in range(6):
+            page=yt.playlistItems().list(part='snippet',playlistId=playlist,maxResults=50,pageToken=token).execute()
+            for item in page.get('items',[]):
+              title=item.get('snippet',{}).get('title','').strip().casefold()
+              if title: existing.add(title)
+            token=page.get('nextPageToken')
+            if not token: break
+          metas=['output/master-youtube.json','output/short-1-youtube.json','output/short-2-youtube.json','output/short-3-youtube.json']
+          titles=[json.loads(Path(p).read_text(encoding='utf-8'))['title'].strip() for p in metas]
+          duplicates=[t for t in titles if t.casefold() in existing]
+          if duplicates:
+            raise SystemExit('Upload bloqueado para evitar duplicatas por título: '+repr(duplicates))
+          print('Canal confirmado; nenhum dos 4 títulos já aparece no histórico recente. Seguro para iniciar.')
+          PY
+
+      - name: Enviar Master e 3 Shorts para o agendamento nativo do YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          set -e
+          python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+          python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+          python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+          python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Guardar comprovantes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: warhammer-survivors-youtube-results-${{ github.run_id }}
+          path: |
+            output/youtube-master-result.json
+            output/youtube-short-1-result.json
+            output/youtube-short-2-result.json
+            output/youtube-short-3-result.json
+            output/master-youtube.json
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+          if-no-files-found: warn
+          retention-days: 14
