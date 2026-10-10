@@ -728,6 +728,22 @@ def main():
                         p.media.append(("video", asset_url))
                         media_sources.setdefault(asset_url, game_page_url)
                     print(f"Deadlock official Steam direct streams discovered: {len(steam_assets)}", flush=True)
+                    # Fallback editorial específico de Deadlock: página recente de gameplay
+                    # do herói Solomon. A pauta continua bloqueada em Deadlock; não se troca
+                    # por outro jogo quando a loja oficial não oferece um stream direto.
+                    if not any(kind == "video" for kind, _ in p.media):
+                        gameplay_page_url = "https://thegamehaus.com/deadlock/deadlock-solomon-abilities-breakdown-first-look/2026/10/09/"
+                        try:
+                            gameplay_page = fetch_page(gameplay_page_url)
+                            for kind, asset_url in gameplay_page.media:
+                                p.media.append((kind, asset_url))
+                                media_sources.setdefault(asset_url, gameplay_page_url)
+                            print(
+                                "Deadlock Solomon gameplay-page fallback discovered:",
+                                len(gameplay_page.media), flush=True
+                            )
+                        except Exception as exc:
+                            print("Deadlock Solomon gameplay-page fallback failed:", str(exc)[:180], flush=True)
                 media = canonical_media(p.media)
                 if len(media) < 2:
                     errors.append({"title": c.get("title"), "error": f"somente {len(media)} mídias descobertas"})
