@@ -152,6 +152,29 @@ def fetch_page(url):
     r.raise_for_status()
     p = PageParser(url)
     p.feed(r.text)
+
+    # Muitos portais montam players dentro de JSON/script e não em tags iframe.
+    # O HTMLParser ignora esse conteúdo; extrair referências de vídeo do HTML bruto
+    # evita que uma página com gameplay real seja classificada como "só imagens".
+    raw = (r.text or "").replace("\\\\/", "/").replace("\\/", "/").replace("&amp;", "&")
+    embedded = []
+    video_patterns = (
+        r"https?://(?:www\\.)?youtube\\.com/(?:watch\\?[^\\s\"'<>]*?v=|embed/|shorts/)([A-Za-z0-9_-]{11})",
+        r"https?://(?:www\\.)?youtube-nocookie\\.com/embed/([A-Za-z0-9_-]{11})",
+        r"https?://youtu\\.be/([A-Za-z0-9_-]{11})",
+    )
+    for pattern in video_patterns:
+        for match in re.finditer(pattern, raw, re.I):
+            video_id = match.group(1)
+            embedded.append(("video", "https://www.youtube.com/watch?v=" + video_id))
+    for match in re.finditer(r"https?:[^\\s\"'<>\\\\]+?\\.(?:mp4|webm|mov)(?:\\?[^\\s\"'<>\\\\]*)?", raw, re.I):
+        media_url = match.group(0).rstrip("),;]")
+        embedded.append(("video", media_url))
+    known = {u for _, u in p.media}
+    for item in embedded:
+        if item[1] not in known:
+            p.media.append(item)
+            known.add(item[1])
     return p
 
 
