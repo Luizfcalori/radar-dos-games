@@ -1,11 +1,11 @@
 # RADAR PREMIUM CONVERSÃO — segundo padrão oficial (V1)
 
-**Status:** aprovado para a identidade de convites e vídeos institucionais do Radar dos Games em 09/10/2026, com CTA multiplataforma ajustado em 09/10/2026.
+**Status:** padrão oficial de todos os Shorts do Radar dos Games desde 10/10/2026, aprovado pelo usuário.
 
 ## Modelos do canal
 
-1. **RADAR_SHORTS_CLASSIC_V1**: padrão original e intocado, três Shorts derivados do Master, notícias, lançamentos, análises e conteúdo recorrente.
-2. **RADAR_PREMIUM_CONVERSAO_V1**: modelo secundário reservado a convites, apresentação do canal, divulgação, engajamento e campanhas institucionais.
+1. **RADAR_PREMIUM_CONVERSAO_V1**: padrão visual obrigatório para todos os Shorts — notícias, lançamentos, análises, conteúdo recorrente, convites e campanhas.
+2. **RADAR_SHORTS_CLASSIC_V1**: legado histórico; não usar em novas produções sem aprovação explícita do usuário.
 
 ## Composição aprovada
 
@@ -14,7 +14,7 @@
 - Gameplay centralizada dentro de moldura e destaque à identidade da marca; evitar recorte que deixa imagem acima/abaixo da moldura.
 - Fundo tech escurecido, bloco visual grande para inscrição, rodapé limpo e assinatura 'RADAR DOS GAMES'.
 - Trilha e tratamento cinematográfico equivalentes ao padrão Radar; narradora Thalita Multilingual PT-BR. Nomes e empréstimos ingleses com pronúncia adequada.
-- Não usar o layout Premium para substituir automaticamente os Shorts clássicos.
+- Aplicar o layout Premium automaticamente em toda nova produção de três Shorts, mantendo a mídia completa e sem recortes destrutivos.
 
 ## CTA aprovado para todas as redes
 
@@ -28,6 +28,6 @@
 ## Aplicação prática
 
 - O convite exclusivo atual é renderizado por `specials/once_radar_channel_invite_2026_10_09.py` e `.github/workflows/once-radar-channel-invite-2026-10-09.yml`.
-- A versão de revisão multiplataforma é exportada separadamente, sem alterar o vídeo já aprovado nem a pipeline comum.
+- O renderer comum `src/shorts_v4.py` aplica `RADAR_PREMIUM_CONVERSAO_V1` a cada beat e o gate `src/premium_v4_qa.py` bloqueia qualquer produção que use o layout legado.
 - QA exige formato vertical, duração válida, locução e presença do CTA aprovado sem sininho nem arroba.
 - Não ativar publicação automática de material institucional sem revisão explícita.
