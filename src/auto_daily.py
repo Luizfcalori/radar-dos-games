@@ -100,7 +100,7 @@ class PageParser(HTMLParser):
                             # not an iframe. Register the matching full video as well;
                             # media.py will download it through the existing fallback.
                             thumb = re.search(
-                                r"(?:i\\.|img\\.)?ytimg\\.com/vi/([A-Za-z0-9_-]{6,})/",
+                                r"(?:i\.|img\.)?ytimg\.com/vi/([A-Za-z0-9_-]{6,})/",
                                 resolved, re.I
                             )
                             if thumb:
