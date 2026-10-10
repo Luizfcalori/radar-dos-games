@@ -19,10 +19,21 @@ assert len(scenes)>=10
 def media_for_video(video_id):
     return [idx for idx,a in assets.items() if video_id in str(a.get("url") or "")]
 
-def update_scene(scene_idx,keep):
+def update_scene(scene_idx,keep,brazil_frame_windows=None):
     scene=scenes[scene_idx]
     windows=scene.get("visual_windows") or {}
-    remaining={str(i):v for key,v in windows.items() if (i:=int(key)) in keep and v}
+    remaining={}
+    for key,wins in windows.items():
+        i=int(key)
+        if i not in keep or not wins:
+            continue
+        if brazil_frame_windows is not None and i in brazil:
+            # No new or repeated footage: assign entire, visually inspected
+            # 7.2-second windows to exactly one Brazil-specific scene.
+            wins=[w for w in wins if any(abs(float(w["start"])-t)<0.18
+                        for t in brazil_frame_windows)]
+        if wins:
+            remaining[str(i)]=wins
     if not remaining:
         raise RuntimeError(f"QUALITY_BLOCK scene {scene_idx+1}: no remaining matching verified video window")
     vids=set(map(int,remaining))
@@ -47,14 +58,27 @@ for idx in (0,):
     update_scene(idx,eligible-brazil-multi)
 
 # Dedicated scenes 2, 3, 4 each show Brazil-specific official material.
-for idx in (1,2,3):
-    update_scene(idx,brazil)
+# Brazil promo was manually reviewed window by window. The final 52.7s
+# yellow "coming 2027" title card is excluded (not gameplay).
+# Scene 2: country announcement and urban panorama (0.2, 15.2).
+# Scene 3: storefront streets, food montage and taxi driving (7.7,37.7,45.2).
+# Scene 4: waterfront scenery and actual beach images (22.7,30.2).
+brazil_allocations={
+    1:[0.2,15.2],
+    2:[7.7,37.7,45.2],
+    3:[22.7,30.2],
+}
+for idx,starts in brazil_allocations.items():
+    update_scene(idx,brazil,brazil_frame_windows=starts)
     scenes[idx]["semantic_subject"]="Official Brazil map trailer | SEGA BGS 2026"
 
-# Between Brazilian announcement and multiplayer segment, keep multiplayer new.
-for idx in range(4,8):
+# Reserve Brazil only for the three map paragraphs, and reserve official
+# multiplayer video for its own narration. Extended official game demos
+# cover the general campaign and drive sections without replaying Brazil.
+for idx in list(range(4,8))+list(range(9,len(scenes))):
     eligible=set(int(x) for x in scenes[idx].get("visual_windows",{}))
-    update_scene(idx,eligible-multi)
+    keep=eligible-brazil-multi
+    update_scene(idx,keep)
 
 # Scene 9 focuses only on actual multiplayer footage.
 update_scene(8,multi)
