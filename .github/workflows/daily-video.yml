@@ -73,7 +73,7 @@ jobs:
       - run: python -m pytest -q tests
 
   produce:
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[produce-crazy-taxi]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -100,7 +100,7 @@ jobs:
 
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
-          RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
+          RADAR_TOPIC: ${{ contains(github.event.head_commit.message, '[produce-crazy-taxi]') && 'Crazy Taxi — novo mapa Brasil' || github.event.inputs.topic || 'AUTO' }}
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
