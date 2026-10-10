@@ -1,3 +1,4 @@
+# [run-production] TOPIC=Deadlock — validate embedded video extraction in the locked-topic pipeline.
 #!/usr/bin/env python3
 """Monta automaticamente a pauta diária do Radar dos Games a partir da pesquisa RSS.
 
