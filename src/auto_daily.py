@@ -82,7 +82,16 @@ class PageParser(HTMLParser):
             if key and val:
                 self.meta[key] = val
                 if key in ("og:image", "twitter:image"):
-                    self.media.append(("image", urljoin(self.base, val)))
+                    image_url = urljoin(self.base, val)
+                    self.media.append(("image", image_url))
+                    # Publisher metadata often points at the official trailer's
+                    # YouTube thumbnail even when no iframe is present in HTML.
+                    thumb = re.search(
+                        r"(?:i\.|img\.)?ytimg\.com/vi/([A-Za-z0-9_-]{6,})/",
+                        image_url, re.I
+                    )
+                    if thumb:
+                        self.media.append(("video", "https://www.youtube.com/watch?v=" + thumb.group(1)))
                 if key in ("og:video", "og:video:url", "twitter:player:stream"):
                     self.media.append(("video", urljoin(self.base, val)))
         elif tag in ("img", "source"):
