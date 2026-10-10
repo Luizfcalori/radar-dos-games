@@ -11,12 +11,16 @@ COVER=ROOT/"Radar_dos_Games_Convite_Capa.jpg"
 GREEN=(151,255,37); WHITE=(243,247,253)
 FONT="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONTREG="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-SCRIPT=("Curte videogame? Então cola no Radar dos Games! "
-"Aqui você acompanha lançamentos, notícias quentes, gameplays e análises, em vídeos completos e shorts rápidos. "
+SCRIPT=("Olá, pessoal! Vocês gostam de jogos? Então conheçam o Radar dos Games! "
+"Aqui você acompanha lançamentos, notícias quentes, vídeos de gameplay e análises, em vídeos completos e shorts rápidos. "
 "A nossa missão é transformar cada novidade em conteúdo que vale o seu tempo. "
 "E o nosso sonho é crescer junto com vocês e construir uma comunidade gamer de verdade! "
 "Se você curte esse universo, deixa o like, inscreva-se no canal e ativa o sininho. "
 "Vem fazer parte do Radar dos Games. O seu radar no mundo dos jogos!")
+# Speech-only pronunciation guidance: preserve exact original spelling in the script
+# and subtitles, but pronounce English "gameplay" with a hard G: /geɪmpleɪ/.
+SPEECH_SCRIPT = SCRIPT.replace("gameplay", "guêim plêi")
+
 SOURCES=[
  ("CYBERPUNK 2077", "cyberpunk-2026-10-09-short-1.mp4"),
  ("ARC RAIDERS", "arc-raiders-gratis-ate-12-de-outubro-shorts-37913899117-short-1.mp4"),
@@ -112,7 +116,7 @@ def make_voice():
  if not p.exists():
   import edge_tts
   async def go():
-   await edge_tts.Communicate(SCRIPT,voice="pt-BR-ThalitaMultilingualNeural",rate="+0%",pitch="+0Hz").save(str(p))
+   await edge_tts.Communicate(SPEECH_SCRIPT,voice="pt-BR-ThalitaMultilingualNeural",rate="+0%",pitch="+0Hz").save(str(p))
   asyncio.run(go())
  if duration(p)<12:raise RuntimeError("Narração com duração inválida")
  return p
@@ -147,7 +151,7 @@ def main():
  voice=make_voice();src=download_sources()
  total=duration(voice)+0.85
  background_image().save(ROOT/"background.png")
- labels=["LANÇAMENTOS E NOVIDADES","GAMEPLAYS QUE IMPRESSIONAM",
+ labels=["LANÇAMENTOS E NOVIDADES","GAMEPLAY QUE IMPRESSIONA",
          "NOTÍCIAS DO MUNDO GAMER","ANÁLISES E CONTEÚDO COMPLETO",
          "UMA COMUNIDADE DE GAMERS","NOSSO PRÓXIMO CAPÍTULO É COM VOCÊ"]
  n=min(len(src),6);parts=[]
@@ -176,7 +180,9 @@ def main():
    "video_sources":[x[0] for x in src[:n]],
    "music":"Five Armies - Kevin MacLeod (CC BY 4.0)",
    "upload_status":"NOT_UPLOADED_TO_YOUTUBE_OR_TIKTOK",
-   "pipeline_changes":"NONE"}
+   "pipeline_changes":"NONE",
+   "pronunciation":{"original_word":"gameplay","speech_only":"guêim plêi","english_phonemes":"/geɪmpleɪ/"},
+   "opening_language":"pt-BR"}
  (ROOT/"production-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf8")
  (ROOT/"narration.txt").write_text(SCRIPT,encoding="utf8")
  print("PRODUCTION_DONE",json.dumps(report,ensure_ascii=False),flush=True)
