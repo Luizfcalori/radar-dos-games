@@ -6,8 +6,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT=Path("promo-once"); ROOT.mkdir(exist_ok=True)
 W,H,FPS=1080,1920,30
-VIDEO=ROOT/"Radar_dos_Games_Convite_Exclusivo_Corrigido_V2.mp4"
-COVER=ROOT/"Radar_dos_Games_Convite_Capa_V2.jpg"
+VIDEO=ROOT/"Radar_dos_Games_Convite_Exclusivo_Multiplataforma_V3.mp4"
+COVER=ROOT/"Radar_dos_Games_Convite_Capa_Multiplataforma_V3.jpg"
 GREEN=(151,255,37); WHITE=(243,247,253)
 FONT="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONTREG="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
@@ -15,7 +15,7 @@ SCRIPT=("Olá, pessoal! Vocês gostam de jogos? Então conheçam o Radar dos Gam
 "Aqui você acompanha lançamentos, notícias quentes, vídeos de gameplay e análises, em vídeos completos e shorts rápidos. "
 "A nossa missão é transformar cada novidade em conteúdo que vale o seu tempo. "
 "E o nosso sonho é crescer junto com vocês e construir uma comunidade gamer de verdade! "
-"Se você curte esse universo, deixa o like, inscreva-se no canal e ativa o sininho. "
+"Se você curte esse universo, deixa o like e inscreva-se no canal. "
 "Vem fazer parte do Radar dos Games. O seu radar no mundo dos jogos!")
 # Speech-only pronunciation guidance: preserve exact original spelling in the script
 # and subtitles, but pronounce English "gameplay" with a hard G: /geɪmpleɪ/.
@@ -78,10 +78,10 @@ def frame_overlay(label,final=False):
  textcenter(d,1217,label,32,GREEN)
  roundrect(d,(79,1445,1001,1560),28,GREEN)
  textcenter(d,1469,"INSCREVA-SE AGORA",52,(7,19,25))
- textcenter(d,1600,"DEIXE O LIKE  •  ATIVE O SININHO",34,WHITE)
+ textcenter(d,1600,"DEIXE O LIKE",34,WHITE)
  d.rectangle((0,1743,W,1920),fill=(3,9,23,252))
- textcenter(d,1771,"@RADARDOSGAMESBR",44,GREEN)
- textcenter(d,1841,"YOUTUBE  •  RADAR DOS GAMES",25,(182,196,210),False)
+ textcenter(d,1771,"RADAR DOS GAMES",44,GREEN)
+ textcenter(d,1841,"GAMES  •  NOTÍCIAS  •  GAMEPLAY",25,(182,196,210),False)
  if final:
   d.rectangle((0,410,W,587),fill=(2,7,16,225))
   textcenter(d,469,"FAÇA PARTE DO NOSSO RADAR!",41,WHITE)
@@ -200,7 +200,10 @@ def main():
    "opening_language":"pt-BR",
    "reframe_profile":"RADAR_PROMO_V2_ACTUAL_GAMEPLAY_CENTERED",
    "corrected_sources":{k:list(v) for k,v in SAFE_REFRAME.items()},
-   "affected_seconds":[12,22]}
+   "affected_seconds":[12,22],
+   "promo_style":"RADAR_PREMIUM_CONVERSAO_V1",
+   "cta_text":["INSCREVA-SE AGORA","DEIXE O LIKE","RADAR DOS GAMES"],
+   "cross_platform_visual":True}
  (ROOT/"production-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf8")
  (ROOT/"narration.txt").write_text(SCRIPT,encoding="utf8")
  print("PRODUCTION_DONE",json.dumps(report,ensure_ascii=False),flush=True)

@@ -84,3 +84,13 @@ Masters e os três Shorts passam a usar `RADAR_CINEMATIC_V1` por padrão.
 - Os textos e o quadro não desaparecem no meio do Short; a troca entre imagens/gameplays altera apenas a mídia contextual, preservando o layout.
 - Cor cinematográfica e mixagem via `src/cinematic.py`, seleção semântica dos beats e voz Thalita continuam ativas. Não reintroduzir recortes destrutivos.
 - `src/premium_v4_qa.py` bloqueia renderizações sem o perfil visual **RADAR_SHORTS_CLASSIC_V1** nos três Shorts.
+
+
+## Modelo 2 — RADAR PREMIUM CONVERSÃO (aprovado em 09/10/2026)
+
+- Segundo modelo **oficial e independente**, reservado a convites, ações institucionais e campanhas de divulgação/engajamento; **não substitui** `RADAR_SHORTS_CLASSIC_V1` para os três Shorts informativos gerados diariamente.
+- Layout: cabeçalho RADAR DOS GAMES em azul-escuro, título branco + verde neon, gameplay enquadrada integralmente em moldura, bloco inferior destacado, trilha cinematográfica e locução Thalita PT-BR.
+- CTA do modelo aprovado: `INSCREVA-SE AGORA` e `DEIXE O LIKE`, com `RADAR DOS GAMES` como assinatura. O usuário retirou expressamente `ATIVE O SININHO` e `@radardosgamesbr` da peça.
+- **Multiplataforma:** não inserir `YouTube`, `TikTok`, `Instagram`, `Facebook`, `Kwai` ou endereço/arroba exclusivo de uma rede no visual padrão exportável. O objetivo é usar o mesmo vídeo em todas as redes. Caso futuramente se deseje linguagem `SIGA O RADAR DOS GAMES` no lugar de `INSCREVA-SE AGORA`, isso depende de nova aprovação explícita.
+- Render isolado: `specials/once_radar_channel_invite_2026_10_09.py` com seu próprio workflow; não alterar a geração padrão de Masters, Shorts, thumbnails, publicação e agenda.
+- Referência completa: [RADAR PREMIUM CONVERSÃO](RADAR_PREMIUM_CONVERSAO.md).
