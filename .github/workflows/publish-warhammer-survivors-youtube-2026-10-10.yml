@@ -45,6 +45,27 @@ jobs:
           from zoneinfo import ZoneInfo
 
           root=Path("output")
+          # O artefato de produção pode armazenar os JSONs dos Shorts em
+          # subpastas diferentes; normaliza os nomes esperados sem alterar vídeos.
+          aliases = {
+            "short-1-youtube.json": ["short-1-youtube.json", "short_1-youtube.json", "short-1.json", "short_1.json"],
+            "short-2-youtube.json": ["short-2-youtube.json", "short_2-youtube.json", "short-2.json", "short_2.json"],
+            "short-3-youtube.json": ["short-3-youtube.json", "short_3-youtube.json", "short-3.json", "short_3.json"],
+          }
+          for target, names in aliases.items():
+            dest=root/target
+            if dest.is_file() and dest.stat().st_size >= 20:
+              continue
+            candidates=[p for p in root.rglob("*.json") if p.name in names and p.is_file() and p.stat().st_size >= 20]
+            if len(candidates)==1:
+              dest.write_bytes(candidates[0].read_bytes())
+            elif len(candidates)>1:
+              # Prefer an exact canonical filename, otherwise fail closed.
+              exact=[p for p in candidates if p.name==target]
+              if len(exact)==1:
+                dest.write_bytes(exact[0].read_bytes())
+              else:
+                raise SystemExit(f"Metadados ambíguos para {target}: "+", ".join(str(p) for p in candidates))
           required=[
             root/"master.mp4", root/"master-youtube.json", root/"thumbnail.jpg",
             root/"shorts/short_1.mp4", root/"short-1-youtube.json",
@@ -53,7 +74,9 @@ jobs:
           ]
           missing=[str(p) for p in required if not p.is_file() or p.stat().st_size < 1000]
           if missing:
-            raise SystemExit("Pacote incompleto; upload bloqueado: "+", ".join(missing))
+            # Print the artifact layout to make the next recovery deterministic.
+            files=[str(p) for p in root.rglob("*") if p.is_file()]
+            raise SystemExit("Pacote incompleto; upload bloqueado: "+", ".join(missing)+"; arquivos encontrados: "+", ".join(files))
           zone=ZoneInfo("America/Sao_Paulo")
           target=datetime.now(zone).date()+timedelta(days=1)
           entries=[
