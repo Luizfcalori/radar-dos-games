@@ -36,16 +36,17 @@ def main(path):
         m=re.search(pat,low,re.I|re.S)
         if m:
             hits.append({"pattern":pat,"match":text[m.start():m.end()]})
-    # Evita locução que pareça recado individual. Não bloqueia toda ocorrência de
-    # "você", mas sinaliza excesso como linguagem inadequada para o canal.
+    # "Você" é tratamento normal de audiência em português brasileiro e não
+    # caracteriza, por si só, conversa privada/meta. Só padrões explícitos acima
+    # devem bloquear; registrar a contagem para diagnóstico sem reprovar o roteiro.
     voce=len(re.findall(r"\bvoc[eê]\b",low))
-    if voce>=2:
-        hits.append({"pattern":"second_person_singular_excess","match":f"{voce} ocorrências de 'você'"})
     report={
         "status":"BLOCKED" if hits else "APPROVED",
         "policy":"audience_first_no_meta_narration",
         "file":str(p),
         "violations":hits,
+        "audience_address_count":voce,
+        "audience_address_policy":"informational_only; natural Brazilian Portuguese audience address is allowed",
     }
     out=p.parent/"narration-qa.json"
     out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
