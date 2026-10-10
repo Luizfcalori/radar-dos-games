@@ -249,6 +249,7 @@ def main():
             "beats":len(beats),"accent":accents[0] if accents else "0xFFFFFF",
             "music_bed":music_policy,
             "layout_profile":SHORTS_LAYOUT_ID,
+            "cta":["INSCREVA-SE AGORA","DEIXE O LIKE","RADAR DOS GAMES"],
             "title_layout":title_layout(hook),
             "media_beats":[{"media_index":int(b["media_index"]),
                             "duration":float(b["duration"]),
