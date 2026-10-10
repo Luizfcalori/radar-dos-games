@@ -72,7 +72,15 @@ jobs:
             root/"shorts/short_2.mp4", root/"short-2-youtube.json",
             root/"shorts/short_3.mp4", root/"short-3-youtube.json",
           ]
-          missing=[str(p) for p in required if not p.is_file() or p.stat().st_size < 1000]
+          # Vídeos e imagem precisam ter tamanho substancial; JSONs de metadados
+          # são pequenos por natureza e só precisam existir com conteúdo válido.
+          min_sizes={
+            "master.mp4": 1000, "thumbnail.jpg": 1000,
+            "short_1.mp4": 1000, "short_2.mp4": 1000, "short_3.mp4": 1000,
+            "master-youtube.json": 20,
+            "short-1-youtube.json": 20, "short-2-youtube.json": 20, "short-3-youtube.json": 20,
+          }
+          missing=[str(p) for p in required if not p.is_file() or p.stat().st_size < min_sizes.get(p.name,1000)]
           if missing:
             # Print the artifact layout to make the next recovery deterministic.
             files=[str(p) for p in root.rglob("*") if p.is_file()]
