@@ -330,10 +330,10 @@ def steam_candidates(app_id,wanted):
                 continue
             candidates=[]
             patterns=[
-                r"https?://video\\.[^\\"'<> ]*steamstatic\\.com/store_trailers/[^\\"'<> ]+",
-                r"https?://[^\\"'<> ]*steamstatic\\.com/store_trailers/[^\\"'<> ]+",
-                r"https?://(?:www\\.)?youtube\\.com/(?:watch\\?v=[A-Za-z0-9_-]{6,}|embed/[A-Za-z0-9_-]{6,})[^\\"'<> ]*",
-                r"https?://youtu\\.be/[A-Za-z0-9_-]{6,}[^\\"'<> ]*",
+                r"""https?://video\.[^"'<> ]*steamstatic\.com/store_trailers/[^"'<> ]+""",
+                r"""https?://[^"'<> ]*steamstatic\.com/store_trailers/[^"'<> ]+""",
+                r"""https?://(?:www\.)?youtube\.com/(?:watch\?v=[A-Za-z0-9_-]{6,}|embed/[A-Za-z0-9_-]{6,})[^"'<> ]*""",
+                r"""https?://youtu\.be/[A-Za-z0-9_-]{6,}[^"'<> ]*""",
                 r"""(?:src|href|data-video|data-url)=["']([^"']+)["']"""
             ]
             for pattern in patterns:
