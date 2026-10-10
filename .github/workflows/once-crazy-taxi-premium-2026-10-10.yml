@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/once-crazy-taxi-premium-2026-10-10.yml"
       - "src/shorts_v4.py"
+      - "src/visual_frame_qa.py"
   workflow_dispatch:
 
 permissions:
