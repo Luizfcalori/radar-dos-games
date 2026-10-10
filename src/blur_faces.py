@@ -64,7 +64,7 @@ def boxes_for(frame, scale):
 def blur_box(frame, box):
     h,w=frame.shape[:2]; x,y,bw,bh=box
     # Expand beyond facial features to cover the whole face/head outline.
-    px=int(bw*0.20); top=int(bh*0.45); bottom=int(bh*0.08)
+    px=int(bw*0.20); top=int(bh*0.45); bottom=int(bh*0.30)
     x1=max(0,x-px); x2=min(w,x+bw+px)
     y1=max(0,y-top); y2=min(h,y+bh+bottom)
     roi=frame[y1:y2,x1:x2]
