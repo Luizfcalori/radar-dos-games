@@ -45,7 +45,7 @@ def fit_lines(d,title,y,maxwidth=944,maxlines=3):
         f=font(size);lines=[];current=""
         for word in words:
             nxt=(current+" "+word).strip()
-            if d.textbbox((0,0,nxt),font=f)[2] <= maxwidth:
+            if d.textbbox((0,0),nxt,font=f)[2] <= maxwidth:
                 current=nxt
             else:
                 if current:lines.append(current)
