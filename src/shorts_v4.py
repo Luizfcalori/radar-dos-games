@@ -29,7 +29,10 @@ def load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 def esc(text):
-    return str(text).replace("\\","\\\\").replace(":","\\:").replace("'","’").replace("%","\\%").replace("\n","\\n")
+    # FFmpeg drawtext parses filter expressions before text expansion: normalize
+    # ASCII apostrophes to a typographic apostrophe before escaping filter syntax.
+    value = str(text).replace("'", "’")
+    return value.replace("\\","\\\\").replace(":","\\:").replace("%","\\%").replace("\n","\\n")
 
 def wrapped(text,width=24,max_lines=2):
     clean=" ".join(str(text or "").upper().split())
