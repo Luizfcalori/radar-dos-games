@@ -18,7 +18,9 @@
     "https://store.steampowered.com/app/2924540/Crazy_Taxi_World_Tour/?l=brazilian",
     "https://sega.prezly.com/segars-crazy-taxi-is-back-and-going-global",
     "https://www.gematsu.com/2026/10/crazy-taxi-world-tour-welcome-to-brazil-trailer-screenshots",
-    "https://crazytaxi-asia.sega.com/worldtour/en/cnt/"
+    "https://crazytaxi-asia.sega.com/worldtour/en/cnt/",
+    "https://www.instagram.com/reel/DeSGmNWBX4t/",
+    "https://arkade.com.br/bgs-2026-crazy-taxi-world-tour-aproveita-o-evento-para-anunciar-o-mapa-do-brasil-o-quarto-dos-cinco-da-campanha/"
   ],
   "short_hooks": [
     "CRAZY TAXI TERÁ MAPA BRASILEIRO!",
@@ -48,7 +50,8 @@
     "O classificador deve usar prompts de corrida; não associar tacitamente 'neve', 'furtividade' ou 'cyberware' ao jogo de táxi.",
     "Não mascarar insuficiência de cenas com duplicação ou loops. Preservar anti-repetição e barra de QA.",
     "Evitar usar tanto o trailer em inglês quanto o trailer em português da mesma sequência visual brasileira; selecionar uma só versão e não repetir o vídeo com legendas diferentes.",
-    "Resumo editorial dos blocos Brasil otimizado para a metragem inédita disponível sem loops."
+    "Resumo editorial dos blocos Brasil otimizado para a metragem inédita disponível sem loops.",
+    "Referência editorial adicional: Reel de @revistaarkade (09/10/2026) confirma quarto de cinco mapas, apresentação de Kenji Kanno na BGS e Habib's, Fogo de Chão e Fast Shop. Legenda acessível; vídeo do Instagram não verificado visualmente. Priorizar trailer oficial SEGA no render."
   ],
   "script_blocks": [
     "Crazy Taxi voltou aos holofotes, e o Brasil está no mapa da nova aventura da SEGA. Durante a BGS 2026, foi revelado um cenário brasileiro para Crazy Taxi: World Tour. O jogo combina corridas arcade, uma campanha internacional e multiplayer. Neste especial do Radar dos Games, vamos apresentar o anúncio, as referências brasileiras, os modos confirmados e o que esperar do lançamento previsto para 2027.",
