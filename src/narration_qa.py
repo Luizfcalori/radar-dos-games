@@ -23,6 +23,8 @@ FORBIDDEN = [
     r"\baqui a gente separa\b",
     r"\bessa [ée] a pauta que entrou no topo do radar\b",
     r"\bsem depender s[oó] de cards ou textos na tela\b",
+    r"\b(?:we['’]re|today, we|eagle-eyed fans)\b",
+    r"\bentre os principais destaques est[aã]o\s+[^.]{0,140},\s*[^.]{0,100}\.",
 ]
 
 def main(path):
