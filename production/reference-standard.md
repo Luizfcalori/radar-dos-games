@@ -33,6 +33,7 @@ Referência visual aprovada em 06/10/2026: família de capas enviada pelo usuár
 - `src/thumbnail.py` e `src/short_cover.py` existem somente como fallback técnico automático quando o gerador premium não consegue concluir após as tentativas previstas.
 - O gerador premium deve priorizar mídia oficial/aprovada do assunto, montar composição cinematográfica de alto impacto e manter a identidade Radar; não é permitido escolher screenshot cru como padrão principal.
 - `src/cover_qa.py` é gate bloqueante das quatro capas e deve validar resolução, integridade visual, política aplicada e registrar se houve fallback.
+- Cada capa vertical `short_N_cover.jpg` também é inserida nos primeiros 1,4 segundos do respectivo MP4, mantendo áudio e duração; o QA compara o primeiro frame renderizado com a capa para bloquear divergências.
 - As quatro capas devem ser geradas automaticamente no mesmo fluxo da produção e incluídas nos artifacts e metadados do YouTube.
 - O `final-qa.json` deve registrar `premium_cover_generation`, `premium_cover_qa`, `cover_fallback_used` e `cover_template_version`.
 
