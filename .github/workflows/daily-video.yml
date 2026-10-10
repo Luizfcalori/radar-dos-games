@@ -101,6 +101,16 @@ jobs:
       - name: Pesquisar pautas atuais nas fontes oficiais
         run: python src/research.py
 
+      - name: Bloquear execução de produção sem tema explícito
+        if: ${{ github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production]') }}
+        run: |
+          if ! grep -q 'TOPIC=' <<< "${GITHUB_SHA}"; then
+            if [[ "${{ github.event.head_commit.message }}" != *"TOPIC="* ]]; then
+              echo "ERRO: execução [run-production] sem TOPIC explícito; bloqueando AUTO para impedir troca de jogo."
+              exit 1
+            fi
+          fi
+
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
           RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || 'AUTO' }}
