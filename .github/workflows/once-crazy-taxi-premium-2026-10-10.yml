@@ -1,0 +1,409 @@
+name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/once-crazy-taxi-premium-2026-10-10.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -eo pipefail {0}
+
+concurrency:
+  group: radar-crazy-taxi-bgs-2026-10-10-review
+  cancel-in-progress: true
+
+jobs:
+  validate-code:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - run: pip install -r requirements.txt pytest
+      - run: python -m pytest -q tests
+
+  produce:
+    if: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ferramentas gratuitas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -U yt-dlp
+          # Open-source zero-shot visual recognition, CPU only; no paid API.
+          python -m pip install --quiet torch==2.5.1+cpu torchvision==0.20.1+cpu --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install --quiet transformers==4.46.3
+
+      - name: Validar intro oficial permanente
+        run: |
+          test -s radar-dos-games-intro-oficial.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 radar-dos-games-intro-oficial.mp4
+
+      - name: Pesquisar pautas atuais nas fontes oficiais
+        run: python src/research.py
+
+      - name: Aplicar brief editorial Crazy Taxi apenas neste checkout
+        run: |
+          cp production/once-crazy-taxi-bgs-2026-10-10.json production/manual-brief.json
+          python -m json.tool production/manual-brief.json >/dev/null
+
+      - name: Escolher pauta e montar roteiro/plano automaticamente
+        env:
+          RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
+          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'private' || 'unlisted' }}
+        run: python src/auto_daily.py
+
+      - name: Aplicar agenda nativa do YouTube
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, time, timedelta, timezone
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          zone = ZoneInfo('America/Sao_Paulo')
+          now = datetime.now(zone)
+          slots = {
+              'master-youtube.json': time(10, 0),
+              'short-1-youtube.json': time(11, 0),
+              'short-2-youtube.json': time(13, 0),
+              'short-3-youtube.json': time(15, 0),
+          }
+          target_date = now.date()
+          first = datetime.combine(target_date, slots['master-youtube.json'], tzinfo=zone)
+          if first <= now + timedelta(minutes=30):
+              target_date += timedelta(days=1)
+
+          schedule = {}
+          for filename, local_time in slots.items():
+              local_dt = datetime.combine(target_date, local_time, tzinfo=zone)
+              publish_at = local_dt.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z')
+              path = Path('output') / filename
+              meta = json.loads(path.read_text(encoding='utf-8'))
+              meta['privacy'] = 'private'
+              meta['publishAt'] = publish_at
+              path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding='utf-8')
+              schedule[filename] = {
+                  'local': local_dt.isoformat(),
+                  'publishAt': publish_at,
+              }
+
+          selected_path = Path('output/selected.json')
+          selected = json.loads(selected_path.read_text(encoding='utf-8'))
+          selected['youtube_schedule'] = schedule
+          selected_path.write_text(json.dumps(selected, ensure_ascii=False, indent=2), encoding='utf-8')
+          print(json.dumps(schedule, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Baixar e validar mídia antes da narração
+        run: python src/media.py output/auto-media-plan.json
+
+      - name: Inspecionar todos os frames e localizar cortes aproveitáveis
+        run: python src/visual_inspector.py
+
+      - name: Identificar categorias visuais dos quadros-chave com IA gratuita
+        env:
+          HF_HUB_DISABLE_TELEMETRY: "1"
+        run: python src/vision_semantics.py
+
+      - name: Decupar material baixado e finalizar roteiro
+        run: python src/media_first.py
+
+      - name: QA editorial do roteiro definitivo
+        run: python src/narration_qa.py output/auto-script.txt
+
+      - name: Narrar após decupagem com a voz Thalita PT-BR
+        run: |
+          python src/voice.py output/auto-script.txt output/voice.mp3 \
+            --voice pt-BR-ThalitaMultilingualNeural \
+            --prepared \
+            --segments-json output/voice-timings.json
+
+      - name: Diretor por frase Premium V4 Director Cut
+        run: python src/director_v4.py output/auto-media-plan.json output/clips.json
+
+      - name: Gate semântico fala -> imagem
+        run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
+
+      - name: Gate anti-repetição antes do render do Master
+        run: python src/repetition_policy.py output/auto-media-plan.json output/clips.json
+
+      - name: Renderizar Master Premium V4
+        run: python src/render_v4.py output/render.json
+
+      - name: QA visual por frames do Master
+        run: python src/visual_frame_qa.py
+
+      - name: Reconstruir 3 Shorts Premium V4
+        run: python src/shorts_v4.py
+
+      - name: QA bloqueante Premium V4
+        run: python src/premium_v4_qa.py
+
+      - name: Gerar automaticamente 4 capas premium no padrão Radar
+        run: python src/premium_covers.py
+
+      - name: QA bloqueante das capas premium
+        run: python src/cover_qa.py
+
+      - name: PRO SCORE profissional bloqueante
+        run: python src/pro_score.py
+
+      - name: Quality gate Master + Shorts
+        run: |
+          python - <<'PY'
+          import glob
+          import json
+          import subprocess
+          from pathlib import Path
+          def probe(path):
+              return json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(path)], text=True))
+          master = Path("output/master.mp4")
+          assert master.exists() and master.stat().st_size > 3_000_000, master
+          m = probe(master)
+          md = float(m["format"]["duration"])
+          mv = next(x for x in m["streams"] if x["codec_type"] == "video")
+          assert 60 <= md <= 600, md
+          assert (int(mv["width"]), int(mv["height"])) == (1920, 1080)
+          assert any(x["codec_type"] == "audio" for x in m["streams"])
+          qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
+          assert qa.get("standard") == "radar-dos-games-premium-v4-director-cut", qa.get("standard")
+          assert qa.get("motion_policy") == "subtle_non_destructive; phrase_level"
+          semantic = json.loads(Path("output/semantic-visual-qa.json").read_text(encoding="utf-8"))
+          assert semantic.get("status") == "APPROVED", semantic
+          premium = json.loads(Path("output/premium-v4-qa.json").read_text(encoding="utf-8"))
+          assert premium.get("status") == "APPROVED", premium
+          assert premium.get("version") == "PREMIUM_V4_DIRECTOR_CUT", premium
+          assert premium.get("short_hooks_exact") == "APPROVED", premium
+          assert premium.get("short_semantic_selection") == "APPROVED", premium
+          assert len(premium.get("approved_short_hooks") or []) == 3, premium
+          assert premium.get("real_headlines") == "APPROVED", premium
+          assert premium.get("gameplay_moving_footage") == "APPROVED", premium
+          assert int(premium.get("video_assets") or 0) >= 1, premium
+          assert float(premium.get("unique_video_seconds") or 0) >= 15, premium
+          assert float(premium.get("moving_footage_ratio") or 0) >= 0.35, premium
+          pro = json.loads(Path("output/pro-score.json").read_text(encoding="utf-8"))
+          assert pro.get("status") == "APPROVED", pro
+          assert int(pro.get("pro_score") or 0) >= 85, pro
+          assert qa["card_style"]["shadow_attached_to_text"] is True
+          assert qa["framing_policy"] == "full_source_visible; blurred_background_fill; no_destructive_crop"
+          assert qa["voice"] == "pt-BR-ThalitaMultilingualNeural"
+          assert qa["semantic_timing_source"] == "paragraph_boundaries+tts_word_boundaries"
+          assert len(qa["scenes"]) >= 1
+          from PIL import Image
+          thumb = Path("output/thumbnail.jpg")
+          assert thumb.exists() and thumb.stat().st_size > 30000, thumb
+          with Image.open(thumb) as im:
+              assert im.size == (1280,720), im.size
+          shorts = sorted(glob.glob("output/shorts/short_*.mp4"))
+          assert len(shorts) == 3, shorts
+          for i in range(1,4):
+              cover = Path(f"output/shorts/short_{i}_cover.jpg")
+              assert cover.exists() and cover.stat().st_size > 30000, cover
+              with Image.open(cover) as im:
+                  assert im.size == (1080,1920), (cover, im.size)
+          report = []
+          for path in shorts:
+              p = probe(path)
+              d = float(p["format"]["duration"])
+              v = next(x for x in p["streams"] if x["codec_type"] == "video")
+              assert (int(v["width"]), int(v["height"])) == (1080, 1920), path
+              assert 8 <= d <= 65, (path, d)
+              assert any(x["codec_type"] == "audio" for x in p["streams"]), path
+              report.append({"file": path, "seconds": round(d, 2)})
+          cover_qa = json.loads(Path("output/cover-qa.json").read_text(encoding="utf-8"))
+          assert cover_qa.get("premium_cover_qa") == "APPROVED", cover_qa
+          final = {
+              "master_seconds": round(md, 2),
+              "master": "1920x1080@30",
+              "shorts": report,
+              "voice": "pt-BR-ThalitaMultilingualNeural",
+              "premium_cover_generation": cover_qa.get("premium_cover_generation"),
+              "premium_cover_qa": cover_qa.get("premium_cover_qa"),
+              "cover_fallback_used": bool(cover_qa.get("fallback_used")),
+              "cover_template_version": cover_qa.get("template_version"),
+              "premium_version": "PREMIUM_V4_DIRECTOR_CUT",
+              "semantic_visual_sync": premium.get("semantic_visual_sync"),
+              "phrase_level_direction": premium.get("phrase_level_direction"),
+              "variable_pacing": premium.get("variable_pacing"),
+              "sound_design": premium.get("sound_design"),
+              "independent_shorts": premium.get("independent_shorts"),
+              "short_hooks_exact": premium.get("short_hooks_exact"),
+              "short_semantic_selection": premium.get("short_semantic_selection"),
+              "approved_short_hooks": premium.get("approved_short_hooks"),
+              "real_headlines": premium.get("real_headlines"),
+              "gameplay_moving_footage": premium.get("gameplay_moving_footage"),
+              "video_assets": premium.get("video_assets"),
+              "unique_video_seconds": premium.get("unique_video_seconds"),
+              "moving_footage_seconds": premium.get("moving_footage_seconds"),
+              "moving_footage_ratio": premium.get("moving_footage_ratio"),
+              "video_scene_count": premium.get("video_scene_count"),
+              "pro_score": pro.get("pro_score"),
+              "status": "APPROVED",
+          }
+          Path("output/final-qa.json").write_text(json.dumps(final, indent=2), encoding="utf-8")
+          print(Path("output/final-qa.json").read_text())
+          PY
+
+      - name: Respeitar aprovação manual de pautas especiais
+        id: release
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          selected=json.loads(Path("output/selected.json").read_text(encoding="utf-8"))
+          manual=selected.get("manual_brief",False)
+          brief=json.loads(Path("production/manual-brief.json").read_text(encoding="utf-8")) if manual else {}
+          allowed=(not manual) or bool(brief.get("approved_for_publish",False))
+          with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as fp:
+              fp.write("publish_allowed="+str(allowed).lower()+"\n")
+          print("Manual brief:",manual,"Publishing permitted:",allowed)
+          PY
+
+      - name: Verificar OAuth/canal do YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/check_youtube.py
+
+      - name: Enviar Master para o agendamento nativo do YouTube
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+
+      - name: Enviar Short 1 para o agendamento nativo do YouTube
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+
+      - name: Enviar Short 2 para o agendamento nativo do YouTube
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+
+      - name: Enviar Short 3 para o agendamento nativo do YouTube
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Registrar pauta agendada para não repetir
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          selected = json.loads(Path("output/selected.json").read_text(encoding="utf-8"))
+          master_meta = json.loads(Path("output/master-youtube.json").read_text(encoding="utf-8"))
+          p = Path("data/published.json")
+          history = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"videos": []}
+          history.setdefault("videos", []).append({
+              "content_id": selected["content_id"],
+              "title": selected["title"],
+              "url": selected["url"],
+              "published_at": master_meta.get("publishAt") or datetime.now(timezone.utc).isoformat(),
+              "scheduled": bool(master_meta.get("publishAt")),
+          })
+          history["videos"] = history["videos"][-200:]
+          p.write_text(json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published.json
+          git diff --cached --quiet || git commit -m "bot: registrar pauta agendada"
+          git push
+
+      - name: Adaptar os 3 Shorts ao layout Premium Conversao aprovado
+        run: python specials/once_crazy_taxi_premium_2026_10_10.py
+
+      - name: Publicar somente arquivos de revisao no GitHub Releases
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="crazy-taxi-bgs-2026-10-10-premium-review"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --target "$GITHUB_SHA" --title "Radar dos Games | Crazy Taxi BGS 2026 | Somente revisao" --prerelease --notes "1 Master, 3 Shorts no layout Premium Conversao V1 e capas. Nao publicado em redes. Fonte da noticia: SEGA, Steam, BGS 2026. Video de terceiros usado apenas como referencia jornalistica e com edicao original."
+          gh release upload "$TAG" output/master.mp4 output/thumbnail.jpg output/shorts/short_1_cover.jpg output/shorts/short_2_cover.jpg output/shorts/short_3_cover.jpg crazy-taxi-premium-review/crazy-taxi-short-1-premium.mp4 crazy-taxi-premium-review/crazy-taxi-short-2-premium.mp4 crazy-taxi-premium-review/crazy-taxi-short-3-premium.mp4 crazy-taxi-premium-review/production-report.json --clobber
+
+      - name: Guardar pacote final e diagnósticos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CRAZY-TAXI-BGS-2026-PREMIUM-REVIEW-${{ github.run_id }}
+          path: |
+            output/research.json
+            output/selected.json
+            output/auto-script.txt
+            output/auto-script-outline.txt
+            output/media-first-storyboard.json
+            output/visual-inventory.json
+            output/vision-semantic-report.json
+            output/vision-frames/*.jpg
+            output/media-first-frames/*.jpg
+            output/auto-media-plan.json
+            output/clips.json
+            output/voice.mp3
+            output/voice-timings.json
+            output/narration-qa.json
+            output/director-v4.json
+            output/render.json
+            output/semantic-visual-qa.json
+            output/anti-repetition-director.json
+            output/anti-repetition-qa.json
+            output/visual-frame-qa.json
+            output/frame-qa/*.jpg
+            output/premium-v4-qa.json
+            output/pro-score.json
+            output/short-picks.json
+            output/*.music.json
+            output/shorts/*.music.json
+            output/master.mp4
+            output/thumbnail.jpg
+            output/thumbnail-policy.json
+            output/cover-suite-policy.json
+            output/cover-qa.json
+            output/qa.json
+            output/final-qa.json
+            output/shorts/manifest.json
+            output/shorts/*.mp4
+            output/shorts/*_cover.jpg
+            output/shorts/*_cover-policy.json
+            output/*youtube*.json
+            crazy-taxi-premium-review/*.mp4
+            crazy-taxi-premium-review/*.jpg
+            crazy-taxi-premium-review/production-report.json
+          retention-days: 14
