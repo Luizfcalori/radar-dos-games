@@ -711,6 +711,7 @@ def main():
                 # posts without embedded video. Supplement only this explicit topic
                 # with the game's official Steam store media, preserving provenance.
                 if forced.casefold() == "deadlock":
+                    # Preserve the selected news item while sourcing motion from the official game page.
                     game_page_url = "https://store.steampowered.com/app/1422450/Deadlock/"
                     game_page = fetch_page(game_page_url)
                     p.media.extend(game_page.media)
