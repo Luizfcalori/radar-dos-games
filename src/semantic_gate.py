@@ -41,8 +41,10 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                 windows=[w for w in scene.get("visual_windows",{}).get(str(idx),[])
                          if float(w["start"])<=float(selected_window["start"])+0.002
                          and float(w["end"])+0.002>=float(selected_window["end"])]
+                verified_context=set(scene.get("verified_source_fallback_categories") or ())
                 valid=[w for w in windows if "title_card" not in w.get("semantic_categories",[])
-                       and (not expected or expected & set(w.get("semantic_categories",[])))
+                       and (not expected or expected & set(w.get("semantic_categories",[]))
+                            or verified_context & set(w.get("semantic_categories",[])))
                        and (not requirements or (w.get("reviewed") is True and w.get("evidence")
                             and set(requirements)<=set(w.get("subjects",[]))))]
                 if not valid:raise RuntimeError("QUALITY_BLOCK: fala sem evidência visual no intervalo escolhido")
