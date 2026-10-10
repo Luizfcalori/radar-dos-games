@@ -49,6 +49,10 @@ def main():
             f = feedparser.parse(url)
             for e in f.entries[:30]:
                 title = clean(e.get("title", ""))
+                # Steam's game-specific feed omits the game name from update titles.
+                # Add a grounded prefix from the feed's AppID so explicit topic locks work.
+                if "feeds/news/app/1422450" in url and title and "deadlock" not in title.lower():
+                    title = "Deadlock — " + title
                 summary = clean(e.get("summary", "") or e.get("description", ""))
                 link = e.get("link", "")
                 if not title or not link:
