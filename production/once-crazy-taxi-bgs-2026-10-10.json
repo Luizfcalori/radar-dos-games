@@ -8,13 +8,17 @@
     "https://store.steampowered.com/app/2924540/Crazy_Taxi_World_Tour/?l=brazilian",
     "https://crazytaxi-asia.sega.com/worldtour/en/",
     "https://www.gematsu.com/2026/10/crazy-taxi-world-tour-welcome-to-brazil-trailer-screenshots",
-    "https://www.sega.co.jp/en/release/260608_1.html"
+    "https://www.sega.co.jp/en/release/260608_1.html",
+    "https://www.gematsu.com/2026/09/crazy-taxi-world-tour-japan-map-trailer-screenshots",
+    "https://www.gematsu.com/2026/08/crazy-taxi-world-tour-multiplayer-first-look-trailer-screenshots"
   ],
   "source_urls": [
     "https://www.gamersegames.com.br/2026/10/09/crazy-taxi-world-tour-acelera-no-brasil-com-a-revelacao-de-novo-mapa/",
     "https://www.sega.co.jp/en/release/260608_1.html",
     "https://store.steampowered.com/app/2924540/Crazy_Taxi_World_Tour/?l=brazilian",
-    "https://sega.prezly.com/segars-crazy-taxi-is-back-and-going-global"
+    "https://sega.prezly.com/segars-crazy-taxi-is-back-and-going-global",
+    "https://www.gematsu.com/2026/10/crazy-taxi-world-tour-welcome-to-brazil-trailer-screenshots",
+    "https://crazytaxi-asia.sega.com/worldtour/en/cnt/"
   ],
   "short_hooks": [
     "CRAZY TAXI TERÁ MAPA BRASILEIRO!",
@@ -24,6 +28,10 @@
   "video_urls": [
     "https://www.youtube.com/watch?v=qdStLWu0RAs",
     "https://www.youtube.com/watch?v=ci_eiuGio0M",
+    "https://www.youtube.com/watch?v=XHiL_NP6fDg",
+    "https://www.youtube.com/watch?v=FnTw6ZXd-Wk",
+    "https://www.youtube.com/watch?v=a3mF9zwozJk",
+    "https://www.youtube.com/watch?v=XordDIexPAQ",
     "https://www.youtube.com/watch?v=ePi8tDdKuWw"
   ],
   "steam_app_id": 2924540,
@@ -36,7 +44,10 @@
     "Intro oficial completa, Thalita Multilingual PT-BR, Master + 3 Shorts, capas, QA.",
     "Shorts devem ser adaptados para o segundo padrão RADAR_PREMIUM_CONVERSAO_V1 com CTA sem sininho e sem arroba.",
     "Confirmação de 2027 sem data específica; detalhes de multiplayer do teste podem mudar.",
-    "Para revisão apenas, não publicar automaticamente."
+    "Para revisão apenas, não publicar automaticamente.",
+    "Usar vídeos extras oficiais de Japão, Alemanha e West Coast exclusivamente quando roteiro descrever viagem internacional, cinco cidades, gameplay geral ou multiplayer; não rotular essas tomadas como Brasil.",
+    "O classificador deve usar prompts de corrida; não associar tacitamente 'neve', 'furtividade' ou 'cyberware' ao jogo de táxi.",
+    "Não mascarar insuficiência de cenas com duplicação ou loops. Preservar anti-repetição e barra de QA."
   ],
   "script_blocks": [
     "Crazy Taxi vai colocar o Brasil no volante de uma das franquias de corrida mais lembradas da SEGA. Durante a Brasil Game Show de 2026, a empresa revelou um cenário brasileiro para Crazy Taxi: World Tour. E não é só um aceno aos fãs: o novo mapa faz parte da campanha principal. Neste especial do Radar dos Games, vamos conferir o que foi anunciado, como a série está evoluindo, quais modos já foram descritos e o que ainda precisa ser mostrado até o lançamento previsto para 2027.",
