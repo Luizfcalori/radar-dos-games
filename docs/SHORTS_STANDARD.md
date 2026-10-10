@@ -18,6 +18,8 @@
 - Fundo tech escurecido com tratamento cinematográfico.
 - CTA visível: **INSCREVA-SE AGORA** e **DEIXE O LIKE**; assinatura **RADAR DOS GAMES**.
 - Capa vertical independente para cada Short, coerente com a identidade premium e a arte aprovada do jogo.
+- **A capa de cada Short também deve ocupar os primeiros 1,4 segundos do MP4**, com a mesma headline do Short; manter o arquivo `short_N_cover.jpg` para seleção de capa nas plataformas que permitem essa escolha.
+- A montagem da abertura deve preservar a narração, a trilha, o áudio original e a duração total; `src/cover_qa.py` valida que o primeiro frame do MP4 corresponde à capa exportada.
 
 ## Regras editoriais e de áudio
 
