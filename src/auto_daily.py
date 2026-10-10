@@ -624,6 +624,16 @@ def main():
     errors = []
 
     if manual:
+        if forced.upper() != "AUTO":
+            requested = ascii_slug(forced)
+            manual_identity = ascii_slug(" ".join([str(manual.get("title", "")), str(manual.get("headline", ""))]))
+            if requested not in manual_identity:
+                brief_title = manual.get("title") or "sem título"
+                raise RuntimeError(
+                    f"TOPIC_LOCK_BLOCK: pauta manual incompatível com o tema solicitado; "
+                    f"solicitado={forced!r}, brief={brief_title!r}. "
+                    "A produção foi interrompida para impedir a troca de jogo."
+                )
         parser, selected_media, manual_errors = fetch_manual_media(manual)
         errors.extend(manual_errors)
         selected = {
