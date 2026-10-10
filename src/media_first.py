@@ -68,6 +68,18 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
     images=[a for a in assets if a["type"]=="image"]
     usage=Counter()
     topic=plan.get("topic") or selected.get("title") or ""
+    # Official stills from the exact article remain available as contextual
+    # material even when CDN filenames are hashes. No unrelated source is admitted.
+    def source_key(value):
+        parsed=urlparse(str(value or ""))
+        return (parsed.netloc.lower(), parsed.path.rstrip("/"))
+    primary_source=source_key(selected.get("url"))
+    contextual_images=[]
+    for asset in images:
+        if source_key(asset.get("source"))==primary_source and primary_source[0]:
+            if not asset.get("source_label"):
+                asset["source_label"]=str(selected.get("title") or topic)
+            contextual_images.append(asset)
     report=[]
     for i,(scene,text) in enumerate(zip(scenes,paragraphs),1):
         def rank(a):
@@ -96,6 +108,9 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             picks.extend(sorted(matched_videos,key=rank))
         if matched_stills:
             picks.extend(matched_stills)
+        elif contextual_images:
+            # StaticTracker still enforces topic match, cooldown and use limits.
+            picks.extend(sorted(contextual_images,key=rank)[:2])
         elif images and visual_inventory is None:
             picks.append(matches[0])
         if not picks:
@@ -184,6 +199,8 @@ def main():
     if visual_inventory.get("status")!="ANALYZED":
         raise RuntimeError("QUALITY_BLOCK: inspeção visual incompleta")
     plan,script,storyboard=compile_storyboard(plan,clips,selected,prepared,visual_inventory)
+    # Persist contextual source labels for downstream anti-repetition QA.
+    (OUT/"clips.json").write_text(json.dumps(clips,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     storyboard["preview_frames"]=previews(storyboard["assets"])
     (OUT/"auto-media-plan.json").write_text(json.dumps(plan,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     (OUT/"auto-script.txt").write_text(script,encoding="utf-8")
