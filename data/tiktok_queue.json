@@ -1,21 +1,20 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-10T01:06:36+00:00",
+  "updated_at": "2026-10-10T02:47:17.200480+00:00",
   "items": [
     {
-      "id": "radar-dos-games-convite-premium-conversao-multiplataforma-v3",
-      "title": "CONHEÇA O RADAR DOS GAMES! 🎮🔥",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/radar-channel-invite-oneoff-2026-10-09/Radar_dos_Games_Convite_Exclusivo_Multiplataforma_V3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/radar-channel-invite-oneoff-2026-10-09/Radar_dos_Games_Convite_Capa_Multiplataforma_V3.jpg",
-      "post_text": "🎮 Conheça o Radar dos Games! Notícias, lançamentos, gameplays e análises para quem vive o mundo gamer. 🚀 Nossa missão é construir uma comunidade apaixonada por jogos. 💚\n\n❤️ Curtiu? Deixe o like e siga o Radar dos Games para acompanhar nossas novidades!\n\n#RadarDosGames #Games #Gaming #Gameplay #NovidadesGamer #TikTokGames",
-      "status": "approved",
-      "source": "radar_premium_conversao_oneoff_multiplataforma",
-      "source_run_id": 38011568918,
-      "approved_at": "2026-10-10T01:06:36+00:00",
-      "short_number": 1,
-      "style": "RADAR_PREMIUM_CONVERSAO_V1",
-      "platform": "tiktok_helper_manual_posting"
+      "id": "yt-BQ30QQNY9kw",
+      "title": "Radar dos Games: notícias, lançamentos e gameplays! 💚 Curta e siga! #Games #Gameplay #NovidadesGamer",
+      "media_url": "",
+      "thumbnail_url": "https://i.ytimg.com/vi/BQ30QQNY9kw/hqdefault.jpg",
+      "post_text": "Radar dos Games: notícias, lançamentos e gameplays! 💚 Curta e siga! #Games #Gameplay #NovidadesGamer\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#notícias #lançamentos #gameplays #Curta #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "waiting_media",
+      "youtube_id": "BQ30QQNY9kw",
+      "youtube_url": "https://www.youtube.com/shorts/BQ30QQNY9kw",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-10-10T02:47:17.200480+00:00"
     },
     {
       "id": "cyberpunk-2026-10-09-short-2",
@@ -955,6 +954,20 @@
       "source": "youtube_channel",
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
+    },
+    {
+      "id": "radar-dos-games-convite-premium-conversao-multiplataforma-v3",
+      "title": "CONHEÇA O RADAR DOS GAMES! 🎮🔥",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/radar-channel-invite-oneoff-2026-10-09/Radar_dos_Games_Convite_Exclusivo_Multiplataforma_V3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/radar-channel-invite-oneoff-2026-10-09/Radar_dos_Games_Convite_Capa_Multiplataforma_V3.jpg",
+      "post_text": "🎮 Conheça o Radar dos Games! Notícias, lançamentos, gameplays e análises para quem vive o mundo gamer. 🚀 Nossa missão é construir uma comunidade apaixonada por jogos. 💚\n\n❤️ Curtiu? Deixe o like e siga o Radar dos Games para acompanhar nossas novidades!\n\n#RadarDosGames #Games #Gaming #Gameplay #NovidadesGamer #TikTokGames",
+      "status": "approved",
+      "source": "radar_premium_conversao_oneoff_multiplataforma",
+      "source_run_id": 38011568918,
+      "approved_at": "2026-10-10T01:06:36+00:00",
+      "short_number": 1,
+      "style": "RADAR_PREMIUM_CONVERSAO_V1",
+      "platform": "tiktok_helper_manual_posting"
     },
     {
       "id": "warhammer-survivors-detalhes-lancamento-ganha-shorts-approved-37913473373-short-1",

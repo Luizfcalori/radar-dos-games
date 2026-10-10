@@ -1,10 +1,15 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-09T19:45:17.083109+00:00",
-  "total_discovered": 62,
+  "updated_at": "2026-10-10T02:47:17.200480+00:00",
+  "total_discovered": 63,
   "ready_for_tiktok": 61,
   "waiting_media": [
+    {
+      "youtube_id": "BQ30QQNY9kw",
+      "title": "Radar dos Games: notícias, lançamentos e gameplays! 💚 Curta e siga! #Games #Gameplay #NovidadesGamer",
+      "reason": "original_media_not_recovered_yet"
+    },
     {
       "youtube_id": "XA-YklCtg1k",
       "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
@@ -12,6 +17,12 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "BQ30QQNY9kw",
+      "youtube_url": "https://www.youtube.com/shorts/BQ30QQNY9kw",
+      "title": "Radar dos Games: notícias, lançamentos e gameplays! 💚 Curta e siga! #Games #Gameplay #NovidadesGamer",
+      "status": "waiting_media"
+    },
     {
       "youtube_id": "CqyVOF9LTuw",
       "youtube_url": "https://www.youtube.com/shorts/CqyVOF9LTuw",
