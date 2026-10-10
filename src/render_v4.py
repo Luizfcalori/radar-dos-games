@@ -29,6 +29,13 @@ def sh(cmd):
 def esc(text):
     return str(text).replace("\\","\\\\").replace(":","\\:").replace("'","\\'").replace("%","\\%")
 
+def write_overlay_text(dest, slot, value):
+    """Use drawtext textfile to avoid parser collisions with apostrophes/colons."""
+    path=Path(dest).with_suffix(f".{slot}.txt")
+    path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_text(str(value),encoding="utf-8")
+    return str(path)
+
 def probe_duration(path):
     try:
         return float(subprocess.check_output([
@@ -108,26 +115,27 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
         f"fontsize={WATERMARK_SIZE}:fontcolor=white@0.70:borderw=1:bordercolor=black@0.55:expansion=none"
     ]
     if scene_first and card:
-        title=esc(card.get("title","")); subtitle=esc(card.get("subtitle",""))
+        title=write_overlay_text(dest,"title",card.get("title",""))
+        subtitle=write_overlay_text(dest,"subtitle",card.get("subtitle","")) if card.get("subtitle") else ""
         end=max(1.0,min(duration-.12,4.8))
         en=f"between(t,0.28,{end:.3f})"
         filters += [
             f"drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_W}:h={CARD_H}:color={CARD_BG}:t=fill:enable='{en}'",
             f"drawbox=x={CARD_X}:y={CARD_Y}:w=10:h={CARD_H}:color={CARD_ACCENT}:t=fill:enable='{en}'",
-            f"drawtext=fontfile='{FONT}':text='{title}':x={TITLE_X}:y={TITLE_Y}:fontsize=40:fontcolor=white:"
+            f"drawtext=fontfile='{FONT}':textfile='{title}':x={TITLE_X}:y={TITLE_Y}:fontsize=40:fontcolor=white:"
             f"borderw=2:bordercolor=black@0.65:expansion=none:enable='{en}'",
         ]
         if subtitle:
             filters.append(
-                f"drawtext=fontfile='{FONT}':text='{subtitle}':x={SUBTITLE_X}:y={SUBTITLE_Y}:fontsize=25:"
+                f"drawtext=fontfile='{FONT}':textfile='{subtitle}':x={SUBTITLE_X}:y={SUBTITLE_Y}:fontsize=25:"
                 f"fontcolor=0x7FE8FF:borderw=1:bordercolor=black@0.7:expansion=none:enable='{en}'"
             )
 
     if keyword:
-        k=esc(keyword[:24])
+        k=write_overlay_text(dest,"keyword",keyword[:24])
         filters += [
             "drawbox=x=72:y=112:w=520:h=70:color=black@0.72:t=fill:enable='between(t,0.18,1.75)'",
-            f"drawtext=fontfile='{FONT}':text='{k}':x=96:y=127:fontsize=34:fontcolor=0xF4FF00:"
+            f"drawtext=fontfile='{FONT}':textfile='{k}':x=96:y=127:fontsize=34:fontcolor=0xF4FF00:"
             "borderw=2:bordercolor=black@0.75:expansion=none:enable='between(t,0.18,1.75)'",
         ]
 
