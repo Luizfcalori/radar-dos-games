@@ -90,8 +90,6 @@ def main():
         cadence.append({"scene":row.get("scene"),"beats":row.get("beats"),"avg_beat":avg})
 
     if shorts.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
-        raise RuntimeError("QUALITY_BLOCK: layout clássico aprovado dos Shorts ausente")
-    if shorts.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
         raise RuntimeError("QUALITY_BLOCK: padrão visual Premium Conversão não aplicado")
     if shorts.get("hook_policy") != "exact_approved_hook_persistent_all_beats; semantic_scene_match; phrase_level_visuals; premium_conversion_fixed_layout":
         raise RuntimeError("QUALITY_BLOCK: política de layout Premium ausente")
