@@ -102,7 +102,7 @@ jobs:
 
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
-          RADAR_TOPIC: ${{ github.event.inputs.topic || 'AUTO' }}
+          RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || 'AUTO' }}
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
