@@ -117,6 +117,9 @@ jobs:
       - name: Inspecionar todos os frames e localizar cortes aproveitáveis
         run: python src/visual_inspector.py
 
+      - name: Aplicar classificador visual de corridas somente neste teste
+        run: python specials/crazy_taxi_trial_prepare.py
+
       - name: Identificar categorias visuais dos quadros-chave com IA gratuita
         env:
           HF_HUB_DISABLE_TELEMETRY: "1"
@@ -124,6 +127,9 @@ jobs:
 
       - name: Decupar material baixado e finalizar roteiro
         run: python src/media_first.py
+
+      - name: Vincular cenas Brasil e multiplayer às mídias reais exatas
+        run: python specials/crazy_taxi_trial_align.py
 
       - name: QA editorial do roteiro definitivo
         run: python src/narration_qa.py output/auto-script.txt
