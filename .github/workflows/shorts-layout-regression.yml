@@ -1,4 +1,4 @@
-name: Radar Shorts — Classic Layout Regression
+name: Radar Shorts — Premium Conversion Regression
 
 on:
   push:
@@ -32,5 +32,5 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y ffmpeg fonts-dejavu-core
-      - name: Regression test classic GTA6 Shorts layout and real FFmpeg render
+      - name: Regression test Premium Conversion Shorts layout and real FFmpeg render
         run: python -m unittest discover -s tests -p 'test_shorts_v4_layout.py' -v
