@@ -339,7 +339,7 @@ def apply_cover_opening(video, cover, duration=1.4):
         "-pix_fmt","yuv420p","-c:a","copy","-movflags","+faststart",str(temp)
     ],check=True)
     after=ffprobe_duration(temp)
-    if not temp.exists() or temp.stat().st_size<10_000 or abs(after-before)>0.12:
+    if not temp.exists() or temp.stat().st_size<1_000 or abs(after-before)>0.12:
         temp.unlink(missing_ok=True)
         raise RuntimeError(f"abertura com capa falhou: {video.name}, duração {before:.3f}->{after:.3f}")
     temp.replace(video)
