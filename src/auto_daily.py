@@ -93,7 +93,18 @@ class PageParser(HTMLParser):
                         u = part.strip().split(" ")[0]
                         if u:
                             typ = "video" if re.search(r"\.(mp4|webm|mov)(\?|$)", u, re.I) else "image"
-                            self.media.append((typ, urljoin(self.base, u)))
+                            resolved = urljoin(self.base, u)
+                            self.media.append((typ, resolved))
+                            # Some official publisher articles expose the trailer only
+                            # through its YouTube thumbnail (i.ytimg.com/vi/<id>/...),
+                            # not an iframe. Register the matching full video as well;
+                            # media.py will download it through the existing fallback.
+                            thumb = re.search(
+                                r"(?:i\\.|img\\.)?ytimg\\.com/vi/([A-Za-z0-9_-]{6,})/",
+                                resolved, re.I
+                            )
+                            if thumb:
+                                self.media.append(("video", "https://www.youtube.com/watch?v=" + thumb.group(1)))
         elif tag in ("iframe", "embed", "video"):
             for key in ("src", "data-src"):
                 val = d.get(key)
