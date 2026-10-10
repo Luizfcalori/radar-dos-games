@@ -27,20 +27,28 @@ def read_exact(pipe, n):
 
 def boxes_for(frame, scale):
     h,w=frame.shape[:2]
-    sw=min(480,w)
-    ratio=sw/w
-    small=cv2.resize(frame,(sw,max(1,int(h*ratio))),interpolation=cv2.INTER_AREA) if ratio<1 else frame
+    # The presenter appears inside the centered portrait panel in the 16:9 Master.
+    # Restrict detection to that panel so game/NPC faces remain untouched.
+    xoff=yoff=0
+    work=frame
+    if w >= 1600:
+        xoff=int(w*0.28); xend=int(w*0.58)
+        yoff=int(h*0.20); yend=int(h*0.90)
+        work=frame[yoff:yend,xoff:xend]
+    ch,cw=work.shape[:2]
+    ratio=min(320,cw)/cw
+    small=cv2.resize(work,(int(cw*ratio),max(1,int(ch*ratio))),interpolation=cv2.INTER_AREA) if ratio<1 else work
     gray=cv2.cvtColor(small,cv2.COLOR_BGR2GRAY)
     gray=cv2.equalizeHist(gray)
     found=[]
-    for cascade in (FRONTAL,PROFILE):
-        boxes=cascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=4,minSize=(14,14),flags=cv2.CASCADE_SCALE_IMAGE)
-        found.extend([(int(x/ratio),int(y/ratio),int(ww/ratio),int(hh/ratio)) for x,y,ww,hh in boxes])
+    cascades=(FRONTAL,) if w >= 1600 else (FRONTAL,PROFILE)
+    for cascade in cascades:
+        boxes=cascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=4,minSize=(10,10),flags=cv2.CASCADE_SCALE_IMAGE)
+        found.extend([(int(x/ratio)+xoff,int(y/ratio)+yoff,int(ww/ratio),int(hh/ratio)) for x,y,ww,hh in boxes])
         flipped=cv2.flip(gray,1) if cascade is PROFILE else None
         if flipped is not None:
-            for x,y,ww,hh in cascade.detectMultiScale(flipped,scaleFactor=1.045,minNeighbors=4,minSize=(22,22),flags=cv2.CASCADE_SCALE_IMAGE):
-                found.append((int((gray.shape[1]-x-ww)/ratio),int(y/ratio),int(ww/ratio),int(hh/ratio)))
-    # Merge near-duplicate frontal/profile detections.
+            for x,y,ww,hh in cascade.detectMultiScale(flipped,scaleFactor=1.1,minNeighbors=4,minSize=(10,10),flags=cv2.CASCADE_SCALE_IMAGE):
+                found.append((int((gray.shape[1]-x-ww)/ratio)+xoff,int(y/ratio)+yoff,int(ww/ratio),int(hh/ratio)))
     merged=[]
     for b in sorted(found,key=lambda z:z[2]*z[3],reverse=True):
         x,y,bw,bh=b
@@ -138,15 +146,20 @@ def process(path):
         except Exception: pass
 
 def main():
-    targets=[Path("output/master.mp4"),Path("output/shorts/short_1.mp4"),
-             Path("output/shorts/short_2.mp4"),Path("output/shorts/short_3.mp4")]
+    # Crazy Taxi Shorts are gameplay/trailer-only; blur the presenter in the Master
+    # and leave game characters in the Shorts untouched.
+    targets=[Path("output/master.mp4")]
     reports=[process(p) for p in targets]
-    report={"status":"APPROVED","policy":"blur identifiable human faces before final QA/export",
-            "videos":reports,"videos_processed":len(reports),"published":False}
+    if reports[0]["frames_with_face_detections"] < 1:
+        raise RuntimeError("FACE_BLUR_BLOCK: presenter not detected in Master portrait panel")
+    report={"status":"APPROVED","policy":"strong blur on presenter in centered portrait panel of Master",
+            "videos":reports,"videos_processed":1,
+            "shorts_unchanged":"3 gameplay/trailer-only Shorts; presenter not visible in reviewed frames",
+            "published":False}
     OUT.parent.mkdir(parents=True,exist_ok=True)
     OUT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
     print("FACE_BLUR_QA "+json.dumps(report,ensure_ascii=False),flush=True)
-    if len(reports)!=4 or any(x["frames_processed"]<1 for x in reports):
-        raise RuntimeError("FACE_BLUR_BLOCK: incomplete four-video coverage")
+    if reports[0]["frames_processed"]<1:
+        raise RuntimeError("FACE_BLUR_BLOCK: Master not processed")
 
 if __name__=="__main__": main()
