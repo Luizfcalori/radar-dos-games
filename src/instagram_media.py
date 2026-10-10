@@ -10,11 +10,14 @@ import subprocess
 def is_instagram_video_url(url):
     try:
         parsed=urlparse(str(url))
+        segments=parsed.path.strip("/").split("/")
+        public_short=(len(segments)>=2 and segments[0] in ("reel","reels","p","tv"))
+        account_short=(len(segments)>=3 and segments[1] in ("reel","reels","p","tv")
+                       and bool(segments[0]) and not segments[0].startswith("."))
         return (parsed.scheme=="https"
                 and (parsed.hostname or "").lower() in
                     ("instagram.com","www.instagram.com","m.instagram.com")
-                and len(parsed.path.strip("/").split("/"))>=2
-                and parsed.path.strip("/").split("/")[0] in ("reel","reels","p","tv"))
+                and (public_short or account_short))
     except (TypeError,ValueError):
         return False
 
