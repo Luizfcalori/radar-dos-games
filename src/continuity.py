@@ -64,7 +64,13 @@ class VideoTimeline:
                 reviewed=w.get('reviewed') is True and bool(w.get('evidence'))
                 if required_subjects and (not reviewed or not set(required_subjects)<=set(w.get('subjects',[]))):
                     continue
-                if expected and not (expected & cats): continue
+                # One-off editorial source context can explicitly allow a
+                # visible fallback category for footage limited to verified
+                # topic-specific sources (e.g. driving in a multiplayer trailer).
+                # Normal productions are unchanged when this field is absent.
+                source_context=set(scene.get('verified_source_fallback_categories') or ())
+                if expected and not (expected & cats) and not (source_context & cats):
+                    continue
                 # Technical inspection bins can end at ceil(duration), a fraction
                 # beyond the actual last decodable frame. Never reserve beyond
                 # the probed media duration; keep the strict QA guard enabled.
