@@ -334,9 +334,21 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                 if stills and consumed==0 and remaining<=3.5:
                     picked=stills[0];d=remaining;window=None;evidence="official_image_subject_label"
                 else:
-                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
-                    window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
-                    evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
+                    try:
+                        picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
+                        window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
+                        evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
+                    except RuntimeError as exc:
+                        # Once all unique moving footage is consumed, use a
+                        # source-matched official still for a short portion of
+                        # the same phrase. This preserves narration coverage
+                        # without looping footage or bypassing semantic QA.
+                        if "faltam cenas inéditas correspondentes à fala" not in str(exc) or not stills:
+                            raise
+                        picked=stills[0]
+                        d=min(remaining,3.5)
+                        window=None
+                        evidence="official_image_subject_label"
                 idx=int(picked["index"])
                 beat={"phrase":int(phrase.get("sentence") or 1),"text":phrase_text,
                       "start":round(float(phrase["start"])+consumed,6),
