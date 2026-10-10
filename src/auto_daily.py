@@ -688,6 +688,7 @@ def main():
                 "reasons": [],
                 "topic_key": topic_key(selected["title"]),
             },
+            "media_sources": {url: selected["url"] for _, url in selected_media},
         }
         script = "\n\n".join(manual["script_blocks"])
     else:
@@ -705,6 +706,16 @@ def main():
 
             try:
                 p = fetch_page(c["url"])
+                media_sources = {asset_url: c["url"] for _, asset_url in p.media}
+                # The official Deadlock news feed contains patch notes and character
+                # posts without embedded video. Supplement only this explicit topic
+                # with the game's official Steam store media, preserving provenance.
+                if forced.casefold() == "deadlock":
+                    game_page_url = "https://store.steampowered.com/app/1422450/Deadlock/"
+                    game_page = fetch_page(game_page_url)
+                    p.media.extend(game_page.media)
+                    for _, asset_url in game_page.media:
+                        media_sources.setdefault(asset_url, game_page_url)
                 media = canonical_media(p.media)
                 if len(media) < 2:
                     errors.append({"title": c.get("title"), "error": f"somente {len(media)} mídias descobertas"})
@@ -720,6 +731,7 @@ def main():
                     "selection_score": round(score, 2),
                     "mix": mix,
                     "repeat": repeat,
+                    "media_sources": media_sources,
                 })
             except Exception as exc:
                 errors.append({"title": c.get("title"), "error": str(exc)[:200]})
@@ -740,6 +752,7 @@ def main():
         parser = winner["parser"]
         selected_media = winner["media"]
         script = make_script(selected, parser)
+    media_sources = winner.get("media_sources") or {asset_url: selected["url"] for _, asset_url in selected_media}
     # Apenas o esboço; a narração final só existe após a decupagem da mídia.
     (OUT / "auto-script-outline.txt").write_text(script + "\n", encoding="utf-8")
 
@@ -778,7 +791,7 @@ def main():
             "url": url,
             "role": role,
             "max_assets": 1,
-            "source_proof": selected["url"],
+            "source_proof": media_sources.get(url, selected["url"]),
             "relevance_evidence": "official_source_page_discovered_asset",
         }
         if typ == "video":
