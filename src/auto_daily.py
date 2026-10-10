@@ -20,6 +20,11 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 
+try:
+    from media import steam_candidates
+except ImportError:
+    from src.media import steam_candidates
+
 OUT = Path("output")
 DATA = Path("data")
 OUT.mkdir(exist_ok=True)
@@ -711,12 +716,18 @@ def main():
                 # posts without embedded video. Supplement only this explicit topic
                 # with the game's official Steam store media, preserving provenance.
                 if forced.casefold() == "deadlock":
-                    # Preserve the selected news item while sourcing motion from the official game page.
+                    # Preserve the selected news item; discover direct trailer streams
+                    # from Steam's app API/CDN instead of relying on HTML embeds.
                     game_page_url = "https://store.steampowered.com/app/1422450/Deadlock/"
                     game_page = fetch_page(game_page_url)
                     p.media.extend(game_page.media)
                     for _, asset_url in game_page.media:
                         media_sources.setdefault(asset_url, game_page_url)
+                    steam_assets = steam_candidates(1422450, "video")
+                    for asset_url, asset_source, asset_label in steam_assets:
+                        p.media.append(("video", asset_url))
+                        media_sources.setdefault(asset_url, game_page_url)
+                    print(f"Deadlock official Steam direct streams discovered: {len(steam_assets)}", flush=True)
                 media = canonical_media(p.media)
                 if len(media) < 2:
                     errors.append({"title": c.get("title"), "error": f"somente {len(media)} mídias descobertas"})
