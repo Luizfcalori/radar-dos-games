@@ -25,7 +25,7 @@ class MediaFirstTests(unittest.TestCase):
         self.clips={"assets":self.assets,"publishable_media":True}
     def tearDown(self):self.tmp.cleanup()
     def test_inventory_before_voice_and_three_scene_binding(self):
-        plan,script,report=compile_storyboard(self.plan,self.clips,{},self.outline)
+        plan,script,report=compile_storyboard(self.plan,self.clips,{"url":"https://news.example/test","title":"Battlefield 6"},self.outline)
         self.assertEqual(report["policy"],"MEDIA_FIRST_V1")
         self.assertEqual(len(report["scenes"]),3)
         self.assertEqual(plan["media_first_policy"],"MEDIA_FIRST_V1")
@@ -37,7 +37,7 @@ class MediaFirstTests(unittest.TestCase):
         # is served from the exact official article URL.
         self.assertEqual(self.assets[1]["source_label"],"Battlefield 6")
     def test_final_script_digest_is_byte_stable(self):
-        plan,script,report=compile_storyboard(self.plan,self.clips,{},self.outline)
+        plan,script,report=compile_storyboard(self.plan,self.clips,{"url":"https://news.example/test","title":"Battlefield 6"},self.outline)
         data=script.encode("utf-8")
         self.assertEqual(report["script_sha256"],hashlib.sha256(data).hexdigest())
         self.assertTrue(script.endswith("\n"))
@@ -48,7 +48,7 @@ class MediaFirstTests(unittest.TestCase):
     def test_missing_media_blocks(self):
         self.assets[0]["path"]="/nonexistent/radar-test-asset.mp4"
         with self.assertRaises(RuntimeError):
-            compile_storyboard(self.plan,self.clips,{},self.outline)
+            compile_storyboard(self.plan,self.clips,{"url":"https://news.example/test","title":"Battlefield 6"},self.outline)
     def test_different_role_cannot_be_silently_substituted(self):
         with self.assertRaises(RuntimeError):
             eligible({"title":"Cena","allowed_roles":["not_in_downloads"],"media_first_assets":[7]},{7:self.assets[0]})
