@@ -29,5 +29,5 @@ SCENE_WORDS = {
 }
 '''
 MODULE.write_text(src[:i]+replace+src[j:],encoding="utf-8")
-assert "crazy" in MODULE.read_text(encoding="utf-8").lower()
+assert "arcade car racing" in MODULE.read_text(encoding="utf-8")
 print("CRAZY_TAXI_LOCAL_VISUAL_PROMPTS_READY — repository production module unchanged")
