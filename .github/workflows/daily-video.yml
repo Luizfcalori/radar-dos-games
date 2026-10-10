@@ -47,6 +47,7 @@ on:
       - "src/pro_score.py"
       - "production/reference-standard.md"
       - "docs/VIDEO_STANDARD_RADAR_DOS_GAMES.md"
+      - "tests/**"
 
 permissions:
   contents: write
