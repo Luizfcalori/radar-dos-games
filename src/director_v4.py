@@ -339,6 +339,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
                         evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
                     except RuntimeError as exc:
+                        # [run-production] one-off retry marker: exercise the fixed pipeline.
                         # Once all unique moving footage is consumed, use a
                         # source-matched official still for a short portion of
                         # the same phrase. This preserves narration coverage
