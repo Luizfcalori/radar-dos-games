@@ -20,7 +20,7 @@ replace = '''CATEGORIES = {
     "arcade": "a colorful arcade racing game with a taxi swerving through busy city traffic",
 }
 SCENE_WORDS = {
-    "driving": ("dirig", "direcao", "corr", "veloc", "conduc", "volante", "veiculo", "carro", "taxi", "cidade", "rua", "mapa", "destino", "campanha", "lanc", "jogador", "mundo", "brasil"),
+    "driving": ("dirig", "direcao", "corr", "veloc", "conduc", "volante", "veiculo", "carro", "taxi", "cidade", "rua", "mapa", "destino", "lanc", "jogador", "mundo", "brasil"),
     "settlement": ("cidade", "loja", "fachada", "bairro", "mapa", "brasil", "litoral", "paisagem", "costa", "rua", "avenida", "edificio", "urbana", "destino"),
     "coast": ("praia", "praias", "litoral", "mar", "costa"),
     "multiplayer": ("multijogador", "multiplayer", "online", "compet", "equipe", "ranquead", "batalha", "policia"),
