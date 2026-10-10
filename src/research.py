@@ -16,7 +16,8 @@ FEEDS = [
     "https://www.nintendo.com/us/whatsnew/rss/",
     "https://store.steampowered.com/feeds/news.xml",
     # Official Deadlock announcements feed; allows an explicit Deadlock topic
-    # lock without selecting an unrelated game from the global feed.
+    # lock without selecting an unrelated game from the global feed. Direct
+    # trailer streams are resolved by auto_daily via Steam's official app API.
     "https://store.steampowered.com/feeds/news/app/1422450/?cc=US&l=english",
 ]
 KEYS = (
