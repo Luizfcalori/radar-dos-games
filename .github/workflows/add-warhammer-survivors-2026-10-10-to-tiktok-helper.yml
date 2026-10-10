@@ -1,0 +1,176 @@
+name: Add Warhammer Survivors Shorts to Radar TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-warhammer-survivors-2026-10-10-to-tiktok-helper.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: add-warhammer-survivors-2026-10-10-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: "38085337562"
+      SOURCE_ARTIFACT: radar-daily-auto-38085337562
+      BASE_URL: https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved Warhammer Survivors production package
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: warhammer-source
+          repository: Luizfcalori/radar-dos-games
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Validate approved Shorts and prepare MP4s and covers
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-warhammer
+          python - <<'PY'
+          import json, shutil, subprocess
+          from pathlib import Path
+          source=Path("warhammer-source")
+          qa_files=list(source.rglob("final-qa.json"))
+          assert qa_files, "final-qa.json not found in source artifact"
+          qa_path=qa_files[0]
+          qa=json.loads(qa_path.read_text(encoding="utf-8"))
+          assert str(qa.get("status","")).upper().startswith("APPROVED"), qa
+          root=qa_path.parent
+          for n in (1,2,3):
+              candidates=list(source.rglob(f"short_{n}.mp4"))
+              assert candidates, f"short_{n}.mp4 missing"
+              src=candidates[0]
+              assert src.stat().st_size>500_000, src
+              meta_candidates=list(source.rglob(f"short-{n}-youtube.json"))
+              assert meta_candidates, f"short-{n}-youtube.json missing"
+              meta=json.loads(meta_candidates[0].read_text(encoding="utf-8"))
+              assert meta.get("title") and meta.get("description"), meta
+              dst=Path("tiktok-warhammer")/f"warhammer-survivors-2026-10-10-short-{n}.mp4"
+              shutil.copy2(src,dst)
+              covers=list(source.rglob(f"short_{n}_cover.jpg"))
+              jpg=Path("tiktok-warhammer")/f"warhammer-survivors-2026-10-10-short-{n}.jpg"
+              if covers and covers[0].stat().st_size>1000:
+                  shutil.copy2(covers[0],jpg)
+              else:
+                  subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss","1","-i",str(src),"-frames:v","1","-vf","scale=720:-2",str(jpg)],check=True)
+              print("VALIDATED_SHORT",n,"title=",meta["title"],"bytes=",dst.stat().st_size,flush=True)
+          print("SOURCE_RUN_CONFIRMED",38085337562)
+          PY
+
+      - name: Upload 3 MP4s and covers to TikTok Helper release
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Downloads para publicação manual no Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-warhammer/*.mp4 tiktok-warhammer/*.jpg --clobber
+
+      - name: Verify six downloadable assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 3 --max-time 120 --range 0-1023 "${BASE_URL}/warhammer-survivors-2026-10-10-short-${n}.${ext}" -o /dev/null
+              echo "REMOTE_OK short-${n}.${ext}"
+            done
+          done
+
+      - name: Merge Warhammer Shorts into app queue without removing older items
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re
+          from datetime import datetime, timezone
+          from pathlib import Path
+          source=Path("warhammer-source")
+          metas=[]
+          for n in (1,2,3):
+              candidates=list(source.rglob(f"short-{n}-youtube.json"))
+              assert candidates, f"metadata short-{n} missing"
+              metas.append(json.loads(candidates[0].read_text(encoding="utf-8")))
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          new=[]
+          for n,meta in enumerate(metas,1):
+              title=re.sub(r"(?i)#shorts?\\b","",str(meta.get("title") or "")).strip(" -|")
+              desc=str(meta.get("description") or "")
+              tags=[]
+              for tag in re.findall(r"#([\\wÀ-ÿ]+)",desc):
+                  tag="#"+tag
+                  if tag.casefold() not in {x.casefold() for x in tags}:
+                      tags.append(tag)
+                  if len(tags)>=5: break
+              for tag in ("#RadarDosGames","#WarhammerSurvivors","#Games","#Gaming","#TikTokGames"):
+                  if tag.casefold() not in {x.casefold() for x in tags}: tags.append(tag)
+              new.append({
+                "id":f"warhammer-survivors-2026-10-10-short-{n}",
+                "title":title,
+                "media_url":f"{base}/warhammer-survivors-2026-10-10-short-{n}.mp4",
+                "thumbnail_url":f"{base}/warhammer-survivors-2026-10-10-short-{n}.jpg",
+                "post_text":title+"\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n"+" ".join(tags),
+                "status":"approved","source_run_id":38085337562,"short_number":n,
+                "approved_at":now,"source":"approved_production_artifact_auto",
+                "platform":"tiktok_helper_manual_posting"
+              })
+          old_keys={(str(x.get("source_run_id") or ""),str(x.get("short_number") or "")) for x in old}
+          old_ids={str(x.get("id") or "") for x in old}
+          merged=[x for x in new if x["id"] not in old_ids and (str(x["source_run_id"]),str(x["short_number"])) not in old_keys]
+          if merged:
+              q["version"]=2
+              q["updated_at"]=now
+              q["items"]=(merged+old)[:200]
+              qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          print(json.dumps({"added":len(merged),"preserved":len(old),"total":len(q.get("items") or []),"items":[x["id"] for x in merged]},ensure_ascii=False))
+          PY
+
+      - name: Commit queue changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "Warhammer Shorts already present in the TikTok Helper queue."
+            exit 0
+          fi
+          git commit -m "feat: add Warhammer Survivors Shorts to TikTok Helper"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Verify all three Warhammer items are in the remote app queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-remote.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-remote.json",encoding="utf-8"))
+          items=[x for x in q.get("items",[]) if str(x.get("id","")).startswith("warhammer-survivors-2026-10-10-short-")]
+          assert len(items)==3, f"Expected 3 Warhammer Shorts, found {len(items)}"
+          assert all(x.get("status")=="approved" and x.get("media_url","").endswith(".mp4") and x.get("post_text") for x in items)
+          print("TIKTOK_HELPER_WARHAMMER_OK",len(items),"QUEUE_TOTAL",len(q["items"]))
+          PY
