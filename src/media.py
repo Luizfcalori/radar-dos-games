@@ -296,8 +296,9 @@ def recursive_video_strings(obj):
     return vals
 
 def steam_candidates(app_id,wanted):
-    """Assets do app exato da Steam; trailers preferem CDN Steam direto, nunca YouTube."""
-    api=f'https://store.steampowered.com/api/appdetails?appids={int(app_id)}&cc=us&l=english'
+    """Descobre mídia do app exato; prioriza CDN Steam e usa vídeos embutidos em anúncios oficiais do próprio app como fallback."""
+    app_id=int(app_id)
+    api=f'https://store.steampowered.com/api/appdetails?appids={app_id}&cc=us&l=english'
     try:
         with urllib.request.urlopen(req(api,steam_age=True),timeout=25) as r:data=json.loads(r.read().decode('utf-8','ignore'))
         root=data.get(str(app_id),{});d=(root.get('data') or {}) if root.get('success') else {}
@@ -305,17 +306,57 @@ def steam_candidates(app_id,wanted):
         print('steam discovery failed',app_id,e);d={}
     out=[]
     if wanted=='video':
-        # Campos atuais podem conter adaptive_trailers/hls/dash; percorremos recursivamente.
         for movie in d.get('movies') or []:
             name=movie.get('name','')
             for u in recursive_video_strings(movie):
                 if 'youtube.com' in u.lower() or 'youtu.be' in u.lower():continue
                 out.append((u,'steam_exact_app_direct_stream',name))
-        for u in steam_store_streams(app_id):out.append((u,'steam_exact_app_store_stream',''))
+        for u in steam_store_streams(app_id):
+            out.append((u,'steam_exact_app_store_stream',''))
+
+        # Alguns jogos (incluindo Deadlock) não publicam trailers no appdetails.
+        # Procura vídeos somente no feed de anúncios oficiais do app, não em buscas
+        # genéricas nem em páginas de usuários da comunidade.
+        announcement_pages=[
+            f'https://steamcommunity.com/games/{app_id}/announcements/',
+            f'https://store.steampowered.com/news/app/{app_id}/',
+        ]
+        for page in announcement_pages:
+            try:
+                with urllib.request.urlopen(req(page,steam_age=True),timeout=20) as r:
+                    body=html.unescape(r.read(12*1024*1024).decode('utf-8','ignore')).replace('\\/','/')
+            except Exception as e:
+                print('steam official announcement video discovery failed',page,e,flush=True)
+                continue
+            candidates=[]
+            patterns=[
+                r'https?://video\\.[^"\\'<> ]*steamstatic\\.com/store_trailers/[^"\\'<> ]+',
+                r'https?://[^"\\'<> ]*steamstatic\\.com/store_trailers/[^"\\'<> ]+',
+                r'https?://(?:www\\.)?youtube\\.com/(?:watch\\?v=[A-Za-z0-9_-]{6,}|embed/[A-Za-z0-9_-]{6,})[^"\\'<> ]*',
+                r'https?://youtu\\.be/[A-Za-z0-9_-]{6,}[^"\\'<> ]*',
+                r'(?:src|href|data-video|data-url)=["\\']([^"\\']+)["\\']'
+            ]
+            for pattern in patterns:
+                for raw in re.findall(pattern,body,re.I):
+                    u=html.unescape(raw).replace('\\/','/').strip().rstrip('),;')
+                    if u.startswith('//'):u='https:'+u
+                    if u.startswith('/'):
+                        u=urllib.parse.urljoin(page,u)
+                    low=u.lower().split('?')[0]
+                    if low.endswith(STREAM_EXTS+VIDEO_EXTS) and 'steamstatic.com/store_trailers/' in low:
+                        candidates.append((u,'steam_official_app_announcement_cdn',page))
+                    elif 'youtube.com/watch' in low or 'youtube.com/embed/' in low or 'youtu.be/' in low:
+                        # Apenas embeds presentes no feed oficial do app; downloader/QA valida o arquivo.
+                        candidates.append((u,'steam_official_app_announcement_embed',page))
+            for u,evidence,label in candidates:
+                out.append((u,evidence,label))
+            if candidates:
+                print('steam official announcement video candidates',app_id,len(candidates),page,flush=True)
+                break
     elif wanted=='image':
-        for s in d.get('screenshots') or []:
-            u=s.get('path_full') or s.get('path_thumbnail')
-            if u:out.append((u,'steam_exact_app_screenshot',str(s.get('id',''))))
+        for shot in d.get('screenshots') or []:
+            u=shot.get('path_full') or shot.get('path_thumbnail')
+            if u:out.append((u,'steam_exact_app_screenshot',str(shot.get('id',''))))
     dedup=[];seen=set()
     for row in out:
         if row[0] in seen:continue
