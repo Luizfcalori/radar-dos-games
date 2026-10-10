@@ -128,15 +128,15 @@ jobs:
                       continue
 
                   titles=[]
-                  duplicate=True
                   for mp in metas:
                       meta=json.loads(Path(mp).read_text(encoding="utf-8"))
                       t=str(meta.get("title") or "")
                       t=t.replace("#Shorts","").replace("#shorts","").strip(" -|")
                       titles.append(t)
-                      if t.casefold() not in imported_titles:
-                          duplicate=False
-                  if duplicate:
+                  # Não deduplicar por título: assuntos e manchetes podem se repetir.
+                  # A identidade do vídeo é o pacote/run de origem; imported_runs já
+                  # impede reimportar o mesmo pacote.
+                  if not all(titles):
                       continue
 
                   chosen={
@@ -263,15 +263,18 @@ jobs:
           base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
 
           existing=q.get("items") or []
-          existing_titles={str(x.get("title") or "").strip().casefold() for x in existing if x.get("status")=="approved"}
+          existing_ids={str(x.get("id") or "") for x in existing}
+          existing_source_keys={(str(x.get("source_run_id") or ""),str(x.get("short_number") or "")) for x in existing}
           merged=[]
           for x in new:
-              if x["title"].strip().casefold() in existing_titles:
+              source_key=(str(x.get("source_run_id") or ""),str(x.get("short_number") or ""))
+              if str(x.get("id") or "") in existing_ids or source_key in existing_source_keys:
                   continue
               x["media_url"]=f"{base}/{x.pop('media_asset')}"
               x["thumbnail_url"]=f"{base}/{x.pop('thumbnail_asset')}"
               merged.append(x)
-              existing_titles.add(x["title"].strip().casefold())
+              existing_ids.add(str(x.get("id") or ""))
+              existing_source_keys.add(source_key)
 
           if merged:
               ids={x["id"] for x in merged}
