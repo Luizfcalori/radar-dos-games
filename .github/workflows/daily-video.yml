@@ -73,7 +73,8 @@ jobs:
       - run: python -m pytest -q tests
 
   produce:
-    if: github.event_name != 'push'
+    # Permit an explicitly marked one-off production run after a pipeline fix.
+    if: github.event_name != 'push' || startsWith(github.event.head_commit.message, '[run-production]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
