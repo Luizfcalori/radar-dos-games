@@ -15,10 +15,28 @@ def duration(path):
     ],text=True).strip())
 
 def sample(path,t,dest):
-    subprocess.run([
-        "ffmpeg","-y","-v","error","-ss",f"{t:.3f}","-i",str(path),
-        "-frames:v","1","-q:v","3",str(dest)
-    ],check=True)
+    # Some MP4s with concat/copy timestamps can return exit code 0 without
+    # writing a frame when seeking before input. Retry with accurate input seek.
+    attempts = [
+        ["ffmpeg","-y","-v","error","-ss",f"{t:.3f}","-i",str(path),
+         "-frames:v","1","-q:v","3",str(dest)],
+        ["ffmpeg","-y","-v","error","-i",str(path),"-ss",f"{t:.3f}",
+         "-frames:v","1","-q:v","3",str(dest)],
+    ]
+    errors = []
+    for cmd in attempts:
+        dest.unlink(missing_ok=True)
+        proc = subprocess.run(cmd, text=True, capture_output=True)
+        if proc.returncode == 0 and dest.exists() and dest.stat().st_size > 0:
+            try:
+                with Image.open(dest) as im:
+                    im.verify()
+                return
+            except Exception as exc:
+                errors.append(f"invalid image: {exc}")
+        else:
+            errors.append((proc.stderr or f"no frame produced (exit {proc.returncode})").strip())
+    raise RuntimeError(f"FRAME_SAMPLE_FAILED at {t:.3f}s for {path}: {'; '.join(errors)}")
 
 def metrics(path):
     with Image.open(path).convert("RGB") as im:
