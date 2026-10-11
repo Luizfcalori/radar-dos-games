@@ -1,4 +1,5 @@
 """Reserve unique source intervals and match footage to individual phrases."""
+# [run-production] TOPIC=Minecraft Dungeons II — retry with controlled reviewed-gameplay fallback.
 import math
 from collections import defaultdict
 
