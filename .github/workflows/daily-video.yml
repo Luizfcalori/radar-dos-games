@@ -112,11 +112,11 @@ jobs:
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
           RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || 'AUTO' }}
-          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && 'private' || 'unlisted' }}
+          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
       - name: Aplicar agenda nativa do YouTube
-        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) }}
         run: |
           python - <<'PY'
           import json
@@ -332,7 +332,7 @@ jobs:
         run: python src/check_youtube.py
 
       - name: Enviar Master para o agendamento nativo do YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -341,7 +341,7 @@ jobs:
         run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
 
       - name: Enviar Short 1 para o agendamento nativo do YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -350,7 +350,7 @@ jobs:
         run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
 
       - name: Enviar Short 2 para o agendamento nativo do YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -359,7 +359,7 @@ jobs:
         run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
 
       - name: Enviar Short 3 para o agendamento nativo do YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -368,7 +368,7 @@ jobs:
         run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
 
       - name: Registrar pauta agendada para não repetir
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         run: |
           python - <<'PY'
           import json
