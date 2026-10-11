@@ -1,14 +1,6 @@
 name: "ONE-OFF — Crazy Taxi Brasil Master + 3 Shorts Premium (revisao 13 titulos FFmpeg seguros)"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/once-crazy-taxi-premium-2026-10-10.yml"
-      - "src/shorts_v4.py"
-      - "src/visual_frame_qa.py"
-      - "specials/once_crazy_taxi_premium_2026_10_10.py"
-      - "src/blur_faces.py"
   workflow_dispatch:
 
 permissions:
