@@ -61,8 +61,10 @@ def main():
     d=duration(master)
     count=10 if d>=80 else 8
     # Never sample the exact final timestamp: MP4 duration is an exclusive boundary,\n    # and ffmpeg may return exit 0 without decoding a frame there. Keep every\n    # sample at least 0.75s before EOF while preserving evenly spaced checkpoints.\n    safe_end=max(0.25,d-0.75)\n    times=[min(safe_end,max(.25,d*(i+.5)/count)) for i in range(count)]
+    # Rebuild checkpoints immediately before iteration; avoid an undefined local if earlier sampling setup changes.
+    checkpoints = [min(safe_end, max(0.25, d * (i + 0.5) / count)) for i in range(count)]
     rows=[];bad=[]
-    for i,t in enumerate(times,1):
+    for i,t in enumerate(checkpoints,1):
         p=OUT/f"frame_{i:02d}.jpg"; sample(master,t,p); m=metrics(p)
         status="APPROVED"
         if m["dark_ratio"]>.90 or m["mean"]<12 or m["std"]<7:
