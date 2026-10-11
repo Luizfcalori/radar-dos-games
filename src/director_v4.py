@@ -71,6 +71,14 @@ def headline_from_text(text, scene_no):
     raw=str(text or "").strip()
     low=norm(raw)
     rules=[
+        ("invokyr" in low and any(x in low for x in ("cada jogada","dados","tabuleiro")), "DADOS QUE INVOCAM TERROR"),
+        ("invokyr foi lancado" in low or "lancado em acesso antecipado" in low, "ACESSO ANTECIPADO NO STEAM"),
+        ("cooperativo online" in low and ("seis pessoas" in low or "seis" in low), "TERROR COOPERATIVO PARA SEIS"),
+        ("quatro temas" in low or ("selva" in low and "deserto" in low), "QUATRO TABULEIROS, QUATRO PERIGOS"),
+        ("dados" in low and any(x in low for x in ("estrategia","habilidades","recursos")), "DADOS, HABILIDADES E RISCO"),
+        ("quinze monstros" in low or "eventos sobrenaturais" in low, "MONSTROS E EVENTOS SOBRENATURAIS"),
+        ("ainda esta em acesso antecipado" in low or "conteudo pode mudar" in low, "JOGO EM EVOLUCAO"),
+        ("terror cooperativo" in low and ("sozinho" in low or "equipe completa" in low), "VOCE ENTRARIA NESSA MANSÃO?"),
         ("lancamento" in low and ("data" in low or re.search(r"\b20\d{2}\b",low)), "DATA DE LANÇAMENTO"),
         ("playstation" in low and "xbox" in low, "PLATAFORMAS CONFIRMADAS"),
         ("jason" in low and "lucia" in low, "JASON E LUCIA"),
