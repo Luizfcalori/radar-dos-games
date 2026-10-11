@@ -27,11 +27,17 @@ class ContinuityTests(unittest.TestCase):
         self.assertEqual(fallback[0]['index'],2)
         self.assertEqual(fallback[1],0)
 
-    def test_exhaustion_never_reuses_any_approved_interval(self):
+    def test_exhaustion_uses_explicitly_marked_reviewed_fallback(self):
         t=VideoTimeline(self.assets)
         for _ in range(4): t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        with self.assertRaisesRegex(RuntimeError,'faltam cenas inéditas'):
-            t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        fallback=t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        self.assertTrue(fallback[3].get('reused_source'))
+        beat={'media_index':fallback[0]['index'],'duration':fallback[2],
+              'source_window':{'start':fallback[1],'end':fallback[3]['reserved_end']},
+              'approved_reuse':True}
+        qa=validate_video_beats([beat],self.assets)
+        self.assertEqual(qa['approved_reuse_beats'],1)
+        self.assertLessEqual(qa['approved_reuse_ratio'],0.25)
 
     def test_overlap_across_scenes_and_aliases_blocked(self):
         self.assets[2]['duplicate_of']=1
