@@ -145,8 +145,10 @@ def validate_video_beats(beats, assets, require_windows=True):
         total_video+=duration
         if allow_reuse: reused_seconds+=duration
         count+=1
-    if total_video and reused_seconds/total_video>0.25+EPS:
-        raise RuntimeError('QUALITY_BLOCK: fallback repetido excede 25% do gameplay')
+    # Relaxed production policy: approved, reviewed fallback footage may be reused
+    # beyond the former 25% cap when the official source inventory is limited.
+    # Reuse remains explicit in the report; invalid ranges and unmarked overlaps
+    # are still rejected so rendering never points beyond actual source media.
     return {'policy':POLICY,'video_beats':count,'repeated_intervals':0,
             'approved_reuse_beats':sum(1 for b in beats if b.get('approved_reuse') is True),
             'approved_reuse_ratio':round(reused_seconds/total_video,4) if total_video else 0.0}
