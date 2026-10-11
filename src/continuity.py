@@ -64,6 +64,9 @@ class VideoTimeline:
                 reviewed=w.get('reviewed') is True and bool(w.get('evidence'))
                 if not reviewed: continue
                 subject_match=not required_subjects or set(required_subjects)<=set(w.get('subjects',[]))
+                # Explicitly required named subjects remain a hard editorial constraint.
+                # Only inferred subject/category labels are relaxed for fallback gameplay.
+                if required_subjects and not subject_match: continue
                 # Subject labels are a preference, not a hard stop when a phrase
                 # has exhausted exact matches. Only use the broader fallback for
                 # visually reviewed footage from the already-approved game source.
