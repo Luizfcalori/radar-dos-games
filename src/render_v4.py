@@ -205,7 +205,7 @@ def concat_av(paths,dest,tmp):
     listing=tmp/"final-v4.txt"
     listing.write_text("".join(f"file '{Path(p).resolve()}'\n" for p in paths),encoding="utf-8")
     sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),
-        "-vf",f"fps={FPS},setpts=N/({FPS}*TB),format=yuv420p","-af","aresample=48000,asetpts=N/SR/TB",
+        "-vf",f"setpts=N/({FPS}*TB),format=yuv420p","-af","aresample=48000,asetpts=N/SR/TB",
         "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r",str(FPS),
         "-video_track_timescale","90000","-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(dest)])
 
@@ -261,7 +261,7 @@ def render(manifest_path):
     listing=tmp/"visuals.txt"
     listing.write_text("".join(f"file '{p.resolve()}'\n" for p in pieces),encoding="utf-8")
     visuals=tmp/"body_visuals.mp4"
-    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),"-vf",f"fps={FPS},setpts=N/({FPS}*TB),format=yuv420p","-an","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",str(visuals)])
+    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),"-vf",f"setpts=N/({FPS}*TB),format=yuv420p","-an","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",str(visuals)])
 
     sfx=tmp/"editorial-sfx.wav"
     make_sfx_track(cursor,sfx_events,sfx)
