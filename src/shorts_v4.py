@@ -117,7 +117,7 @@ def premium_conversion_short_filter(headline, accent):
     # The source remains fully visible in the central 900x506 viewport;
     # a blurred, darkened duplicate fills the portrait canvas behind it.
     return (
-        f"[0:v]fps={FPS},split=2[base][fg0];"
+        f"[0:v]fps={FPS},setpts=PTS-STARTPTS,split=2[base][fg0];"
         f"[base]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
         "boxblur=28:14,eq=brightness=-0.18:saturation=0.85[bg];"
         "[fg0]scale=900:506:force_original_aspect_ratio=decrease,"

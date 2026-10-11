@@ -95,7 +95,7 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
     drift_y=3+(piece_no%2)*2
     if image_mode:
         base=(
-            f"[0:v]fps={FPS},split=2[bg0][fg0];"
+            f"[0:v]fps={FPS},setpts=PTS-STARTPTS,split=2[bg0][fg0];"
             f"[bg0]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
             "boxblur=28:14,eq=brightness=-0.19:saturation=0.88[bg];"
             f"[fg0]scale={W-90}:{H-54}:force_original_aspect_ratio=decrease,setsar=1[fg];"
@@ -103,7 +103,7 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
         )
     else:
         base=(
-            f"[0:v]fps={FPS},split=2[bg0][fg0];"
+            f"[0:v]fps={FPS},setpts=PTS-STARTPTS,split=2[bg0][fg0];"
             f"[bg0]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
             "boxblur=28:14,eq=brightness=-0.19:saturation=0.90[bg];"
             f"[fg0]scale={W}:{H}:force_original_aspect_ratio=decrease,setsar=1[fg];"
