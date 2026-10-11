@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Gera 3 Shorts Premium V4 como peças independentes, não como crop do Master."""
 # Preserve explicit approved_reuse metadata so continuity QA can distinguish controlled fallback from an unmarked repeat.
+# Keep the controlled fallback metadata available to downstream QA and review.
 import colorsys
 import json
 import math
