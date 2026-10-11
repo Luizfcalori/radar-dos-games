@@ -71,7 +71,7 @@ def headline_from_text(text, scene_no):
     raw=str(text or "").strip()
     low=norm(raw)
     rules=[
-        ("invokyr" in low and any(x in low for x in ("cada jogada","dados","tabuleiro")), "DADOS QUE INVOCAM TERROR"),
+        ("cada jogada de um jogo de tabuleiro" in low or "os dados nao servem apenas" in low, "DADOS QUE INVOCAM TERROR"),
         ("invokyr foi lancado" in low or "lancado em acesso antecipado" in low, "ACESSO ANTECIPADO NO STEAM"),
         ("cooperativo online" in low and ("seis pessoas" in low or "seis" in low), "TERROR COOPERATIVO PARA SEIS"),
         ("quatro temas" in low or ("selva" in low and "deserto" in low), "QUATRO TABULEIROS, QUATRO PERIGOS"),
