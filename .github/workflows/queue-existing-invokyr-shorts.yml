@@ -1,0 +1,112 @@
+name: Radar dos Games - Enfileirar Shorts Invokyr já publicados
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/queue-existing-invokyr-shorts.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  queue-existing-shorts:
+    if: startsWith(github.event.head_commit.message, '[queue-existing] RUN=38150989413')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download existing approved Shorts
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-38150989413
+          path: source
+          repository: ${{ github.repository }}
+          run-id: 38150989413
+          github-token: ${{ github.token }}
+
+      - name: Download confirmed YouTube upload results
+        uses: actions/download-artifact@v4
+        with:
+          name: invokyr-existing-upload-results-38150989413
+          path: results
+          repository: ${{ github.repository }}
+          run-id: 38155369655
+          github-token: ${{ github.token }}
+
+      - name: Install FFmpeg for thumbnails
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Publish existing Shorts to stable storage and update TikTok Helper queue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-upload
+          for N in 1 2 3; do
+            test -s "source/shorts/short_${N}.mp4"
+            test -s "results/youtube-short-${N}-result.json"
+            cp "source/shorts/short_${N}.mp4" "tiktok-upload/38150989413-short-${N}.mp4"
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "source/shorts/short_${N}.mp4" -frames:v 1 -vf "scale=720:-2" "tiktok-upload/38150989413-short-${N}.jpg"
+          done
+
+          if ! gh release view tiktok-approved-assets >/dev/null 2>&1; then
+            gh release create tiktok-approved-assets --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados para o Radar TikTok Helper. Publicação final no TikTok continua manual."
+          fi
+          gh release upload tiktok-approved-assets tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          run_id = 38150989413
+          repo = os.environ['GITHUB_REPOSITORY']
+          base = f'https://github.com/{repo}/releases/download/tiktok-approved-assets'
+          queue_path = Path('data/tiktok_queue.json')
+          queue = json.loads(queue_path.read_text(encoding='utf-8'))
+          old = queue.get('items', [])
+          new = []
+          for n in (1, 2, 3):
+              meta = json.loads(Path(f'results/short-{n}-youtube.json').read_text(encoding='utf-8'))
+              result = json.loads(Path(f'results/youtube-short-{n}-result.json').read_text(encoding='utf-8'))
+              vid = result.get('id')
+              assert vid, f'Missing YouTube ID for Short {n}'
+              title = meta.get('title', 'Radar dos Games').replace(' #Shorts', '').strip()
+              new.append({
+                  'id': f'{run_id}-short-{n}',
+                  'title': title,
+                  'media_url': f'{base}/{run_id}-short-{n}.mp4',
+                  'thumbnail_url': f'{base}/{run_id}-short-{n}.jpg',
+                  'post_text': f'{title}\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Invokyr #Games #Gaming #TikTokGames',
+                  'status': 'approved',
+                  'source_run_id': run_id,
+                  'short_number': n,
+                  'approved_at': datetime.now(timezone.utc).isoformat(),
+                  'source': 'existing_approved_production_artifact',
+                  'platform': 'tiktok_helper_manual_posting',
+                  'youtube_id': vid,
+                  'youtube_url': f'https://www.youtube.com/shorts/{vid}',
+                  'youtube_published_at': None,
+              })
+          ids = {x['id'] for x in new}
+          queue['version'] = 2
+          queue['updated_at'] = datetime.now(timezone.utc).isoformat()
+          queue['items'] = (new + [x for x in old if x.get('id') not in ids])[:120]
+          queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({'queued_shorts': len(new), 'source_run_id': run_id, 'youtube_ids': [x['youtube_id'] for x in new]}, ensure_ascii=False))
+          PY
+
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          git diff --cached --quiet || git commit -m "bot: queue existing Invokyr Shorts for TikTok Helper"
+          git push
