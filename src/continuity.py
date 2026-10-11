@@ -62,6 +62,7 @@ class VideoTimeline:
                 cats=set(w.get('semantic_categories',[]))
                 if 'title_card' in cats: continue
                 reviewed=w.get('reviewed') is True and bool(w.get('evidence'))
+                if not reviewed: continue
                 subject_match=not required_subjects or set(required_subjects)<=set(w.get('subjects',[]))
                 # Subject labels are a preference, not a hard stop when a phrase
                 # has exhausted exact matches. Only use the broader fallback for
