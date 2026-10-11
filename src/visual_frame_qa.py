@@ -60,7 +60,8 @@ def main():
     if not master.exists():raise RuntimeError("QUALITY_BLOCK: master ausente para frame QA")
     d=duration(master)
     count=10 if d>=80 else 8
-    # Never sample the exact final timestamp: MP4 duration is an exclusive boundary,\n    # and ffmpeg may return exit 0 without decoding a frame there. Keep every\n    # sample at least 0.75s before EOF while preserving evenly spaced checkpoints.\n    safe_end=max(0.25,d-0.75)\n    times=[min(safe_end,max(.25,d*(i+.5)/count)) for i in range(count)]
+    # Never sample the exact final timestamp: MP4 duration is an exclusive boundary,\n    # and ffmpeg may return exit 0 without decoding a frame there. Keep every\n    # sample at least 0.75s before EOF while preserving evenly spaced checkpoints.
+    safe_end=max(0.25,d-0.75)\n    times=[min(safe_end,max(.25,d*(i+.5)/count)) for i in range(count)]
     # Rebuild checkpoints immediately before iteration; avoid an undefined local if earlier sampling setup changes.
     checkpoints = [min(safe_end, max(0.25, d * (i + 0.5) / count)) for i in range(count)]
     rows=[];bad=[]
