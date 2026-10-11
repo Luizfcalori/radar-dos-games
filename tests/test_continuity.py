@@ -29,13 +29,17 @@ class ContinuityTests(unittest.TestCase):
 
     def test_exhaustion_uses_explicitly_marked_reviewed_fallback(self):
         t=VideoTimeline(self.assets)
-        for _ in range(4): t.choose(self.scene,'Combate',10,list(self.assets.values()))
+        prior=[t.choose(self.scene,'Combate',10,list(self.assets.values())) for _ in range(4)]
         fallback=t.choose(self.scene,'Combate',5,list(self.assets.values()))
         self.assertTrue(fallback[3].get('reused_source'))
-        beat={'media_index':fallback[0]['index'],'duration':fallback[2],
-              'source_window':{'start':fallback[1],'end':fallback[3]['reserved_end']},
-              'approved_reuse':True}
-        qa=validate_video_beats([beat],self.assets)
+        beats=[]
+        for item in prior:
+            beats.append({'media_index':item[0]['index'],'duration':item[2],
+                          'source_window':{'start':item[1],'end':item[3]['reserved_end']}})
+        beats.append({'media_index':fallback[0]['index'],'duration':fallback[2],
+                      'source_window':{'start':fallback[1],'end':fallback[3]['reserved_end']},
+                      'approved_reuse':True})
+        qa=validate_video_beats(beats,self.assets)
         self.assertEqual(qa['approved_reuse_beats'],1)
         self.assertLessEqual(qa['approved_reuse_ratio'],0.25)
 
