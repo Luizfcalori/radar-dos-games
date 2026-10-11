@@ -15,28 +15,32 @@ def duration(path):
     ],text=True).strip())
 
 def sample(path,t,dest):
-    # Some MP4s with concat/copy timestamps can return exit code 0 without
-    # writing a frame when seeking before input. Retry with accurate input seek.
+    # Concat MP4s can contain small timestamp gaps at cuts. If the exact
+    # checkpoint has no decodable frame, try nearby frames rather than failing QA.
     attempts = [
-        ["ffmpeg","-y","-v","error","-ss",f"{t:.3f}","-i",str(path),
+        ["ffmpeg","-y","-v","error","-ss","{time}","-i",str(path),
          "-frames:v","1","-q:v","3",str(dest)],
-        ["ffmpeg","-y","-v","error","-i",str(path),"-ss",f"{t:.3f}",
+        ["ffmpeg","-y","-v","error","-i",str(path),"-ss","{time}",
          "-frames:v","1","-q:v","3",str(dest)],
     ]
     errors = []
-    for cmd in attempts:
-        dest.unlink(missing_ok=True)
-        proc = subprocess.run(cmd, text=True, capture_output=True)
-        if proc.returncode == 0 and dest.exists() and dest.stat().st_size > 0:
-            try:
-                with Image.open(dest) as im:
-                    im.verify()
-                return
-            except Exception as exc:
-                errors.append(f"invalid image: {exc}")
-        else:
-            errors.append((proc.stderr or f"no frame produced (exit {proc.returncode})").strip())
-    raise RuntimeError(f"FRAME_SAMPLE_FAILED at {t:.3f}s for {path}: {'; '.join(errors)}")
+    total = duration(path)
+    for offset in (0.0, -0.35, 0.35, -0.75, 0.75):
+        ts = min(max(0.05, t + offset), max(0.05, total - 0.75))
+        for template in attempts:
+            cmd = [f"{ts:.3f}" if x == "{time}" else x for x in template]
+            dest.unlink(missing_ok=True)
+            proc = subprocess.run(cmd, text=True, capture_output=True)
+            if proc.returncode == 0 and dest.exists() and dest.stat().st_size > 0:
+                try:
+                    with Image.open(dest) as im:
+                        im.verify()
+                    return
+                except Exception as exc:
+                    errors.append(f"invalid image near {ts:.3f}s: {exc}")
+            else:
+                errors.append((proc.stderr or f"no frame produced near {ts:.3f}s (exit {proc.returncode})").strip())
+    raise RuntimeError(f"FRAME_SAMPLE_FAILED at {t:.3f}s for {path}: {'; '.join(errors[-4:])}")
 
 def metrics(path):
     with Image.open(path).convert("RGB") as im:

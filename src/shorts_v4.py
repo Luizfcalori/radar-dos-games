@@ -199,7 +199,7 @@ def sfx_track(duration,events,dest):
 def concat_visuals(paths,dest,tmp):
     listing=tmp/"visuals.txt"
     listing.write_text("".join(f"file '{Path(p).resolve()}'\n" for p in paths),encoding="utf-8")
-    sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),"-c","copy",str(dest)])
+    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),"-vf","fps=30,setpts=N/(30*TB),format=yuv420p","-an","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r","30","-video_track_timescale","90000",str(dest)])
 
 def mix_audio(visuals,voice,sfx,dest):
     return cinematic_mix(visuals,voice,sfx,dest)

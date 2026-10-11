@@ -50,6 +50,6 @@ def mix(visuals, voice, sfx, dest):
            f'[3:a]loudnorm=I=-24:LRA=9:TP=-3,aresample=48000,asetpts=PTS-STARTPTS,volume=0.6,afade=t=in:d=0.8,afade=t=out:st={fade:.3f}:d=1.2[b];'
            '[b][sc]sidechaincompress=threshold=0.025:ratio=6:attack=18:release=300[d];'
            '[v][d][s]amix=inputs=3:duration=first:normalize=0,alimiter=limit=0.84:level=false[a]')
-    subprocess.run(cmd+['-filter_complex',graph,'-map','0:v:0','-map','[a]','-t',str(seconds),'-c:v','copy','-c:a','aac','-b:a','192k','-ar','48000','-ac','2','-movflags','+faststart',str(dest)],check=True)
+    subprocess.run(cmd+['-filter_complex',graph,'-map','0:v:0','-map','[a]','-t',str(seconds),'-vf','fps=30,setpts=N/(30*TB),format=yuv420p','-c:v','libx264','-preset','veryfast','-crf','20','-pix_fmt','yuv420p','-r','30','-video_track_timescale','90000','-c:a','aac','-b:a','192k','-ar','48000','-ac','2','-movflags','+faststart',str(dest)],check=True)
     write_credit(dest)
     return 'approved_bed_with_voice_ducking'

@@ -73,7 +73,7 @@ def video_seek(path,piece_no,duration):
     if room<=.2:return 0.0
     return round((piece_no*5.83)%room,3)
 
-def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=False,source_window=None):
+def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=False,source_window=None,show_card=False):
     path=Path(asset["path"])
     if not path.exists():raise RuntimeError(f"Asset ausente: {path}")
     image_mode=is_image(asset)
@@ -114,11 +114,11 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
         f"drawtext=fontfile='{FONT}':text='RADAR DOS GAMES':x={WATERMARK_X}:y={WATERMARK_Y}:"
         f"fontsize={WATERMARK_SIZE}:fontcolor=white@0.70:borderw=1:bordercolor=black@0.55:expansion=none"
     ]
-    if scene_first and card:
+    if show_card and card:
         title=write_overlay_text(dest,"title",card.get("title",""))
         subtitle=write_overlay_text(dest,"subtitle",card.get("subtitle","")) if card.get("subtitle") else ""
         end=max(1.0,min(duration-.12,4.8))
-        en=f"between(t,0.28,{end:.3f})"
+        en=f"between(t,0.0,{end:.3f})"
         filters += [
             f"drawbox=x={CARD_X}:y={CARD_Y}:w={CARD_W}:h={CARD_H}:color={CARD_BG}:t=fill:enable='{en}'",
             f"drawbox=x={CARD_X}:y={CARD_Y}:w=10:h={CARD_H}:color={CARD_ACCENT}:t=fill:enable='{en}'",
@@ -204,8 +204,10 @@ def trim_av(src,dest,start=0,duration=0):
 def concat_av(paths,dest,tmp):
     listing=tmp/"final-v4.txt"
     listing.write_text("".join(f"file '{Path(p).resolve()}'\n" for p in paths),encoding="utf-8")
-    sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),
-        "-c","copy","-movflags","+faststart",str(dest)])
+    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),
+        "-vf",f"fps={FPS},setpts=N/({FPS}*TB),format=yuv420p","-af","aresample=48000,asetpts=N/SR/TB",
+        "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r",str(FPS),
+        "-video_track_timescale","90000","-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(dest)])
 
 def render(manifest_path):
     m=json.loads(Path(manifest_path).read_text(encoding="utf-8"))
@@ -222,7 +224,7 @@ def render(manifest_path):
     for scene_no,scene in enumerate(scenes,1):
         beats=scene.get("beats") or []
         if not beats:raise RuntimeError(f"QUALITY_BLOCK: V4 cena {scene_no} sem beats")
-        scene_paths=[]; sequence=[]
+        scene_paths=[]; sequence=[]; scene_elapsed=0.0
         for beat_no,beat in enumerate(beats,1):
             idx=int(beat["media_index"])
             if idx not in assets or not assets[idx].get("approved",True):
@@ -237,8 +239,9 @@ def render(manifest_path):
                 keyword=beat.get("keyword_overlay",""),
                 scene_first=(beat_no==1),
                 source_window=beat.get("source_window"),
+                show_card=(scene_elapsed < 4.8),
             )
-            pieces.append(p); scene_paths.append(str(p)); sequence.append(idx)
+            pieces.append(p); scene_paths.append(str(p)); sequence.append(idx); scene_elapsed += d
             if (beat_no==1 and scene_no>1) or int(beat.get("intensity",0))>=2:
                 sfx_events.append({"time":round(cursor,3),"intensity":max(1,int(beat.get("intensity",1)))})
             cursor+=d
@@ -258,7 +261,7 @@ def render(manifest_path):
     listing=tmp/"visuals.txt"
     listing.write_text("".join(f"file '{p.resolve()}'\n" for p in pieces),encoding="utf-8")
     visuals=tmp/"body_visuals.mp4"
-    sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),"-c","copy",str(visuals)])
+    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),"-vf",f"fps={FPS},setpts=N/({FPS}*TB),format=yuv420p","-an","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",str(visuals)])
 
     sfx=tmp/"editorial-sfx.wav"
     make_sfx_track(cursor,sfx_events,sfx)
@@ -285,8 +288,17 @@ def render(manifest_path):
 
     probe=json.loads(subprocess.check_output([
         "ffprobe","-v","error","-show_entries","format=duration,size",
-        "-show_entries","stream=codec_type,width,height,r_frame_rate","-of","json",str(out)
+        "-show_entries","stream=codec_type,width,height,r_frame_rate,avg_frame_rate,duration,start_time","-of","json",str(out)
     ],text=True))
+    stream_rows=probe.get("streams") or []
+    video_rows=[x for x in stream_rows if x.get("codec_type")=="video"]
+    audio_rows=[x for x in stream_rows if x.get("codec_type")=="audio"]
+    if not video_rows or not audio_rows:
+        raise RuntimeError("QUALITY_BLOCK: Master precisa conter vídeo e áudio")
+    video_seconds=float(video_rows[0].get("duration") or 0)
+    audio_seconds=float(audio_rows[0].get("duration") or 0)
+    if video_seconds < intro_seconds + cursor - 1.0 or abs(video_seconds-audio_seconds) > 0.75:
+        raise RuntimeError(f"QUALITY_BLOCK: duração de vídeo/áudio divergente (vídeo={video_seconds:.3f}s, áudio={audio_seconds:.3f}s, esperado>={intro_seconds+cursor-1.0:.3f}s)")
     qa={
         "master":str(out),
         "standard":"radar-dos-games-premium-v4-director-cut",
