@@ -262,7 +262,8 @@ def main():
             "media_beats":[{"media_index":int(b["media_index"]),
                             "duration":float(b["duration"]),
                             "text":str(b.get("text") or ""),
-                            "source_window":b.get("source_window")}
+                            "source_window":b.get("source_window"),
+                            "approved_reuse":b.get("approved_reuse") is True}
                            for b in beats],
         })
 
