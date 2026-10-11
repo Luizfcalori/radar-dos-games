@@ -10,7 +10,7 @@ def test_clip_never_overruns_actual_duration():
     }
     scene={"visual_windows":{
         "1":[{"start":8.0,"end":11.0,"duration":3.0,
-              "semantic_categories":[]}]
+              "semantic_categories":[],"reviewed":True,"evidence":"review/frame-duration-test.jpg"}]
     }}
     timeline=VideoTimeline({1:asset})
     picked,start,length,window=timeline.choose(scene,"trecho visual",3.0,[asset])
