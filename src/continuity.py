@@ -40,7 +40,7 @@ class VideoTimeline:
             ranges=new
         return ranges
 
-    def reserve(self, idx, start, duration):
+    def reserve(self, idx, start, duration, allow_reuse=False):
         end=start+duration
         if not all(math.isfinite(v) for v in (start,duration,end)) or start<0 or duration<=0:
             raise RuntimeError('QUALITY_BLOCK: intervalo de vídeo inválido')
@@ -48,7 +48,7 @@ class VideoTimeline:
         if a.get('duration') and end>float(a['duration'])+EPS:
             raise RuntimeError('QUALITY_BLOCK: vídeo acabaria antes da fala')
         key=self.identity(idx)
-        if any(min(end,b)-max(start,a)>EPS for a,b in self.used[key]):
+        if not allow_reuse and any(min(end,b)-max(start,a)>EPS for a,b in self.used[key]):
             raise RuntimeError('QUALITY_BLOCK: intervalo de gameplay repetido')
         self.used[key].append((start,end));self.last=(key,end)
 
@@ -100,12 +100,32 @@ class VideoTimeline:
                     continuous=self.last is not None and self.last[0]==self.identity(idx) and abs(self.last[1]-lo)<.06
                     rank=(bool(reviewed),subject_match,category_match or bool(source_context & cats),continuous,len(cats & expected),length,-idx,-lo)
                     candidates.append((rank,asset,lo,length,w))
+        reused_source=False
         if not candidates:
-            raise RuntimeError(f'QUALITY_BLOCK: faltam cenas inéditas correspondentes à fala: {text}; ampliar fontes ou revisar roteiro')
-        _,asset,lo,length,w=max(candidates,key=lambda x:x[0])
+            # Controlled fallback: reuse a reviewed gameplay window only after
+            # all unused windows are exhausted. The director marks this explicitly.
+            fallback=[]
+            for asset in assets:
+                idx=int(asset['index'])
+                if asset.get('type')!='video': continue
+                for w in (scene.get('visual_windows') or {}).get(str(idx),[]):
+                    cats=set(w.get('semantic_categories',[]))
+                    if 'title_card' in cats or w.get('reviewed') is not True or not w.get('evidence'): continue
+                    if required_subjects and not set(required_subjects)<=set(w.get('subjects',[])): continue
+                    lo=float(w['start'])
+                    hi=min(float(w['end']),float(asset.get('duration') or w['end'])-EPS)
+                    length=min(math.floor(max(0,hi-lo)*30)/30,remaining,10.0)
+                    if length>=min(1.0,remaining)-EPS:
+                        fallback.append((idx!=(self.last[0] if self.last else None),length,-idx,asset,lo,w))
+            if not fallback:
+                raise RuntimeError(f'QUALITY_BLOCK: sem gameplay aprovado suficiente para a fala: {text}')
+            _,length,_,asset,lo,w=max(fallback,key=lambda x:x[:3])
+            reused_source=True
+        else:
+            _,asset,lo,length,w=max(candidates,key=lambda x:x[0])
         reserved=math.ceil((length-1e-8)*30)/30
-        self.reserve(asset['index'],lo,reserved)
-        return asset,lo,length,{**w,'reserved_end':lo+reserved}
+        self.reserve(asset['index'],lo,reserved,allow_reuse=reused_source)
+        return asset,lo,length,{**w,'reserved_end':lo+reserved,'reused_source':reused_source}
 
 def validate_video_beats(beats, assets, require_windows=True):
     timeline=VideoTimeline(assets);count=0
