@@ -56,7 +56,7 @@ def main():
     if not master.exists():raise RuntimeError("QUALITY_BLOCK: master ausente para frame QA")
     d=duration(master)
     count=10 if d>=80 else 8
-    times=[max(.25,d*(i+.5)/count) for i in range(count)]
+    # Never sample the exact final timestamp: MP4 duration is an exclusive boundary,\n    # and ffmpeg may return exit 0 without decoding a frame there. Keep every\n    # sample at least 0.75s before EOF while preserving evenly spaced checkpoints.\n    safe_end=max(0.25,d-0.75)\n    times=[min(safe_end,max(.25,d*(i+.5)/count)) for i in range(count)]
     rows=[];bad=[]
     for i,t in enumerate(times,1):
         p=OUT/f"frame_{i:02d}.jpg"; sample(master,t,p); m=metrics(p)
