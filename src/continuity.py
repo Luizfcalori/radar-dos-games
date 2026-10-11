@@ -128,7 +128,7 @@ class VideoTimeline:
         return asset,lo,length,{**w,'reserved_end':lo+reserved,'reused_source':reused_source}
 
 def validate_video_beats(beats, assets, require_windows=True):
-    timeline=VideoTimeline(assets);count=0
+    timeline=VideoTimeline(assets);count=0;total_video=0.0;reused_seconds=0.0
     for beat in beats:
         idx=int(beat['media_index']);asset=assets[idx]
         if asset.get('type')!='video':continue
@@ -139,5 +139,13 @@ def validate_video_beats(beats, assets, require_windows=True):
         duration=float(beat['duration']);start=float(w['start'])
         if start+duration>float(w['end'])+EPS:
             raise RuntimeError('QUALITY_BLOCK: corte extrapola a janela aprovada')
-        timeline.reserve(idx,start,duration);count+=1
-    return {'policy':POLICY,'video_beats':count,'repeated_intervals':0}
+        allow_reuse=beat.get('approved_reuse') is True
+        timeline.reserve(idx,start,duration,allow_reuse=allow_reuse)
+        total_video+=duration
+        if allow_reuse: reused_seconds+=duration
+        count+=1
+    if total_video and reused_seconds/total_video>0.25+EPS:
+        raise RuntimeError('QUALITY_BLOCK: fallback repetido excede 25% do gameplay')
+    return {'policy':POLICY,'video_beats':count,'repeated_intervals':0,
+            'approved_reuse_beats':sum(1 for b in beats if b.get('approved_reuse') is True),
+            'approved_reuse_ratio':round(reused_seconds/total_video,4) if total_video else 0.0}
