@@ -1,3 +1,4 @@
+# This workflow reuses the completed Invokyr artifact from run 38150989413; it does not render video.
 name: Radar dos Games - Publicar pacote existente Invokyr
 
 on:
