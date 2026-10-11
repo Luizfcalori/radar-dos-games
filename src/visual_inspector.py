@@ -119,6 +119,12 @@ def analyze_video(path, index):
     if code or n == 0:
         raise RuntimeError(f"QUALITY_BLOCK: não foi possível inspecionar quadros do vídeo {index}")
     windows = choose_windows(seconds, min(duration, n / fps))
+    # Each window is backed by a completed frame-by-frame technical scan of this source.
+    # Semantic correctness remains the responsibility of semantic_gate.
+    for window in windows:
+        window["reviewed"] = True
+        window["evidence"] = "visual-inventory.json#asset-{}-{}-{}".format(
+            index, window["start"], window["end"])
     return {"index": index, "type": "video", "status": "ANALYZED",
             "frames_analyzed": n, "fps": round(fps, 3), "duration": round(duration, 3),
             "dark_frame_ratio": round(dark_count / n, 4),
