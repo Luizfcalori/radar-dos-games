@@ -1,0 +1,206 @@
+name: Radar dos Games - Publicar pacote existente Invokyr
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-existing-invokyr.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish-existing:
+    if: startsWith(github.event.head_commit.message, '[publish-existing] RUN=38150989413')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download the already-rendered production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-38150989413
+          path: artifact
+          repository: ${{ github.repository }}
+          run-id: 38150989413
+          github-token: ${{ github.token }}
+
+      - name: Restore existing video package without rendering
+        run: |
+          set -euo pipefail
+          mkdir -p output/shorts
+          cp artifact/master.mp4 output/master.mp4
+          cp artifact/thumbnail.jpg output/thumbnail.jpg
+          cp artifact/master-youtube.json output/master-youtube.json
+          cp artifact/short-1-youtube.json output/short-1-youtube.json
+          cp artifact/short-2-youtube.json output/short-2-youtube.json
+          cp artifact/short-3-youtube.json output/short-3-youtube.json
+          cp artifact/shorts/short_1.mp4 output/shorts/short_1.mp4
+          cp artifact/shorts/short_2.mp4 output/shorts/short_2.mp4
+          cp artifact/shorts/short_3.mp4 output/shorts/short_3.mp4
+          cp artifact/shorts/short_1_cover.jpg output/shorts/short_1_cover.jpg
+          cp artifact/shorts/short_2_cover.jpg output/shorts/short_2_cover.jpg
+          cp artifact/shorts/short_3_cover.jpg output/shorts/short_3_cover.jpg
+          cp artifact/final-qa.json output/final-qa.json
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          qa = json.loads(Path('output/final-qa.json').read_text())
+          assert qa.get('status') == 'APPROVED', qa
+          assert len(qa.get('shorts', [])) == 3, qa
+          for path in ['output/master.mp4','output/thumbnail.jpg','output/shorts/short_1.mp4','output/shorts/short_2.mp4','output/shorts/short_3.mp4','output/shorts/short_1_cover.jpg','output/shorts/short_2_cover.jpg','output/shorts/short_3_cover.jpg']:
+              p = Path(path)
+              assert p.is_file() and p.stat().st_size > 20000, f'Missing/invalid existing asset: {path}'
+          print('Pacote existente validado. Nenhum render será executado.')
+          PY
+
+      - name: Install upload dependencies only
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set native YouTube schedule on existing metadata
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, time, timedelta, timezone
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+          zone = ZoneInfo('America/Sao_Paulo')
+          now = datetime.now(zone)
+          slots = {
+              'master-youtube.json': time(10, 0),
+              'short-1-youtube.json': time(11, 0),
+              'short-2-youtube.json': time(13, 0),
+              'short-3-youtube.json': time(15, 0),
+          }
+          day = now.date()
+          if datetime.combine(day, slots['master-youtube.json'], tzinfo=zone) <= now + timedelta(minutes=30):
+              day += timedelta(days=1)
+          for filename, slot in slots.items():
+              path = Path('output') / filename
+              meta = json.loads(path.read_text(encoding='utf-8'))
+              meta['privacy'] = 'private'
+              meta['publishAt'] = datetime.combine(day, slot, tzinfo=zone).astimezone(timezone.utc).isoformat().replace('+00:00','Z')
+              if filename == 'master-youtube.json':
+                  meta['thumbnail'] = 'output/thumbnail.jpg'
+                  meta['use_existing_thumbnail'] = True
+              path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding='utf-8')
+          print('Agenda aplicada aos arquivos existentes; sem renderização.')
+          PY
+
+      - name: Verify OAuth and correct YouTube channel
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/check_youtube.py
+
+      - name: Upload existing Master to YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+
+      - name: Upload existing Short 1 to YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+
+      - name: Upload existing Short 2 to YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+
+      - name: Upload existing Short 3 to YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Prepare existing Shorts for TikTok Helper
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-upload
+          for N in 1 2 3; do
+            cp "output/shorts/short_${N}.mp4" "tiktok-upload/38150989413-short-${N}.mp4"
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "output/shorts/short_${N}.mp4" -frames:v 1 -vf "scale=720:-2" "tiktok-upload/38150989413-short-${N}.jpg"
+          done
+          if ! gh release view tiktok-approved-assets >/dev/null 2>&1; then
+            gh release create tiktok-approved-assets --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados para o Radar TikTok Helper. Publicação final no TikTok continua manual."
+          fi
+          gh release upload tiktok-approved-assets tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import os
+          run_id = 38150989413
+          repo = os.environ['GITHUB_REPOSITORY']
+          base = f'https://github.com/{repo}/releases/download/tiktok-approved-assets'
+          queue_path = Path('data/tiktok_queue.json')
+          queue = json.loads(queue_path.read_text(encoding='utf-8'))
+          old = queue.get('items', [])
+          new = []
+          for n in (1,2,3):
+              meta = json.loads(Path(f'output/short-{n}-youtube.json').read_text(encoding='utf-8'))
+              result = json.loads(Path(f'output/youtube-short-{n}-result.json').read_text(encoding='utf-8'))
+              vid = result.get('id')
+              assert vid, f'YouTube did not return a video ID for Short {n}: {result}'
+              title = meta.get('title','Radar dos Games').replace(' #Shorts','').strip()
+              new.append({
+                'id': f'{run_id}-short-{n}',
+                'title': title,
+                'media_url': f'{base}/{run_id}-short-{n}.mp4',
+                'thumbnail_url': f'{base}/{run_id}-short-{n}.jpg',
+                'post_text': f'{title}\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n#RadarDosGames #Invokyr #Games #Gaming #TikTokGames',
+                'status': 'approved',
+                'source_run_id': run_id,
+                'short_number': n,
+                'approved_at': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),
+                'source': 'existing_approved_production_artifact',
+                'platform': 'tiktok_helper_manual_posting',
+                'youtube_id': vid,
+                'youtube_url': f'https://www.youtube.com/shorts/{vid}',
+                'youtube_published_at': None
+              })
+          new_ids = {x['id'] for x in new}
+          queue['version'] = 2
+          queue['updated_at'] = __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()
+          queue['items'] = new + [x for x in old if x.get('id') not in new_ids]
+          queue['items'] = queue['items'][:120]
+          queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + '\\n', encoding='utf-8')
+          print(json.dumps({'queued_shorts':len(new),'source_run_id':run_id},ensure_ascii=False))
+          PY
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          git diff --cached --quiet || git commit -m "bot: queue existing Invokyr Shorts for TikTok Helper"
+          git push
+
+      - name: Save upload confirmations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: invokyr-existing-upload-results-38150989413
+          path: |
+            output/*youtube*.json
+            output/youtube-*-result.json
+          retention-days: 7
