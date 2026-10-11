@@ -1,3 +1,4 @@
+# Queue-only recovery: reuse the original videos and confirmed YouTube IDs; do not upload videos again.
 name: Radar dos Games - Enfileirar Shorts Invokyr já publicados
 
 on:
