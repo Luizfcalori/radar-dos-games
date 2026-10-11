@@ -1,56 +1,43 @@
 {
   "valid_until": "2026-10-12T23:59:00Z",
-  "content_id": "manual-minecraft-dungeons-ii-the-sift-2026-10-10",
-  "title": "Minecraft Dungeons II",
-  "headline": "MINECRAFT DUNGEONS II: THE SIFT É A NOVA DIMENSÃO QUE MUDA TUDO!",
-  "primary_source": "https://www.minecraft.net/en-us/article/minecraft-dungeons-ii-gameplay-trailer",
+  "content_id": "manual-invokyr-early-access-2026-10-11",
+  "title": "Invokyr",
+  "headline": "INVOKYR: O JOGO DE TABULEIRO QUE TRANSFORMA CADA RODADA EM TERROR!",
+  "primary_source": "https://store.steampowered.com/app/3883570/Invokyr/",
   "media_source_urls": [
-    "https://www.minecraft.net/en-us/article/minecraft-dungeons-ii-gameplay-trailer",
-    "https://www.minecraft.net/en-us/article/minecraft-dungeons-ii-gameplay-systems",
-    "https://www.minecraft.net/en-us/article/minecraft-dungeons-ii-is-live",
-    "https://www.minecraft.net/en-us/article/mclive_sept2026_recap",
-    "https://www.minecraft.net/en-us/article/dungeons-ii-co-op",
-    "https://www.minecraft.net/en-us/about-dungeons-ii"
+    "https://store.steampowered.com/app/3883570/Invokyr/",
+    "https://steamcommunity.com/app/3883570/allnews/"
   ],
   "source_urls": [
-    "https://www.minecraft.net/en-us/article/minecraft-dungeons-ii-gameplay-trailer",
-    "https://www.minecraft.net/en-us/article/minecraft-dungeons-ii-gameplay-systems",
-    "https://www.minecraft.net/en-us/article/minecraft-dungeons-ii-is-live",
-    "https://www.minecraft.net/en-us/article/mclive_sept2026_recap",
-    "https://www.minecraft.net/en-us/article/dungeons-ii-co-op",
-    "https://www.minecraft.net/en-us/about-dungeons-ii"
+    "https://store.steampowered.com/app/3883570/Invokyr/",
+    "https://steamcommunity.com/app/3883570/allnews/"
   ],
   "short_hooks": [
-    "THE SIFT: A NOVA DIMENSÃO DE MINECRAFT!",
-    "MINECRAFT DUNGEONS II JÁ CHEGOU!",
-    "A NOVA DIMENSÃO VAI CHEGAR AO MINECRAFT EM 2027!"
+    "CADA DADO PODE INVOCAR UM PESADELO!",
+    "ATÉ 6 JOGADORES PRESOS NO MESMO TERROR!",
+    "AS REGRAS MUDAM — E OS MONSTROS TAMBÉM!"
   ],
-  "video_urls": [
-    "https://www.youtube.com/watch?v=vBNE3bKMpu8",
-    "https://www.youtube.com/watch?v=1tINxp9ZPZA"
-  ],
+  "video_urls": [],
   "approved_for_publish": false,
   "editorial_rules": [
-    "Tema bloqueado: Minecraft Dungeons II e a dimensão The Sift. Não trocar por outro jogo.",
-    "Usar prioritariamente gameplay oficial do canal Minecraft/Xbox e imagens das páginas oficiais minecraft.net.",
-    "Separar claramente: Minecraft Dungeons II foi lançado em 29 de setembro de 2026; The Sift foi anunciado como dimensão do jogo e também chegará ao Minecraft Java & Bedrock em 2027. Não inventar data específica para essa chegada.",
-    "A fala deve corresponder ao material mostrado; não apresentar cenas de Dungeons II como gameplay da edição Java/Bedrock.",
+    "Tema bloqueado: Invokyr. Não trocar por outro jogo.",
+    "Usar somente trailers, gameplay e imagens oficiais do próprio Invokyr extraídos das páginas oficiais do jogo na Steam. Não usar vídeos de streamers, webcams, reações, gameplays de criadores ou cenas de outros jogos.",
+    "Invokyr entrou em Acesso Antecipado em 8 de outubro de 2026. É terror cooperativo sobre um jogo de tabuleiro amaldiçoado; pode ser jogado sozinho ou em coop online com até seis jogadores.",
+    "Destacar dados, regras imprevisíveis, criaturas, eventos sobrenaturais, exploração da mansão e os quatro temas de tabuleiro anunciados: mansão assombrada, selva, montanha gelada e deserto.",
     "Manter intro oficial integral, sem gameplay antes do fim da intro. Voz Thalita Multilingual PT-BR V3.",
-    "Conferir o áudio real dos termos em inglês antes de aprovar: Minecraft Dungeons II, The Sift, Gameplay, Overworld e Illager. Se a pronúncia falhar, corrigir e renderizar novamente.",
+    "Pronunciar Invokyr de forma consistente, preservando o nome original; revisar no áudio final nomes e termos em inglês.",
     "Master cinematográfico 16:9 e exatamente 3 Shorts Premium V4 em 9:16, com capas próprias. Não publicar automaticamente; deixar não listado para revisão.",
-    "A QA editorial permite tratamento natural do público em português brasileiro; bloquear apenas linguagem meta/privada explícita. Não reprovar roteiro apenas pela ocorrência normal da palavra 'você'.",
-    "Direção visual flexível: priorizar trechos inéditos que combinem diretamente com a fala e com o sujeito específico. Se essas janelas se esgotarem, aceitar outro trecho de gameplay oficial, visualmente inspecionado e do mesmo jogo, mesmo que a categoria/assunto não seja perfeito, desde que não contradiga a narração. Os rótulos de assunto e categoria são preferências, não bloqueios absolutos. Não bloquear a produção por incompatibilidade visual secundária. Continuam obrigatórios: tema correto, ausência de cenas enganosas, preferir intervalos sem repetição, arquivos íntegros, proporções corretas e QA final."
+    "Cards devem permanecer tempo suficiente para leitura, com duração proporcional à quantidade de texto e alinhamento com a narração.",
+    "Direção visual flexível: preferir trechos inéditos e contextualmente relacionados, mas aceitar outro trecho oficial de gameplay do mesmo jogo se combinar razoavelmente com a fala. Não bloquear por incompatibilidade visual secundária. Não usar imagens de criadores ou de outros jogos."
   ],
   "script_blocks": [
-    "Atenção, fãs de Minecraft: a aventura ganhou uma nova dimensão, e ela tem um nome que você precisa guardar: The Sift. Em Minecraft Dungeons II, portais misteriosos estão surgindo pelo Overworld e levando os heróis para um lugar completamente desconhecido. Só que isso não é apenas um cenário diferente. Essa nova região vem acompanhada de criaturas estranhas, áreas inéditas e desafios que prometem mudar o ritmo da exploração. Hoje, no Radar dos Games, vamos entender o que realmente muda em Minecraft Dungeons II, por que The Sift está chamando tanta atenção e o que já foi confirmado para o Minecraft tradicional.",
-    "Primeiro, um detalhe importante: Minecraft Dungeons II não é simplesmente uma atualização do Minecraft de construção e sobrevivência. Ele é a sequência de Minecraft Dungeons, um jogo de ação e aventura com combate, equipamentos, exploração de masmorras e progressão de personagem. A continuação chegou em 29 de setembro de 2026, trazendo uma nova jornada dentro desse universo de blocos. A proposta continua sendo enfrentar inimigos, conseguir equipamentos melhores e combinar habilidades para montar o estilo de combate que funciona para você.",
-    "A grande novidade é The Sift, uma dimensão inédita apresentada no trailer oficial de gameplay. A descrição publicada pela equipe de Minecraft explica que fendas misteriosas aparecem em diferentes pontos do Overworld. Ao atravessar esses portais, os jogadores chegam a paisagens desconhecidas, com ameaças e ambientes que não existiam nas aventuras anteriores. O trailer mostra heróis enfrentando inimigos em áreas coloridas e luminosas, além de revelar a escala visual dessa nova região. É importante não confundir o que já aparece no jogo com promessas que ainda não têm data detalhada.",
-    "E por que uma dimensão nova é tão importante? Porque Minecraft tem uma identidade construída em torno da descoberta. No jogo principal, o Overworld, o Nether e o End definem experiências muito diferentes. A equipe de Minecraft afirmou que The Sift também será adicionada ao Minecraft Java e Bedrock em 2027, tornando-se a primeira nova dimensão do jogo principal em mais de quatorze anos. Isso não significa que todo o conteúdo de Dungeons II será transferido para o Minecraft tradicional. O que foi anunciado é a chegada da dimensão, e detalhes sobre como ela funcionará nessa versão precisam ser confirmados oficialmente.",
-    "Em Dungeons II, a história também coloca os heróis diante de uma ameaça organizada. Depois dos acontecimentos do primeiro jogo, fendas estranhas começam a aparecer e criaturas passam a ser afetadas por energias misteriosas. A responsabilidade pelos acontecimentos leva ao Illager High Council, formado pelo Prime Enchanter, pelo Supreme Evoker e pelo Grand Illusioner. O grupo coordena ataques e ameaça o equilíbrio entre os mundos. A missão dos jogadores é investigar o que está acontecendo e impedir que essa crise se espalhe ainda mais.",
-    "A aventura não depende apenas de bater mais forte. As informações oficiais sobre os sistemas de gameplay destacam mudanças na forma de montar e evoluir equipamentos. Livros de encantamento permitem guardar efeitos e aplicá-los a diferentes espaços de equipamento, enquanto esses encantamentos podem ser aprimorados ao longo da jornada. Isso dá mais controle sobre a construção do personagem e incentiva experimentar combinações. Em vez de depender só do item aleatório que aparece, o jogador pode pensar em uma estratégia, testar sinergias e adaptar seu equipamento aos inimigos que encontra.",
-    "O arsenal também ajuda a diferenciar os estilos de jogo. As páginas oficiais mostram opções como bastões de combate, arcos e martelos, além de espadas e outras armas. Cada categoria oferece um equilíbrio diferente entre poder, velocidade e alcance. A escolha não é só estética: o equipamento influencia como você se aproxima dos inimigos, quando ataca e como reage a grupos grandes. As armas e os equipamentos mudam a forma de enfrentar cada grupo de inimigos, então vale observar como cada opção se comporta durante o combate.",
-    "Outra parte importante é jogar acompanhado. Minecraft Dungeons II permite enfrentar a aventura sozinho ou reunir até quatro jogadores. A equipe oficial também descreveu opções para jogar no mesmo sofá, entrar em partidas online e usar crossplay, além de melhorias na infraestrutura das partidas. Isso amplia as possibilidades para quem gosta de explorar com amigos, mas também mantém a alternativa de seguir a campanha individualmente. A cooperação pode ser especialmente útil quando o grupo precisa lidar com vários tipos de inimigos e coordenar diferentes combinações de armas e habilidades.",
-    "A pergunta que muita gente está fazendo é se The Sift será apenas uma novidade de Minecraft Dungeons II ou se vai mudar o Minecraft de sempre. A resposta confirmada até agora é que a dimensão chegará também às edições Java e Bedrock em 2027. O anúncio amplia as expectativas, mas ainda precisamos aguardar detalhes específicos sobre exploração, criaturas, recursos e mecânicas na versão principal. Não vale transformar especulação em promessa: vamos acompanhar os anúncios oficiais e separar o que já foi mostrado daquilo que a comunidade ainda gostaria de ver.",
-    "No fim, Minecraft Dungeons II combina uma nova aventura de ação com uma ideia que pode ter consequências maiores para a franquia: The Sift. No jogo de Dungeons, ela oferece novos territórios, inimigos e oportunidades para testar equipamentos. No Minecraft Java e Bedrock, a chegada anunciada para 2027 abre a possibilidade de explorar uma quarta dimensão no jogo principal, embora os detalhes ainda dependam de novas informações. Agora queremos saber a sua opinião: você vai entrar em The Sift primeiro em Dungeons II ou prefere esperar para descobrir como ela será no Minecraft tradicional? Deixe seu comentário, curta o vídeo e inscreva-se no Radar dos Games para acompanhar as próximas novidades."
+    "E se cada jogada de um jogo de tabuleiro pudesse trazer uma criatura direto para cima de você? Essa é a ideia de Invokyr, um terror cooperativo em que os dados não servem apenas para avançar casas: eles podem mudar as regras, provocar eventos sobrenaturais e transformar uma partida tranquila em puro desespero. Hoje, no Radar dos Games, vamos conhecer o jogo que chegou ao Acesso Antecipado e quer transformar uma noite entre amigos numa luta pela sobrevivência.",
+    "Invokyr foi lançado em Acesso Antecipado em 8 de outubro de 2026. A premissa mistura exploração em primeira pessoa, terror e um jogo de tabuleiro amaldiçoado. Você está preso numa mansão estranha, e o Mestre do Jogo controla boa parte do que acontece. Para escapar, é preciso avançar, sobreviver aos encontros e aprender a lidar com regras que podem mudar a qualquer momento.",
+    "A experiência pode ser jogada sozinho ou em cooperativo online com até seis pessoas. E é aí que a tensão ganha outra camada: trabalhar em equipe pode ser a diferença entre escapar e virar mais uma vítima da casa. Só que dividir a aventura com amigos não significa que tudo vai sair conforme o plano. Uma jogada ruim pode desencadear um evento inesperado, e a equipe precisa decidir rapidamente como reagir.",
+    "O jogo também aposta na variedade. A versão de Acesso Antecipado apresenta quatro temas de tabuleiro: a mansão assombrada, uma região de selva, uma montanha congelada e um deserto. Cada ambiente traz uma atmosfera própria, perigos e encontros diferentes. A promessa é que a exploração não fique presa a corredores idênticos: o cenário e as ameaças mudam o ritmo de cada tentativa.",
+    "Os dados são parte central da estratégia. Alguns podem conceder habilidades especiais, ajudar a se esconder ou atrapalhar as criaturas que estão caçando o grupo. Mas existe um detalhe importante: certos dados só podem ser usados uma vez. Então não basta jogar o primeiro que aparecer. Escolher quando gastar um recurso pode decidir se você vai conseguir avançar ou ficar sem saída quando a situação piorar.",
+    "A descrição oficial também destaca mais de quinze monstros, dezenas de eventos sobrenaturais e melhorias que podem ser compradas durante a progressão. Isso significa que o perigo não depende só de sustos repentinos. O jogador precisa observar o ambiente, procurar recursos e adaptar a estratégia às condições da partida. Como os sistemas se combinam de formas diferentes, duas sessões podem terminar com histórias bem distintas.",
+    "Vale lembrar que Invokyr ainda está em Acesso Antecipado. O conteúdo pode mudar e receber novos ajustes com o retorno da comunidade. A equipe pretende ampliar os temas, criaturas, itens e mistérios ao longo do desenvolvimento. Por isso, o jogo deve ser entendido como uma experiência em evolução, e não como uma versão final fechada.",
+    "No fim, Invokyr tenta combinar a tensão de um terror em primeira pessoa com a imprevisibilidade de um jogo de tabuleiro. Os dados podem ajudar, mas também podem piorar tudo; os amigos podem salvar a partida, mas ninguém está totalmente seguro. Se você curte terror cooperativo, exploração e situações que saem do controle em segundos, vale acompanhar esse lançamento. Conta pra gente: você encararia essa mansão sozinho ou só entraria com uma equipe completa? Este é o Radar dos Games — e a próxima jogada pode ser a última."
   ]
 }
