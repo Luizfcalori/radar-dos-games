@@ -147,7 +147,7 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
     sh([
         "ffmpeg","-y","-v","error",*inp,"-t",f"{duration:.3f}",
         "-filter_complex",fc,"-map","[v]","-an","-r",str(FPS),
-        "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p",str(dest)
+        "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-video_track_timescale","90000",str(dest)
     ])
 
     if abs(probe_duration(dest)-duration)>0.08:
@@ -188,7 +188,8 @@ def normalize_intro(src,dest):
     vf=f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=black,fps={FPS},setsar=1,format=yuv420p"
     af="aresample=48000"
     cmd += ["-vf",vf,"-af",af,"-c:v","libx264","-preset","veryfast","-crf","20",
-            "-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)]
+            "-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",
+            "-c:a","aac","-b:a","192k","-ar","48000","-ac","2",str(dest)]
     sh(cmd)
 
 def trim_av(src,dest,start=0,duration=0):
@@ -204,10 +205,7 @@ def trim_av(src,dest,start=0,duration=0):
 def concat_av(paths,dest,tmp):
     listing=tmp/"final-v4.txt"
     listing.write_text("".join(f"file '{Path(p).resolve()}'\n" for p in paths),encoding="utf-8")
-    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),
-        "-vf",f"setpts=N/({FPS}*TB),format=yuv420p","-af","aresample=48000,asetpts=N/SR/TB",
-        "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r",str(FPS),
-        "-video_track_timescale","90000","-c:a","aac","-b:a","192k","-ar","48000","-ac","2","-movflags","+faststart",str(dest)])
+    sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),"-c","copy","-movflags","+faststart",str(dest)])
 
 def render(manifest_path):
     m=json.loads(Path(manifest_path).read_text(encoding="utf-8"))
@@ -261,7 +259,7 @@ def render(manifest_path):
     listing=tmp/"visuals.txt"
     listing.write_text("".join(f"file '{p.resolve()}'\n" for p in pieces),encoding="utf-8")
     visuals=tmp/"body_visuals.mp4"
-    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),"-vf",f"setpts=N/({FPS}*TB),format=yuv420p","-an","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",str(visuals)])
+    sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),"-c","copy",str(visuals)])
 
     sfx=tmp/"editorial-sfx.wav"
     make_sfx_track(cursor,sfx_events,sfx)
