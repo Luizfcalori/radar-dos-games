@@ -6,8 +6,8 @@ class ContinuityTests(unittest.TestCase):
     def setUp(self):
         self.assets={1:{'index':1,'type':'video','duration':60,'url':'https://official/one.mp4'},
                      2:{'index':2,'type':'video','duration':60,'url':'https://official/two.mp4'}}
-        self.scene={'visual_windows':{'1':[{'start':0,'end':20,'semantic_categories':['combat']}],
-                                      '2':[{'start':0,'end':20,'semantic_categories':['hacking']}]}}
+        self.scene={'visual_windows':{'1':[{'start':0,'end':20,'semantic_categories':['combat'],'reviewed':True,'evidence':'review/frame-1.jpg'}],
+                                      '2':[{'start':0,'end':20,'semantic_categories':['hacking'],'reviewed':True,'evidence':'review/frame-2.jpg'}]}}
 
     def test_follows_same_gameplay_without_restarting(self):
         t=VideoTimeline(self.assets)
@@ -19,10 +19,17 @@ class ContinuityTests(unittest.TestCase):
         result=VideoTimeline(self.assets).choose(self.scene,'Invasão digital de um netrunner',5,list(self.assets.values()))
         self.assertEqual(result[0]['index'],2)
 
-    def test_exhaustion_never_wraps_or_uses_wrong_subject(self):
+    def test_fallback_uses_other_reviewed_gameplay_when_category_is_exhausted(self):
         t=VideoTimeline(self.assets)
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
+        fallback=t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        self.assertEqual(fallback[0]['index'],2)
+        self.assertEqual(fallback[1],0)
+
+    def test_exhaustion_never_reuses_any_approved_interval(self):
+        t=VideoTimeline(self.assets)
+        for _ in range(4): t.choose(self.scene,'Combate',10,list(self.assets.values()))
         with self.assertRaisesRegex(RuntimeError,'faltam cenas inéditas'):
             t.choose(self.scene,'Combate',5,list(self.assets.values()))
 
@@ -95,7 +102,7 @@ class DirectorIntegrationTests(unittest.TestCase):
                 assets.append({'index':i,'type':'video','duration':30,'approved':True,
                                'url':f'https://official/{i}.mp4','role':f'official_context_{i}'})
                 scenes.append({'title':title,'paragraph':i,'media_indices':[i],
-                               'visual_windows':{str(i):[{'start':0,'end':30,'semantic_categories':[cat]}]}})
+                               'visual_windows':{str(i):[{'start':0,'end':30,'semantic_categories':[cat],'reviewed':True,'evidence':f'review/frame-{i}.jpg'}]}})
                 segments.append({'text':title,'start':(i-1)*12,'end':i*12,'duration':12})
                 for j in range(2):
                     phrases.append({'paragraph':i,'sentence':j+1,'text':title,
