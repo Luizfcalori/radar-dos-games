@@ -358,6 +358,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                       "transition":"hard_cut","keyword_overlay":"","intensity":intensity(phrase_text),
                       "visual_evidence":evidence}
                 if window: beat["source_window"]=window
+                if window and proof.get("reused_source"): beat["approved_reuse"]=True
                 beats.append(beat)
                 static_tracker.record(picked,i,timeline_seconds,d)
                 timeline_seconds+=d;consumed+=d;remaining-=d;usage[idx]+=1;previous=idx
