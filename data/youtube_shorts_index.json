@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-10T22:45:46.110259+00:00",
-  "total_discovered": 66,
-  "ready_for_tiktok": 64,
+  "updated_at": "2026-10-11T14:18:22.873894+00:00",
+  "total_discovered": 69,
+  "ready_for_tiktok": 67,
   "waiting_media": [
     {
       "youtube_id": "BQ30QQNY9kw",
@@ -17,6 +17,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "N-gRJNWNkNE",
+      "youtube_url": "https://www.youtube.com/shorts/N-gRJNWNkNE",
+      "title": "A NOVA DIMENSÃO VAI CHEGAR AO MINECRAFT EM 2027!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "RumhQJhVWmo",
+      "youtube_url": "https://www.youtube.com/shorts/RumhQJhVWmo",
+      "title": "MINECRAFT DUNGEONS II JÁ CHEGOU!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "CJlO1tvD2Dc",
+      "youtube_url": "https://www.youtube.com/shorts/CJlO1tvD2Dc",
+      "title": "THE SIFT: A NOVA DIMENSÃO DE MINECRAFT!",
+      "status": "approved"
+    },
     {
       "youtube_id": "Tgud1D_uQpw",
       "youtube_url": "https://www.youtube.com/shorts/Tgud1D_uQpw",
