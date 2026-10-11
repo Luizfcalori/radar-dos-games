@@ -62,7 +62,11 @@ class VideoTimeline:
                 cats=set(w.get('semantic_categories',[]))
                 if 'title_card' in cats: continue
                 reviewed=w.get('reviewed') is True and bool(w.get('evidence'))
-                if required_subjects and (not reviewed or not set(required_subjects)<=set(w.get('subjects',[]))):
+                subject_match=not required_subjects or set(required_subjects)<=set(w.get('subjects',[]))
+                # Subject labels are a preference, not a hard stop when a phrase
+                # has exhausted exact matches. Only use the broader fallback for
+                # visually reviewed footage from the already-approved game source.
+                if required_subjects and not subject_match and not reviewed:
                     continue
                 # One-off editorial source context can explicitly allow a
                 # visible fallback category for footage limited to verified
@@ -92,7 +96,7 @@ class VideoTimeline:
                     if length<=0: continue
                     # Prefer continuing the same shot, then coverage, then length.
                     continuous=self.last is not None and self.last[0]==self.identity(idx) and abs(self.last[1]-lo)<.06
-                    rank=(bool(reviewed),category_match or bool(source_context & cats),continuous,len(cats & expected),length,-idx,-lo)
+                    rank=(bool(reviewed),subject_match,category_match or bool(source_context & cats),continuous,len(cats & expected),length,-idx,-lo)
                     candidates.append((rank,asset,lo,length,w))
         if not candidates:
             raise RuntimeError(f'QUALITY_BLOCK: faltam cenas inéditas correspondentes à fala: {text}; ampliar fontes ou revisar roteiro')
