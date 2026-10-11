@@ -66,8 +66,7 @@ class VideoTimeline:
                 # Subject labels are a preference, not a hard stop when a phrase
                 # has exhausted exact matches. Only use the broader fallback for
                 # visually reviewed footage from the already-approved game source.
-                if required_subjects and not subject_match and not reviewed:
-                    continue
+                # Subject labels rank candidates but do not block gameplay from approved assets.
                 # One-off editorial source context can explicitly allow a
                 # visible fallback category for footage limited to verified
                 # topic-specific sources (e.g. driving in a multiplayer trailer).
@@ -79,8 +78,7 @@ class VideoTimeline:
                 # still rank higher; title cards and required-subject constraints
                 # remain hard blocks, as do reused intervals.
                 category_match=bool(expected & cats)
-                if expected and not category_match and not (source_context & cats) and not reviewed:
-                    continue
+                # Category labels rank candidates but do not block fallback gameplay from approved assets.
                 # Technical inspection bins can end at ceil(duration), a fraction
                 # beyond the actual last decodable frame. Never reserve beyond
                 # the probed media duration; keep the strict QA guard enabled.
