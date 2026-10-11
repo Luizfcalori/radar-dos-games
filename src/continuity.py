@@ -9,7 +9,7 @@ except ModuleNotFoundError:
     from src.repetition_policy import asset_identity
     from src.vision_semantics import scene_categories
 
-POLICY='PHRASE_VISUAL_CONTINUITY_V1'  # labels rank reviewed gameplay; unreviewed windows remain ineligible
+POLICY='PHRASE_VISUAL_CONTINUITY_V1'  # reviewed windows require traceable frame-scan evidence  # labels rank reviewed gameplay; unreviewed windows remain ineligible
 EPS=0.002
 
 class VideoTimeline:
