@@ -69,7 +69,13 @@ class VideoTimeline:
                 # topic-specific sources (e.g. driving in a multiplayer trailer).
                 # Normal productions are unchanged when this field is absent.
                 source_context=set(scene.get('verified_source_fallback_categories') or ())
-                if expected and not (expected & cats) and not (source_context & cats):
+                # Flexible fallback: when no unused shot matches the phrase's
+                # exact visual category, allow another reviewed, topic-approved
+                # gameplay window from the same approved source. Exact matches
+                # still rank higher; title cards and required-subject constraints
+                # remain hard blocks, as do reused intervals.
+                category_match=bool(expected & cats)
+                if expected and not category_match and not (source_context & cats) and not reviewed:
                     continue
                 # Technical inspection bins can end at ceil(duration), a fraction
                 # beyond the actual last decodable frame. Never reserve beyond
@@ -86,7 +92,7 @@ class VideoTimeline:
                     if length<=0: continue
                     # Prefer continuing the same shot, then coverage, then length.
                     continuous=self.last is not None and self.last[0]==self.identity(idx) and abs(self.last[1]-lo)<.06
-                    rank=(bool(reviewed),continuous,len(cats & expected),length,-idx,-lo)
+                    rank=(bool(reviewed),category_match or bool(source_context & cats),continuous,len(cats & expected),length,-idx,-lo)
                     candidates.append((rank,asset,lo,length,w))
         if not candidates:
             raise RuntimeError(f'QUALITY_BLOCK: faltam cenas inéditas correspondentes à fala: {text}; ampliar fontes ou revisar roteiro')
