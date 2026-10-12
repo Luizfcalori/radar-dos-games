@@ -76,7 +76,7 @@ jobs:
 
   produce:
     # Permit an explicitly marked one-off production run after a pipeline fix.
-    if: github.event_name != 'push' || startsWith(github.event.head_commit.message, '[run-production]')
+    if: github.event_name != 'push' || startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -102,16 +102,16 @@ jobs:
         run: python src/research.py
 
       - name: Bloquear execução de produção sem tema explícito
-        if: ${{ github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production]') }}
+        if: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]')) }}
         run: |
           if [[ "${{ github.event.head_commit.message }}" != *"TOPIC="* ]]; then
-            echo "ERRO: execução [run-production] sem TOPIC explícito; bloqueando AUTO para impedir troca de jogo."
+            echo "ERRO: execução de produção sem TOPIC explícito; bloqueando AUTO para impedir troca de jogo."
             exit 1
           fi
 
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
-          RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || 'AUTO' }}
+          RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Phantom Blade Zero') && 'Phantom Blade Zero') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || 'AUTO' }}
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
