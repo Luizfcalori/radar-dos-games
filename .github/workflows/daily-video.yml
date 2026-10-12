@@ -1,5 +1,6 @@
 name: Radar dos Games - Daily Auto Master + 3 Shorts
 
+
 on:
   workflow_dispatch:
     inputs:
