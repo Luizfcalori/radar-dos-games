@@ -112,6 +112,7 @@ jobs:
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
           RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Phantom Blade Zero') && 'Phantom Blade Zero') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || 'AUTO' }}
+          RADAR_IGNORE_MANUAL_BRIEF: ${{ github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-only]') && '1' || '0' }}
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
