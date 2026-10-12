@@ -672,6 +672,10 @@ def main():
         raise RuntimeError("output/research.json ausente")
     candidates = json.loads(research_path.read_text(encoding="utf-8")).get("candidates", [])
     manual = load_manual_brief()
+    # Uma execução explicitamente marcada como run-only pode ignorar um brief
+    # manual vigente de outro jogo sem apagar nem alterar esse brief.
+    if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
+        manual = None
     if not candidates and not manual:
         raise RuntimeError("Nenhuma pauta recente encontrada nas fontes oficiais")
 
