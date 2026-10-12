@@ -1,0 +1,178 @@
+name: Add Phantom Blade Zero Shorts to Radar TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-phantom-blade-zero-2026-10-12-to-tiktok-helper.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: add-phantom-blade-zero-2026-10-12-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: "38243555628"
+      SOURCE_ARTIFACT: radar-daily-auto-38243555628
+      BASE_URL: https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download original Phantom Blade Zero production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: phantom-source
+          repository: Luizfcalori/radar-dos-games
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Validate approved production and prepare three Shorts with covers
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-phantom
+          python - <<'PY'
+          import json, shutil, subprocess
+          from pathlib import Path
+          source=Path("phantom-source")
+          qa_files=list(source.rglob("final-qa.json"))
+          assert qa_files, "Bloqueado: final-qa.json ausente no artefato original"
+          qa_path=qa_files[0]
+          qa=json.loads(qa_path.read_text(encoding="utf-8"))
+          assert str(qa.get("status","")).upper().startswith("APPROVED"), qa
+          assert len(qa.get("shorts") or []) == 3, "QA não confirma exatamente 3 Shorts"
+          selected_files=list(source.rglob("selected.json"))
+          assert selected_files, "selected.json ausente"
+          selected=json.loads(selected_files[0].read_text(encoding="utf-8"))
+          assert "phantom blade zero" in str(selected.get("title","")).casefold(), selected.get("title")
+          for n in (1,2,3):
+              candidates=[p for p in source.rglob(f"short_{n}.mp4") if p.is_file() and p.stat().st_size>500_000]
+              assert len(candidates)==1, f"Esperava um short_{n}.mp4 válido; encontrei {len(candidates)}"
+              src=candidates[0]
+              metas=list(source.rglob(f"short-{n}-youtube.json"))
+              assert len(metas)==1, f"Metadados ausentes/duplicados no Short {n}"
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              assert meta.get("title") and meta.get("description"), meta
+              assert "phantom blade zero" in str(meta.get("description","")).casefold(), meta.get("description")
+              dst=Path("tiktok-phantom")/f"phantom-blade-zero-2026-10-12-short-{n}.mp4"
+              shutil.copy2(src,dst)
+              covers=[p for p in source.rglob(f"short_{n}_cover.jpg") if p.is_file() and p.stat().st_size>1000]
+              jpg=Path("tiktok-phantom")/f"phantom-blade-zero-2026-10-12-short-{n}.jpg"
+              if covers:
+                  shutil.copy2(covers[0],jpg)
+              else:
+                  subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss","1","-i",str(src),"-frames:v","1","-vf","scale=720:-2",str(jpg)],check=True)
+              print("VALIDATED_SHORT",n,"title=",meta["title"],"bytes=",dst.stat().st_size,flush=True)
+          print("SOURCE_RUN_CONFIRMED",38243555628)
+          PY
+
+      - name: Upload three MP4s and covers to TikTok Helper asset release
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Downloads para publicação manual no Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-phantom/*.mp4 tiktok-phantom/*.jpg --clobber
+
+      - name: Verify all six asset links are downloadable
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 3 --max-time 120 --range 0-1023 "${BASE_URL}/phantom-blade-zero-2026-10-12-short-${n}.${ext}" -o /dev/null
+              echo "REMOTE_OK short-${n}.${ext}"
+            done
+          done
+
+      - name: Add three Phantom Blade Zero Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re
+          from datetime import datetime, timezone
+          from pathlib import Path
+          source=Path("phantom-source")
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          new=[]
+          for n in (1,2,3):
+              metas=list(source.rglob(f"short-{n}-youtube.json"))
+              assert len(metas)==1, f"Metadados ausentes/duplicados no Short {n}"
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              title=re.sub(r"(?i)#shorts?\\b","",str(meta.get("title") or "")).strip(" -|")
+              desc=str(meta.get("description") or "")
+              tags=[]
+              for found in re.findall(r"#([\\wÀ-ÿ]+)",desc):
+                  tag="#"+found
+                  if tag.casefold() not in {x.casefold() for x in tags}: tags.append(tag)
+                  if len(tags)>=5: break
+              for tag in ("#RadarDosGames","#PhantomBladeZero","#PlayStation","#Games","#Gaming","#TikTokGames"):
+                  if tag.casefold() not in {x.casefold() for x in tags}: tags.append(tag)
+              new.append({
+                "id":f"phantom-blade-zero-2026-10-12-short-{n}",
+                "title":title,
+                "media_url":f"{base}/phantom-blade-zero-2026-10-12-short-{n}.mp4",
+                "thumbnail_url":f"{base}/phantom-blade-zero-2026-10-12-short-{n}.jpg",
+                "post_text":title+"\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n"+" ".join(tags),
+                "status":"approved","source_run_id":38243555628,"short_number":n,
+                "approved_at":now,"source":"approved_production_artifact_auto",
+                "platform":"tiktok_helper_manual_posting"
+              })
+          old_ids={str(x.get("id") or "") for x in old}
+          old_keys={(str(x.get("source_run_id") or ""),str(x.get("short_number") or "")) for x in old}
+          merged=[x for x in new if x["id"] not in old_ids and (str(x["source_run_id"]),str(x["short_number"])) not in old_keys]
+          if merged:
+              q["version"]=2
+              q["updated_at"]=now
+              q["items"]=(merged+old)[:200]
+              qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":len(merged),"preserved":len(old),"total":len(q.get("items") or []),"items":[x["id"] for x in merged]},ensure_ascii=False))
+          PY
+
+      - name: Commit TikTok Helper queue update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "Phantom Blade Zero Shorts already present in TikTok Helper queue."
+            exit 0
+          fi
+          git commit -m "feat: add Phantom Blade Zero Shorts to TikTok Helper"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Verify three Phantom Blade Zero items in remote app queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-remote.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-remote.json",encoding="utf-8"))
+          items=[x for x in q.get("items",[]) if str(x.get("source_run_id",""))=="38243555628" and str(x.get("short_number","")) in {"1","2","3"}]
+          by_n={str(x.get("short_number")):x for x in items}
+          assert set(by_n)=={"1","2","3"}, f"Esperava 3 Shorts; encontrei {list(by_n)}"
+          assert all(by_n[n].get("status")=="approved" and by_n[n].get("media_url","").endswith(".mp4") and by_n[n].get("post_text") for n in ("1","2","3"))
+          print("TIKTOK_HELPER_PHANTOM_BLADE_ZERO_OK",len(by_n),"QUEUE_TOTAL",len(q["items"]))
+          PY
