@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-11T14:18:22.873894+00:00",
-  "total_discovered": 69,
-  "ready_for_tiktok": 67,
+  "updated_at": "2026-10-12T18:05:08.196242+00:00",
+  "total_discovered": 72,
+  "ready_for_tiktok": 70,
   "waiting_media": [
     {
       "youtube_id": "BQ30QQNY9kw",
@@ -17,6 +17,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "cFlHQS3Z94s",
+      "youtube_url": "https://www.youtube.com/shorts/cFlHQS3Z94s",
+      "title": "CADA DADO PODE INVOCAR UM PESADELO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "WRIjlKq0S8c",
+      "youtube_url": "https://www.youtube.com/shorts/WRIjlKq0S8c",
+      "title": "ATÉ 6 JOGADORES PRESOS NO MESMO TERROR!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Dbb2OW9Fglw",
+      "youtube_url": "https://www.youtube.com/shorts/Dbb2OW9Fglw",
+      "title": "AS REGRAS MUDAM — E OS MONSTROS TAMBÉM!",
+      "status": "approved"
+    },
     {
       "youtube_id": "N-gRJNWNkNE",
       "youtube_url": "https://www.youtube.com/shorts/N-gRJNWNkNE",
