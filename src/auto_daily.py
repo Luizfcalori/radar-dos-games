@@ -611,8 +611,8 @@ def candidate_score(candidate, index, media, repeat):
 
 
 
-def load_manual_brief():
-    p = Path("production/manual-brief.json")
+def load_manual_brief(path=None):
+    p = Path(path) if path else Path("production/manual-brief.json")
     if not p.exists():
         return None
     try:
@@ -675,7 +675,10 @@ def main():
     # Uma execução explicitamente marcada como run-only pode ignorar um brief
     # manual vigente de outro jogo sem apagar nem alterar esse brief.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
-        manual = None
+        if ascii_slug(forced) == ascii_slug("Phantom Blade Zero"):
+            manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
+        else:
+            manual = None
     if not candidates and not manual:
         raise RuntimeError("Nenhuma pauta recente encontrada nas fontes oficiais")
 
