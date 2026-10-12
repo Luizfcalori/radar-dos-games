@@ -675,7 +675,7 @@ def main():
     # Uma execução explicitamente marcada como run-only pode ignorar um brief
     # manual vigente de outro jogo sem apagar nem alterar esse brief.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
-        if ascii_slug(forced) == ascii_slug("Phantom Blade Zero"):
+        if ascii_slug(os.getenv("RADAR_TOPIC", "AUTO").strip()) == ascii_slug("Phantom Blade Zero"):
             manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
         else:
             manual = None
