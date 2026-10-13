@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-12T18:05:08.196242+00:00",
-  "total_discovered": 72,
-  "ready_for_tiktok": 70,
+  "updated_at": "2026-10-13T14:59:58.269189+00:00",
+  "total_discovered": 75,
+  "ready_for_tiktok": 73,
   "waiting_media": [
     {
       "youtube_id": "BQ30QQNY9kw",
@@ -17,6 +17,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "RXg8h4Pxbss",
+      "youtube_url": "https://www.youtube.com/shorts/RXg8h4Pxbss",
+      "title": "PHANTOM BLADE ZERO: COMBATE DE FILME, MAS É GAMEPLAY!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "aO4TCFWcIuo",
+      "youtube_url": "https://www.youtube.com/shorts/aO4TCFWcIuo",
+      "title": "SOUL TEM SÓ 66 DIAS PARA DESVENDAR A CONSPIRAÇÃO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "r_h-rczKSgE",
+      "youtube_url": "https://www.youtube.com/shorts/r_h-rczKSgE",
+      "title": "MAIS DE 30 ARMAS E 3 MODOS DE DIFICULDADE!",
+      "status": "approved"
+    },
     {
       "youtube_id": "cFlHQS3Z94s",
       "youtube_url": "https://www.youtube.com/shorts/cFlHQS3Z94s",
