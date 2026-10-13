@@ -1,0 +1,152 @@
+name: Radar dos Games - Publicar produção 213 privada no YouTube
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-production-213-youtube.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Baixar artefato original da produção 213
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-38337743293
+          path: bundle
+          repository: Luizfcalori/radar-dos-games
+          run-id: 38337743293
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Preparar os quatro vídeos originais e forçar privacidade
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          root=Path("bundle"); out=Path("output")
+          (out/"shorts").mkdir(parents=True,exist_ok=True)
+          def find_one(name, required=True):
+              matches=[p for p in root.rglob(name) if p.is_file() and p.stat().st_size>0]
+              if not matches and not required: return None
+              if len(matches)!=1: raise SystemExit(f"Esperava exatamente 1 arquivo {name}; encontrei {len(matches)}: {[str(p) for p in matches]}")
+              return matches[0]
+          files=[
+            ("master.mp4","master.mp4"),("master-youtube.json","master-youtube.json"),
+            ("short_1.mp4","shorts/short_1.mp4"),("short_2.mp4","shorts/short_2.mp4"),("short_3.mp4","shorts/short_3.mp4"),
+            ("short-1-youtube.json","short-1-youtube.json"),("short-2-youtube.json","short-2-youtube.json"),("short-3-youtube.json","short-3-youtube.json")]
+          for src_name,dst_name in files:
+              src=find_one(src_name); dst=out/dst_name; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(src,dst)
+          cover=find_one("thumbnail.jpg",False)
+          if cover: shutil.copy2(cover,out/"thumbnail.jpg")
+          videos=[out/"master.mp4",out/"shorts/short_1.mp4",out/"shorts/short_2.mp4",out/"shorts/short_3.mp4"]
+          for p in videos:
+              if p.stat().st_size<100_000: raise SystemExit(f"Vídeo inválido: {p} ({p.stat().st_size} bytes)")
+          master=out/"master-youtube.json"
+          m=json.loads(master.read_text(encoding="utf-8"))
+          if (out/"thumbnail.jpg").is_file() and (out/"thumbnail.jpg").stat().st_size>=20_000:
+              m["thumbnail"]="output/thumbnail.jpg"; m["use_existing_thumbnail"]=True
+          m["privacy"]="private"; master.write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding="utf-8")
+          for n in ("short-1-youtube.json","short-2-youtube.json","short-3-youtube.json"):
+              p=out/n; meta=json.loads(p.read_text(encoding="utf-8")); meta["privacy"]="private"; p.write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
+          print("Pacote original preparado; os quatro metadados foram definidos como private.")
+          for p in videos: print(f"{p}: {p.stat().st_size} bytes")
+          PY
+
+      - name: Validar OAuth e canal correto
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python src/check_youtube.py
+
+      - name: Bloquear duplicatas antes do envio
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from src.youtube import service, channel_identity, assert_radar_channel, RADAR_CHANNEL_ID
+          yt=service(); cid,channel=channel_identity(yt); assert_radar_channel(cid,channel)
+          items=[("master","output/master-youtube.json"),("short1","output/short-1-youtube.json"),("short2","output/short-2-youtube.json"),("short3","output/short-3-youtube.json")]
+          duplicates=[]
+          for key,path in items:
+              meta=json.loads(Path(path).read_text(encoding="utf-8")); title=meta["title"].strip()
+              r=yt.search().list(part="snippet",channelId=RADAR_CHANNEL_ID,q=title,type="video",maxResults=10).execute()
+              for item in r.get("items",[]):
+                  if item.get("snippet",{}).get("title","").strip().casefold()==title.casefold():
+                      duplicates.append({"key":key,"title":title,"videoId":item["id"]["videoId"]})
+          if duplicates: raise SystemExit("Envio bloqueado para evitar duplicatas: "+json.dumps(duplicates,ensure_ascii=False))
+          print("Canal correto confirmado; nenhuma duplicata exata encontrada.")
+          PY
+
+      - name: Enviar Master e três Shorts como privados
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: |
+          set -euo pipefail
+          python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+          python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+          python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+          python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Verificar os quatro vídeos no YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from src.youtube import service, channel_identity, assert_radar_channel
+          yt=service(); cid,channel=channel_identity(yt); assert_radar_channel(cid,channel)
+          keys=["master","short1","short2","short3"]; proof=[]
+          for key in keys:
+              p=Path(f"output/youtube-{key.replace('short','short-')}-result.json") if key!="master" else Path("output/youtube-master-result.json")
+              if not p.is_file(): raise SystemExit(f"Comprovante ausente: {p}")
+              resp=json.loads(p.read_text(encoding="utf-8")); vid=resp.get("id")
+              if not vid: raise SystemExit(f"ID ausente: {p}")
+              found=yt.videos().list(part="snippet,status",id=vid).execute().get("items",[])
+              if len(found)!=1: raise SystemExit(f"YouTube não confirmou vídeo {vid}")
+              v=found[0]; assert_radar_channel(v["snippet"]["channelId"],v["snippet"]["channelTitle"])
+              privacy=v["status"]["privacyStatus"]
+              if privacy!="private": raise SystemExit(f"PRIVACIDADE INCORRETA: {vid} está {privacy}, esperado private")
+              proof.append({"key":key,"id":vid,"url":f"https://www.youtube.com/watch?v={vid}","title":v["snippet"]["title"],"privacy":privacy,"channel":v["snippet"]["channelTitle"]})
+          Path("output/producao-213-youtube-confirmado.json").write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(proof,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Salvar comprovantes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-producao-213-youtube-comprovantes-${{ github.run_id }}
+          path: |
+            output/youtube-master-result.json
+            output/youtube-short-1-result.json
+            output/youtube-short-2-result.json
+            output/youtube-short-3-result.json
+            output/producao-213-youtube-confirmado.json
+          if-no-files-found: ignore
+          retention-days: 14
