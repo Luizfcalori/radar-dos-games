@@ -671,14 +671,21 @@ def main():
     if not research_path.exists():
         raise RuntimeError("output/research.json ausente")
     candidates = json.loads(research_path.read_text(encoding="utf-8")).get("candidates", [])
+    forced_topic_slug = ascii_slug(os.getenv("RADAR_TOPIC", "AUTO").strip())
     manual = load_manual_brief()
+    # Pautas especiais independentes mantêm briefs próprios para não sobrescrever
+    # o brief genérico nem herdar o tema de uma produção anterior.
+    if forced_topic_slug == ascii_slug("Free Fire"):
+        manual = load_manual_brief("production/manual-brief-free-fire-2026-10-13.json")
     # Uma execução explicitamente marcada como run-only pode ignorar um brief
     # manual vigente de outro jogo sem apagar nem alterar esse brief.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
-        if ascii_slug(os.getenv("RADAR_TOPIC", "AUTO").strip()) == ascii_slug("Phantom Blade Zero"):
+        if forced_topic_slug == ascii_slug("Phantom Blade Zero"):
             manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
-        elif ascii_slug(os.getenv("RADAR_TOPIC", "AUTO").strip()) == ascii_slug("Roblox"):
+        elif forced_topic_slug == ascii_slug("Roblox"):
             manual = load_manual_brief("production/manual-brief-roblox-2026-10-13.json")
+        elif forced_topic_slug == ascii_slug("Free Fire"):
+            manual = load_manual_brief("production/manual-brief-free-fire-2026-10-13.json")
         else:
             manual = None
     if not candidates and not manual:
