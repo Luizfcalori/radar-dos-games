@@ -1,0 +1,49 @@
+{
+  "valid_until": "2026-10-15T12:00:00Z",
+  "content_id": "roblox-creator-updates-october-2026",
+  "title": "Roblox",
+  "headline": "ROBLOX MUDOU DE NOVO: PUBLICAÇÃO MAIS FÁCIL, TESTES COM AMIGOS E NOVAS FERRAMENTAS",
+  "primary_source": "https://devforum.roblox.com/t/a-simpler-path-to-publish-plus-invite-early-testers/4930524",
+  "media_source_urls": [
+    "https://devforum.roblox.com/t/a-simpler-path-to-publish-plus-invite-early-testers/4930524",
+    "https://devforum.roblox.com/t/studio-beta-introducing-state-machines-and-luau-expressions-for-animation-graphs/4921939",
+    "https://devforum.roblox.com/t/terrain-updates-object-scattering-path-splines-projected-terrain-decals-and-more/4865617",
+    "https://devforum.roblox.com/t/weekly-recap-october-5-october-9-2026/4924062"
+  ],
+  "source_urls": [
+    "https://devforum.roblox.com/t/a-simpler-path-to-publish-plus-invite-early-testers/4930524",
+    "https://devforum.roblox.com/t/studio-beta-introducing-state-machines-and-luau-expressions-for-animation-graphs/4921939",
+    "https://devforum.roblox.com/t/terrain-updates-object-scattering-path-splines-projected-terrain-decals-and-more/4865617",
+    "https://devforum.roblox.com/t/weekly-recap-october-5-october-9-2026/4924062"
+  ],
+  "short_hooks": [
+    "ROBLOX VAI DEIXAR MAIS FÁCIL PUBLICAR SEU JOGO!",
+    "AGORA DÁ PARA CONVIDAR ATÉ 10 TESTADORES ANTES DO LANÇAMENTO!",
+    "NOVAS FERRAMENTAS DE TERRENO E ANIMAÇÃO ESTÃO CHEGANDO AO ROBLOX STUDIO!"
+  ],
+  "video_urls": [],
+  "approved_for_publish": false,
+  "editorial_rules": [
+    "Tema bloqueado: Roblox e novidades oficiais recentes da plataforma. Não trocar por outro jogo ou franquia.",
+    "Usar somente vídeos, demonstrações, trailers e imagens oficiais de Roblox/Roblox Studio extraídos das páginas oficiais listadas. Não usar streamers, webcams, reações, vídeos de terceiros ou imagens de outros jogos.",
+    "Explicar que o novo fluxo de publicação está sendo liberado gradualmente; para experiências sem conteúdo com restrição etária, a proposta é simplificar o questionário para uma confirmação e alcançar usuários a partir de 16 anos na maioria das regiões. Não apresentar como já disponível para todos.",
+    "Explicar que criadores com verificação de idade a partir de 9 anos podem convidar até 10 amigos ou membros do grupo para testes antecipados, sujeitos às regras de idade semelhante ou Trusted Friend e às proteções parentais.",
+    "Apresentar as ferramentas de Terrain Scattering, Path Splines, Projected Decals, Virtual Texturing e Signed Distance Fields como novidades anunciadas/previstas para Early Access, não como recursos liberados a todos.",
+    "Explicar que State Machines e Luau Expressions para Animation Graphs estão em beta e permitem configurar estados, transições e expressões dentro do gráfico de animação.",
+    "Não afirmar que são atualizações do jogo Roblox em si; são novidades da plataforma e das ferramentas para criadores.",
+    "Manter intro oficial integral, sem gameplay antes do fim da intro. Voz Thalita Multilingual PT-BR V3.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts Premium V4 em 9:16, com capas próprias. Produção apenas; não publicar no YouTube sem autorização específica.",
+    "Cards devem permanecer tempo suficiente para leitura, com duração proporcional à quantidade de texto e alinhamento com a narração.",
+    "Preferir demonstrações oficiais variadas e contextualmente relacionadas; aceitar outro trecho oficial de Roblox Studio se combinar razoavelmente com a fala. Não bloquear por incompatibilidade visual secundária, mas não usar imagens de criadores ou de outros jogos."
+  ],
+  "script_blocks": [
+    "Roblox está preparando mudanças que podem fazer diferença tanto para quem joga quanto para quem cria experiências dentro da plataforma. Nos anúncios mais recentes, a empresa mostrou um caminho mais simples para publicar jogos, uma forma de convidar amigos para testar antes do lançamento e novas ferramentas para construir mundos e animações. No Radar dos Games, vamos separar o que já está em beta, o que está começando a ser liberado e o que ainda está previsto para chegar.",
+    "A primeira mudança mexe numa parte que muitos criadores conhecem bem: o processo de publicação. A Roblox anunciou um fluxo guiado que mostra os passos necessários para colocar uma experiência no ar. Para jogos sem conteúdo com restrição etária, a empresa planeja permitir que o criador responda a uma única pergunta de confirmação para alcançar usuários com 16 anos ou mais na maioria das regiões, em vez de preencher todo o questionário de maturidade e conformidade. Mas atenção: a liberação está acontecendo gradualmente, então não significa que todo mundo já veja essa opção hoje.",
+    "Outra novidade é a possibilidade de convidar testadores antecipados. Criadores com verificação de idade e pelo menos nove anos poderão chamar até dez amigos ou membros do grupo para experimentar uma experiência antes de ela ficar pública. Isso pode ajudar a descobrir se uma fase está difícil demais, se os pontos de surgimento funcionam e se os sistemas principais estão prontos. Há regras de segurança: os testadores precisam ter idade semelhante ou ser Trusted Friends, e as experiências de teste mantêm marca d’água e ferramentas de denúncia.",
+    "Para quem desenvolve mapas, a Roblox também apresentou uma reformulação importante das ferramentas de terreno. O sistema de espalhamento de objetos deve facilitar a distribuição de árvores, pedras, plantas e outros elementos seguindo regras de densidade. As Path Splines permitem desenhar caminhos curvos com pontos de controle, enquanto o terreno e a vegetação ao redor se ajustam durante a edição. A ideia é reduzir o trabalho manual e dar aos criadores mais controle sobre ambientes grandes.",
+    "O pacote de terreno inclui ainda decals projetados sobre a superfície, texturas virtuais para preservar detalhes e melhorar o desempenho, e Signed Distance Fields para reduzir aquele aspecto de degraus nas bordas do terreno. Essas ferramentas foram anunciadas para o programa de acesso antecipado, com disponibilidade planejada ao longo do fim do ano. Então é importante não confundir uma apresentação oficial com uma função já liberada para todos os usuários.",
+    "As animações também receberam atenção. No editor de Animation Graphs, State Machines e Luau Expressions entraram em beta. Com máquinas de estado, o criador consegue organizar estados como parado, correndo e atacando, além de definir transições entre eles diretamente no gráfico. As expressões permitem calcular condições e parâmetros sem precisar deslocar toda essa lógica para um script separado. Isso pode deixar sequências de movimento e combos mais fáceis de estruturar, embora os recursos ainda tenham limitações próprias do beta.",
+    "Essas novidades se conectam a uma mudança maior: Roblox quer dar aos criadores ferramentas para experimentar, testar e lançar experiências com menos atrito, sem abandonar os controles de segurança. Algumas funções estão em beta, outras chegam por etapas e várias ferramentas de terreno ainda dependem do programa de acesso antecipado. Por isso, vale acompanhar os anúncios oficiais e conferir a disponibilidade dentro do Creator Hub e do Roblox Studio antes de planejar um projeto em torno delas.",
+    "No fim, a atualização mais interessante depende do seu lado da plataforma. Se você cria jogos, o teste antecipado e o fluxo de publicação podem ajudar a validar uma ideia mais cedo. Se trabalha com mapas, as ferramentas de terreno prometem acelerar a construção de cenários; e, para quem mexe com personagens, as máquinas de estado podem simplificar animações mais complexas. Qual dessas novidades você mais quer experimentar? Conta nos comentários e acompanha o Radar dos Games para mais notícias do universo gamer."
+  ]
+}

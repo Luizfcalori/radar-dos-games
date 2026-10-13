@@ -677,6 +677,8 @@ def main():
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
         if ascii_slug(os.getenv("RADAR_TOPIC", "AUTO").strip()) == ascii_slug("Phantom Blade Zero"):
             manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
+        elif ascii_slug(os.getenv("RADAR_TOPIC", "AUTO").strip()) == ascii_slug("Roblox"):
+            manual = load_manual_brief("production/manual-brief-roblox-2026-10-13.json")
         else:
             manual = None
     if not candidates and not manual:
