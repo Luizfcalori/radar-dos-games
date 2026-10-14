@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-13T14:59:58.269189+00:00",
-  "total_discovered": 75,
-  "ready_for_tiktok": 73,
+  "updated_at": "2026-10-14T13:45:27.587605+00:00",
+  "total_discovered": 78,
+  "ready_for_tiktok": 76,
   "waiting_media": [
     {
       "youtube_id": "BQ30QQNY9kw",
@@ -17,6 +17,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "hMlaA_NCJJ0",
+      "youtube_url": "https://www.youtube.com/shorts/hMlaA_NCJJ0",
+      "title": "ROBLOX VAI DEIXAR MAIS FÁCIL PUBLICAR SEU JOGO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "BFB-Ham7Plk",
+      "youtube_url": "https://www.youtube.com/shorts/BFB-Ham7Plk",
+      "title": "AGORA DÁ PARA CONVIDAR ATÉ 10 TESTADORES ANTES DO LANÇAMENTO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "e1yYw9QK8mU",
+      "youtube_url": "https://www.youtube.com/shorts/e1yYw9QK8mU",
+      "title": "NOVAS FERRAMENTAS DE TERRENO E ANIMAÇÃO ESTÃO CHEGANDO AO ROBLOX STUDIO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "RXg8h4Pxbss",
       "youtube_url": "https://www.youtube.com/shorts/RXg8h4Pxbss",
