@@ -26,7 +26,8 @@
     "https://www.instagram.com/fortnite/",
     "https://www.tiktok.com/@fortnite",
     "https://www.facebook.com/FortniteGame/",
-    "https://www.youtube.com/watch?v=7qQFLL_DJ7Q"
+    "https://www.youtube.com/watch?v=7qQFLL_DJ7Q",
+    "https://www.youtube.com/watch?v=5lddZVFmxaw"
   ],
   "short_hooks": [
     "YEAT NO FORTNITE: O TRAILER CHEGOU!",
@@ -70,7 +71,8 @@
     "O trailer oficial de gameplay da temporada serve apenas como contexto de ação geral dentro de Fortnite; não insinuar que personagens ou cenas desse trailer fazem parte da colaboração com Yeat.",
     "Narração longa e informativa, alvo de 4–5 minutos; usar contexto real da colaboração, sem parágrafos de preenchimento ou sermões sobre o processo.",
     "Tratar a data/horário de 15 de outubro às 20h ET como informação reportada pela imprensa até a Loja do jogo confirmar disponibilidade; não inventar preços.",
-    "O trailer oficial de gameplay de Fortnite: Pesadelos 2026 é contexto de ação geral do jogo, nunca evidência de que essas cenas ou itens pertencem à colaboração com Yeat."
+    "O trailer oficial de gameplay de Fortnite: Pesadelos 2026 é contexto de ação geral do jogo, nunca evidência de que essas cenas ou itens pertencem à colaboração com Yeat.",
+    "O trailer cinematográfico oficial de Fortnite: Pesadelos 2026 serve apenas como contexto geral do jogo; não associar personagens, cenas ou itens de Halloween à colaboração com Yeat."
   ],
   "script_blocks": [
     "Fortnite confirmou Yeat como o próximo nome da Icon Series, e a apresentação veio com o trailer Real Lyfe. O vídeo usa música, iluminação forte e cortes rápidos para colocar o artista dentro da linguagem visual do jogo.",
@@ -85,11 +87,13 @@
   "video_labels": {
     "https://www.youtube.com/watch?v=dOiX6sMu_Z0": "Fortnite Yeat Real Lyfe collaboration trailer",
     "https://www.youtube.com/watch?v=9AsEwQJiQQE": "Fortnite gameplay characters combat island Chapter 7 Season 4 official trailer",
-    "https://www.youtube.com/watch?v=7qQFLL_DJ7Q": "Fortnite official Fortnitemares 2026 gameplay trailer — context footage only"
+    "https://www.youtube.com/watch?v=7qQFLL_DJ7Q": "Fortnite official Fortnitemares 2026 gameplay trailer — context footage only",
+    "https://www.youtube.com/watch?v=5lddZVFmxaw": "Fortnite official Fortnitemares 2026 cinematic trailer — general context only"
   },
   "video_roles": {
     "https://www.youtube.com/watch?v=dOiX6sMu_Z0": "official_yeat_collaboration_trailer",
     "https://www.youtube.com/watch?v=9AsEwQJiQQE": "official_general_fortnite_gameplay",
-    "https://www.youtube.com/watch?v=7qQFLL_DJ7Q": "official_general_fortnite_gameplay"
+    "https://www.youtube.com/watch?v=7qQFLL_DJ7Q": "official_general_fortnite_gameplay",
+    "https://www.youtube.com/watch?v=5lddZVFmxaw": "official_general_fortnite_cinematic_context"
   }
 }
