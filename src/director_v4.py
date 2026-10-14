@@ -352,7 +352,10 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         # source-matched official still for a short portion of
                         # the same phrase. This preserves narration coverage
                         # without looping footage or bypassing semantic QA.
-                        if "faltam cenas inéditas correspondentes à fala" not in str(exc) or not stills:
+                        if not any(token in str(exc) for token in (
+                            "faltam cenas inéditas correspondentes à fala",
+                            "acabou a gameplay inédita aprovada para a fala",
+                        )) or not stills:
                             raise
                         picked=stills[0]
                         d=min(remaining,3.5)
