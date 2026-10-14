@@ -9,6 +9,15 @@ from src import voice as voice_module
 
 
 class VoiceRetryTests(unittest.TestCase):
+    def test_existing_comment_cta_prevents_canned_outro(self):
+        text = (
+            "Fortnite e Yeat se encontram no trailer Real Lyfe.\\n\\n"
+            "Qual cena mais chamou sua atenção? Conta nos comentários e acompanha o Radar dos Games."
+        )
+        prepared = voice_module.prepare_narration(text)
+        self.assertIn("Conta nos comentários", prepared)
+        self.assertNotIn("Se inscreva no Radar dos Games", prepared)
+
     def test_synthesize_one_retries_transient_429_and_keeps_requested_voice(self):
         async def exercise():
             with tempfile.TemporaryDirectory() as directory:

@@ -114,7 +114,11 @@ def _choose_cta(seed_text: str) -> str:
 
 def _already_has_cta(text: str) -> bool:
     low = text.lower()
-    signals = ("se inscre", "inscreva", "deixe o like", "ativa o sininho", "ative o sininho")
+    signals = (
+        "se inscre", "inscreva", "deixe o like", "ativa o sininho", "ative o sininho",
+        "conta nos comentários", "comenta nos comentários", "qual cena mais chamou",
+        "acompanha o radar dos games", "comenta qual",
+    )
     return any(signal in low for signal in signals)
 
 
