@@ -138,8 +138,12 @@ def newisty_download(url,dest,quality='720p'):
         try:body=err.read().decode('utf-8','replace')
         except:body=''
         if 'downloader is busy' in body.lower():
-            print('newisty busy',stage,'skipping congested fallback',body[:300],flush=True)
-            return False
+            # Busy is transient congestion, not a permanent failure. Back off and
+            # retry instead of abandoning the only non-YouTube fallback immediately.
+            wait=min(15+attempt*5,45)
+            print('newisty busy',stage,'retrying after backoff',wait,'seconds',body[:300],flush=True)
+            time.sleep(wait)
+            return True
         raw=(err.headers.get('Retry-After') if getattr(err,'headers',None) else None) or str(min(10+attempt*5,45))
         try:wait=int(float(raw))
         except:wait=min(10+attempt*5,45)
