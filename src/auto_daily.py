@@ -677,10 +677,12 @@ def main():
     # o brief genérico nem herdar o tema de uma produção anterior.
     if forced_topic_slug == ascii_slug("Free Fire"):
         manual = load_manual_brief("production/manual-brief-free-fire-2026-10-13.json")
-    # Uma execução explicitamente marcada como run-only pode ignorar um brief
-    # manual vigente de outro jogo sem apagar nem alterar esse brief.
+    # Execuções explícitas run-only/run-private podem ignorar o brief genérico
+    # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
-        if forced_topic_slug == ascii_slug("Phantom Blade Zero"):
+        if forced_topic_slug == ascii_slug("League of Legends"):
+            manual = load_manual_brief("production/manual-brief-league-of-legends-2026-10-14.json")
+        elif forced_topic_slug == ascii_slug("Phantom Blade Zero"):
             manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
         elif forced_topic_slug == ascii_slug("Roblox"):
             manual = load_manual_brief("production/manual-brief-roblox-2026-10-13.json")
