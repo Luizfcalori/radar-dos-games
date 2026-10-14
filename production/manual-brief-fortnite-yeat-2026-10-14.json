@@ -1,0 +1,47 @@
+{
+  "valid_until": "2026-10-22T23:59:00Z",
+  "content_id": "fortnite-yeat-real-lyfe-trailer-2026-10-14",
+  "title": "Fortnite — Yeat chega ao jogo no trailer Real Lyfe",
+  "headline": "FORTNITE: YEAT ESTÁ CHEGANDO AO JOGO!",
+  "primary_source": "https://www.fortnite.com/news/tag/all-news?lang=pt-BR",
+  "media_source_urls": [
+    "https://www.fortnite.com/news/tag/all-news?lang=pt-BR",
+    "https://www.fortnite.com/news",
+    "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+  ],
+  "source_urls": [
+    "https://www.fortnite.com/news/tag/all-news?lang=pt-BR",
+    "https://www.fortnite.com/news",
+    "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+  ],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+  ],
+  "short_hooks": [
+    "YEAT NO FORTNITE: O TRAILER CHEGOU!",
+    "O QUE O TRAILER DE YEAT MOSTRA?",
+    "FORTNITE E YEAT: O QUE JÁ FOI CONFIRMADO?"
+  ],
+  "video_fallback_urls": [],
+  "visual_reference_images": [],
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Tema bloqueado: Fortnite. Não trocar por outro jogo.",
+    "Pauta baseada no trailer fornecido pelo usuário: https://youtu.be/dOiX6sMu_Z0?is=TFqQaKk_Q6BAAKD6, identificado como 'Yeat is pulling up to Fortnite | Real Lyfe Trailer'.",
+    "Não afirmar datas, preços, itens cosméticos, recompensas ou disponibilidade regional além do que estiver confirmado no material oficial.",
+    "Separar claramente o que o trailer mostra do que ainda não foi anunciado; usar as fontes oficiais do Fortnite para verificar detalhes.",
+    "Usar trechos inéditos e contextualmente relacionados; priorizar gameplay real quando presente. Não repetir intervalos de gameplay nem preencher o vídeo com imagens estáticas.",
+    "Preservar integralmente a intro oficial; voz Thalita Multilingual PT-BR V3; pronunciar Yeat e Fortnite corretamente.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts Premium V4 em 9:16, cada um com capa própria no padrão Radar dos Games.",
+    "Enviar os quatro vídeos ao YouTube com privacidade private, sem publishAt/agendamento público; importar os três Shorts ao TikTok Helper após aprovação."
+  ],
+  "script_blocks": [
+    "Fortnite acaba de colocar Yeat no centro de um novo trailer, e a estética desse anúncio chama atenção logo nos primeiros segundos. No Radar dos Games, vamos separar o que o vídeo realmente mostra do que ainda precisa de confirmação, sem transformar pistas visuais em promessas.",
+    "O trailer divulgado com o título Real Lyfe apresenta uma sequência cinematográfica que começa com imagens de vigilância, clima noturno e uma atmosfera de mistério. A edição alterna closes, cenas de personagens e momentos que depois se conectam ao universo de Fortnite. O foco é criar expectativa para a colaboração, não explicar cada detalhe em formato de lista.",
+    "Yeat aparece como figura central da peça, acompanhado por uma identidade visual marcada por máscaras, veículos, efeitos de luz e cortes rápidos. Esses elementos ajudam a estabelecer o tom da campanha. Para quem acompanha Fortnite, o ponto principal é reconhecer que se trata de uma divulgação oficial ligada ao artista, sem assumir que todo objeto visto no trailer será necessariamente um item jogável.",
+    "Na parte em que o vídeo passa para cenas claramente dentro do jogo, vemos o personagem em movimento, equipamentos, efeitos de energia e confrontos em ambientes noturnos. São os trechos que merecem maior atenção na edição, porque mostram a conexão entre a linguagem cinematográfica do trailer e a ação de Fortnite. A montagem final deve usar cortes diferentes e evitar repetir a mesma sequência para preencher tempo.",
+    "O que já podemos dizer com segurança é que o trailer promove a chegada de Yeat ao universo de Fortnite. Para detalhes como data exata de disponibilidade, preço de cosméticos, acessórios específicos ou conteúdo de pacote, a referência deve ser sempre o anúncio oficial correspondente. Se um item não estiver confirmado no material oficial, não vamos apresentá-lo como fato.",
+    "A colaboração também mostra como Fortnite mistura música, identidade visual e momentos de gameplay para transformar um anúncio em evento cultural. A reação da comunidade provavelmente vai se concentrar nos visuais e nos possíveis itens, mas vale esperar as informações oficiais antes de fechar qualquer lista de conteúdo incluído.",
+    "Agora queremos saber a sua opinião: a estética do trailer combina com Fortnite e com a identidade de Yeat? Qual cena mais chamou sua atenção? Comenta aqui, acompanha o Radar dos Games e fica ligado para as próximas novidades confirmadas."
+  ]
+}
