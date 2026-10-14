@@ -217,30 +217,28 @@ def newisty_download(url,dest,quality='720p'):
 def ytdlp(url,dest):
     if 'youtube.com' not in url and 'youtu.be' not in url:return None
     is_actions=os.environ.get('GITHUB_ACTIONS','').lower()=='true'
-    # Try YouTube's embedded player first in Actions. Public publisher-embedded
-    # videos can be fetched without the PO-token path; use Newisty only as fallback.
-    # This avoids making every video depend on a shared downloader queue.
-    args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15']
+    # Try multiple public player clients before the external queue. A video can
+    # reject web_embedded while remaining available through iOS/TV player APIs.
+    height=720 if is_actions else 1080
+    timeout=45 if is_actions else 35
+    clients=['web_embedded','ios','android_vr','tv_embedded'] if is_actions else [None]
+    for client in clients:
+        args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15']
+        if client:
+            args += ['--extractor-args',f'youtube:player_client={client}']
+        args += ['-f',f'bv*[height<={height}]+ba/b[height<={height}]/best','--merge-output-format','mp4','-o',str(dest),url]
+        try:
+            subprocess.run(args,check=True,timeout=timeout)
+            info=probe_info(dest)
+            if info:
+                print('github actions youtube: client download success',client or 'default',flush=True)
+                return info
+        except Exception as e:
+            print('yt client failed',client or 'default',type(e).__name__,str(e)[:180],flush=True)
+        dest.unlink(missing_ok=True)
     if is_actions:
-        args += ['--extractor-args','youtube:player_client=web_embedded']
-        height=720
-        timeout=60
-    else:
-        height=1080
-        timeout=35
-    args += ['-f',f'bv*[height<={height}]+ba/b[height<={height}]/best','--merge-output-format','mp4','-o',str(dest),url]
-    try:
-        subprocess.run(args,check=True,timeout=timeout)
-        info=probe_info(dest)
-        if info:
-            if is_actions:print('github actions youtube: embedded-client download success',flush=True)
-            return info
-    except Exception as e:
-        print('yt direct fallback failed',type(e).__name__,str(e)[:220],flush=True)
-    dest.unlink(missing_ok=True)
-    if is_actions:
-        print('github actions youtube: using external fallback after embedded-client attempt',flush=True)
-    return newisty_download(url,dest,'720p')
+        print('github actions youtube: using external fallback after all player clients failed',flush=True)
+    return newisty_download(url,dest,'720p' if is_actions else '1080p')
 
 
 def discover(page,allow_images=False):
