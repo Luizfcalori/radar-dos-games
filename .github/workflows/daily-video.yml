@@ -28,6 +28,7 @@ on:
       - "src/voice.py"
       - "src/research.py"
       - "production/manual-brief.json"
+      - "production/manual-brief-free-fire-2026-10-13.json"
       - "src/thumbnail.py"
       - "src/short_cover.py"
       - "src/premium_covers.py"
