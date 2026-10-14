@@ -214,14 +214,55 @@ def newisty_download(url,dest,quality='720p'):
     dest.unlink(missing_ok=True);return None
 
 
+def social_post_url(url):
+    low=url.lower()
+    return (
+        (('x.com/' in low or 'twitter.com/' in low) and '/status/' in low)
+        or ('tiktok.com/' in low and '/video/' in low)
+        or ('instagram.com/' in low and ('/reel/' in low or '/p/' in low))
+        or ('facebook.com/' in low and ('/videos/' in low or 'watch' in low or '/reel/' in low))
+    )
+
+def social_profile_url(url):
+    low=url.lower().split('?')[0].rstrip('/')
+    return low in ('https://x.com/fortnitegame','https://twitter.com/fortnitegame',
+                   'https://www.instagram.com/fortnite','https://instagram.com/fortnite',
+                   'https://www.tiktok.com/@fortnite','https://tiktok.com/@fortnite',
+                   'https://www.facebook.com/fortnitegame','https://facebook.com/fortnitegame')
+
+def discover_social_posts(profile):
+    """Inspect recent posts on official accounts and keep only topic-matched posts."""
+    args=['yt-dlp','--flat-playlist','--dump-single-json','--playlist-end','40','--no-warnings',profile]
+    try:
+        p=subprocess.run(args,check=True,capture_output=True,text=True,timeout=100)
+        data=json.loads(p.stdout)
+        matches=[]
+        for entry in data.get('entries') or []:
+            title=str(entry.get('title') or '')
+            desc=str(entry.get('description') or '')
+            combined=(title+' '+desc).lower()
+            if not any(term in combined for term in ('yeat','real lyfe','fortnite')):
+                continue
+            post_url=entry.get('webpage_url') or entry.get('original_url')
+            if post_url and social_post_url(post_url):
+                matches.append((post_url,'official_social_post_keyword_match',title))
+        print('official social discovery',profile,'matched_posts',len(matches),flush=True)
+        return matches
+    except Exception as e:
+        print('official social discovery failed',profile,type(e).__name__,str(e)[:240],flush=True)
+        return []
+
 def ytdlp(url,dest):
-    if 'youtube.com' not in url and 'youtu.be' not in url:return None
+    low_url=url.lower()
+    is_youtube='youtube.com' in low_url or 'youtu.be' in low_url
+    is_social=social_post_url(url)
+    if not is_youtube and not is_social:return None
     is_actions=os.environ.get('GITHUB_ACTIONS','').lower()=='true'
     # Try multiple public player clients before the external queue. A video can
     # reject web_embedded while remaining available through iOS/TV player APIs.
     height=720 if is_actions else 1080
     timeout=45 if is_actions else 35
-    clients=['web_embedded','ios','android_vr','tv_embedded'] if is_actions else [None]
+    clients=['web_embedded','ios','android_vr','tv_embedded'] if is_actions and is_youtube else [None]
     for client in clients:
         args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15']
         if client:
@@ -236,9 +277,11 @@ def ytdlp(url,dest):
         except Exception as e:
             print('yt client failed',client or 'default',type(e).__name__,str(e)[:180],flush=True)
         dest.unlink(missing_ok=True)
-    if is_actions:
-        print('github actions youtube: using external fallback after all player clients failed',flush=True)
-    return newisty_download(url,dest,'720p' if is_actions else '1080p')
+    if is_youtube:
+        if is_actions:
+            print('github actions youtube: using external fallback after all player clients failed',flush=True)
+        return newisty_download(url,dest,'720p' if is_actions else '1080p')
+    return None
 
 
 def discover(page,allow_images=False):
@@ -397,7 +440,9 @@ def main(path):
             candidates=steam_candidates(item['steam_app_id'],wanted);source=f"steam_app:{item['steam_app_id']}"
         else:
             url=item['url'];source=item.get('source_proof') or url;low=url.lower().split('?')[0]
-            if low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS) or bool(item.get('force_image',False)) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url or (wanted=='video' and is_instagram_video_url(url)):
+            if wanted=='video' and social_profile_url(url):
+                candidates=discover_social_posts(url)
+            elif low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS) or bool(item.get('force_image',False)) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url or social_post_url(url) or (wanted=='video' and is_instagram_video_url(url)):
                 candidates=[(url,item.get('relevance_evidence','direct_source'),item.get('source_label',''))]
             else:
                 allow_images=bool(item.get('allow_images_from_page',False) and wanted=='image')
@@ -430,7 +475,7 @@ def main(path):
             ):
                 info=official_remote_clip(u,dest,source if str(source).startswith('http') else 'https://www.rockstargames.com/')
             elif is_instagram_video_url(u) and wanted=='video':info=download_public_instagram(u,dest,probe_info)
-            elif 'youtube.com' in low or 'youtu.be' in low:info=ytdlp(u,dest)
+            elif 'youtube.com' in low or 'youtu.be' in low or social_post_url(u):info=ytdlp(u,dest)
             else:info=download(u,dest,source if str(source).startswith('http') else None)
             if not info:dest.unlink(missing_ok=True);continue
             if wanted=='video':
