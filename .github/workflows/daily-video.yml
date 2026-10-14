@@ -83,7 +83,7 @@ jobs:
       - run: python -m pytest -q tests
 
   produce:
-    # Permit an explicitly marked one-off production run after a pipeline fix.
+    # Private one-off run: commit message [run-private] TOPIC=<game> uploads all four videos privately, without public scheduling.
     if: github.event_name != 'push' || startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
