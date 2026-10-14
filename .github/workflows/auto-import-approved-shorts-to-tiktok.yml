@@ -299,3 +299,5 @@ jobs:
           git commit -m "bot: auto-import approved production Shorts to TikTok Helper"
           git pull --rebase origin main
           git push origin main
+
+# Recheck trigger: import newly approved production artifacts when workflow file changes.
