@@ -232,6 +232,7 @@ def social_profile_url(url):
 
 def discover_social_posts(profile):
     """Inspect recent posts on official accounts and keep only topic-matched posts."""
+    print("cross-platform fallback enabled: X, Instagram, TikTok, Facebook", flush=True)
     args=['yt-dlp','--flat-playlist','--dump-single-json','--playlist-end','40','--no-warnings',profile]
     try:
         p=subprocess.run(args,check=True,capture_output=True,text=True,timeout=100)
