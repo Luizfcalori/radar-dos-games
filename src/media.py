@@ -463,3 +463,5 @@ def main(path):
     print(json.dumps(manifest,ensure_ascii=False))
 if __name__=='__main__':main(sys.argv[1])
 # [run-production] TOPIC=Deadlock — retry targeted after official Steam announcement fallback.
+
+# Production trigger 2026-10-14: League of Legends private delivery retry.
