@@ -241,7 +241,7 @@ def discover_social_posts(profile):
             title=str(entry.get('title') or '')
             desc=str(entry.get('description') or '')
             combined=(title+' '+desc).lower()
-            if not any(term in combined for term in ('yeat','real lyfe','fortnite')):
+            if not (('yeat' in combined or 'real lyfe' in combined) and 'fortnite' in combined):
                 continue
             post_url=entry.get('webpage_url') or entry.get('original_url')
             if post_url and social_post_url(post_url):
