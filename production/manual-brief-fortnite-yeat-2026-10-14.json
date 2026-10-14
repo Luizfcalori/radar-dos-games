@@ -7,15 +7,27 @@
   "media_source_urls": [
     "https://www.fortnite.com/news/tag/all-news?lang=pt-BR",
     "https://www.fortnite.com/news",
-    "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+    "https://www.youtube.com/watch?v=dOiX6sMu_Z0",
+    "https://x.com/FortniteGame",
+    "https://www.instagram.com/fortnite/",
+    "https://www.tiktok.com/@fortnite",
+    "https://www.facebook.com/FortniteGame/"
   ],
   "source_urls": [
     "https://www.fortnite.com/news/tag/all-news?lang=pt-BR",
     "https://www.fortnite.com/news",
-    "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+    "https://www.youtube.com/watch?v=dOiX6sMu_Z0",
+    "https://x.com/FortniteGame",
+    "https://www.instagram.com/fortnite/",
+    "https://www.tiktok.com/@fortnite",
+    "https://www.facebook.com/FortniteGame/"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+    "https://www.youtube.com/watch?v=dOiX6sMu_Z0",
+    "https://x.com/FortniteGame",
+    "https://www.instagram.com/fortnite/",
+    "https://www.tiktok.com/@fortnite",
+    "https://www.facebook.com/FortniteGame/"
   ],
   "short_hooks": [
     "YEAT NO FORTNITE: O TRAILER CHEGOU!",
@@ -33,7 +45,8 @@
     "Usar trechos inéditos e contextualmente relacionados; priorizar gameplay real quando presente. Não repetir intervalos de gameplay nem preencher o vídeo com imagens estáticas.",
     "Preservar integralmente a intro oficial; voz Thalita Multilingual PT-BR V3; pronunciar Yeat e Fortnite corretamente.",
     "Master cinematográfico 16:9 e exatamente 3 Shorts Premium V4 em 9:16, cada um com capa própria no padrão Radar dos Games.",
-    "Enviar os quatro vídeos ao YouTube com privacidade private, sem publishAt/agendamento público; importar os três Shorts ao TikTok Helper após aprovação."
+    "Enviar os quatro vídeos ao YouTube com privacidade private, sem publishAt/agendamento público; importar os três Shorts ao TikTok Helper após aprovação.",
+    "Nova rota de contingência: procurar posts recentes das contas oficiais FortniteGame no X, Instagram, TikTok e Facebook; só aceitar posts cuja descrição/título confirme Yeat ou Real Lyfe e Fortnite; não usar vídeos recentes sem correspondência temática."
   ],
   "script_blocks": [
     "Fortnite acaba de colocar Yeat no centro de um novo trailer, e a estética desse anúncio chama atenção logo nos primeiros segundos. No Radar dos Games, vamos separar o que o vídeo realmente mostra do que ainda precisa de confirmação, sem transformar pistas visuais em promessas.",
