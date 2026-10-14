@@ -101,32 +101,12 @@ class VideoTimeline:
                     continuous=self.last is not None and self.last[0]==self.identity(idx) and abs(self.last[1]-lo)<.06
                     rank=(bool(reviewed),subject_match,category_match or bool(source_context & cats),continuous,len(cats & expected),length,-idx,-lo)
                     candidates.append((rank,asset,lo,length,w))
-        reused_source=False
         if not candidates:
-            # Controlled fallback: reuse a reviewed gameplay window only after
-            # all unused windows are exhausted. The director marks this explicitly.
-            fallback=[]
-            for asset in assets:
-                idx=int(asset['index'])
-                if asset.get('type')!='video': continue
-                for w in (scene.get('visual_windows') or {}).get(str(idx),[]):
-                    cats=set(w.get('semantic_categories',[]))
-                    if 'title_card' in cats or w.get('reviewed') is not True or not w.get('evidence'): continue
-                    if required_subjects and not set(required_subjects)<=set(w.get('subjects',[])): continue
-                    lo=float(w['start'])
-                    hi=min(float(w['end']),float(asset.get('duration') or w['end'])-EPS)
-                    length=min(math.floor(max(0,hi-lo)*30)/30,remaining,10.0)
-                    if length>=min(1.0,remaining)-EPS:
-                        fallback.append((idx!=(self.last[0] if self.last else None),length,-idx,asset,lo,w))
-            if not fallback:
-                raise RuntimeError(f'QUALITY_BLOCK: sem gameplay aprovado suficiente para a fala: {text}')
-            _,length,_,asset,lo,w=max(fallback,key=lambda x:x[:3])
-            reused_source=True
-        else:
-            _,asset,lo,length,w=max(candidates,key=lambda x:x[0])
+            raise RuntimeError(f'QUALITY_BLOCK: acabou a gameplay inédita aprovada para a fala; bloqueando repetição: {text}')
+        _,asset,lo,length,w=max(candidates,key=lambda x:x[0])
         reserved=math.ceil((length-1e-8)*30)/30
-        self.reserve(asset['index'],lo,reserved,allow_reuse=reused_source)
-        return asset,lo,length,{**w,'reserved_end':lo+reserved,'reused_source':reused_source}
+        self.reserve(asset['index'],lo,reserved,allow_reuse=False)
+        return asset,lo,length,{**w,'reserved_end':lo+reserved,'reused_source':False}
 
 def validate_video_beats(beats, assets, require_windows=True):
     timeline=VideoTimeline(assets);count=0;total_video=0.0;reused_seconds=0.0
@@ -140,15 +120,13 @@ def validate_video_beats(beats, assets, require_windows=True):
         duration=float(beat['duration']);start=float(w['start'])
         if start+duration>float(w['end'])+EPS:
             raise RuntimeError('QUALITY_BLOCK: corte extrapola a janela aprovada')
-        allow_reuse=beat.get('approved_reuse') is True
-        timeline.reserve(idx,start,duration,allow_reuse=allow_reuse)
+        if beat.get('approved_reuse') is True:
+            raise RuntimeError('QUALITY_BLOCK: beat reutiliza gameplay; repetir trechos está proibido')
+        timeline.reserve(idx,start,duration,allow_reuse=False)
         total_video+=duration
-        if allow_reuse: reused_seconds+=duration
         count+=1
-    # Relaxed production policy: approved, reviewed fallback footage may be reused
-    # beyond the former 25% cap when the official source inventory is limited.
-    # Reuse remains explicit in the report; invalid ranges and unmarked overlaps
-    # are still rejected so rendering never points beyond actual source media.
+    # Strict production policy: gameplay intervals must be unique. If source footage
+    # runs out, stop the render rather than disguising repetition as approved reuse.
     return {'policy':POLICY,'video_beats':count,'repeated_intervals':0,
-            'approved_reuse_beats':sum(1 for b in beats if b.get('approved_reuse') is True),
-            'approved_reuse_ratio':round(reused_seconds/total_video,4) if total_video else 0.0}
+            'approved_reuse_beats':0,
+            'approved_reuse_ratio':0.0}
