@@ -259,7 +259,16 @@ def render(manifest_path):
     listing=tmp/"visuals.txt"
     listing.write_text("".join(f"file '{p.resolve()}'\n" for p in pieces),encoding="utf-8")
     visuals=tmp/"body_visuals.mp4"
-    sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(listing),"-c","copy",str(visuals)])
+    # Re-encode the concatenated beats to normalize timestamps/time bases.
+    # Stream-copy concat can silently shorten the video timeline when MP4 pieces
+    # have slightly different packet timestamps, leaving voice longer than picture.
+    sh(["ffmpeg","-y","-v","error","-fflags","+genpts","-f","concat","-safe","0","-i",str(listing),
+        "-vf",f"fps={FPS},setpts=PTS-STARTPTS,format=yuv420p","-an",
+        "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p",
+        "-r",str(FPS),"-video_track_timescale","90000",str(visuals)])
+    visual_seconds=probe_duration(visuals)
+    if abs(visual_seconds-cursor)>1.0:
+        raise RuntimeError(f"QUALITY_BLOCK: timeline visual divergiu dos beats (vídeo={visual_seconds:.3f}s, esperado={cursor:.3f}s)")
 
     sfx=tmp/"editorial-sfx.wav"
     make_sfx_track(cursor,sfx_events,sfx)
