@@ -182,7 +182,16 @@ jobs:
         run: python src/media_first.py
 
       - name: QA editorial do roteiro definitivo
-        run: python src/narration_qa.py output/auto-script.txt
+        run: |
+          python src/narration_qa.py output/auto-script.txt
+          python - <<'PY'
+          from pathlib import Path
+          script = Path("output/auto-script.txt").read_text(encoding="utf-8")
+          words = len(script.split())
+          print(f"Master narration words: {words}")
+          if words < 450:
+              raise SystemExit(f"QUALITY_BLOCK: roteiro do Master tem {words} palavras; mínimo editorial 450 para evitar vídeo excessivamente curto")
+          PY
 
       - name: Narrar após decupagem com a voz Thalita PT-BR
         run: |
@@ -235,7 +244,7 @@ jobs:
           m = probe(master)
           md = float(m["format"]["duration"])
           mv = next(x for x in m["streams"] if x["codec_type"] == "video")
-          assert 60 <= md <= 600, md
+          assert 210 <= md <= 420, md
           assert (int(mv["width"]), int(mv["height"])) == (1920, 1080)
           assert any(x["codec_type"] == "audio" for x in m["streams"])
           qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
