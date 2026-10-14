@@ -137,9 +137,35 @@ def prepare_narration(text: str) -> str:
 async def synthesize_one(text: str, output: Path, voice: str):
     output.parent.mkdir(parents=True, exist_ok=True)
     speech = spoken_text(text)
-    communicate = edge_tts.Communicate(speech, voice, rate="+0%", pitch="+0Hz", boundary="WordBoundary")
     metadata = output.with_suffix(".words.jsonl")
-    await communicate.save(str(output), str(metadata))
+    # Edge TTS is free but can temporarily rate-limit bursts. Retry only transient
+    # 429/handshake throttles with bounded backoff; do not silently change the voice.
+    for attempt in range(5):
+        try:
+            communicate = edge_tts.Communicate(
+                speech, voice, rate="+0%", pitch="+0Hz", boundary="WordBoundary"
+            )
+            await communicate.save(str(output), str(metadata))
+            break
+        except Exception as exc:
+            name = type(exc).__name__
+            message = str(exc).casefold()
+            retryable = (
+                "429" in message
+                or "too many requests" in message
+                or "wssserverhandshakeerror" in name.casefold()
+            )
+            output.unlink(missing_ok=True)
+            metadata.unlink(missing_ok=True)
+            if not retryable or attempt == 4:
+                raise
+            delay = min(4 * (2 ** attempt), 45)
+            print(
+                f"Edge TTS temporarily throttled ({name}); retry {attempt + 1}/4 "
+                f"after {delay}s",
+                flush=True,
+            )
+            await asyncio.sleep(delay)
     return [json.loads(line) for line in metadata.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
