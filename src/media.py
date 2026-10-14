@@ -137,12 +137,16 @@ def newisty_download(url,dest,quality='720p'):
     def wait_rate_limit(err,attempt,stage):
         try:body=err.read().decode('utf-8','replace')
         except:body=''
+        if 'downloader is busy' in body.lower():
+            print('newisty busy',stage,'skipping congested fallback',body[:300],flush=True)
+            return False
         raw=(err.headers.get('Retry-After') if getattr(err,'headers',None) else None) or str(min(10+attempt*5,45))
         try:wait=int(float(raw))
         except:wait=min(10+attempt*5,45)
         wait=max(5,min(wait,45))
         print('newisty 429',stage,'attempt',attempt,'retry in',wait,'seconds',body[:300],flush=True)
         time.sleep(wait)
+        return True
 
     try:
         job_id=''
@@ -156,7 +160,8 @@ def newisty_download(url,dest,quality='720p'):
                 print('newisty start failed: no job_id',obj,flush=True)
             except urllib.error.HTTPError as e:
                 if e.code==429 and attempt<7:
-                    wait_rate_limit(e,attempt,'start');continue
+                    if not wait_rate_limit(e,attempt,'start'):return None
+                    continue
                 raise
         if not job_id:return None
 
@@ -169,7 +174,8 @@ def newisty_download(url,dest,quality='720p'):
             except urllib.error.HTTPError as e:
                 if e.code==404:continue
                 if e.code==429:
-                    wait_rate_limit(e,min(poll+1,6),'progress');continue
+                    if not wait_rate_limit(e,min(poll+1,6),'progress'):return None
+                    continue
                 raise
             state=str(((pobj.get('data') or {}).get('status') or '')).lower()
             if state in ('done','completed','complete'):break
@@ -192,7 +198,8 @@ def newisty_download(url,dest,quality='720p'):
             except urllib.error.HTTPError as e:
                 dest.unlink(missing_ok=True)
                 if e.code==429 and attempt<6:
-                    wait_rate_limit(e,attempt,'download');continue
+                    if not wait_rate_limit(e,attempt,'download'):return None
+                    continue
                 raise
         if not downloaded:return None
         info=probe_info(dest)
@@ -205,19 +212,30 @@ def newisty_download(url,dest,quality='720p'):
 
 def ytdlp(url,dest):
     if 'youtube.com' not in url and 'youtu.be' not in url:return None
-    # Nos runners GitHub o YouTube direto esta bloqueando IPs de datacenter.
-    # Fontes/CDNs oficiais continuam sendo priorizadas pelo fluxo; quando a fonte e
-    # realmente YouTube, usamos a rota externa validada para evitar perder o Master.
-    if os.environ.get('GITHUB_ACTIONS','').lower()=='true':
-        print('github actions youtube: external fallback selected',flush=True)
-        return newisty_download(url,dest,'720p')
-    args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15','-f','bv*[height<=1080]+ba/b[height<=1080]/best','--merge-output-format','mp4','-o',str(dest),url]
+    is_actions=os.environ.get('GITHUB_ACTIONS','').lower()=='true'
+    # Try YouTube's embedded player first in Actions. Public publisher-embedded
+    # videos can be fetched without the PO-token path; use Newisty only as fallback.
+    # This avoids making every video depend on a shared downloader queue.
+    args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15']
+    if is_actions:
+        args += ['--extractor-args','youtube:player_client=web_embedded']
+        height=720
+        timeout=60
+    else:
+        height=1080
+        timeout=35
+    args += ['-f',f'bv*[height<={height}]+ba/b[height<={height}]/best','--merge-output-format','mp4','-o',str(dest),url]
     try:
-        subprocess.run(args,check=True,timeout=35)
+        subprocess.run(args,check=True,timeout=timeout)
         info=probe_info(dest)
-        if info:return info
-    except Exception as e:print('yt direct fallback failed',e,flush=True)
+        if info:
+            if is_actions:print('github actions youtube: embedded-client download success',flush=True)
+            return info
+    except Exception as e:
+        print('yt direct fallback failed',type(e).__name__,str(e)[:220],flush=True)
     dest.unlink(missing_ok=True)
+    if is_actions:
+        print('github actions youtube: using external fallback after embedded-client attempt',flush=True)
     return newisty_download(url,dest,'720p')
 
 
