@@ -71,8 +71,15 @@ def match_score(phrase,asset):
 
 
 def subject_ok(phrase,asset):
-    """Never approve an unmatched official still just because it has game name."""
-    return match_score(phrase,asset)>0
+    """Require a matching subject, except a curated official still used for the CTA outro."""
+    if match_score(phrase,asset)>0:
+        return True
+    text=str(phrase or "").casefold()
+    is_cta=any(token in text for token in (
+        "conta nos comentários","acompanha o radar","mais novidades",
+        "se você gosta de acompanhar",
+    ))
+    return bool(is_cta and str(asset.get("role") or "").startswith("official_subject_reference_"))
 
 
 def static_limit(asset):

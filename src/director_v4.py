@@ -333,11 +333,15 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             remaining=float(phrase["duration"]); consumed=0.0
             phrase_text=phrase.get("text","")
             requirements=(scene.get("phrase_subjects") or {}).get(str(phrase.get("sentence",1)),[])
+            cta_phrase=any(token in phrase_text.casefold() for token in (
+                "conta nos comentários","acompanha o radar","mais novidades",
+                "se você gosta de acompanhar",
+            ))
             while remaining>0.001:
                 stills=[
                     a for a in allowed
                     if static_tracker.can_use(a,phrase_text,i,timeline_seconds,min(remaining,3.5))
-                    and (not requirements or all(phrase_asset_match(str(subject),a)>0 for subject in requirements))
+                    and (not requirements or all(phrase_asset_match(str(subject),a)>0 for subject in requirements) or cta_phrase)
                 ]
                 stills.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
                 # Always exhaust unique, reviewed moving footage first. A still is

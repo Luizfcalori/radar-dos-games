@@ -52,6 +52,12 @@ class RepetitionPolicyTests(unittest.TestCase):
         self.assertFalse(tracker.can_use(self.reward,"Reward Pass",4,30,3))
         self.assertFalse(tracker.can_use(self.reward,"Reward Pass",5,55,4))
 
+    def test_curated_official_still_can_cover_generic_cta_outro(self):
+        cta_image={**self.reward,"source_label":"Fortnite Yeat Real Lyfe official trailer frame"}
+        self.assertTrue(subject_ok("Conta nos comentários e acompanha o Radar dos Games para mais novidades",cta_image))
+        unrelated_role={**cta_image,"role":"official_context_01"}
+        self.assertFalse(subject_ok("Conta nos comentários e acompanha o Radar dos Games para mais novidades",unrelated_role))
+
     def test_unrelated_picture_cannot_fill_other_topic(self):
         self.assertFalse(subject_ok("O novo mapa Pendola Pass é coberto de neve",self.reward))
         self.assertFalse(subject_ok("A Frigate surge nos céus",self.reward))
