@@ -25,15 +25,15 @@ class VoiceRetryTests(unittest.TestCase):
                             raise RuntimeError("429 Too Many Requests")
                         Path(audio_path).write_bytes(b"fake-audio")
                         Path(metadata_path).write_text(
-                            json.dumps({"type": "WordBoundary", "text": {"text": "Olá"}}) + "\\n",
+                            json.dumps({"type": "WordBoundary", "text": {"text": "Olá"}}) + "\n",
                             encoding="utf-8",
                         )
 
-                with patch.object(voice_module.edge_tts, "Communicate", FakeCommunicate), \\
-                     patch.object(voice_module.asyncio, "sleep", new=AsyncMock()) as sleep:
-                    events = await voice_module.synthesize_one(
-                        "Olá, mundo.", output, "pt-BR-ThalitaMultilingualNeural"
-                    )
+                with patch.object(voice_module.edge_tts, "Communicate", FakeCommunicate):
+                    with patch.object(voice_module.asyncio, "sleep", new=AsyncMock()) as sleep:
+                        events = await voice_module.synthesize_one(
+                            "Olá, mundo.", output, "pt-BR-ThalitaMultilingualNeural"
+                        )
                 self.assertEqual(calls["count"], 3)
                 self.assertEqual(len(events), 1)
                 self.assertEqual(sleep.await_count, 2)
