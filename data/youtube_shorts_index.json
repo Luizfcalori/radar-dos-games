@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-14T13:45:27.587605+00:00",
-  "total_discovered": 78,
-  "ready_for_tiktok": 76,
+  "updated_at": "2026-10-14T18:14:27.954121+00:00",
+  "total_discovered": 81,
+  "ready_for_tiktok": 79,
   "waiting_media": [
     {
       "youtube_id": "BQ30QQNY9kw",
@@ -17,6 +17,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "nb8acq1g1II",
+      "youtube_url": "https://www.youtube.com/shorts/nb8acq1g1II",
+      "title": "AGORA DÁ PARA CONTROLAR A NOVE-CAUDAS NO FREE FIRE!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "GCct1kBt8tA",
+      "youtube_url": "https://www.youtube.com/shorts/GCct1kBt8tA",
+      "title": "HINATA OU JIRAIYA: QUAL GRANDE PRÊMIO VOCÊ ESCOLHERIA?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "UDWns2Cj_WY",
+      "youtube_url": "https://www.youtube.com/shorts/UDWns2Cj_WY",
+      "title": "A ACADEMIA NINJA CHEGOU A BERMUDA COM NOVOS NINJUTSUS!",
+      "status": "approved"
+    },
     {
       "youtube_id": "hMlaA_NCJJ0",
       "youtube_url": "https://www.youtube.com/shorts/hMlaA_NCJJ0",
