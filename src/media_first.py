@@ -112,7 +112,7 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             low_text=text.casefold()
             gameplay_context=any(token in low_text for token in (
                 "dentro do jogo","personagens em movimento","equipamentos",
-                "confrontos","ação característica","gameplay","combate"
+                "confrontos","ação característica","ação","gameplay","combate"
             ))
             matched_videos=[a for a in matched_videos
                             if a.get("role")!="official_general_fortnite_gameplay" or gameplay_context]
