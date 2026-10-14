@@ -147,7 +147,7 @@ async def synthesize_one(text: str, output: Path, voice: str):
     for attempt in range(5):
         try:
             communicate = edge_tts.Communicate(
-                speech, voice, rate="+0%", pitch="+0Hz", boundary="WordBoundary"
+                speech, voice, rate="-15%", pitch="+0Hz", boundary="WordBoundary"
             )
             await communicate.save(str(output), str(metadata))
             break
