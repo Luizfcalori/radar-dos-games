@@ -106,8 +106,20 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             # moving with official gameplay from this same game rather than blocking
             # the whole Master over a secondary semantic mismatch.
             matched_videos=[a for a in videos if window_options[int(a["index"])]]
+            # Generic official Fortnite gameplay is reserved for narration about
+            # in-game action. Do not place a different season's trailer over Yeat-specific
+            # claims; the collaboration trailer remains the preferred source there.
+            low_text=text.casefold()
+            gameplay_context=any(token in low_text for token in (
+                "dentro do jogo","personagens em movimento","equipamentos",
+                "confrontos","ação característica","gameplay","combate"
+            ))
+            matched_videos=[a for a in matched_videos
+                            if a.get("role")!="official_general_fortnite_gameplay" or gameplay_context]
             if not matched_videos:
-                matched_videos=videos
+                fallback=[a for a in videos
+                          if a.get("role")!="official_general_fortnite_gameplay" or gameplay_context]
+                matched_videos=fallback or videos
         else:
             matched_videos=videos
         picks=[]
