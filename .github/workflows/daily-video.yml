@@ -84,7 +84,7 @@ jobs:
 
   produce:
     # Permit an explicitly marked one-off production run after a pipeline fix.
-    if: github.event_name != 'push' || startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]')
+    if: github.event_name != 'push' || startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -110,7 +110,7 @@ jobs:
         run: python src/research.py
 
       - name: Bloquear execução de produção sem tema explícito
-        if: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]')) }}
+        if: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')) }}
         run: |
           if [[ "${{ github.event.head_commit.message }}" != *"TOPIC="* ]]; then
             echo "ERRO: execução de produção sem TOPIC explícito; bloqueando AUTO para impedir troca de jogo."
@@ -119,9 +119,9 @@ jobs:
 
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
-          RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Phantom Blade Zero') && 'Phantom Blade Zero') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || (contains(github.event.head_commit.message, 'TOPIC=Roblox') && 'Roblox') || (contains(github.event.head_commit.message, 'TOPIC=Free Fire') && 'Free Fire') || 'AUTO' }}
-          RADAR_IGNORE_MANUAL_BRIEF: ${{ github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-only]') && '1' || '0' }}
-          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && 'private' || 'unlisted' }}
+          RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=League of Legends') && 'League of Legends') || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Phantom Blade Zero') && 'Phantom Blade Zero') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || (contains(github.event.head_commit.message, 'TOPIC=Roblox') && 'Roblox') || (contains(github.event.head_commit.message, 'TOPIC=Free Fire') && 'Free Fire') || 'AUTO' }}
+          RADAR_IGNORE_MANUAL_BRIEF: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')) && '1' || '0' }}
+          PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
       - name: Aplicar agenda nativa do YouTube
@@ -341,7 +341,7 @@ jobs:
         run: python src/check_youtube.py
 
       - name: Enviar Master ao YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -350,7 +350,7 @@ jobs:
         run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
 
       - name: Enviar Short 1 ao YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -359,7 +359,7 @@ jobs:
         run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
 
       - name: Enviar Short 2 ao YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -368,7 +368,7 @@ jobs:
         run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
 
       - name: Enviar Short 3 ao YouTube
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -377,7 +377,7 @@ jobs:
         run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
 
       - name: Registrar pauta enviada para evitar duplicatas
-        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
+        if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && steps.release.outputs.publish_allowed == 'true' }}
         run: |
           python - <<'PY'
           import json
