@@ -25,6 +25,12 @@ FORBIDDEN = [
     r"\bsem depender s[oó] de cards ou textos na tela\b",
     r"\b(?:we['’]re|today, we|eagle-eyed fans)\b",
     r"\bentre os principais destaques est[aã]o\s+[^.]{0,140},\s*[^.]{0,100}\.",
+    # Block production instructions, sermons, and private operator-facing commentary.
+    r"\bno radar dos games\b.{0,100}\b(?:vamos|vou|a gente vai)\b.{0,60}\b(?:separar|priorizar|conferir|validar|evitar|usar)\b",
+    r"\b(?:a montagem final|a edição final|o roteiro|a narração)\b.{0,100}\b(?:deve|precisa|tem que|é necessário|é preciso|evitar|usar cortes)\b",
+    r"\b(?:é preciso|precisamos|temos que|deve-se)\b.{0,100}\b(?:não repetir|evitar repetir|usar o tempo necessário|preencher tempo|repetir imagens|repetir cenas)\b",
+    r"\b(?:não vamos|não devemos|não podemos)\b.{0,100}\b(?:apresentar como fato|transformar pistas|preencher tempo|repetir imagens|repetir cenas|incluir material)\b",
+    r"\b(?:o radar|a gente|nós)\b.{0,100}\b(?:sempre confere|vamos separar|vamos conferir|vamos validar|prioriza a edição|precisa evitar repetir)\b",
 ]
 
 def main(path):

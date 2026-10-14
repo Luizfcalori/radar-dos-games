@@ -22,9 +22,9 @@ from urllib.parse import urljoin, urlparse
 import requests
 
 try:
-    from media import steam_candidates
+    from media import steam_candidates, discover_social_posts, social_profile_url, social_post_url
 except ImportError:
-    from src.media import steam_candidates
+    from src.media import steam_candidates, discover_social_posts, social_profile_url, social_post_url
 
 OUT = Path("output")
 DATA = Path("data")
@@ -632,36 +632,52 @@ def load_manual_brief(path=None):
 
 
 def fetch_manual_media(brief):
-    combined = PageParser(brief["media_source_urls"][0])
+    """Use only the approved trailer and official posts that match the topic.
+
+    Do not crawl news-page HTML for media: pages can embed unrelated ads/videos.
+    """
+    primary = brief.get("primary_source") or brief["media_source_urls"][0]
+    combined = PageParser(primary)
     combined.media = []
     combined.paragraphs = []
     errors = []
+    curated = []
 
-    # Vídeos oficiais explícitos entram primeiro para garantir gameplay/trailers
-    # contextuais quando as páginas modernas escondem os MP4 atrás de JavaScript.
-    for video_url in brief.get("video_urls", []):
-        if isinstance(video_url, str) and video_url.startswith("http"):
-            combined.media.append(("video", video_url))
+    # Explicit video URLs are trusted only as the supplied trailer, direct media,
+    # or topic-matched posts discovered on official profiles.
+    for raw in brief.get("video_urls", []):
+        if not isinstance(raw, str) or not raw.startswith("https://"):
+            continue
+        url = raw.strip()
+        if social_profile_url(url):
+            try:
+                for post_url, evidence, title in discover_social_posts(url):
+                    curated.append(("video", post_url))
+                    print("manual brief accepted topic-matched official post", evidence, title[:120], flush=True)
+            except Exception as exc:
+                errors.append({"url": url, "error": str(exc)[:180]})
+            continue
+        low = url.lower().split("?")[0]
+        if (
+            "youtube.com/watch" in low
+            or "youtu.be/" in low
+            or social_post_url(url)
+            or low.endswith((".mp4", ".mov", ".webm", ".m4v", ".m3u8", ".mpd"))
+        ):
+            curated.append(("video", url))
 
-    for url in brief["media_source_urls"]:
-        try:
-            p = fetch_page(url)
-            combined.media.extend(p.media)
-            combined.paragraphs.extend(p.paragraphs)
-            combined.meta.update(p.meta)
-        except Exception as exc:
-            errors.append({"url": url, "error": str(exc)[:180]})
+    for visual in brief.get("visual_reference_images") or []:
+        if isinstance(visual, dict) and str(visual.get("url", "")).startswith("https://"):
+            combined.media.append(("image", visual["url"]))
 
-    # Descarta assets de interface/decorativos que podem ser quase pretos e não
-    # representam o jogo (ex.: shards do layout do site da Rockstar).
-    blocked_tokens = ("shard", "sprite", "favicon", "icon", "logo", "background-loop", "loading")
-    curated = [
-        (kind, url) for kind, url in combined.media
-        if not any(token in url.lower() for token in blocked_tokens)
-    ]
+    curated.extend(combined.media)
     media = canonical_media(curated)
     if len(media) < 2:
-        raise RuntimeError("Brief manual sem mídia oficial suficiente: " + json.dumps(errors, ensure_ascii=False))
+        raise RuntimeError(
+            "QUALITY_BLOCK: fontes explicitamente aprovadas insuficientes; "
+            "não será usada mídia genérica nem publicidade de páginas."
+            + json.dumps(errors, ensure_ascii=False)
+        )
     if not any(kind == "video" for kind, _ in media):
         raise RuntimeError("QUALITY_BLOCK: brief manual sem gameplay/vídeo oficial em movimento")
     return combined, media, errors
@@ -737,7 +753,7 @@ def main():
                 "reasons": [],
                 "topic_key": topic_key(selected["title"]),
             },
-            "media_sources": {url: selected["url"] for _, url in selected_media},
+            "media_sources": {url: url for _, url in selected_media},
         }
         script = "\n\n".join(manual["script_blocks"])
     else:
