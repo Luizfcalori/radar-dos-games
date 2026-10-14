@@ -126,7 +126,7 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem vídeo reconhecido nem imagem oficial identificável")
         # A semantic label mismatch is not a hard block when official gameplay
         # from the exact same game is available; topic identity is enforced upstream.
-        indices=[int(a["index"]) for a in picks]
+        indices=list(dict.fromkeys(int(a["index"]) for a in picks))
         roles=list(dict.fromkeys(str(a["role"]) for a in picks))
         for idx in indices:usage[idx]+=1
         scene.update({
