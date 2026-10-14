@@ -115,10 +115,12 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             picks.extend(sorted(matched_videos,key=rank))
         if matched_stills:
             picks.extend(matched_stills)
-        elif contextual_images:
-            # StaticTracker still enforces topic match, cooldown and use limits.
-            picks.extend(sorted(contextual_images,key=rank)[:2])
-        elif images and visual_inventory is None:
+        # All images from the exact official event page are available as
+        # contextual cutaways. StaticTracker enforces subject match, cooldown,
+        # and per-image limits; unrelated sources are never admitted.
+        if contextual_images:
+            picks.extend(sorted(contextual_images,key=rank))
+        elif images and visual_inventory is None and not matched_stills:
             picks.append(matches[0])
         if not picks:
             raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem vídeo reconhecido nem imagem oficial identificável")
