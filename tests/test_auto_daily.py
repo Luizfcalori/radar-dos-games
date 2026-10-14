@@ -28,7 +28,8 @@ class SourceGroundedNarrationTests(unittest.TestCase):
             path = Path(directory) / "script.txt"
             path.write_text(
                 "É preciso usar o tempo necessário para não repetir as mesmas imagens. "
-                "A montagem final deve evitar repetir cenas para preencher tempo.",
+                "A montagem final deve evitar repetir cenas para preencher tempo. "
+                "O vídeo final precisa usar cenas diferentes para preencher o tempo.",
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(RuntimeError, "narração contém linguagem meta/privada"):

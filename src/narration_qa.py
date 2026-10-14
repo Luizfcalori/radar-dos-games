@@ -31,6 +31,7 @@ FORBIDDEN = [
     r"\b(?:é preciso|precisamos|temos que|deve-se)\b.{0,100}\b(?:não repetir|evitar repetir|usar o tempo necessário|preencher tempo|repetir imagens|repetir cenas)\b",
     r"\b(?:não vamos|não devemos|não podemos)\b.{0,100}\b(?:apresentar como fato|transformar pistas|preencher tempo|repetir imagens|repetir cenas|incluir material)\b",
     r"\b(?:o radar|a gente|nós)\b.{0,100}\b(?:sempre confere|vamos separar|vamos conferir|vamos validar|prioriza a edição|precisa evitar repetir)\b",
+    r"\b(?:a edição|a montagem|o master|o vídeo final)\b.{0,80}\b(?:precisa|deve|tem que)\b.{0,80}\b(?:usar cenas diferentes|preencher o tempo|repetir imagens|evitar repetição)\b",
 ]
 
 def main(path):
