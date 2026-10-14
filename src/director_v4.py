@@ -334,33 +334,29 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             phrase_text=phrase.get("text","")
             requirements=(scene.get("phrase_subjects") or {}).get(str(phrase.get("sentence",1)),[])
             while remaining>0.001:
-                stills=[a for a in allowed if not requirements and static_tracker.can_use(
-                    a,phrase_text,i,timeline_seconds,min(remaining,3.5))]
+                stills=[
+                    a for a in allowed
+                    if static_tracker.can_use(a,phrase_text,i,timeline_seconds,min(remaining,3.5))
+                    and (not requirements or all(phrase_asset_match(str(subject),a)>0 for subject in requirements))
+                ]
                 stills.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
-                # A source-labeled still may illustrate its subject once, never
-                # silently replace footage when the footage inventory runs out.
-                if stills and consumed==0 and remaining<=3.5:
-                    picked=stills[0];d=remaining;window=None;evidence="official_image_subject_label"
-                else:
-                    try:
-                        picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
-                        window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
-                        evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
-                    except RuntimeError as exc:
-                        # [run-production] one-off retry marker: exercise the fixed pipeline.
-                        # Once all unique moving footage is consumed, use a
-                        # source-matched official still for a short portion of
-                        # the same phrase. This preserves narration coverage
-                        # without looping footage or bypassing semantic QA.
-                        if not any(token in str(exc) for token in (
-                            "faltam cenas inéditas correspondentes à fala",
-                            "acabou a gameplay inédita aprovada para a fala",
-                        )) or not stills:
-                            raise
-                        picked=stills[0]
-                        d=min(remaining,3.5)
-                        window=None
-                        evidence="official_image_subject_label"
+                # Always exhaust unique, reviewed moving footage first. A still is
+                # only a source-matched fallback, and only for a phrase whose named
+                # subjects are actually present in the still's official source label.
+                try:
+                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
+                    window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
+                    evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
+                except RuntimeError as exc:
+                    if not any(token in str(exc) for token in (
+                        "faltam cenas inéditas correspondentes à fala",
+                        "acabou a gameplay inédita aprovada para a fala",
+                    )) or not stills:
+                        raise
+                    picked=stills[0]
+                    d=min(remaining,3.5)
+                    window=None
+                    evidence="official_image_subject_label"
                 idx=int(picked["index"])
                 beat={"phrase":int(phrase.get("sentence") or 1),"text":phrase_text,
                       "start":round(float(phrase["start"])+consumed,6),
