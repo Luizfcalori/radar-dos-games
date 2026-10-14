@@ -666,20 +666,16 @@ def fetch_manual_media(brief):
         ):
             curated.append(("video", url))
 
-    for visual in brief.get("visual_reference_images") or []:
-        if isinstance(visual, dict) and str(visual.get("url", "")).startswith("https://"):
-            combined.media.append(("image", visual["url"]))
-
     curated.extend(combined.media)
     media = canonical_media(curated)
-    if len(media) < 2:
+    # A single explicitly approved trailer is valid source footage. Topic-specific
+    # stills are added later as separate media items; never pad with page ads.
+    if not media or not any(kind == "video" for kind, _ in media):
         raise RuntimeError(
-            "QUALITY_BLOCK: fontes explicitamente aprovadas insuficientes; "
+            "QUALITY_BLOCK: trailer oficial explicitamente aprovado indisponível; "
             "não será usada mídia genérica nem publicidade de páginas."
             + json.dumps(errors, ensure_ascii=False)
         )
-    if not any(kind == "video" for kind, _ in media):
-        raise RuntimeError("QUALITY_BLOCK: brief manual sem gameplay/vídeo oficial em movimento")
     return combined, media, errors
 
 def main():

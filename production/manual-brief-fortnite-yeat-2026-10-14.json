@@ -29,7 +29,28 @@
     "FORTNITE E YEAT: O QUE JÁ FOI CONFIRMADO?"
   ],
   "video_fallback_urls": [],
-  "visual_reference_images": [],
+  "visual_reference_images": [
+    {
+      "url": "https://img.youtube.com/vi/dOiX6sMu_Z0/maxresdefault.jpg",
+      "label": "Quadro oficial em alta resolução do trailer Real Lyfe",
+      "source_proof": "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+    },
+    {
+      "url": "https://img.youtube.com/vi/dOiX6sMu_Z0/1.jpg",
+      "label": "Quadro oficial 1 do trailer Real Lyfe",
+      "source_proof": "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+    },
+    {
+      "url": "https://img.youtube.com/vi/dOiX6sMu_Z0/2.jpg",
+      "label": "Quadro oficial 2 do trailer Real Lyfe",
+      "source_proof": "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+    },
+    {
+      "url": "https://img.youtube.com/vi/dOiX6sMu_Z0/3.jpg",
+      "label": "Quadro oficial 3 do trailer Real Lyfe",
+      "source_proof": "https://www.youtube.com/watch?v=dOiX6sMu_Z0"
+    }
+  ],
   "approved_for_publish": true,
   "editorial_rules": [
     "Tema bloqueado: Fortnite × Yeat. Não trocar por outro jogo nem incluir anúncios de terceiros.",
