@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-14T18:14:27.954121+00:00",
-  "total_discovered": 81,
-  "ready_for_tiktok": 79,
+  "updated_at": "2026-10-15T09:25:13.262138+00:00",
+  "total_discovered": 84,
+  "ready_for_tiktok": 82,
   "waiting_media": [
     {
       "youtube_id": "BQ30QQNY9kw",
@@ -17,6 +17,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "mWhC1VRoTdQ",
+      "youtube_url": "https://www.youtube.com/shorts/mWhC1VRoTdQ",
+      "title": "YEAT NO FORTNITE: O TRAILER CHEGOU!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "ChImgyX8YVk",
+      "youtube_url": "https://www.youtube.com/shorts/ChImgyX8YVk",
+      "title": "O QUE O TRAILER DE YEAT MOSTRA?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "oSZt6VPjBMA",
+      "youtube_url": "https://www.youtube.com/shorts/oSZt6VPjBMA",
+      "title": "FORTNITE E YEAT: O QUE JÁ FOI CONFIRMADO?",
+      "status": "approved"
+    },
     {
       "youtube_id": "nb8acq1g1II",
       "youtube_url": "https://www.youtube.com/shorts/nb8acq1g1II",
