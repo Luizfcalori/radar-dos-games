@@ -919,7 +919,7 @@ def main():
         steam_id = int(manual["steam_app_id"])
         steam_source = f"https://store.steampowered.com/app/{steam_id}/"
         # Independent route 1: exact-app official Steam CDN videos, before YouTube.
-        media_items.insert(0, {
+        media_items.append({
             "type": "video",
             "steam_app_id": steam_id,
             "role": "official_steam_gameplay",
@@ -931,7 +931,7 @@ def main():
         # Independent route 2: curated screenshots from the same official game's
         # Steam record. These supplement footage if only one moving source survives;
         # they never replace the minimum-video and unique-motion quality gates.
-        media_items.insert(1, {
+        media_items.append({
             "type": "image",
             "steam_app_id": steam_id,
             "role": "official_steam_game_screenshot",
