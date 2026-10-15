@@ -36,6 +36,7 @@ on:
       - "production/manual-brief-free-fire-2026-10-13.json"
       - "production/manual-brief-fortnite-yeat-2026-10-14.json"
       - "production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json"
+      - "production/manual-brief-castlevania-2026-10-15.json"
       - "src/thumbnail.py"
       - "src/short_cover.py"
       - "src/premium_covers.py"
@@ -125,7 +126,7 @@ jobs:
 
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
-          RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=League of Legends') && 'League of Legends') || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Phantom Blade Zero') && 'Phantom Blade Zero') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || (contains(github.event.head_commit.message, 'TOPIC=Roblox') && 'Roblox') || (contains(github.event.head_commit.message, 'TOPIC=Free Fire') && 'Free Fire') || (contains(github.event.head_commit.message, 'TOPIC=Fortnite') && 'Fortnite') || (contains(github.event.head_commit.message, 'TOPIC=ARC Raiders') && 'ARC Raiders') || 'AUTO' }}
+          RADAR_TOPIC: ${{ github.event.inputs.topic || (contains(github.event.head_commit.message, 'TOPIC=League of Legends') && 'League of Legends') || (contains(github.event.head_commit.message, 'TOPIC=Invokyr') && 'Invokyr') || (contains(github.event.head_commit.message, 'TOPIC=Phantom Blade Zero') && 'Phantom Blade Zero') || (contains(github.event.head_commit.message, 'TOPIC=Minecraft Dungeons II') && 'Minecraft Dungeons II') || (contains(github.event.head_commit.message, 'TOPIC=Deadlock') && 'Deadlock') || (contains(github.event.head_commit.message, 'TOPIC=Roblox') && 'Roblox') || (contains(github.event.head_commit.message, 'TOPIC=Free Fire') && 'Free Fire') || (contains(github.event.head_commit.message, 'TOPIC=Fortnite') && 'Fortnite') || (contains(github.event.head_commit.message, 'TOPIC=ARC Raiders') && 'ARC Raiders') || (contains(github.event.head_commit.message, 'TOPIC=Castlevania') && 'Castlevania: Belmont''s Curse') || 'AUTO' }}
           RADAR_IGNORE_MANUAL_BRIEF: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')) && '1' || '0' }}
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
