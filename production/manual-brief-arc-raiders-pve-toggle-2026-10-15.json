@@ -1,0 +1,47 @@
+{
+  "valid_until": "2026-10-22T23:59:00Z",
+  "content_id": "manual-arc-raiders-pve-toggle-oct-2026",
+  "title": "ARC Raiders",
+  "headline": "ARC RAIDERS: O TESTE PvE PODE MUDAR O FUTURO DO JOGO?",
+  "primary_source": "https://arcraiders.com/pt-BR/news/pve-toggle-what-to-know",
+  "media_source_urls": [
+    "https://arcraiders.com/pt-BR/news/pve-toggle-what-to-know",
+    "https://arcraiders.com/news/store-update-2-1-0",
+    "https://arcraiders.com/pt-BR/"
+  ],
+  "source_urls": [
+    "https://arcraiders.com/pt-BR/news/pve-toggle-what-to-know",
+    "https://arcraiders.com/news/store-update-2-1-0"
+  ],
+  "short_hooks": [
+    "ARC RAIDERS AGORA TEM UM TESTE PvE: COMO FUNCIONA?",
+    "UPDATE 2.1.0: O QUE MUDOU NO ARC RAIDERS?",
+    "O PvE VAI FICAR PARA SEMPRE? A EMBARK AINDA VAI DECIDIR!"
+  ],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=XE0y_K8-iSQ"
+  ],
+  "approved_for_publish": false,
+  "editorial_rules": [
+    "Tema bloqueado: ARC Raiders. Não trocar por outro jogo.",
+    "Usar somente mídia oficial de ARC Raiders/Embark e trechos do trailer oficial fornecido. Não usar criadores, webcams, reações ou cenas de outros jogos.",
+    "A pauta central é o teste temporário de matchmaking PvE de 13 a 20 de outubro de 2026 e a atualização 2.1.0.",
+    "Explicar que no teste PvE não há dano entre jogadores; sessões incluem solos, duplas e trios; o valor geral do loot é menor; Night Raids, Hidden Bunker, Locked Gate e Frigate ficam de fora.",
+    "Não afirmar que o PvE virou modo permanente. A Embark diz que vai avaliar feedback e dados depois do teste.",
+    "Citar correções da atualização 2.1.0, incluindo ajustes no Grappling Hook, sem inventar conteúdo.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts 9:16, com capas próprias. Produção privada, sem publicação pública.",
+    "Manter intro oficial integral e usar a voz Thalita Multilingual PT-BR V3. Evitar tom de sermão, metacomentários e repetição de gameplay.",
+    "A narração final deve ser revisada contra os trechos realmente disponíveis; não afirmar que o vídeo mostra imagens do teste PvE se a mídia fornecida não as mostrar."
+  ],
+  "script_blocks": [
+    "ARC Raiders está testando uma mudança que pode mexer com a forma como muita gente joga: a opção de entrar em partidas focadas no PvE, enfrentando as máquinas ARC sem causar dano a outros jogadores. Mas atenção: isso ainda é um teste temporário, e não uma confirmação de que o modo ficará no jogo. No Radar dos Games, vamos separar o que já está valendo, o que mudou na atualização e o que a Embark ainda precisa decidir.",
+    "O teste de matchmaking PvE começou em 13 de outubro e está previsto para terminar em 20 de outubro de 2026. Durante esse período, os jogadores podem escolher entre a experiência tradicional PvPvE e sessões focadas em cooperação contra as máquinas. A ideia é permitir uma incursão com menos confrontos entre jogadores, sem apagar a opção competitiva que já faz parte de ARC Raiders.",
+    "No PvE, o dano entre jogadores fica desativado. Solos, duplas e trios podem cair nas mesmas sessões, e a proposta é explorar, cumprir objetivos e enfrentar a ameaça ARC com mais tranquilidade. Só que existe uma troca: o valor geral do saque é menor, justamente porque a sessão oferece menos risco de emboscadas de outros Combatentes.",
+    "Nem todas as condições entram no teste. Night Raids, Hidden Bunker, Locked Gate e Frigate ficam de fora porque foram pensadas para situações de maior tensão. A classificação de matchmaking PvPvE também não é afetada pelas partidas PvE. Ou seja, é uma experiência limitada, com regras específicas, para a equipe observar como as pessoas jogam quando podem escolher esse caminho.",
+    "A atualização 2.1.0 também trouxe correções e ajustes além do teste. Entre eles, a Embark melhorou a consistência do Grappling Hook, incluindo a subida em beiradas e telhados, o acionamento do auto-vault no fim da corda e a finalização de balanços em terreno caminhável. Também corrigiu problemas ligados a objetos leves que permitiam balanços inesperados.",
+    "A grande pergunta é se o PvE vai continuar depois de 20 de outubro. A resposta oficial, por enquanto, é que não existe garantia. A Embark vai observar os dados e o feedback da comunidade antes de decidir os próximos passos. A empresa também reconhece que o equilíbrio entre cooperação, tensão e economia do jogo precisa ser acompanhado com cuidado.",
+    "Para quem sempre quis explorar o mundo de ARC Raiders sem entrar em confronto com outros jogadores, esse teste é uma oportunidade importante. Para quem prefere o risco do PvPvE, a experiência tradicional continua disponível. Agora, o resultado depende do que os jogadores fizerem durante o período de teste e do que os dados mostrarem à equipe.",
+    "E aí, você prefere ARC Raiders com a opção PvE, quer manter o PvPvE como experiência principal ou acha que os dois estilos deveriam coexistir? Conta pra gente nos comentários. O teste está previsto para acabar em 20 de outubro, e o futuro da opção ainda não foi confirmado. Esse foi o Radar dos Games."
+  ],
+  "steam_app_id": null
+}
