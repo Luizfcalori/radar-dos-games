@@ -152,6 +152,7 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             "allowed_roles":roles,
             "allowed_role_prefixes":[],
             "semantic_subject":scene.get("title") or topic,
+            "allow_official_subject_fallback": bool(plan.get("allow_official_subject_fallback", False)),
             "visual_evidence":("official_image_subject_label"
                                if any(a["type"]=="image" and relevance(text,a,topic)>0 for a in picks)
                                else "source_level_only"),
