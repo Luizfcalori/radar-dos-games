@@ -105,10 +105,12 @@ def stream_download(url,dest,referer='https://store.steampowered.com/'):
     ]
     for cmd in commands:
         try:
-            subprocess.run(cmd,check=True,timeout=360)
+            # Keep the direct-CDN route bounded: a stalled manifest must not
+            # block alternate encoders and official YouTube fallbacks for six minutes.
+            subprocess.run(cmd,check=True,timeout=120)
             info=probe_info(dest)
             if info:return info
-        except Exception as e:print('stream download failed',url,e)
+        except Exception as e:print('stream download failed',url,type(e).__name__,e,flush=True)
         dest.unlink(missing_ok=True)
     return None
 
