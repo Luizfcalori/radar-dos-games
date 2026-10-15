@@ -943,9 +943,9 @@ def main():
     plan = {
         "topic": (manual.get("headline") if manual else pt_headline(selected, parser)),
         "source": selected["url"],
-        "minimum_assets": 2,
-        "minimum_video_assets": 1,
-        "minimum_unique_video_seconds": 15,
+        "minimum_assets": 3 if manual and str(manual.get("title","")).casefold() == "arc raiders" else 2,
+        "minimum_video_assets": 3 if manual and str(manual.get("title","")).casefold() == "arc raiders" else 1,
+        "minimum_unique_video_seconds": 15 if not (manual and str(manual.get("title","")).casefold() == "arc raiders") else 90,
         "minimum_image_assets": 0,
         "media_policy": "gameplay_or_official_moving_footage_required; minimum_15s_unique_video; images_are_complement_only; no_image_only_master; premium_v4_motion_for_images",
         "short_hooks": short_hooks,

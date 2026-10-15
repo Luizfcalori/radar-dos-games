@@ -8,7 +8,10 @@
     "https://arcraiders.com/pt-BR/news/pve-toggle-what-to-know",
     "https://arcraiders.com/news/store-update-2-1-0",
     "https://arcraiders.com/pt-BR/",
-    "https://www.youtube.com/watch?v=IpeJjQDXNAE"
+    "https://www.youtube.com/watch?v=IpeJjQDXNAE",
+    "https://www.youtube.com/watch?v=dTRRb7ODhjA",
+    "https://www.youtube.com/watch?v=sfufcWOh2LE",
+    "https://www.youtube.com/watch?v=KjiJDylLdZA"
   ],
   "source_urls": [
     "https://arcraiders.com/pt-BR/news/pve-toggle-what-to-know",
@@ -23,13 +26,17 @@
     "https://www.youtube.com/watch?v=XE0y_K8-iSQ",
     "https://www.youtube.com/watch?v=IpeJjQDXNAE",
     "https://www.youtube.com/watch?v=KjiJDylLdZA",
-    "https://www.youtube.com/watch?v=U0jK145mxec"
+    "https://www.youtube.com/watch?v=U0jK145mxec",
+    "https://www.youtube.com/watch?v=dTRRb7ODhjA",
+    "https://www.youtube.com/watch?v=sfufcWOh2LE"
   ],
   "video_fallback_urls": [
     "https://www.youtube.com/watch?v=IpeJjQDXNAE",
     "https://www.youtube.com/watch?v=KjiJDylLdZA",
     "https://www.youtube.com/watch?v=U0jK145mxec",
-    "https://www.youtube.com/watch?v=XE0y_K8-iSQ"
+    "https://www.youtube.com/watch?v=XE0y_K8-iSQ",
+    "https://www.youtube.com/watch?v=dTRRb7ODhjA",
+    "https://www.youtube.com/watch?v=sfufcWOh2LE"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
