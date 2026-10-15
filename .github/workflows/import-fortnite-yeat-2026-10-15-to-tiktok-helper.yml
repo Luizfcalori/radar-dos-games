@@ -1,0 +1,182 @@
+name: Import Fortnite Yeat Shorts to Radar TikTok Helper
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-fortnite-yeat-2026-10-15-to-tiktok-helper.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-fortnite-yeat-2026-10-15-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: "38651479174"
+      SOURCE_ARTIFACT: radar-daily-auto-38651479174
+      BASE_URL: https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved Fortnite production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: fortnite-source
+          repository: Luizfcalori/radar-dos-games
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Validate three Shorts and prepare media plus covers
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          mkdir -p tiktok-fortnite-yeat
+          python - <<'PY'
+          import json, shutil, subprocess
+          from pathlib import Path
+          source=Path("fortnite-source")
+          qa_files=list(source.rglob("final-qa.json"))
+          assert qa_files, "Bloqueado: final-qa.json ausente no artefato"
+          qa=json.loads(qa_files[0].read_text(encoding="utf-8"))
+          assert str(qa.get("status","")).upper().startswith("APPROVED"), qa
+          assert len(qa.get("shorts") or []) == 3, "QA não confirma exatamente 3 Shorts"
+          selected_files=list(source.rglob("selected.json"))
+          assert selected_files, "selected.json ausente"
+          selected=json.loads(selected_files[0].read_text(encoding="utf-8"))
+          assert "fortnite" in str(selected.get("title","")).casefold(), selected.get("title")
+          for n in (1,2,3):
+              candidates=[p for p in source.rglob(f"short_{n}.mp4") if p.is_file() and p.stat().st_size>500_000]
+              assert len(candidates)==1, f"Esperava um short_{n}.mp4 válido; encontrei {len(candidates)}"
+              src=candidates[0]
+              metas=list(source.rglob(f"short-{n}-youtube.json"))
+              assert len(metas)==1, f"Metadados ausentes/duplicados no Short {n}"
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              assert meta.get("title") and meta.get("description"), meta
+              assert "fortnite" in str(meta.get("description","")).casefold(), meta.get("description")
+              dst=Path("tiktok-fortnite-yeat")/f"fortnite-yeat-2026-10-15-short-{n}.mp4"
+              shutil.copy2(src,dst)
+              covers=[p for p in source.rglob(f"short_{n}_cover.jpg") if p.is_file() and p.stat().st_size>1000]
+              jpg=Path("tiktok-fortnite-yeat")/f"fortnite-yeat-2026-10-15-short-{n}.jpg"
+              if covers:
+                  shutil.copy2(covers[0],jpg)
+              else:
+                  subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss","1","-i",str(src),"-frames:v","1","-vf","scale=720:-2",str(jpg)],check=True)
+              print("VALIDATED_SHORT",n,"title=",meta["title"],"bytes=",dst.stat().st_size,flush=True)
+          PY
+
+      - name: Upload three MP4s and covers to TikTok Helper asset release
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Downloads para publicação manual no Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-fortnite-yeat/*.mp4 tiktok-fortnite-yeat/*.jpg --clobber
+
+      - name: Verify all six assets are downloadable
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 10 --retry-all-errors --retry-delay 3 --max-time 120 --range 0-1023 "${BASE_URL}/fortnite-yeat-2026-10-15-short-${n}.${ext}" -o /dev/null
+              echo "REMOTE_OK short-${n}.${ext}"
+            done
+          done
+
+      - name: Add three Fortnite Yeat Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          source=Path("fortnite-source")
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          ytids=["mWhC1VRoTdQ","ChImgyX8YVk","oSZt6VPjBMA"]
+          new=[]
+          for n,ytid in enumerate(ytids,1):
+              metas=list(source.rglob(f"short-{n}-youtube.json"))
+              assert len(metas)==1, f"Metadados ausentes/duplicados no Short {n}"
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              title=str(meta.get("title") or "").replace("#Shorts","").replace("#shorts","").strip(" -|")
+              if not title: raise AssertionError(meta)
+              titles=[
+                "YEAT NO FORTNITE: O TRAILER CHEGOU! 🔥",
+                "O QUE O TRAILER DE YEAT MOSTRA? 👀",
+                "FORTNITE E YEAT: O QUE JÁ FOI CONFIRMADO? 🎮"
+              ]
+              title=titles[n-1]
+              new.append({
+                "id":f"fortnite-yeat-2026-10-15-short-{n}",
+                "title":title,
+                "media_url":f"{base}/fortnite-yeat-2026-10-15-short-{n}.mp4",
+                "thumbnail_url":f"{base}/fortnite-yeat-2026-10-15-short-{n}.jpg",
+                "post_text":title+"\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Fortnite #Yeat #FortniteFestival #Gaming #TikTokGames",
+                "status":"approved",
+                "source_run_id":38651479174,
+                "short_number":n,
+                "approved_at":now,
+                "source":"approved_production_artifact_auto",
+                "platform":"tiktok_helper_manual_posting",
+                "youtube_id":ytid,
+                "youtube_url":f"https://www.youtube.com/shorts/{ytid}"
+              })
+          old_ids={str(x.get("id") or "") for x in old}
+          old_ytids={str(x.get("youtube_id") or "") for x in old}
+          merged=[x for x in new if x["id"] not in old_ids and x["youtube_id"] not in old_ytids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(merged+old)[:200]
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":len(merged),"preserved":len(old),"total":len(q["items"]),"items":[x["id"] for x in new]},ensure_ascii=False))
+          PY
+
+      - name: Commit TikTok Helper queue update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "Fortnite Yeat Shorts already present in TikTok Helper queue."
+            exit 0
+          fi
+          git commit -m "feat: add Fortnite Yeat Shorts to TikTok Helper"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Verify three Fortnite Yeat items in remote app queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-remote.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-remote.json",encoding="utf-8"))
+          items=[x for x in q.get("items",[]) if str(x.get("source_run_id",""))=="38651479174" and str(x.get("short_number","")) in {"1","2","3"}]
+          by_n={str(x.get("short_number")):x for x in items}
+          assert set(by_n)=={"1","2","3"}, f"Esperava 3 Shorts; encontrei {list(by_n)}"
+          assert all(by_n[n].get("status")=="approved" and by_n[n].get("media_url","").endswith(".mp4") and by_n[n].get("thumbnail_url","").endswith(".jpg") for n in ("1","2","3"))
+          print("TIKTOK_HELPER_FORTNITE_YEAT_OK",len(by_n),"QUEUE_TOTAL",len(q["items"]))
+          PY
