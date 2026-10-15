@@ -912,14 +912,27 @@ def main():
     # automatic editorial discovery or other productions.
     if manual and str(manual.get("steam_app_id") or "").isdigit():
         steam_id = int(manual["steam_app_id"])
+        steam_source = f"https://store.steampowered.com/app/{steam_id}/"
+        # Independent route 1: exact-app official Steam CDN videos, before YouTube.
         media_items.insert(0, {
             "type": "video",
             "steam_app_id": steam_id,
             "role": "official_steam_gameplay",
             "max_assets": 8,
             "min_duration": 5,
-            "source_proof": f"https://store.steampowered.com/app/{steam_id}/",
+            "source_proof": steam_source,
             "relevance_evidence": "steam_exact_app_direct_stream",
+        })
+        # Independent route 2: curated screenshots from the same official game's
+        # Steam record. These supplement footage if only one moving source survives;
+        # they never replace the minimum-video and unique-motion quality gates.
+        media_items.insert(1, {
+            "type": "image",
+            "steam_app_id": steam_id,
+            "role": "official_steam_game_screenshot",
+            "max_assets": 4,
+            "source_proof": steam_source,
+            "relevance_evidence": "steam_exact_app_screenshot",
         })
 
     plan = {
