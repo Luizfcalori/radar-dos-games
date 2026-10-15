@@ -1,5 +1,96 @@
 {
-  "topic": "Castlevania: Belmont's Curse",
-  "source": "official Konami launch announcement, 2026-10-15",
-  "notes": "Execution trigger refreshed after quoted RADAR_TOPIC expression fix. The daily-video workflow uses RADAR_IGNORE_MANUAL_BRIEF=1 for [run-private] runs; production research and media-first editorial pipeline remain authoritative."
+  "valid_until": "2026-10-23T23:59:00Z",
+  "content_id": "manual-castlevania-belmonts-curse-2026-10-15",
+  "title": "Castlevania: Belmont’s Curse — lançamento e novidades oficiais",
+  "headline": "CASTLEVANIA: BELMONT’S CURSE CHEGOU — O QUE MUDA NESTA NOVA AVENTURA?",
+  "primary_source": "https://www.konami.com/games/eu/en/topics/19359/",
+  "media_source_urls": [
+    "https://www.konami.com/games/eu/en/topics/19359/",
+    "https://www.konami.com/games/castlevania/belmonts_curse/eu/en/",
+    "https://www.youtube.com/watch?v=Mgl_n10il2o",
+    "https://www.youtube.com/watch?v=y1y1ZjVz1c0",
+    "https://www.youtube.com/watch?v=EpCS2VPsMd8"
+  ],
+  "source_urls": [
+    "https://www.konami.com/games/eu/en/topics/19359/",
+    "https://www.konami.com/games/castlevania/belmonts_curse/eu/en/",
+    "https://www.konami.com/games/eu/en/topics/19339/",
+    "https://www.konami.com/games/eu/en/topics/19247/"
+  ],
+  "short_hooks": [
+    "ROSE BELMONT E O CHICOTE VAMPIRE KILLER",
+    "CHEFES, ARCANA E HABILIDADES: COMO FUNCIONA O COMBATE",
+    "PARIS EM 1499: O QUE FAZ ESTE CASTLEVANIA SER DIFERENTE"
+  ],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=Mgl_n10il2o",
+    "https://www.youtube.com/watch?v=y1y1ZjVz1c0",
+    "https://www.youtube.com/watch?v=EpCS2VPsMd8"
+  ],
+  "video_fallback_urls": [
+    "https://www.youtube.com/watch?v=y1y1ZjVz1c0",
+    "https://www.youtube.com/watch?v=Mgl_n10il2o",
+    "https://www.youtube.com/watch?v=EpCS2VPsMd8"
+  ],
+  "visual_reference_images": [
+    {
+      "url": "https://img.youtube.com/vi/Mgl_n10il2o/maxresdefault.jpg",
+      "label": "Trailer oficial da demo de Castlevania Belmont’s Curse",
+      "source_proof": "https://www.youtube.com/watch?v=Mgl_n10il2o"
+    },
+    {
+      "url": "https://img.youtube.com/vi/y1y1ZjVz1c0/maxresdefault.jpg",
+      "label": "Trailer oficial de lançamento e data",
+      "source_proof": "https://www.youtube.com/watch?v=y1y1ZjVz1c0"
+    },
+    {
+      "url": "https://img.youtube.com/vi/EpCS2VPsMd8/maxresdefault.jpg",
+      "label": "Trailer oficial com personagens e chefes",
+      "source_proof": "https://www.youtube.com/watch?v=EpCS2VPsMd8"
+    }
+  ],
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Tema bloqueado: Castlevania: Belmont’s Curse. Não trocar por outro jogo nem selecionar automaticamente uma pauta alternativa.",
+    "A pauta é sobre o lançamento oficial de 15 de outubro de 2026; usar o anúncio de lançamento da Konami e o site oficial como fontes primárias.",
+    "O jogo é uma aventura de ação e exploração 2D situada em Paris em 1499, 23 anos após Castlevania III: Dracula’s Curse. A protagonista é Rose Belmont, filha de Trevor Belmont.",
+    "Destacar o chicote Vampire Killer como arma e ferramenta de movimentação, exploração de áreas góticas, combate acelerado, variedade de armas e relíquias.",
+    "Explicar com precisão o sistema Arcana: chefes derrotados podem ser selados em cartas de tarô cujas habilidades permitem feitiços e ações especiais. Não inventar detalhes de progressão.",
+    "Os materiais oficiais listam Death, Medusa e Carmilla entre os chefes clássicos, além de Joan of Arc entre os novos. Só citar nomes confirmados pelas fontes oficiais.",
+    "Usar apenas trailers, gameplay e imagens oficiais de Castlevania: Belmont’s Curse/Konami. Não usar criadores, reações, webcams, vídeos de outros jogos nem imagens genéricas.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts 9:16, cada um com capa própria no padrão Radar dos Games. Upload privado ao YouTube; não agendar publicação pública.",
+    "Manter a intro oficial integral e a voz Thalita Multilingual PT-BR V3. Não iniciar gameplay antes do fim da intro; evitar tom de sermão, metacomentários e repetição de cenas.",
+    "Narrar somente o que estiver confirmado e compatível com as imagens. Se os trailers não mostrarem gameplay suficiente, tentar todas as URLs oficiais alternativas e interromper a produção em vez de repetir artificialmente os mesmos trechos.",
+    "Revisar a pronúncia de Castlevania, Belmont’s Curse, Rose Belmont, Vampire Killer, Arcana e nomes de personagens no áudio final.",
+    "Entregar exatamente quatro MP4s validados e importar os três Shorts ao TikTok Helper somente após a produção e QA concluírem com sucesso."
+  ],
+  "script_blocks": [
+    "Castlevania está de volta com uma aventura inédita, e a nova história já tem um cenário bem definido: Paris, no ano de 1499, tomada por criaturas monstruosas e ameaçada por forças sobrenaturais. Castlevania: Belmont’s Curse coloca Rose Belmont, filha de Trevor Belmont, no centro dessa jornada. O jogo chegou em 15 de outubro, e a proposta combina ação em duas dimensões, exploração de áreas interligadas e combates que pedem movimento constante. Vamos olhar para o que a Konami confirmou e para os detalhes que realmente diferenciam esta aventura.",
+    "A história acontece 23 anos depois dos acontecimentos de Castlevania III: Dracula’s Curse. Em vez de acompanhar apenas o herói de uma aventura anterior, desta vez a série apresenta Rose e sua própria trajetória. Paris medieval aparece em chamas, monstros surgem pelas ruas e um castelo misterioso se torna parte da ameaça. O clima gótico continua sendo uma marca da franquia, mas o visual traz cenários mais vivos e uma apresentação que mistura a identidade clássica de Castlevania com uma direção artística renovada.",
+    "O elemento mais reconhecível continua nas mãos da família Belmont: o Vampire Killer, o chicote sagrado. Só que ele não serve apenas para atacar inimigos. A Konami destaca que o chicote também ajuda Rose a atravessar os ambientes, balançando-se por pontos de apoio e alcançando lugares que seriam inacessíveis por outros caminhos. Isso muda o ritmo da exploração, porque o jogador precisa observar o cenário e combinar deslocamento com combate. A movimentação mais rápida e fluida é uma das principais promessas desta nova aventura.",
+    "O combate não fica limitado a um único golpe ou a uma sequência fixa. O material oficial apresenta diferentes categorias de armas e relíquias que alteram o estilo de Rose. Algumas podem favorecer o ataque, enquanto outras oferecem efeitos defensivos ou vantagens específicas. A ideia é combinar o equipamento encontrado durante a exploração para montar uma abordagem que combine com cada jogador. O importante é separar o que foi confirmado — variedade de armas e relíquias — de qualquer suposição sobre números de dano ou combinações que ainda não estejam demonstradas nos materiais oficiais.",
+    "Outro destaque é o sistema Arcana, ligado às cartas de tarô. De acordo com a descrição oficial, chefes derrotados podem ser selados nessas cartas, que permitem usar habilidades para lançar feitiços ou executar ações especiais. Isso conecta o combate à progressão: vencer um inimigo importante pode ampliar as opções disponíveis para os próximos encontros. Entre os chefes citados pela Konami estão Death, Medusa e Carmilla, além de Joan of Arc, apresentada como uma das novas figuras da aventura. A variedade de confrontos ajuda a dar identidade a cada região explorada.",
+    "A exploração também é parte central da experiência. Os cenários vão de ruas e construções medievais a ambientes ligados ao castelo, com caminhos que convidam a investigar os arredores. A estética gótica permanece, mas os mapas incluem elementos novos e referências familiares para quem acompanha a série há anos. Em uma aventura de ação e exploração, avançar nem sempre significa seguir em linha reta: observar o ambiente, testar o alcance do chicote e procurar rotas alternativas faz parte do ritmo esperado. As imagens oficiais devem ser a referência para mostrar essas diferenças, sem misturar cenas de outros Castlevania.",
+    "O lançamento foi anunciado para PlayStation 5, Nintendo Switch, Xbox Series X|S, Xbox no PC e Steam. A página oficial também informa suporte a texto em português brasileiro, embora o áudio listado seja japonês e inglês. A versão de Nintendo Switch tem uma taxa de quadros indicada de 30 quadros por segundo, enquanto as demais versões são listadas a 60. São detalhes práticos para quem está decidindo onde jogar, e vale conferir a loja da plataforma escolhida para ver a edição disponível e as informações comerciais atualizadas.",
+    "Castlevania: Belmont’s Curse tenta renovar a fórmula sem abandonar seus símbolos: o chicote, os monstros, os cenários góticos e a exploração continuam no centro, mas Rose ganha uma aventura própria, com movimentação mais flexível e o sistema Arcana como uma camada adicional de combate. Agora que o jogo chegou, o que vai importar é como essas ideias funcionam ao longo da experiência completa. Conta pra gente: você prefere explorar cada canto em busca de segredos ou partir direto para os chefes? Este é o Radar dos Games — acompanhando as novidades dos jogos com informação confirmada e gameplay de verdade."
+  ],
+  "video_labels": {
+    "https://www.youtube.com/watch?v=Mgl_n10il2o": "Konami — trailer oficial da demo e gameplay de Castlevania: Belmont’s Curse",
+    "https://www.youtube.com/watch?v=y1y1ZjVz1c0": "Konami — trailer oficial da data de lançamento",
+    "https://www.youtube.com/watch?v=EpCS2VPsMd8": "Konami — trailer oficial com personagens, ambientes e chefes"
+  },
+  "production_request": {
+    "requested_at": "2026-10-15T23:00:00Z",
+    "deliverables": [
+      "1 Master 16:9",
+      "exactly 3 Shorts 9:16"
+    ],
+    "youtube_privacy": "private",
+    "tiktok_helper": [
+      "Short 1",
+      "Short 2",
+      "Short 3"
+    ],
+    "rule": "Do not publish publicly; validate all four MP4s and cover assets before delivery."
+  }
 }
