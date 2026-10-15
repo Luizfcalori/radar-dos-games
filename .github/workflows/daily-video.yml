@@ -336,11 +336,12 @@ jobs:
           from pathlib import Path
           selected=json.loads(Path("output/selected.json").read_text(encoding="utf-8"))
           manual=selected.get("manual_brief",False)
-          brief=json.loads(Path("production/manual-brief.json").read_text(encoding="utf-8")) if manual else {}
+          brief_path=selected.get("manual_brief_path") or "production/manual-brief.json"
+          brief=json.loads(Path(brief_path).read_text(encoding="utf-8")) if manual else {}
           allowed=(not manual) or bool(brief.get("approved_for_publish",False))
           with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as fp:
               fp.write("publish_allowed="+str(allowed).lower()+"\n")
-          print("Manual brief:",manual,"Publishing permitted:",allowed)
+          print("Manual brief:",manual,"Approval source:",brief_path,"Publishing permitted:",allowed)
           PY
 
       - name: Verificar OAuth/canal do YouTube
