@@ -737,6 +737,11 @@ def main():
             "source": "manual_brief",
             "published_at": now.isoformat(),
             "score": 999,
+            "manual_brief_path": (
+                "production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json"
+                if manual.get("content_id") == "manual-arc-raiders-pve-toggle-oct-2026"
+                else "production/manual-brief.json"
+            ),
         }
         mix = media_mix(selected_media)
         winner = {
