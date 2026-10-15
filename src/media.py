@@ -493,6 +493,18 @@ def main(path):
             got+=1
             if got>=max_assets:break
         if not got:errors.append({'source':source,'role':role,'error':'no_approved_relevant_media'})
+        # Once quality requirements are met, stop probing slower fallback sources.
+        # If the first source fails, iteration continues through the remaining routes.
+        minimum_now=int(spec.get('minimum_assets',2))
+        videos_now=[a for a in assets if a['type']=='video']
+        images_now=[a for a in assets if a['type']=='image']
+        seconds_now=sum(float(a.get('duration',0)) for a in videos_now)
+        if (len(assets)>=minimum_now
+            and len(videos_now)>=int(spec.get('minimum_video_assets',1))
+            and seconds_now>=float(spec.get('minimum_unique_video_seconds',0))
+            and len(images_now)>=int(spec.get('minimum_image_assets',0))):
+            print('media acquisition complete; skipping remaining fallbacks',len(assets),'assets',len(videos_now),'videos',round(seconds_now,2),'unique video seconds',flush=True)
+            break
     minimum=int(spec.get('minimum_assets',2));videos=[a for a in assets if a['type']=='video'];images=[a for a in assets if a['type']=='image']
     unique_video_seconds=round(sum(float(a.get('duration',0)) for a in videos),3)
     min_videos=int(spec.get('minimum_video_assets',1));min_secs=float(spec.get('minimum_unique_video_seconds',0));min_images=int(spec.get('minimum_image_assets',0))
