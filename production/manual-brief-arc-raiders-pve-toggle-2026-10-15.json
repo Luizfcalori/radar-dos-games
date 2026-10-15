@@ -48,5 +48,19 @@
     "Para quem sempre quis explorar o mundo de ARC Raiders sem entrar em confronto com outros jogadores, esse teste é uma oportunidade importante. Para quem prefere o risco do PvPvE, a experiência tradicional continua disponível. Agora, o resultado depende do que os jogadores fizerem durante o período de teste e do que os dados mostrarem à equipe.",
     "E aí, você prefere ARC Raiders com a opção PvE, quer manter o PvPvE como experiência principal ou acha que os dois estilos deveriam coexistir? Conta pra gente nos comentários. O teste está previsto para acabar em 20 de outubro, e o futuro da opção ainda não foi confirmado. Esse foi o Radar dos Games."
   ],
-  "steam_app_id": 1808500
+  "steam_app_id": 1808500,
+  "production_request": {
+    "requested_at": "2026-10-15T12:34:08Z",
+    "deliverables": [
+      "1 Master 16:9",
+      "exactly 3 Shorts 9:16"
+    ],
+    "youtube_privacy": "private",
+    "tiktok_helper": [
+      "Short 1",
+      "Short 2",
+      "Short 3"
+    ],
+    "rule": "Do not publish publicly; validate all four MP4s and cover assets before delivery."
+  }
 }
