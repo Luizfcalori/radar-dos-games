@@ -1,10 +1,15 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-15T09:25:13.262138+00:00",
-  "total_discovered": 84,
-  "ready_for_tiktok": 82,
+  "updated_at": "2026-10-15T14:16:36.793101+00:00",
+  "total_discovered": 91,
+  "ready_for_tiktok": 88,
   "waiting_media": [
+    {
+      "youtube_id": "4rHekP89KHY",
+      "title": "O QUE O TRAILER DE YEAT MOSTRA? 👀🎮 Curtiu? Siga o Radar dos Games para #Fortnite #Yeat",
+      "reason": "original_media_not_recovered_yet"
+    },
     {
       "youtube_id": "BQ30QQNY9kw",
       "title": "Radar dos Games: notícias, lançamentos e gameplays!💚 Curta e siga! #GTA6 #GearsOfWarEDay #ARCRaiders",
@@ -18,15 +23,51 @@
   ],
   "items": [
     {
-      "youtube_id": "mWhC1VRoTdQ",
-      "youtube_url": "https://www.youtube.com/shorts/mWhC1VRoTdQ",
-      "title": "YEAT NO FORTNITE: O TRAILER CHEGOU!",
+      "youtube_id": "4rHekP89KHY",
+      "youtube_url": "https://www.youtube.com/shorts/4rHekP89KHY",
+      "title": "O QUE O TRAILER DE YEAT MOSTRA? 👀🎮 Curtiu? Siga o Radar dos Games para #Fortnite #Yeat",
+      "status": "waiting_media"
+    },
+    {
+      "youtube_id": "odjNdfozyMY",
+      "youtube_url": "https://www.youtube.com/shorts/odjNdfozyMY",
+      "title": "PATCH 26.20: O META DO WORLDS VAI MUDAR!",
       "status": "approved"
     },
     {
-      "youtube_id": "ChImgyX8YVk",
-      "youtube_url": "https://www.youtube.com/shorts/ChImgyX8YVk",
-      "title": "O QUE O TRAILER DE YEAT MOSTRA?",
+      "youtube_id": "BHY2AY1ceDw",
+      "youtube_url": "https://www.youtube.com/shorts/BHY2AY1ceDw",
+      "title": "CINCO CAMPEÕES VOLTAM AO LEAGUE CLASSIC!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "zvo71SO0CMc",
+      "youtube_url": "https://www.youtube.com/shorts/zvo71SO0CMc",
+      "title": "WORLDS 2026: 19 TIMES, UM SÓ CAMPEÃO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "2N8yCXerS5o",
+      "youtube_url": "https://www.youtube.com/shorts/2N8yCXerS5o",
+      "title": "NO PvE, O DANO ENTRE JOGADORES FICA DESATIVADO",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Y1G-Vh72qmc",
+      "youtube_url": "https://www.youtube.com/shorts/Y1G-Vh72qmc",
+      "title": "GRAPPLING HOOK: AS CORREÇÕES DA ATUALIZAÇÃO 2.1.0",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "gpK9knjbd2o",
+      "youtube_url": "https://www.youtube.com/shorts/gpK9knjbd2o",
+      "title": "A EMBARK VAI AVALIAR FEEDBACK E DADOS ANTES DE DECIDIR O FUTURO DO PvE",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "mWhC1VRoTdQ",
+      "youtube_url": "https://www.youtube.com/shorts/mWhC1VRoTdQ",
+      "title": "YEAT NO FORTNITE: O TRAILER CHEGOU!",
       "status": "approved"
     },
     {
@@ -519,6 +560,12 @@
       "youtube_id": "DFMjasmIOSw",
       "youtube_url": "https://www.youtube.com/shorts/DFMjasmIOSw",
       "title": "GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "ChImgyX8YVk",
+      "youtube_url": "https://www.youtube.com/shorts/ChImgyX8YVk",
+      "title": "O QUE O TRAILER DE YEAT MOSTRA?",
       "status": "approved"
     }
   ]
