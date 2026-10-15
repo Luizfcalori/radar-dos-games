@@ -1,5 +1,5 @@
 {
   "topic": "Castlevania: Belmont's Curse",
   "source": "official Konami launch announcement, 2026-10-15",
-  "notes": "Execution trigger refreshed after workflow expression fix. The daily-video workflow uses RADAR_IGNORE_MANUAL_BRIEF=1 for [run-private] runs; production research and media-first editorial pipeline remain authoritative."
+  "notes": "Execution trigger refreshed after quoted RADAR_TOPIC expression fix. The daily-video workflow uses RADAR_IGNORE_MANUAL_BRIEF=1 for [run-private] runs; production research and media-first editorial pipeline remain authoritative."
 }
