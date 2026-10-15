@@ -68,7 +68,9 @@ defaults:
     shell: bash --noprofile --norc -eo pipefail {0}
 
 concurrency:
-  group: ${{ github.event_name == 'push' && format('radar-dos-games-code-check-{0}', github.sha) || 'radar-dos-games-daily' }}
+  # A single push group prevents two commits for the same requested topic from
+  # running parallel upload jobs and creating duplicate YouTube videos.
+  group: ${{ github.event_name == 'push' && 'radar-dos-games-push' || 'radar-dos-games-daily' }}
   cancel-in-progress: true
 
 jobs:
