@@ -704,6 +704,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-fortnite-yeat-2026-10-14.json")
         elif forced_topic_slug == ascii_slug("ARC Raiders"):
             manual = load_manual_brief("production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json")
+        elif forced_topic_slug == ascii_slug("Castlevania"):
+            manual = load_manual_brief("production/manual-brief-castlevania-2026-10-15.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -740,7 +742,11 @@ def main():
             "manual_brief_path": (
                 "production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json"
                 if manual.get("content_id") == "manual-arc-raiders-pve-toggle-oct-2026"
-                else "production/manual-brief.json"
+                else (
+                    "production/manual-brief-castlevania-2026-10-15.json"
+                    if manual.get("content_id") == "manual-castlevania-belmonts-curse-2026-10-15"
+                    else "production/manual-brief.json"
+                )
             ),
         }
         mix = media_mix(selected_media)
