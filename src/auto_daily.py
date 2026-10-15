@@ -702,6 +702,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-free-fire-2026-10-13.json")
         elif forced_topic_slug == ascii_slug("Fortnite"):
             manual = load_manual_brief("production/manual-brief-fortnite-yeat-2026-10-14.json")
+        elif forced_topic_slug == ascii_slug("ARC Raiders"):
+            manual = load_manual_brief("production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json")
         else:
             manual = None
     if not candidates and not manual:
