@@ -301,3 +301,4 @@ jobs:
           git push origin main
 
 # Recheck trigger: import newly approved production artifacts when workflow file changes.
+# Manual recovery trigger: refresh approved queue after a successful production run.
