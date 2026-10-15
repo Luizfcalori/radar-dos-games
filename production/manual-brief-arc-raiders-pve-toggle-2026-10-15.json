@@ -21,13 +21,15 @@
   ],
   "video_urls": [
     "https://www.youtube.com/watch?v=XE0y_K8-iSQ",
-    "https://www.youtube.com/watch?v=U0jK145mxec",
-    "https://www.youtube.com/watch?v=IpeJjQDXNAE"
+    "https://www.youtube.com/watch?v=IpeJjQDXNAE",
+    "https://www.youtube.com/watch?v=KjiJDylLdZA",
+    "https://www.youtube.com/watch?v=U0jK145mxec"
   ],
   "video_fallback_urls": [
+    "https://www.youtube.com/watch?v=IpeJjQDXNAE",
+    "https://www.youtube.com/watch?v=KjiJDylLdZA",
     "https://www.youtube.com/watch?v=U0jK145mxec",
-    "https://www.youtube.com/watch?v=XE0y_K8-iSQ",
-    "https://www.youtube.com/watch?v=IpeJjQDXNAE"
+    "https://www.youtube.com/watch?v=XE0y_K8-iSQ"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
@@ -39,7 +41,8 @@
     "Citar correções da atualização 2.1.0, incluindo ajustes no Grappling Hook, sem inventar conteúdo.",
     "Master cinematográfico 16:9 e exatamente 3 Shorts 9:16, com capas próprias. Produção privada, sem publicação pública.",
     "Manter intro oficial integral e usar a voz Thalita Multilingual PT-BR V3. Evitar tom de sermão, metacomentários e repetição de gameplay.",
-    "A narração final deve ser revisada contra os trechos realmente disponíveis; não afirmar que o vídeo mostra imagens do teste PvE se a mídia fornecida não as mostrar."
+    "A narração final deve ser revisada contra os trechos realmente disponíveis; não afirmar que o vídeo mostra imagens do teste PvE se a mídia fornecida não as mostrar.",
+    "Para a montagem do Master, adquirir pelo menos 4 vídeos oficiais distintos e garantir no mínimo 360 segundos de gameplay aprovada e não duplicada antes de renderizar; se uma URL falhar, tentar as outras URLs oficiais em ordem alternativa. Os trailers oficiais de lançamento e Frozen Trail podem ser usados como contexto visual do jogo, nunca como prova visual direta do modo PvE."
   ],
   "script_blocks": [
     "ARC Raiders está testando uma mudança que pode mexer com a forma como muita gente joga: a opção de entrar em partidas focadas no PvE, enfrentando as máquinas ARC sem causar dano a outros jogadores. Mas atenção: isso ainda é um teste temporário, e não uma confirmação de que o modo ficará no jogo. Vamos entender as regras já em vigor, as mudanças da atualização e o que a Embark ainda precisa decidir.",
