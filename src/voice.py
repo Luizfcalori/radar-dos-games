@@ -142,9 +142,10 @@ async def synthesize_one(text: str, output: Path, voice: str):
     output.parent.mkdir(parents=True, exist_ok=True)
     speech = spoken_text(text)
     metadata = output.with_suffix(".words.jsonl")
-    # Edge TTS is free but can temporarily rate-limit bursts. Retry only transient
-    # 429/handshake throttles with bounded backoff; do not silently change the voice.
-    for attempt in range(5):
+    # Edge TTS is free and can apply account/IP-wide 429 throttling. Use a
+    # patient bounded retry policy; never silently switch away from Thalita.
+    max_attempts = 7
+    for attempt in range(max_attempts):
         try:
             communicate = edge_tts.Communicate(
                 speech, voice, rate="-15%", pitch="+0Hz", boundary="WordBoundary"
@@ -161,12 +162,13 @@ async def synthesize_one(text: str, output: Path, voice: str):
             )
             output.unlink(missing_ok=True)
             metadata.unlink(missing_ok=True)
-            if not retryable or attempt == 4:
+            if not retryable or attempt == max_attempts - 1:
                 raise
-            delay = min(4 * (2 ** attempt), 45)
+            delays = (15, 30, 60, 90, 120, 120)
+            delay = delays[attempt]
             print(
-                f"Edge TTS temporarily throttled ({name}); retry {attempt + 1}/4 "
-                f"after {delay}s",
+                f"Edge TTS throttled ({name}); retry {attempt + 1}/{max_attempts - 1} "
+                f"after {delay}s; voice remains {voice}",
                 flush=True,
             )
             await asyncio.sleep(delay)
@@ -234,6 +236,9 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
     cursor = 0.0
 
     for i, paragraph in enumerate(paragraphs, 1):
+        # Throttle connection bursts between paragraph requests to reduce 429s.
+        if i > 1:
+            await asyncio.sleep(3)
         seg = seg_dir / f"segment_{i:02d}.mp3"
         word_events = await synthesize_one(paragraph, seg, voice)
         d = duration(seg)
