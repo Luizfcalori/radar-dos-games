@@ -888,7 +888,7 @@ def main():
     short_hooks = [h[:88].rstrip(" -:|") for h in short_hooks]
 
     media_items = []
-    video_position = 0
+    planned_video_urls = set()
     for i, (typ, url) in enumerate(selected_media, 1):
         role = f"official_gameplay_or_trailer_{i:02d}" if typ == "video" else f"official_context_{i:02d}"
         item = {
@@ -901,14 +901,37 @@ def main():
             "relevance_evidence": "official_source_page_discovered_asset",
         }
         if typ == "video":
-            # Clipes oficiais curtos (5s+) são suficientes para os beats do Diretor V4.
+            # Nunca limitar o fallback ao índice da cena: todos os trailers oficiais
+            # aprovados ficam disponíveis quando a primeira URL falha/bloqueia.
             item["min_duration"] = 5
-            if manual:
-                fallbacks = manual.get("video_fallback_urls") or []
-                if video_position < len(fallbacks):
-                    item["fallback_urls"] = [fallbacks[video_position]]
-            video_position += 1
+            planned_video_urls.add(url)
         media_items.append(item)
+
+    # Manual briefs can carry a curated pool of official videos that is larger
+    # than the article parser's discovered media. Enqueue every unique candidate
+    # explicitly, in order, so a failed first URL cannot hide the remaining pool.
+    if manual:
+        curated_video_urls = []
+        for key in ("video_urls", "video_fallback_urls"):
+            for candidate_url in manual.get(key) or []:
+                if (isinstance(candidate_url, str) and candidate_url.startswith("https://")
+                        and candidate_url not in planned_video_urls
+                        and candidate_url not in curated_video_urls):
+                    curated_video_urls.append(candidate_url)
+        labels = manual.get("video_labels") or {}
+        roles = manual.get("video_roles") or {}
+        for j, candidate_url in enumerate(curated_video_urls, 1):
+            media_items.append({
+                "type": "video",
+                "url": candidate_url,
+                "role": roles.get(candidate_url, f"official_curated_fallback_{j:02d}"),
+                "source_label": labels.get(candidate_url, "Publisher-curated official video"),
+                "max_assets": 1,
+                "min_duration": 5,
+                "source_proof": candidate_url,
+                "relevance_evidence": "manual_brief_curated_official_video_fallback",
+            })
+            planned_video_urls.add(candidate_url)
 
     # Optional exact-subject stills curated from the game's official notes.
     # This is a generic schema; no hardcoded game, no inference from unrelated media.
