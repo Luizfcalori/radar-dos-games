@@ -6,20 +6,26 @@
   "primary_source": "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-campaign-early-access-live-now",
   "media_source_urls": [
     "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-campaign-early-access-live-now",
+    "https://www.callofduty.com/br/pt/blog/2026/09/call-of-duty-modern-warfare-4-tokyo-games-show-campaign-trailer",
+    "https://www.callofduty.com/blog/2026/09/call-of-duty-modern-warfare-4-tokyo-games-show-campaign-trailer",
     "https://www.callofduty.com/pt/modernwarfare4/campaign",
     "https://www.callofduty.com/br/pt/blog/2026/05/modernwarfare4-fob"
   ],
   "source_urls": [
     "https://www.callofduty.com/blog/2026/10/call-of-duty-modern-warfare-4-campaign-early-access-live-now",
+    "https://www.callofduty.com/br/pt/blog/2026/09/call-of-duty-modern-warfare-4-tokyo-games-show-campaign-trailer",
+    "https://www.callofduty.com/blog/2026/09/call-of-duty-modern-warfare-4-tokyo-games-show-campaign-trailer",
     "https://www.callofduty.com/pt/modernwarfare4/campaign",
     "https://www.callofduty.com/br/pt/blog/2026/05/modernwarfare4-fob"
   ],
   "video_urls": [
+    "https://www.youtube.com/watch?v=5xcepT12IEU",
     "https://www.youtube.com/watch?v=tmCV1hj6z5Y",
     "https://www.youtube.com/watch?v=OZ8H9Z5hP6w",
     "https://www.youtube.com/watch?v=ModGLNrCtVo"
   ],
   "video_fallback_urls": [
+    "https://www.youtube.com/watch?v=5xcepT12IEU",
     "https://www.youtube.com/watch?v=tmCV1hj6z5Y",
     "https://www.youtube.com/watch?v=OZ8H9Z5hP6w",
     "https://www.youtube.com/watch?v=ModGLNrCtVo"
@@ -56,8 +62,9 @@
     "Antes de aprovar, ouvir o áudio gerado e conferir especificamente Call of Duty, Modern Warfare, Park Hyun Jun, John Price e DMZ. Se a dicção estiver errada, corrigir aliases e renderizar novamente; não declarar QA de pronúncia sem ouvir o áudio.",
     "Master cinematográfico 16:9 e exatamente 3 Shorts 9:16 derivados do Master, cada um com capa própria no padrão Radar dos Games.",
     "Upload privado ao YouTube, sem publicação pública ou agendamento. Importar os três Shorts ao TikTok Helper somente após os quatro MP4s passarem no QA.",
-    "Priorizar cortes inéditos e variados; não repetir artificialmente o mesmo trecho para preencher duração. Se a mídia oficial disponível for insuficiente, tentar todas as URLs aprovadas e interromper com diagnóstico em vez de fingir que terminou.",
-    "Roteiro informativo de aproximadamente 450–500 palavras, baseado somente nos detalhes confirmados nas fontes oficiais."
+    "Roteiro informativo de aproximadamente 450–500 palavras, baseado somente nos detalhes confirmados nas fontes oficiais.",
+    "RECUPERAÇÃO DE MÍDIA: tentar cada URL de vídeo individualmente, incluindo o trailer de campanha da Tokyo Games Show (ID 5xcepT12IEU), com downloader alternativo quando yt-dlp bloquear. Não encerrar a coleta após falha de um único trailer; manter os vídeos já baixados e continuar tentando as demais fontes aprovadas.",
+    "Se a mídia móvel continuar insuficiente, registrar diagnóstico com URLs tentadas e motivo, e não iniciar renderização com gameplay repetida ou cenas sem correspondência."
   ],
   "short_hooks": [
     "MODERN WARFARE 4: A CAMPANHA JÁ ESTÁ LIBERADA PARA QUEM FEZ A PRÉ-COMPRA",
