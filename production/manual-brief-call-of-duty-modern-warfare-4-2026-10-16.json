@@ -115,7 +115,7 @@
     "Roteiro informativo de aproximadamente 450–500 palavras, baseado somente nos detalhes confirmados nas fontes oficiais.",
     "RECUPERAÇÃO DE MÍDIA: tentar cada URL de vídeo individualmente, incluindo o trailer de campanha da Tokyo Games Show (ID 5xcepT12IEU), com downloader alternativo quando yt-dlp bloquear. Não encerrar a coleta após falha de um único trailer; manter os vídeos já baixados e continuar tentando as demais fontes aprovadas.",
     "Se a mídia móvel continuar insuficiente, registrar diagnóstico com URLs tentadas e motivo, e não iniciar renderização com gameplay repetida ou cenas sem correspondência.",
-    "ROTA DE IMAGENS OFICIAIS: baixar e validar as 13 imagens diretas de imgs.callofduty.com em visual_reference_images; exigir pelo menos 10 stills oficiais válidos além de pelo menos 2 vídeos e 180 segundos de mídia em movimento antes de declarar a coleta concluída. Stills podem complementar falas sem sujeito específico; priorizar gameplay inédita sempre que houver."
+    "ROTA DE IMAGENS OFICIAIS: baixar e validar as 13 imagens diretas de imgs.callofduty.com em visual_reference_images; exigir pelo menos 11 stills oficiais válidos além de pelo menos 2 vídeos e 180 segundos de mídia em movimento antes de declarar a coleta concluída. Stills podem complementar falas sem sujeito específico; nomes próprios e DMZ exigem imagens compatíveis, e a gameplay inédita deve ser priorizada sempre que houver."
   ],
   "short_hooks": [
     "MODERN WARFARE 4: A CAMPANHA JÁ ESTÁ LIBERADA PARA QUEM FEZ A PRÉ-COMPRA",
@@ -146,8 +146,8 @@
     "rule": "Validate all four MP4s and pronunciation before delivery; never claim upload or import before confirmation.",
     "media_recovery_revision": "official-stills-fallback-v2-2026-10-16"
   },
-  "minimum_assets": 12,
+  "minimum_assets": 13,
   "minimum_video_assets": 2,
   "minimum_unique_video_seconds": 180,
-  "minimum_image_assets": 10
+  "minimum_image_assets": 11
 }
