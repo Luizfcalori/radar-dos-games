@@ -184,7 +184,17 @@ def validate_master(scenes,assets):
             if d<=0:
                 raise RuntimeError("QUALITY_BLOCK: beat sem duração")
             if asset["type"]=="image":
-                if not tracker.can_use(asset,beat.get("text",""),scene_no,cursor,d):
+                # Mirror the director's narrowly-scoped emergency bridge rule in final QA.
+                # Only an explicitly marked official-image bridge can relax cooldown;
+                # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
+                emergency_bridge = (
+                    beat.get("visual_evidence") == "official_image_subject_label"
+                    and _mw4_curated_still(asset)
+                )
+                if not tracker.can_use(
+                    asset, beat.get("text",""), scene_no, cursor, d,
+                    relax_cooldown=emergency_bridge
+                ):
                     raise RuntimeError(f"QUALITY_BLOCK: repetição ou tema incompatível para imagem {idx} na cena {scene_no}")
                 report.append({"scene":scene_no,"image":idx,"seconds":round(d,3)})
             tracker.record(asset,scene_no,cursor,d)
