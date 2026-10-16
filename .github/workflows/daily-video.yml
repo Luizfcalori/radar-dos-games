@@ -71,7 +71,7 @@ defaults:
 concurrency:
   # A single push group prevents two commits for the same requested topic from
   # running parallel upload jobs and creating duplicate YouTube videos.
-  # Topic-specific private runs are triggered by commits carrying TOPIC=<game>.
+  # Topic-specific private runs, including approved media-fix reruns, must carry TOPIC=<game> in the commit title.
   # ARC Raiders run retriggered after the approved script and excluded-condition fixes.
   group: ${{ github.event_name == 'push' && 'radar-dos-games-push' || 'radar-dos-games-daily' }}
   cancel-in-progress: true
