@@ -133,7 +133,7 @@ class StaticTracker:
         self.usage=defaultdict(lambda:{"count":0,"seconds":0.0,"scene":None,"end":None})
         self.previous=None
 
-    def can_use(self,asset,phrase,scene_no,timeline_seconds,duration):
+    def can_use(self,asset,phrase,scene_no,timeline_seconds,duration,relax_cooldown=False):
         if asset.get("type")!="image" or not subject_ok(phrase,asset):
             return False
         key=asset_identity(asset)
@@ -144,10 +144,16 @@ class StaticTracker:
             return False
         if row["seconds"]+duration>static_total_limit(asset)+0.001:
             return False
-        if row["scene"] is not None and scene_no-row["scene"]<STATIC_COOLDOWN_SCENES:
-            return False
-        if row["end"] is not None and timeline_seconds-row["end"]<STATIC_COOLDOWN_SECONDS:
-            return False
+        # The emergency continuity bridge may relax spacing only for curated,
+        # official MW4 stills after all fresh stills and unique gameplay are exhausted.
+        # Usage/seconds caps, subject matching, and the no-immediate-repeat guard
+        # remain mandatory.
+        relaxed_official_bridge=relax_cooldown and _mw4_curated_still(asset)
+        if not relaxed_official_bridge:
+            if row["scene"] is not None and scene_no-row["scene"]<STATIC_COOLDOWN_SCENES:
+                return False
+            if row["end"] is not None and timeline_seconds-row["end"]<STATIC_COOLDOWN_SECONDS:
+                return False
         if self.previous==key:
             return False
         return True
