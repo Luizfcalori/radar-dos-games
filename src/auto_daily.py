@@ -714,6 +714,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json")
         elif forced_topic_slug == ascii_slug("Castlevania"):
             manual = load_manual_brief("production/manual-brief-castlevania-2026-10-15.json")
+        elif forced_topic_slug == ascii_slug("Call of Duty: Modern Warfare 4"):
+            manual = load_manual_brief("production/manual-brief-call-of-duty-modern-warfare-4-2026-10-16.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -753,7 +755,11 @@ def main():
                 else (
                     "production/manual-brief-castlevania-2026-10-15.json"
                     if manual.get("content_id") == "manual-castlevania-belmonts-curse-2026-10-15"
-                    else "production/manual-brief.json"
+                    else (
+                        "production/manual-brief-call-of-duty-modern-warfare-4-2026-10-16.json"
+                        if manual.get("content_id") == "manual-call-of-duty-modern-warfare-4-campaign-early-access-2026-10-16"
+                        else "production/manual-brief.json"
+                    )
                 )
             ),
         }
