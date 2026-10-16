@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-15T14:16:36.793101+00:00",
-  "total_discovered": 91,
-  "ready_for_tiktok": 88,
+  "updated_at": "2026-10-16T12:36:33.826457+00:00",
+  "total_discovered": 94,
+  "ready_for_tiktok": 91,
   "waiting_media": [
     {
       "youtube_id": "4rHekP89KHY",
@@ -22,6 +22,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "ZlKcR9JoMjk",
+      "youtube_url": "https://www.youtube.com/shorts/ZlKcR9JoMjk",
+      "title": "ROSE BELMONT E O CHICOTE VAMPIRE KILLER",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "ogaiyJR6rrY",
+      "youtube_url": "https://www.youtube.com/shorts/ogaiyJR6rrY",
+      "title": "CHEFES, ARCANA E HABILIDADES: COMO FUNCIONA O COMBATE",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "0p9tv3Xyb3E",
+      "youtube_url": "https://www.youtube.com/shorts/0p9tv3Xyb3E",
+      "title": "PARIS EM 1499: O QUE FAZ ESTE CASTLEVANIA SER DIFERENTE",
+      "status": "approved"
+    },
     {
       "youtube_id": "4rHekP89KHY",
       "youtube_url": "https://www.youtube.com/shorts/4rHekP89KHY",
