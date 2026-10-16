@@ -76,7 +76,14 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
     primary_source=source_key(selected.get("url"))
     contextual_images=[]
     for asset in images:
-        if source_key(asset.get("source"))==primary_source and primary_source[0]:
+        source_domain=urlparse(str(asset.get("source") or "")).netloc.lower()
+        image_url=str(asset.get("url") or "").casefold()
+        curated_same_game=(
+            str(asset.get("role") or "").startswith("official_subject_reference_")
+            and "callofduty.com" in source_domain
+            and "/mw4/" in image_url
+        )
+        if (source_key(asset.get("source"))==primary_source and primary_source[0]) or curated_same_game:
             if not asset.get("source_label"):
                 asset["source_label"]=str(selected.get("title") or topic)
             contextual_images.append(asset)
