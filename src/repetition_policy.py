@@ -238,35 +238,70 @@ def validate_short(beats,assets):
 
 
 def replace_short_repeats(scene,assets):
-    """Rebuild a Short from approved source media without repeating stills."""
+    """Rebuild a Short from approved source media, reserving distinct gameplay ranges."""
     from copy import deepcopy
+    try:
+        from continuity import merge_reviewed_windows
+    except ModuleNotFoundError:
+        from src.continuity import merge_reviewed_windows
+
     beats=deepcopy(scene.get("beats") or [])
+    selected={int(x) for x in scene.get("media_first_assets",[])}
     videos=[a for a in assets.values() if a.get("type")=="video"
-            and int(a["index"]) in {int(x) for x in scene.get("media_first_assets",[])}]
+            and int(a["index"]) in selected]
     windows=scene.get("visual_windows") or {}
     used=set()
+    reserved=defaultdict(list)
+
+    # Respect every gameplay interval already present in the selected Short.
+    for beat in beats:
+        asset=assets[int(beat["media_index"])]
+        if asset.get("type")!="video":
+            continue
+        w=beat.get("source_window")
+        if w:
+            lo=float(w["start"]); hi=lo+float(beat["duration"])
+            reserved[asset_identity(asset)].append((lo,hi))
+
     for beat in beats:
         asset=assets[int(beat["media_index"])]
         d=float(beat["duration"])
         key=asset_identity(asset) if asset.get("type")=="image" else None
-        if asset.get("type")=="image" and (
-            key in used or d>MAX_STATIC_BEAT_SECONDS+0.001
-            or not subject_ok(beat.get("text",""),asset)
-        ):
-            allowed=[a for a in videos if any(float(w["end"])-float(w["start"])>=d+.1
-                     for w in windows.get(str(a["index"]),[]))]
-            if not allowed:
-                raise RuntimeError("QUALITY_BLOCK: Short sem gameplay compatível para substituir imagem repetida")
-            pick=min(allowed,key=lambda a:int(a["index"]))
-            beat["media_index"]=int(pick["index"])
-            window=next(w for w in windows[str(pick["index"])]
-                        if float(w["end"])-float(w["start"])>=d+.1)
-            beat["source_window"]={"start":float(window["start"]),"end":float(window["end"])}
-        elif key:
+        if asset.get("type")!="image":
+            continue
+        if key not in used and d<=MAX_STATIC_BEAT_SECONDS+0.001 and subject_ok(beat.get("text",""),asset):
             used.add(key)
+            continue
+
+        choices=[]
+        for video in videos:
+            idx=int(video["index"])
+            identity=asset_identity(video)
+            total=float(video.get("duration") or 0)
+            for w in merge_reviewed_windows(windows.get(str(idx),[]),total):
+                lo=float(w["start"]); hi=min(float(w["end"]),total-EPS if total>0 else float(w["end"]))
+                if hi-lo < d+0.1:
+                    continue
+                # Find a sufficiently long unused portion within this reviewed window.
+                cursor=lo
+                for a,b in sorted(reserved[identity]):
+                    if b <= cursor+EPS or a >= hi-EPS:
+                        continue
+                    if a-cursor >= d+0.1:
+                        choices.append((idx,cursor,hi,w))
+                        break
+                    cursor=max(cursor,b)
+                else:
+                    if hi-cursor >= d+0.1:
+                        choices.append((idx,cursor,hi,w))
+        if not choices:
+            raise RuntimeError("QUALITY_BLOCK: Short sem gameplay inédita compatível para substituir imagem repetida")
+        idx,lo,hi,w=min(choices,key=lambda x:(x[0],x[1]))
+        beat["media_index"]=idx
+        beat["source_window"]={"start":lo,"end":hi}
+        reserved[asset_identity(assets[idx])].append((lo,lo+d))
     validate_short(beats,assets)
     return beats
-
 
 def qa_report(scenes,clips,shorts=None):
     assets={int(a["index"]):a for a in clips.get("assets") or [] if a.get("approved")}
