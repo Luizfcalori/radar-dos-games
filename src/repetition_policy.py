@@ -102,7 +102,10 @@ def subject_ok(phrase,asset):
 
 def static_limit(asset):
     if _mw4_curated_still(asset):
-        return 4
+        # Official MW4 stills are the approved continuity fallback when unique
+        # reviewed gameplay is exhausted; allow enough short, spaced inserts to
+        # bridge factual narration without replaying motion footage.
+        return 8
     if str(asset.get("role") or "").startswith("official_subject_reference_"):
         return MAX_CURATED_STATIC_USES_MASTER
     return MAX_STATIC_USES_MASTER
