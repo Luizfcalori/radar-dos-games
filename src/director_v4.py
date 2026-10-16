@@ -358,8 +358,20 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     ))
                     if not exhausted:
                         raise
+                    # MEDIA_FIRST_V1 can restrict a scene to video-only clip IDs.
+                    # When those reviewed motion intervals are exhausted, permit
+                    # approved, game-specific official stills from the acquired asset
+                    # manifest as a continuity bridge; never broaden to generic art.
+                    fallback_pool = [
+                        a for a in assets.values()
+                        if a.get("approved", True)
+                        and a.get("type") == "image"
+                        and str(a.get("role") or "").startswith("official_subject_reference")
+                        and a.get("source")
+                        and a.get("url")
+                    ]
                     fallback_stills = [
-                        a for a in allowed
+                        a for a in fallback_pool
                         if static_tracker.can_use(
                             a, phrase_text, i, timeline_seconds, min(remaining, 3.5)
                         )
@@ -367,10 +379,10 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     fallback_stills.sort(
                         key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
                     )
-                    # A source-matched official still may bridge a factual sentence
-                    # when all unique reviewed motion footage is exhausted. This
-                    # preserves the no-repeated-gameplay rule and keeps static use
-                    # bounded by StaticTracker's subject, cooldown, and duration QA.
+                    # Prefer scene-approved stills, then official subject-specific
+                    # stills from the same researched game/topic. This fallback is
+                    # only reached after unique reviewed gameplay is exhausted;
+                    # it does not authorize repeated video intervals.
                     candidates_for_still = stills or fallback_stills
                     if not candidates_for_still:
                         raise
