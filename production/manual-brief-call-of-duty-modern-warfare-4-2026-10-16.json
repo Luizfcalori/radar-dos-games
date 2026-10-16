@@ -72,28 +72,18 @@
       "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
     },
     {
-      "url": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/reveal/MW4-REVEAL-006.webp",
-      "label": "Esquadrão patrulha rua urbana iluminada por letreiros",
-      "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
-    },
-    {
-      "url": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/reveal/MW4-REVEAL-008.webp",
-      "label": "Comandante sul-coreana em retrato oficial da campanha",
-      "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
-    },
-    {
-      "url": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/reveal/MW4-REVEAL-016.webp",
-      "label": "Operador em área de conflito do modo DMZ de Modern Warfare 4",
-      "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
-    },
-    {
-      "url": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/reveal/MW4-REVEAL-017.webp",
-      "label": "Cena oficial de operação em zona de conflito, contexto de DMZ",
-      "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
-    },
-    {
       "url": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/reveal/MW4-REVEAL-018.webp",
       "label": "Operador tático avançando em interior de instalação, imagem oficial de Modern Warfare 4",
+      "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
+    },
+    {
+      "url": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/reveal/MW4-REVEAL-012.webp",
+      "label": "Operador com máscara de gás e rifle em ambiente urbano, imagem oficial de Modern Warfare 4",
+      "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
+    },
+    {
+      "url": "https://imgs.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/body/mw4/reveal/MW4-REVEAL-015.webp",
+      "label": "Equipe de operadores armados dentro de aeronave, imagem oficial de Modern Warfare 4",
       "source_proof": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement"
     }
   ],
@@ -115,7 +105,7 @@
     "Roteiro informativo de aproximadamente 450–500 palavras, baseado somente nos detalhes confirmados nas fontes oficiais.",
     "RECUPERAÇÃO DE MÍDIA: tentar cada URL de vídeo individualmente, incluindo o trailer de campanha da Tokyo Games Show (ID 5xcepT12IEU), com downloader alternativo quando yt-dlp bloquear. Não encerrar a coleta após falha de um único trailer; manter os vídeos já baixados e continuar tentando as demais fontes aprovadas.",
     "Se a mídia móvel continuar insuficiente, registrar diagnóstico com URLs tentadas e motivo, e não iniciar renderização com gameplay repetida ou cenas sem correspondência.",
-    "ROTA DE IMAGENS OFICIAIS: baixar e validar as 13 imagens diretas de imgs.callofduty.com em visual_reference_images; exigir pelo menos 11 stills oficiais válidos além de pelo menos 2 vídeos e 180 segundos de mídia em movimento antes de declarar a coleta concluída. Stills podem complementar falas sem sujeito específico; nomes próprios e DMZ exigem imagens compatíveis, e a gameplay inédita deve ser priorizada sempre que houver."
+    "ROTA DE IMAGENS OFICIAIS: coletar as 11 URLs de stills oficiais já verificadas em visual_reference_images; exigir ao menos 11 imagens válidas, 2 vídeos e 180 segundos únicos em movimento. Imagens oficiais complementam falas, sem substituir a gameplay; nomes próprios e DMZ exigem imagens compatíveis."
   ],
   "short_hooks": [
     "MODERN WARFARE 4: A CAMPANHA JÁ ESTÁ LIBERADA PARA QUEM FEZ A PRÉ-COMPRA",
