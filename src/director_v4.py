@@ -305,7 +305,21 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     scenes=plan.get("scenes") or []; segments=timings.get("segments") or []
     if len(scenes)!=len(segments):
         raise RuntimeError(f"QUALITY_BLOCK: V4 recebeu {len(segments)} blocos de voz para {len(scenes)} cenas")
-    assets={int(a["index"]):a for a in clips.get("assets",[]) if a.get("approved",True)}
+    # Preserve the full researched manifest (including official stills) while
+    # enriching it with the decupagem/visual-inspection metadata from clips.json.
+    # MEDIA_FIRST_V1 may list only video IDs per scene, so a clips-only map can
+    # accidentally hide every official still from the approved fallback pool.
+    assets={}
+    for a in plan.get("assets",[]) or []:
+        if a.get("approved",True) and a.get("index") is not None:
+            assets[int(a["index"])]=dict(a)
+    for a in clips.get("assets",[]) or []:
+        if not a.get("approved",True) or a.get("index") is None:
+            continue
+        idx=int(a["index"])
+        merged=dict(assets.get(idx,{}))
+        merged.update({k:v for k,v in a.items() if v is not None and v != ""})
+        assets[idx]=merged
     if not assets: raise RuntimeError("QUALITY_BLOCK: V4 sem assets aprovados")
 
     try:
