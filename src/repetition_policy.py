@@ -283,7 +283,7 @@ def replace_short_repeats(scene,assets):
             identity=timeline.identity(idx)
             for w in merge_reviewed_windows(windows.get(str(idx),[]),total):
                 lo=float(w["start"])
-                hi=min(float(w["end"]),total-EPS if total>0 else float(w["end"]))
+                hi=min(float(w["end"]),total-0.001 if total>0 else float(w["end"]))
                 if hi-lo < duration+0.1:
                     continue
                 # Query free spans after subtracting all used intervals for the canonical identity.
