@@ -385,15 +385,31 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         and a.get("source")
                         and a.get("url")
                     ]
+                    fallback_duration=min(remaining,3.5)
                     fallback_stills = [
                         a for a in fallback_pool
                         if static_tracker.can_use(
-                            a, phrase_text, i, timeline_seconds, min(remaining, 3.5)
+                            a, phrase_text, i, timeline_seconds, fallback_duration
                         )
                     ]
                     fallback_stills.sort(
                         key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
                     )
+                    # If every official still is inside the normal spacing cooldown,
+                    # allow a second-tier bridge using curated MW4 stills only. The
+                    # tracker still enforces subject match, per-image use/seconds caps,
+                    # and no consecutive reuse. Gameplay intervals are never repeated.
+                    if not fallback_stills:
+                        fallback_stills = [
+                            a for a in fallback_pool
+                            if static_tracker.can_use(
+                                a, phrase_text, i, timeline_seconds, fallback_duration,
+                                relax_cooldown=True
+                            )
+                        ]
+                        fallback_stills.sort(
+                            key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
+                        )
                     # Prefer scene-approved stills, then official subject-specific
                     # stills from the same researched game/topic. This fallback is
                     # only reached after unique reviewed gameplay is exhausted;
