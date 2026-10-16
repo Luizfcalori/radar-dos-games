@@ -92,5 +92,6 @@
       "Short 3"
     ],
     "rule": "Do not publish publicly; validate all four MP4s and cover assets before delivery."
-  }
+  },
+  "steam_app_id": "4231820"
 }
