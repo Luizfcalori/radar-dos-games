@@ -14,13 +14,13 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 MAX_STATIC_USES_MASTER=2
-MAX_CURATED_STATIC_USES_MASTER=1
-MAX_STATIC_TOTAL_SECONDS_MASTER=8.0
+MAX_CURATED_STATIC_USES_MASTER=4
+MAX_STATIC_TOTAL_SECONDS_MASTER=14.0
 MAX_STATIC_BEAT_SECONDS=3.5
 MAX_STATIC_USES_SHORT=1
 MAX_STATIC_TOTAL_SECONDS_SHORT=3.5
-STATIC_COOLDOWN_SCENES=3
-STATIC_COOLDOWN_SECONDS=25.0
+STATIC_COOLDOWN_SCENES=2
+STATIC_COOLDOWN_SECONDS=12.0
 STOP={"arc","raiders","game","games","jogo","jogos","radar","dos","das","uma",
       "para","with","the","from","official","oficial","screen","screenshot",
       "image","images","media","frame","frozen","trail","update","novo",
@@ -71,15 +71,21 @@ def match_score(phrase,asset):
 
 
 def subject_ok(phrase,asset):
-    """Require a matching subject, except a curated official still used for the CTA outro."""
+    """Prefer matching subjects; curated official game stills may support general context."""
     if match_score(phrase,asset)>0:
         return True
-    text=str(phrase or "").casefold()
-    is_cta=any(token in text for token in (
-        "conta nos comentários","acompanha o radar","mais novidades",
-        "se você gosta de acompanhar",
-    ))
-    return bool(is_cta and str(asset.get("role") or "").startswith("official_subject_reference_"))
+    role=str(asset.get("role") or "")
+    if role.startswith("official_subject_reference_"):
+        # These stills are individually curated from the publisher's own page for
+        # this exact game. Permit contextual B-roll when no specific named subject
+        # is required; the director still uses unique moving footage first.
+        text=str(phrase or "").casefold()
+        named_terms=("park hyun jun","john price","kate laswell","dmz","multiplayer")
+        if not any(term in text for term in named_terms):
+            return True
+        # Named terms may still use the image if its official label actually matches.
+        return False
+    return False
 
 
 def static_limit(asset):
