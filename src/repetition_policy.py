@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# [run-private] TOPIC=Call of Duty: Modern Warfare 4 — validar capacidade de fallback de stills oficiais.
 """Fail-closed editorial anti-repetition policy for Radar Premium V4.
 
 Check actual beat timelines, never merely metadata flags. Generic footage is
