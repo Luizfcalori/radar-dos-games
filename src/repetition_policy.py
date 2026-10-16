@@ -93,7 +93,7 @@ def subject_ok(phrase,asset):
         return True
     if not _mw4_curated_still(asset):
         return False
-    named_terms=("park hyun jun","john price","kate laswell","dmz")
+    named_terms=("park hyun jun","john price","kate laswell")
     # A specific named subject/mode must match the official still label.
     if any(term in text for term in named_terms):
         return False
