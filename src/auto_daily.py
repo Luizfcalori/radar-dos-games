@@ -895,6 +895,24 @@ def main():
 
     media_items = []
     planned_video_urls = set()
+    # Download the fast, publisher-hosted stills before slow/blocked video fallbacks.
+    # The media gate still requires the configured number of unique moving-video seconds.
+    # Optional exact-subject stills curated from the game's official notes.
+    # This is a generic schema; no hardcoded game, no inference from unrelated media.
+    if manual:
+        for i, visual in enumerate(manual.get("visual_reference_images") or [], 1):
+            if not isinstance(visual, dict) or not str(visual.get("url","")).startswith("https://"):
+                continue
+            media_items.append({
+                "type": "image",
+                "url": visual["url"],
+                "role": f"official_subject_reference_{i:02d}",
+                "source_label": str(visual.get("label") or "").strip()[:90],
+                "max_assets": 1,
+                "source_proof": visual.get("source_proof") or selected["url"],
+                "relevance_evidence": "publisher_curated_subject_specific_still",
+            })
+
     for i, (typ, url) in enumerate(selected_media, 1):
         role = f"official_gameplay_or_trailer_{i:02d}" if typ == "video" else f"official_context_{i:02d}"
         item = {
@@ -938,22 +956,6 @@ def main():
                 "relevance_evidence": "manual_brief_curated_official_video_fallback",
             })
             planned_video_urls.add(candidate_url)
-
-    # Optional exact-subject stills curated from the game's official notes.
-    # This is a generic schema; no hardcoded game, no inference from unrelated media.
-    if manual:
-        for i, visual in enumerate(manual.get("visual_reference_images") or [], 1):
-            if not isinstance(visual, dict) or not str(visual.get("url","")).startswith("https://"):
-                continue
-            media_items.append({
-                "type": "image",
-                "url": visual["url"],
-                "role": f"official_subject_reference_{i:02d}",
-                "source_label": str(visual.get("label") or "").strip()[:90],
-                "max_assets": 1,
-                "source_proof": visual.get("source_proof") or selected["url"],
-                "relevance_evidence": "publisher_curated_subject_specific_still",
-            })
 
     # For an explicitly curated manual brief, prefer original game media on
     # Steam's own CDN when its exact app ID is supplied. This does not alter
