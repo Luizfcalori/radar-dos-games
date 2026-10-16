@@ -14,13 +14,13 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 MAX_STATIC_USES_MASTER=2
-MAX_CURATED_STATIC_USES_MASTER=4
-MAX_STATIC_TOTAL_SECONDS_MASTER=14.0
+MAX_CURATED_STATIC_USES_MASTER=1
+MAX_STATIC_TOTAL_SECONDS_MASTER=8.0
 MAX_STATIC_BEAT_SECONDS=3.5
 MAX_STATIC_USES_SHORT=1
 MAX_STATIC_TOTAL_SECONDS_SHORT=3.5
-STATIC_COOLDOWN_SCENES=2
-STATIC_COOLDOWN_SECONDS=12.0
+STATIC_COOLDOWN_SCENES=3
+STATIC_COOLDOWN_SECONDS=25.0
 STOP={"arc","raiders","game","games","jogo","jogos","radar","dos","das","uma",
       "para","with","the","from","official","oficial","screen","screenshot",
       "image","images","media","frame","frozen","trail","update","novo",
@@ -70,28 +70,39 @@ def match_score(phrase,asset):
     return len(named)*10+len(overlap)
 
 
+def _mw4_curated_still(asset):
+    role=str(asset.get("role") or "")
+    url=str(asset.get("url") or "").casefold()
+    label=str(asset.get("source_label") or "").casefold()
+    return role.startswith("official_subject_reference_") and (
+        "/mw4/" in url or "modern warfare 4" in label or "call of duty" in label
+    )
+
+
 def subject_ok(phrase,asset):
-    """Prefer matching subjects; curated official game stills may support general context."""
+    """Require matching subjects, with a narrow same-game contextual still fallback."""
     if match_score(phrase,asset)>0:
         return True
-    role=str(asset.get("role") or "")
-    if role.startswith("official_subject_reference_"):
-        # These stills are individually curated from the publisher's own page for
-        # this exact game. Permit contextual B-roll when no specific named subject
-        # is required; the director still uses unique moving footage first.
-        text=str(phrase or "").casefold()
-        named_terms=("park hyun jun","john price","kate laswell","dmz","multiplayer")
-        if not any(term in text for term in named_terms):
-            return True
-        # Named terms may still use the image if its official label actually matches.
+    if not _mw4_curated_still(asset):
         return False
-    return False
+    text=str(phrase or "").casefold()
+    named_terms=("park hyun jun","john price","kate laswell","dmz")
+    # A specific named subject/mode must match the official still label.
+    if any(term in text for term in named_terms):
+        return False
+    return True
 
 
 def static_limit(asset):
+    if _mw4_curated_still(asset):
+        return 4
     if str(asset.get("role") or "").startswith("official_subject_reference_"):
         return MAX_CURATED_STATIC_USES_MASTER
     return MAX_STATIC_USES_MASTER
+
+
+def static_total_limit(asset):
+    return 14.0 if _mw4_curated_still(asset) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
@@ -120,7 +131,7 @@ class StaticTracker:
             return False
         if row["count"]>=static_limit(asset):
             return False
-        if row["seconds"]+duration>MAX_STATIC_TOTAL_SECONDS_MASTER+0.001:
+        if row["seconds"]+duration>static_total_limit(asset)+0.001:
             return False
         if row["scene"] is not None and scene_no-row["scene"]<STATIC_COOLDOWN_SCENES:
             return False
