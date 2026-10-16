@@ -352,12 +352,29 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
                     evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
                 except RuntimeError as exc:
-                    if not any(token in str(exc) for token in (
+                    exhausted = any(token in str(exc) for token in (
                         "faltam cenas inéditas correspondentes à fala",
                         "acabou a gameplay inédita aprovada para a fala",
-                    )) or not stills:
+                    ))
+                    if not exhausted:
                         raise
-                    picked=stills[0]
+                    fallback_stills = [
+                        a for a in allowed
+                        if static_tracker.can_use(
+                            a, phrase_text, i, timeline_seconds, min(remaining, 3.5)
+                        )
+                    ]
+                    fallback_stills.sort(
+                        key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
+                    )
+                    # A source-matched official still may bridge a factual sentence
+                    # when all unique reviewed motion footage is exhausted. This
+                    # preserves the no-repeated-gameplay rule and keeps static use
+                    # bounded by StaticTracker's subject, cooldown, and duration QA.
+                    candidates_for_still = stills or fallback_stills
+                    if not candidates_for_still:
+                        raise
+                    picked=candidates_for_still[0]
                     d=min(remaining,3.5)
                     window=None
                     evidence="official_image_subject_label"
