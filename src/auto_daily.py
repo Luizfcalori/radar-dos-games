@@ -741,6 +741,14 @@ def main():
                 )
         parser, selected_media, manual_errors = fetch_manual_media(manual)
         errors.extend(manual_errors)
+        # Explicitly skip publisher trailer IDs previously confirmed age-gated;
+        # the same brief supplies verified stills plus two working video routes.
+        blocked_video_urls = set(manual.get("blocked_video_urls") or [])
+        if blocked_video_urls:
+            selected_media = [
+                (kind, url) for kind, url in selected_media
+                if not (kind == "video" and url in blocked_video_urls)
+            ]
         selected = {
             "content_id": manual.get("content_id") or ("manual-" + ascii_slug(manual.get("title", "pauta"))[:48]),
             "title": manual.get("title") or "Pauta especial",

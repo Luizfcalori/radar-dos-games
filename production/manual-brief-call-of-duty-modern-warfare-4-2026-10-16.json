@@ -20,14 +20,10 @@
   ],
   "video_urls": [
     "https://www.youtube.com/watch?v=5xcepT12IEU",
-    "https://www.youtube.com/watch?v=tmCV1hj6z5Y",
-    "https://www.youtube.com/watch?v=OZ8H9Z5hP6w",
     "https://www.youtube.com/watch?v=ModGLNrCtVo"
   ],
   "video_fallback_urls": [
     "https://www.youtube.com/watch?v=5xcepT12IEU",
-    "https://www.youtube.com/watch?v=tmCV1hj6z5Y",
-    "https://www.youtube.com/watch?v=OZ8H9Z5hP6w",
     "https://www.youtube.com/watch?v=ModGLNrCtVo"
   ],
   "visual_reference_images": [
@@ -139,5 +135,9 @@
   "minimum_assets": 13,
   "minimum_video_assets": 2,
   "minimum_unique_video_seconds": 180,
-  "minimum_image_assets": 11
+  "minimum_image_assets": 11,
+  "blocked_video_urls": [
+    "https://www.youtube.com/watch?v=tmCV1hj6z5Y",
+    "https://www.youtube.com/watch?v=OZ8H9Z5hP6w"
+  ]
 }
