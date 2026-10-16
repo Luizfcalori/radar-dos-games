@@ -238,68 +238,65 @@ def validate_short(beats,assets):
 
 
 def replace_short_repeats(scene,assets):
-    """Rebuild a Short from approved source media, reserving distinct gameplay ranges."""
+    """Replace duplicate stills with reviewed gameplay using the same identity rules as final QA."""
     from copy import deepcopy
     try:
-        from continuity import merge_reviewed_windows
+        from continuity import merge_reviewed_windows, VideoTimeline
     except ModuleNotFoundError:
-        from src.continuity import merge_reviewed_windows
+        from src.continuity import merge_reviewed_windows, VideoTimeline
 
     beats=deepcopy(scene.get("beats") or [])
     selected={int(x) for x in scene.get("media_first_assets",[])}
     videos=[a for a in assets.values() if a.get("type")=="video"
             and int(a["index"]) in selected]
     windows=scene.get("visual_windows") or {}
-    used=set()
-    reserved=defaultdict(list)
+    timeline=VideoTimeline(assets)
+    used_stills=set()
 
-    # Respect every gameplay interval already present in the selected Short.
+    # Seed the timeline with all existing video beats using VideoTimeline's canonical
+    # identity (content_identity / duplicate_of / file identity), not a parallel key.
+    # Existing collisions are recorded rather than hidden; replacements must avoid them.
     for beat in beats:
-        asset=assets[int(beat["media_index"])]
+        idx=int(beat["media_index"])
+        asset=assets[idx]
         if asset.get("type")!="video":
             continue
         w=beat.get("source_window")
         if w:
             lo=float(w["start"]); hi=lo+float(beat["duration"])
-            reserved[asset_identity(asset)].append((lo,hi))
+            timeline.used[timeline.identity(idx)].append((lo,hi))
 
     for beat in beats:
         asset=assets[int(beat["media_index"])]
-        d=float(beat["duration"])
-        key=asset_identity(asset) if asset.get("type")=="image" else None
         if asset.get("type")!="image":
             continue
-        if key not in used and d<=MAX_STATIC_BEAT_SECONDS+0.001 and subject_ok(beat.get("text",""),asset):
-            used.add(key)
+        duration=float(beat["duration"])
+        key=asset_identity(asset)
+        if key not in used_stills and duration<=MAX_STATIC_BEAT_SECONDS+0.001 and subject_ok(beat.get("text",""),asset):
+            used_stills.add(key)
             continue
 
         choices=[]
         for video in videos:
             idx=int(video["index"])
-            identity=asset_identity(video)
             total=float(video.get("duration") or 0)
+            identity=timeline.identity(idx)
             for w in merge_reviewed_windows(windows.get(str(idx),[]),total):
-                lo=float(w["start"]); hi=min(float(w["end"]),total-EPS if total>0 else float(w["end"]))
-                if hi-lo < d+0.1:
+                lo=float(w["start"])
+                hi=min(float(w["end"]),total-EPS if total>0 else float(w["end"]))
+                if hi-lo < duration+0.1:
                     continue
-                # Find a sufficiently long unused portion within this reviewed window.
-                cursor=lo
-                for a,b in sorted(reserved[identity]):
-                    if b <= cursor+EPS or a >= hi-EPS:
-                        continue
-                    if a-cursor >= d+0.1:
-                        choices.append((idx,cursor,hi,w))
-                        break
-                    cursor=max(cursor,b)
-                else:
-                    if hi-cursor >= d+0.1:
-                        choices.append((idx,cursor,hi,w))
+                # Query free spans after subtracting all used intervals for the canonical identity.
+                for free_lo,free_hi in timeline.free(idx,lo,hi):
+                    if free_hi-free_lo >= duration+0.1:
+                        choices.append((idx,free_lo,free_hi,w))
         if not choices:
             raise RuntimeError("QUALITY_BLOCK: Short sem gameplay inédita compatível para substituir imagem repetida")
-        idx,lo,hi,w=min(choices,key=lambda x:(x[0],x[1]))
+        idx,lo,hi,w=max(choices,key=lambda x:(x[2]-x[1],-x[0],-x[1]))
         beat["media_index"]=idx
         beat["source_window"]={"start":lo,"end":hi}
-        reserved[asset_identity(assets[idx])].append((lo,lo+d))
+        # Reserve immediately using the exact same interval semantics as final QA.
+        timeline.reserve(idx,lo,duration,allow_reuse=False)
     validate_short(beats,assets)
     return beats
 
