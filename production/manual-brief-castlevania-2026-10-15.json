@@ -8,8 +8,17 @@
     "https://www.konami.com/games/eu/en/topics/19359/",
     "https://www.konami.com/games/castlevania/belmonts_curse/eu/en/",
     "https://www.youtube.com/watch?v=Mgl_n10il2o",
-    "https://www.youtube.com/watch?v=y1y1ZjVz1c0",
-    "https://www.youtube.com/watch?v=EpCS2VPsMd8"
+    "https://www.youtube.com/watch?v=EpCS2VPsMd8",
+    "https://www.youtube.com/watch?v=eyZIGR9W-r0",
+    "https://www.youtube.com/watch?v=Y7qM4n-6Lps",
+    "https://www.youtube.com/watch?v=wioDhevSSU4",
+    "https://www.youtube.com/watch?v=PSB9m-W1gSc",
+    "https://www.youtube.com/watch?v=3k9Yy-o6tpo",
+    "https://www.youtube.com/watch?v=OAwtl6Kky7g",
+    "https://www.youtube.com/watch?v=ZRgOG0Phue8",
+    "https://www.youtube.com/watch?v=Xu73R1y9kTk",
+    "https://www.youtube.com/watch?v=7-iVUmrDPUc",
+    "https://www.youtube.com/watch?v=4knggp3zJnY"
   ],
   "source_urls": [
     "https://www.konami.com/games/eu/en/topics/19359/",
@@ -24,35 +33,40 @@
   ],
   "video_urls": [
     "https://www.youtube.com/watch?v=Mgl_n10il2o",
-    "https://www.youtube.com/watch?v=y1y1ZjVz1c0",
-    "https://www.youtube.com/watch?v=EpCS2VPsMd8"
+    "https://www.youtube.com/watch?v=eyZIGR9W-r0",
+    "https://www.youtube.com/watch?v=Y7qM4n-6Lps",
+    "https://www.youtube.com/watch?v=wioDhevSSU4"
   ],
   "video_fallback_urls": [
-    "https://www.youtube.com/watch?v=y1y1ZjVz1c0",
-    "https://www.youtube.com/watch?v=Mgl_n10il2o",
-    "https://www.youtube.com/watch?v=EpCS2VPsMd8",
-    "https://www.youtube.com/watch?v=3k9Yy-o6tpo",
-    "https://www.youtube.com/watch?v=eyZIGR9W-r0",
-    "https://www.youtube.com/watch?v=wioDhevSSU4",
-    "https://www.youtube.com/watch?v=Y7qM4n-6Lps",
     "https://www.youtube.com/watch?v=PSB9m-W1gSc",
-    "https://www.youtube.com/watch?v=Xu73R1y9kTk"
+    "https://www.youtube.com/watch?v=3k9Yy-o6tpo",
+    "https://www.youtube.com/watch?v=OAwtl6Kky7g",
+    "https://www.youtube.com/watch?v=ZRgOG0Phue8",
+    "https://www.youtube.com/watch?v=Xu73R1y9kTk",
+    "https://www.youtube.com/watch?v=7-iVUmrDPUc",
+    "https://www.youtube.com/watch?v=4knggp3zJnY",
+    "https://www.youtube.com/watch?v=EpCS2VPsMd8"
   ],
   "visual_reference_images": [
     {
       "url": "https://img.youtube.com/vi/Mgl_n10il2o/maxresdefault.jpg",
-      "label": "Trailer oficial da demo de Castlevania Belmont’s Curse",
+      "label": "Trailer oficial da demo de Castlevania: Belmont’s Curse",
       "source_proof": "https://www.youtube.com/watch?v=Mgl_n10il2o"
     },
     {
-      "url": "https://img.youtube.com/vi/y1y1ZjVz1c0/maxresdefault.jpg",
-      "label": "Trailer oficial de lançamento e data",
-      "source_proof": "https://www.youtube.com/watch?v=y1y1ZjVz1c0"
+      "url": "https://img.youtube.com/vi/eyZIGR9W-r0/maxresdefault.jpg",
+      "label": "Trailer oficial de gameplay e comentários",
+      "source_proof": "https://www.youtube.com/watch?v=eyZIGR9W-r0"
     },
     {
-      "url": "https://img.youtube.com/vi/EpCS2VPsMd8/maxresdefault.jpg",
-      "label": "Trailer oficial com personagens e chefes",
-      "source_proof": "https://www.youtube.com/watch?v=EpCS2VPsMd8"
+      "url": "https://img.youtube.com/vi/Y7qM4n-6Lps/maxresdefault.jpg",
+      "label": "Trailer oficial europeu de gameplay e comentários",
+      "source_proof": "https://www.youtube.com/watch?v=Y7qM4n-6Lps"
+    },
+    {
+      "url": "https://img.youtube.com/vi/wioDhevSSU4/maxresdefault.jpg",
+      "label": "Trailer oficial Bloody Tears",
+      "source_proof": "https://www.youtube.com/watch?v=wioDhevSSU4"
     }
   ],
   "approved_for_publish": true,
@@ -81,9 +95,10 @@
     "Belmont’s Curse preserva elementos clássicos de Castlevania — chicote, monstros, atmosfera gótica e exploração —, mas coloca Rose Belmont em uma jornada própria e acrescenta Arcana ao combate. O resultado vai depender de como essas ideias funcionam em conjunto durante a aventura. Você prefere explorar cada canto em busca de segredos ou seguir direto para os chefes? Este é o Radar dos Games, acompanhando as novidades com informação confirmada e imagens oficiais."
   ],
   "video_labels": {
-    "https://www.youtube.com/watch?v=Mgl_n10il2o": "Konami — trailer oficial da demo e gameplay de Castlevania: Belmont’s Curse",
-    "https://www.youtube.com/watch?v=y1y1ZjVz1c0": "Konami — trailer oficial da data de lançamento",
-    "https://www.youtube.com/watch?v=EpCS2VPsMd8": "Konami — trailer oficial com personagens, ambientes e chefes"
+    "https://www.youtube.com/watch?v=Mgl_n10il2o": "KONAMI — trailer oficial da demo de Castlevania: Belmont’s Curse",
+    "https://www.youtube.com/watch?v=eyZIGR9W-r0": "KONAMI — trailer oficial de gameplay e comentários",
+    "https://www.youtube.com/watch?v=Y7qM4n-6Lps": "KONAMI — trailer oficial europeu de gameplay e comentários",
+    "https://www.youtube.com/watch?v=wioDhevSSU4": "KONAMI — trailer oficial Bloody Tears"
   },
   "production_request": {
     "requested_at": "2026-10-15T23:00:00Z",
