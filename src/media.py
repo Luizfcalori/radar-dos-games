@@ -142,14 +142,14 @@ def newisty_download(url,dest,quality='720p'):
         if 'downloader is busy' in body.lower():
             # Busy is transient congestion, not a permanent failure. Back off and
             # retry instead of abandoning the only non-YouTube fallback immediately.
-            wait=min(15+attempt*5,45)
+            wait=min(10+attempt*5,20)
             print('newisty busy',stage,'retrying after backoff',wait,'seconds',body[:300],flush=True)
             time.sleep(wait)
             return True
-        raw=(err.headers.get('Retry-After') if getattr(err,'headers',None) else None) or str(min(10+attempt*5,45))
+        raw=(err.headers.get('Retry-After') if getattr(err,'headers',None) else None) or str(min(5+attempt*5,20))
         try:wait=int(float(raw))
         except:wait=min(10+attempt*5,45)
-        wait=max(5,min(wait,45))
+        wait=max(5,min(wait,20))
         print('newisty 429',stage,'attempt',attempt,'retry in',wait,'seconds',body[:300],flush=True)
         time.sleep(wait)
         return True
@@ -157,15 +157,15 @@ def newisty_download(url,dest,quality='720p'):
     try:
         job_id=''
         payload=json.dumps({'url':url,'format':quality}).encode()
-        for attempt in range(1,8):
+        for attempt in range(1,4):
             start=urllib.request.Request(NEWISTY_BASE+'/start',data=payload,headers=headers,method='POST')
             try:
-                with urllib.request.urlopen(start,timeout=65) as r:obj=json.loads(r.read().decode('utf-8','replace'))
+                with urllib.request.urlopen(start,timeout=45) as r:obj=json.loads(r.read().decode('utf-8','replace'))
                 job_id=str(((obj.get('data') or {}).get('job_id') or '')).strip()
                 if job_id:break
                 print('newisty start failed: no job_id',obj,flush=True)
             except urllib.error.HTTPError as e:
-                if e.code==429 and attempt<7:
+                if e.code==429 and attempt<3:
                     if not wait_rate_limit(e,attempt,'start'):return None
                     continue
                 raise
