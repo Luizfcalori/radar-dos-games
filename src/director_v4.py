@@ -1,3 +1,4 @@
+# [run-private] TOPIC=Call of Duty: Modern Warfare 4 — verificar fallback oficial
 #!/usr/bin/env python3
 """Radar dos Games Premium V4 — Director Cut.
 
