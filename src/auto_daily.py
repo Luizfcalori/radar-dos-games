@@ -957,7 +957,7 @@ def main():
         "topic": (manual.get("headline") if manual else pt_headline(selected, parser)),
         "source": selected["url"],
         "minimum_assets": 3 if manual and (str(manual.get("title","")).casefold() == "arc raiders" or str(manual.get("content_id","")).startswith("manual-castlevania-")) else 2,
-        "minimum_video_assets": 3 if manual and (str(manual.get("title","")).casefold() == "arc raiders" or str(manual.get("content_id","")).startswith("manual-castlevania-")) else 1,
+        "minimum_video_assets": 4 if manual and str(manual.get("content_id","")).startswith("manual-castlevania-") else (3 if manual and str(manual.get("title","")).casefold() == "arc raiders" else 1),
         "minimum_unique_video_seconds": 180 if manual and str(manual.get("content_id","")).startswith("manual-castlevania-") else (90 if manual and str(manual.get("title","")).casefold() == "arc raiders" else 15),
         "minimum_image_assets": 0,
         "media_policy": "gameplay_or_official_moving_footage_required; minimum_15s_unique_video; images_are_complement_only; no_image_only_master; premium_v4_motion_for_images",
