@@ -1,0 +1,171 @@
+name: Add Castlevania Belmont's Curse Shorts to TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-castlevania-belmonts-curse-2026-10-16-to-tiktok-helper.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: add-castlevania-belmonts-curse-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: "38833172658"
+      SOURCE_ARTIFACT: radar-daily-auto-38833172658
+      BASE_URL: https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download completed Castlevania production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: castlevania-source
+          repository: Luizfcalori/radar-dos-games
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Validate exactly three uploaded Shorts and approved QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, shutil, subprocess
+          from pathlib import Path
+          source=Path("castlevania-source")
+          qa_files=list(source.rglob("final-qa.json"))
+          assert qa_files, "final-qa.json ausente"
+          qa=json.loads(qa_files[0].read_text(encoding="utf-8"))
+          assert str(qa.get("status","")).upper().startswith("APPROVED"), qa.get("status")
+          for n in (1,2,3):
+              video_results=list(source.rglob(f"youtube-short-{n}-result.json"))
+              metas=list(source.rglob(f"short-{n}-youtube.json"))
+              videos=[p for p in source.rglob(f"short_{n}.mp4") if p.is_file() and p.stat().st_size>500_000]
+              assert len(video_results)==1 and len(metas)==1 and len(videos)==1, f"Short {n}: artefatos ausentes/duplicados"
+              result=json.loads(video_results[0].read_text(encoding="utf-8"))
+              assert result.get("id") and result.get("status",{}).get("uploadStatus")=="uploaded", f"Short {n} não confirmado no YouTube"
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              assert meta.get("title") and meta.get("description"), f"Metadados do Short {n} ausentes"
+              dst=Path("tiktok-castlevania")/f"castlevania-belmonts-curse-2026-10-16-short-{n}.mp4"
+              dst.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(videos[0],dst)
+              covers=[p for p in source.rglob(f"short_{n}_cover.jpg") if p.is_file() and p.stat().st_size>1000]
+              jpg=dst.with_suffix(".jpg")
+              if covers:
+                  shutil.copy2(covers[0],jpg)
+              else:
+                  subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss","1","-i",str(videos[0]),"-frames:v","1","-vf","scale=720:-2",str(jpg)],check=True)
+              print(f"VALIDATED_SHORT {n}: {meta['title']} ({dst.stat().st_size} bytes)")
+          print("CASTLEVANIA_TIKTOK_PACKAGE_OK", flush=True)
+          PY
+
+      - name: Upload three videos and covers to stable TikTok Helper storage
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados para publicação manual pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-castlevania/*.mp4 tiktok-castlevania/*.jpg --clobber
+
+      - name: Verify six public asset URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fLsS --retry 5 --retry-all-errors --retry-delay 2 --max-time 90 --range 0-1023 "${BASE_URL}/castlevania-belmonts-curse-2026-10-16-short-${n}.${ext}" -o /dev/null
+              echo "REMOTE_OK short-${n}.${ext}"
+            done
+          done
+
+      - name: Add exactly three Castlevania Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re
+          from datetime import datetime, timezone
+          from pathlib import Path
+          source=Path("castlevania-source")
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          new=[]
+          for n in (1,2,3):
+              metas=list(source.rglob(f"short-{n}-youtube.json"))
+              assert len(metas)==1
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              title=re.sub(r"(?i)#shorts?\\b","",str(meta.get("title") or "")).strip(" -|")
+              desc=str(meta.get("description") or "")
+              tags=[]
+              for found in re.findall(r"#([\\wÀ-ÿ]+)",desc):
+                  tag="#"+found
+                  if tag.casefold() not in {x.casefold() for x in tags}: tags.append(tag)
+                  if len(tags)>=5: break
+              for tag in ("#RadarDosGames","#Castlevania","#Games","#Gaming","#TikTokGames"):
+                  if tag.casefold() not in {x.casefold() for x in tags}: tags.append(tag)
+              new.append({
+                "id":f"castlevania-belmonts-curse-2026-10-16-short-{n}",
+                "title":title,
+                "media_url":f"{base}/castlevania-belmonts-curse-2026-10-16-short-{n}.mp4",
+                "thumbnail_url":f"{base}/castlevania-belmonts-curse-2026-10-16-short-{n}.jpg",
+                "post_text":title+"\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n"+" ".join(tags),
+                "status":"approved","source_run_id":38833172658,"short_number":n,
+                "approved_at":now,"source":"approved_production_artifact_auto",
+                "platform":"tiktok_helper_manual_posting"
+              })
+          old_keys={(str(x.get("source_run_id") or ""),str(x.get("short_number") or "")) for x in old}
+          old_ids={str(x.get("id") or "") for x in old}
+          merged=[x for x in new if x["id"] not in old_ids and (str(x["source_run_id"]),str(x["short_number"])) not in old_keys]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(merged+[x for x in old if x.get("id") not in {y["id"] for y in merged}])[:200]
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":len(merged),"total":len(q["items"]),"shorts":[x["title"] for x in new]},ensure_ascii=False))
+          PY
+
+      - name: Commit queue update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "TikTok Helper queue already has these three Shorts."
+            exit 0
+          fi
+          git commit -m "feat: add Castlevania Belmonts Curse Shorts to TikTok Helper"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Verify queue contains exactly these three Shorts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-queue-verified.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-queue-verified.json",encoding="utf-8"))
+          items=[x for x in q.get("items",[]) if str(x.get("source_run_id",""))=="38833172658" and str(x.get("short_number","")) in {"1","2","3"}]
+          by_n={str(x.get("short_number")):x for x in items}
+          assert set(by_n)=={"1","2","3"}, f"Esperava 3 itens; encontrados {list(by_n)}"
+          assert all(by_n[n].get("status")=="approved" and by_n[n].get("media_url","").endswith(".mp4") and by_n[n].get("thumbnail_url","").endswith(".jpg") for n in ("1","2","3"))
+          print("TIKTOK_HELPER_CASTLEVANIA_OK",len(by_n),"QUEUE_TOTAL",len(q.get("items",[])))
+          PY
