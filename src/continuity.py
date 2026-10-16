@@ -13,6 +13,47 @@ except ModuleNotFoundError:
 POLICY='PHRASE_VISUAL_CONTINUITY_V1'  # reviewed windows require traceable frame-scan evidence  # labels rank reviewed gameplay; unreviewed windows remain ineligible
 EPS=0.002
 
+def merge_reviewed_windows(windows, source_duration=0.0):
+    """Join adjacent inspected windows into longer continuous ranges.
+
+    The visual inspector samples a source in overlapping windows. Treating every
+    sample as a separate clip artificially exhausts footage even when neighboring
+    frames are contiguous. Only merge reviewed windows with evidence, and never
+    bridge a material gap or include title cards.
+    """
+    valid=[]
+    for raw in windows or []:
+        if raw.get('reviewed') is not True or not raw.get('evidence'):
+            continue
+        cats=set(raw.get('semantic_categories',[]))
+        if 'title_card' in cats:
+            continue
+        try:
+            start=float(raw['start']); end=float(raw['end'])
+        except (KeyError,TypeError,ValueError):
+            continue
+        if not math.isfinite(start) or not math.isfinite(end) or end <= start:
+            continue
+        if source_duration > 0:
+            end=min(end,source_duration-EPS)
+        if end > start+EPS:
+            valid.append({**raw,'start':start,'end':end,
+                          'semantic_categories':list(cats),
+                          'subjects':list(set(raw.get('subjects',[])))})
+    valid.sort(key=lambda w:(w['start'],w['end']))
+    merged=[]
+    for w in valid:
+        if merged and w['start'] <= merged[-1]['end'] + 0.15:
+            prev=merged[-1]
+            prev['end']=max(prev['end'],w['end'])
+            prev['semantic_categories']=sorted(set(prev.get('semantic_categories',[])) | set(w.get('semantic_categories',[])))
+            prev['subjects']=sorted(set(prev.get('subjects',[])) | set(w.get('subjects',[])))
+            prev['evidence']=str(prev.get('evidence','')) + ';' + str(w.get('evidence',''))
+            prev['reviewed']=True
+        else:
+            merged.append({**w})
+    return merged
+
 class VideoTimeline:
     def __init__(self, assets):
         self.assets=assets
@@ -59,7 +100,9 @@ class VideoTimeline:
         for asset in assets:
             idx=int(asset['index'])
             if asset.get('type')!='video': continue
-            for w in (scene.get('visual_windows') or {}).get(str(idx),[]):
+            source_duration=float(asset.get('duration') or 0)
+            windows=(scene.get('visual_windows') or {}).get(str(idx),[])
+            for w in merge_reviewed_windows(windows, source_duration):
                 cats=set(w.get('semantic_categories',[]))
                 if 'title_card' in cats: continue
                 reviewed=w.get('reviewed') is True and bool(w.get('evidence'))
