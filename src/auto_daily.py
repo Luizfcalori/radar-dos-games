@@ -645,7 +645,14 @@ def fetch_manual_media(brief):
 
     # Explicit video URLs are trusted only as the supplied trailer, direct media,
     # or topic-matched posts discovered on official profiles.
-    for raw in brief.get("video_urls", []):
+    # A pauta manual pode trazer uma lista principal e uma lista de reserva.
+    # Inclua todas as URLs aprovadas, sem depender de uma por posição nem perder
+    # trailers oficiais extras quando o primeiro host bloqueia downloads.
+    approved_video_urls=[]
+    for raw in list(brief.get("video_urls", []) or []) + list(brief.get("video_fallback_urls", []) or []):
+        if isinstance(raw,str) and raw.startswith("https://") and raw not in approved_video_urls:
+            approved_video_urls.append(raw)
+    for raw in approved_video_urls:
         if not isinstance(raw, str) or not raw.startswith("https://"):
             continue
         url = raw.strip()
