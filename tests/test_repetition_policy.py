@@ -79,6 +79,7 @@ class RepetitionPolicyTests(unittest.TestCase):
         rebuilt=replace_short_repeats(scene,self.assets)
         self.assertEqual([b["media_index"] for b in rebuilt],[5,9])
         self.assertEqual(rebuilt[1]["source_window"]["start"],12)
+        self.assertGreaterEqual(rebuilt[1]["source_window"]["end"]-rebuilt[1]["source_window"]["start"],2.8)
         self.assertEqual([b["media_index"] for b in scene["beats"]],[5,5])
 
     def test_qa_uses_actual_short_source_beats(self):
