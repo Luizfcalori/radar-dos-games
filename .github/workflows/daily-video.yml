@@ -37,6 +37,7 @@ on:
       - "production/manual-brief-fortnite-yeat-2026-10-14.json"
       - "production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json"
       - "production/manual-brief-castlevania-2026-10-15.json"
+      - "production/manual-brief-call-of-duty-modern-warfare-4-2026-10-16.json"
       - "src/thumbnail.py"
       - "src/short_cover.py"
       - "src/premium_covers.py"
