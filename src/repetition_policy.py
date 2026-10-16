@@ -80,12 +80,19 @@ def _mw4_curated_still(asset):
 
 
 def subject_ok(phrase,asset):
-    """Require matching subjects, with a narrow same-game contextual still fallback."""
+    """Require matching subjects, with CTA and same-game contextual still fallbacks."""
     if match_score(phrase,asset)>0:
+        return True
+    role=str(asset.get("role") or "")
+    text=str(phrase or "").casefold()
+    is_cta=any(token in text for token in (
+        "conta nos comentários","acompanha o radar","mais novidades",
+        "se você gosta de acompanhar",
+    ))
+    if role.startswith("official_subject_reference_") and is_cta:
         return True
     if not _mw4_curated_still(asset):
         return False
-    text=str(phrase or "").casefold()
     named_terms=("park hyun jun","john price","kate laswell","dmz")
     # A specific named subject/mode must match the official still label.
     if any(term in text for term in named_terms):
