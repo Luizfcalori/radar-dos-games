@@ -172,13 +172,20 @@ def newisty_download(url,dest,quality='720p'):
         if not job_id:return None
 
         state='queued'
-        for poll in range(36):
+        not_found=0
+        for poll in range(24):
             time.sleep(5)
             progress=urllib.request.Request(NEWISTY_BASE+'/progress/'+urllib.parse.quote(job_id),headers={'User-Agent':headers['User-Agent'],'Accept':'application/json'})
             try:
-                with urllib.request.urlopen(progress,timeout=45) as r:pobj=json.loads(r.read().decode('utf-8','replace'))
+                with urllib.request.urlopen(progress,timeout=30) as r:pobj=json.loads(r.read().decode('utf-8','replace'))
+                not_found=0
             except urllib.error.HTTPError as e:
-                if e.code==404:continue
+                if e.code==404:
+                    not_found+=1
+                    if not_found>=4:
+                        print('newisty job missing from progress API; abandoning this fallback',job_id,flush=True)
+                        return None
+                    continue
                 if e.code==429:
                     if not wait_rate_limit(e,min(poll+1,6),'progress'):return None
                     continue
