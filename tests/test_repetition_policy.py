@@ -74,7 +74,7 @@ class RepetitionPolicyTests(unittest.TestCase):
 
     def test_short_rebuild_swaps_duplicate_still_for_source_video(self):
         scene={"media_first_assets":[5,9],
-               "visual_windows":{"9":[{"start":12,"end":20}]},
+               "visual_windows":{"9":[{"start":12,"end":20,"reviewed":True,"evidence":"test-reviewed-window"}]},
                "beats":[self.beat(5,2.7),self.beat(5,2.8)]}
         rebuilt=replace_short_repeats(scene,self.assets)
         self.assertEqual([b["media_index"] for b in rebuilt],[5,9])
