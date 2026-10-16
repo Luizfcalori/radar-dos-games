@@ -108,6 +108,10 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
             "boxblur=28:14,eq=brightness=-0.19:saturation=0.90[bg];"
             f"[fg0]scale={W}:{H}:force_original_aspect_ratio=decrease,setsar=1[fg];"
             "[bg][fg]overlay=(W-w)/2:(H-h)/2,"
+            # Source windows near EOF can decode a few frames short despite
+            # passing the duration/window checks. Pad only missing tail frames;
+            # never loop or replay source footage, and keep the strict duration QA.
+            "tpad=stop_mode=clone:stop_duration=0.25,"
         )
 
     filters=[COLOR_FILTER,
