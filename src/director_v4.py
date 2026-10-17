@@ -381,9 +381,12 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         a for a in assets.values()
                         if a.get("approved", True)
                         and a.get("type") == "image"
-                        and str(a.get("role") or "").startswith("official_subject_reference")
+                        and str(a.get("role") or "").startswith(("official_subject_reference", "official_context_"))
                         and a.get("source")
                         and a.get("url")
+                        and "enshrouded" in (
+                            str(a.get("url") or "") + " " + str(a.get("source_label") or "")
+                        ).casefold()
                     ]
                     fallback_duration=min(remaining,3.5)
                     fallback_stills = [
@@ -396,9 +399,9 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
                     )
                     # If every official still is inside the normal spacing cooldown,
-                    # allow a second-tier bridge using curated MW4 stills only. The
-                    # tracker still enforces subject match, per-image use/seconds caps,
-                    # and no consecutive reuse. Gameplay intervals are never repeated.
+                    # allow a second-tier bridge using verified, same-topic Enshrouded
+                    # stills. Subject-specific narration remains protected by the policy;
+                    # gameplay intervals are never repeated.
                     if not fallback_stills:
                         fallback_stills = [
                             a for a in fallback_pool
