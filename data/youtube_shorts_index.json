@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-16T12:36:33.826457+00:00",
-  "total_discovered": 94,
-  "ready_for_tiktok": 91,
+  "updated_at": "2026-10-17T09:02:55.955436+00:00",
+  "total_discovered": 97,
+  "ready_for_tiktok": 94,
   "waiting_media": [
     {
       "youtube_id": "4rHekP89KHY",
@@ -22,6 +22,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "I15NE7R75bY",
+      "youtube_url": "https://www.youtube.com/shorts/I15NE7R75bY",
+      "title": "MODERN WARFARE 4: A CAMPANHA JÁ ESTÁ LIBERADA PARA QUEM FEZ A PRÉ-COMPRA",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "pHC-ZrweBww",
+      "youtube_url": "https://www.youtube.com/shorts/pHC-ZrweBww",
+      "title": "16 MISSÕES E QUATRO REGIÕES: O QUE A CAMPANHA PROMETE",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "5F-3sOGkyJg",
+      "youtube_url": "https://www.youtube.com/shorts/5F-3sOGkyJg",
+      "title": "DMZ CHEGA ANTES DO LANÇAMENTO COMPLETO — MAS SÓ EM 20 DE OUTUBRO",
+      "status": "approved"
+    },
     {
       "youtube_id": "ZlKcR9JoMjk",
       "youtube_url": "https://www.youtube.com/shorts/ZlKcR9JoMjk",
