@@ -1,0 +1,71 @@
+{
+  "valid_until": "2026-10-24T23:59:00Z",
+  "content_id": "manual-enshrouded-1-0-launch-2026-10-17",
+  "title": "Enshrouded 1.0 — lançamento completo, Cinder's Cradle e novos sistemas",
+  "headline": "ENSHROUDED 1.0: O MUNDO COMPLETO, NOVA REGIÃO E UMA HISTÓRIA CONCLUÍDA",
+  "primary_source": "https://enshrouded.com/en-US/news/enshrouded-10-is-live-check-out-our-highlights-video",
+  "media_source_urls": [
+    "https://enshrouded.com/en-US/news/enshrouded-10-is-live-check-out-our-highlights-video",
+    "https://enshrouded.com/en-US/news/release-trailer-changelog-everything-you-need-to-wait-for-tomorrow",
+    "https://enshrouded.com/en-US/news",
+    "https://store.steampowered.com/app/1203620/Enshrouded/",
+    "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/"
+  ],
+  "source_urls": [
+    "https://enshrouded.com/en-US/news/enshrouded-10-is-live-check-out-our-highlights-video",
+    "https://enshrouded.com/en-US/news/release-trailer-changelog-everything-you-need-to-wait-for-tomorrow",
+    "https://enshrouded.com/en-US/news"
+  ],
+  "video_urls": [
+    "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/Enshrouded%201.0%20Launch%20Trailer/Enshrouded%20-%20Launch%20Trailer.mp4",
+    "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/Enshrouded%20-%201.0%20Highlights/Enshrouded%20-%201.0%20Highlights.mp4"
+  ],
+  "video_fallback_urls": [
+    "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/Enshrouded%20-%20Introducing%20Sparkworks/Enshrouded%20-%20Introducing%20Sparkworks.mp4",
+    "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/Enshrouded%20-%20Performance%20Improvements/Enshrouded%20-%20Performance%20Improvements.mp4",
+    "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/Enshrouded%20-%20Quality%20of%20Life/Enshrouded%20-%20Quality%20of%20Life.mp4"
+  ],
+  "video_roles": {},
+  "video_labels": {},
+  "visual_reference_images": [
+    {
+      "url": "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/Enshrouded%201.0%20Launch%20Trailer/Enshrouded%20-%20Launch%20Trailer.jpg",
+      "label": "Imagem oficial do trailer de lançamento 1.0",
+      "source_proof": "https://enshrouded.com/en-US/news/release-trailer-changelog-everything-you-need-to-wait-for-tomorrow"
+    },
+    {
+      "url": "https://download.enshrouded.com/Press%20Kit/Trailers/1.0/Enshrouded%20-%201.0%20Highlights/Enshrouded%20-%201.0%20Highlights.jpg",
+      "label": "Imagem oficial com destaques da versão 1.0",
+      "source_proof": "https://enshrouded.com/en-US/news/enshrouded-10-is-live-check-out-our-highlights-video"
+    }
+  ],
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Tema bloqueado: Enshrouded. Não trocar por outro jogo.",
+    "Pauta atualizada em 17 de outubro de 2026: Enshrouded 1.0 foi lançado em 15 de outubro; hotfixes 1.0.0.1 e 1.0.0.2 saíram em 15 e 16 de outubro.",
+    "Cobrir Cinder's Cradle, mapa completo, conclusão da história principal, nível máximo 50, equipamentos até nível 55, nove novos tipos de magia, novos inimigos e sistema Sparkworks.",
+    "Usar somente mídia oficial da Keen Games/Enshrouded/press kit oficial e Steam para gameplay e contexto visual. Nunca substituir gameplay por imagens genéricas de outros jogos.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts 9:16, cada um com assunto próprio, capa própria e CTA Radar dos Games.",
+    "Manter a intro oficial integral; a gameplay começa somente depois do fim da intro.",
+    "Usar voz Thalita Multilingual PT-BR V3, português brasileiro natural, preservando a pronúncia original de Enshrouded, Cinder's Cradle e Sparkworks.",
+    "Não dizer que os hotfixes corrigiram todos os problemas; mencionar apenas correções documentadas nos comunicados oficiais.",
+    "Não fazer afirmações de opinião ou prometer desempenho universal; atribuir as melhorias gráficas e de performance às notas oficiais.",
+    "Antes de aprovar, conferir se o áudio está completo, se o texto acompanha as cenas e se não há repetição artificial de gameplay.",
+    "RECUPERAÇÃO DE MÍDIA: tentar todas as URLs de vídeo aprovadas individualmente; se uma falhar, seguir para os trailers oficiais alternativos do press kit. Para arquivos MP4 oficiais grandes, usar recorte remoto com FFmpeg em vez de depender do download integral. Não abandonar após falha de um único host.",
+    "Se uma rota de mídia falhar, registrar diagnóstico e continuar as rotas alternativas oficiais; nunca trocar o tema por outro jogo."
+  ],
+  "short_hooks": [
+    "ENSHROUDED 1.0: A REGIÃO NOVA QUE MUDA TUDO",
+    "NOVE MAGIAS NOVAS E UM COMBATE MAIS COMPLETO",
+    "SPARKWORKS: AGORA DÁ PARA CRIAR SEUS PRÓPRIOS DESAFIOS"
+  ],
+  "script_blocks": [
+    "Enshrouded finalmente chegou à versão 1.0, e isso é mais do que uma atualização de conteúdo. No dia 15 de outubro, Keen Games liberou a versão completa do RPG de sobrevivência e ação, abrindo as últimas áreas de Embervale e concluindo a história principal. A gente vai passar pelas novidades que realmente mudam a aventura e também pelos ajustes que chegaram logo nos primeiros dias.",
+    "A maior novidade visual é Cinder's Cradle, uma região inédita no norte do mapa. A área combina terrenos devastados por lava, ruínas antigas e ilhas flutuantes suspensas acima do perigo. Ela também traz novos guardiões e materiais para quem já está avançado. E não é só esse pedaço que cresceu: a versão 1.0 abre o mapa completo e amplia zonas antigas, com novos pontos de interesse e caminhos que antes estavam fechados.",
+    "A história principal também ganhou uma conclusão. Os jogadores finalmente podem descobrir mais sobre os Antigos e sobre a corrupção do Shroud, enfrentando a ameaça que paira sobre Embervale. A equipe deixa claro que esse é o encerramento do arco atual, não necessariamente o fim de tudo que pode acontecer nesse mundo. Para quem estava esperando uma razão para voltar e terminar a campanha, essa é uma das mudanças mais importantes.",
+    "A progressão subiu de patamar. O nível máximo do personagem agora é 50, enquanto os equipamentos podem chegar ao nível 55. A atualização também adiciona nove tipos de magia, versões eternas de feitiços e flechas, melhorias nas varinhas e novas opções para combate à distância. Na prática, isso abre mais possibilidades para montar uma build, controlar grupos de inimigos e encarar os desafios finais sem depender de uma única estratégia.",
+    "A região nova vem acompanhada de mais inimigos. A equipe contabiliza 14 tipos na nova facção de Cinder's Cradle e 37 novos inimigos ou variantes no conjunto da atualização. A inteligência dos adversários e o comportamento de busca também receberam ajustes. O chefe de Albaneve Summits foi reformulado com uma arena mais justa e novas oportunidades para ataques corpo a corpo, respondendo a críticas que os jogadores já faziam durante o acesso antecipado.",
+    "Outra mudança curiosa é Sparkworks, um sistema lógico para criar interações dentro dos mundos compartilhados. Alavancas, botões, gatilhos e portas podem ser conectados para montar armadilhas, enigmas, arenas ou percursos de parkour. O sistema inclui um editor visual próprio, então a criatividade passa a fazer parte da experiência de sobrevivência e construção. Para quem gosta de erguer bases elaboradas, isso amplia bastante o que dá para fazer além de construir uma casa bonita.",
+    "E a versão 1.0 não chegou sozinha: nos dias 15 e 16 de outubro, a Keen Games publicou os hotfixes 1.0.0.1 e 1.0.0.2. Eles trataram de falhas que causavam travamentos, problemas de iluminação interna e uma falha nas configurações do mundo. Isso mostra que a equipe já está acompanhando os primeiros problemas do lançamento. Enshrouded agora oferece mapa completo, fim da história principal e mais ferramentas para criar aventuras. A pergunta é: você vai começar do zero ou voltar com seu personagem antigo?"
+  ]
+}

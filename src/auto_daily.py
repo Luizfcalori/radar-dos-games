@@ -716,6 +716,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-castlevania-2026-10-15.json")
         elif forced_topic_slug == ascii_slug("Call of Duty: Modern Warfare 4"):
             manual = load_manual_brief("production/manual-brief-call-of-duty-modern-warfare-4-2026-10-16.json")
+        elif forced_topic_slug == ascii_slug("Enshrouded"):
+            manual = load_manual_brief("production/manual-brief-enshrouded-2026-10-17.json")
         else:
             manual = None
     if not candidates and not manual:

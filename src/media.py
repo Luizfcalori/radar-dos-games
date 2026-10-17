@@ -73,7 +73,7 @@ def official_remote_clip(url,dest,referer='https://www.rockstargames.com/'):
     headers=(
         'User-Agent: Mozilla/5.0 AppleWebKit/537.36 Chrome/129 Safari/537.36\r\n'
         f'Referer: {referer or "https://www.rockstargames.com/"}\r\n'
-        'Origin: https://www.rockstargames.com\r\n'
+        f'Origin: {urlparse(url).scheme}://{urlparse(url).netloc}\r\n'
         'Accept: */*\r\n'
     )
     vf='scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,fps=30,format=yuv420p'
@@ -481,7 +481,7 @@ def main(path):
             elif (
                 wanted=='video'
                 and clean.endswith(VIDEO_EXTS)
-                and ('rockstargames.com/vi/downloads/videos/' in low or 'media-rockstargames-com.akamaized.net/vi/downloads/videos/' in low)
+                and ('rockstargames.com/vi/downloads/videos/' in low or 'media-rockstargames-com.akamaized.net/vi/downloads/videos/' in low or 'download.enshrouded.com/press%20kit/trailers/' in low)
             ):
                 info=official_remote_clip(u,dest,source if str(source).startswith('http') else 'https://www.rockstargames.com/')
             elif is_instagram_video_url(u) and wanted=='video':info=download_public_instagram(u,dest,probe_info)
