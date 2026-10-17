@@ -80,8 +80,22 @@ def _mw4_curated_still(asset):
     )
 
 
+def _enshrouded_curated_still(asset):
+    """Allow topic-specific official Enshrouded stills as a last-resort bridge."""
+    role=str(asset.get("role") or "")
+    url=str(asset.get("url") or "").casefold()
+    label=str(asset.get("source_label") or "").casefold()
+    return (
+        asset.get("type") == "image"
+        and role.startswith(("official_subject_reference_", "official_context_"))
+        and ("enshrouded" in (url + " " + label))
+        and bool(asset.get("source"))
+        and bool(asset.get("url"))
+    )
+
+
 def subject_ok(phrase,asset):
-    """Require matching subjects, with CTA and same-game contextual still fallbacks."""
+    """Require subject matching, except narrowly scoped same-game official still bridges."""
     if match_score(phrase,asset)>0:
         return True
     role=str(asset.get("role") or "")
@@ -92,17 +106,18 @@ def subject_ok(phrase,asset):
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not _mw4_curated_still(asset):
+    if not (_mw4_curated_still(asset) or _enshrouded_curated_still(asset)):
         return False
-    named_terms=("park hyun jun","john price","kate laswell")
-    # A specific named subject/mode must match the official still label.
+    # Named people, locations or mechanics still need an exact source-label match.
+    named_terms=("park hyun jun","john price","kate laswell","cinder's cradle",
+                 "sparkworks","thalas","enshrouded")
     if any(term in text for term in named_terms):
         return False
     return True
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset):
+    if _mw4_curated_still(asset) or _enshrouded_curated_still(asset):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -113,7 +128,7 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if _mw4_curated_still(asset) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    return 14.0 if (_mw4_curated_still(asset) or _enshrouded_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
