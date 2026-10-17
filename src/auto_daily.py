@@ -768,7 +768,11 @@ def main():
                     else (
                         "production/manual-brief-call-of-duty-modern-warfare-4-2026-10-16.json"
                         if manual.get("content_id") == "manual-call-of-duty-modern-warfare-4-campaign-early-access-2026-10-16"
-                        else "production/manual-brief.json"
+                        else (
+                            "production/manual-brief-enshrouded-2026-10-17.json"
+                            if manual.get("content_id") == "manual-enshrouded-1-0-launch-2026-10-17"
+                            else "production/manual-brief.json"
+                        )
                     )
                 )
             ),
