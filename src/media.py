@@ -69,7 +69,7 @@ def official_remote_clip(url,dest,referer='https://www.rockstargames.com/'):
         seconds=45
     else:
         start=8
-        seconds=40
+        seconds=60
     headers=(
         'User-Agent: Mozilla/5.0 AppleWebKit/537.36 Chrome/129 Safari/537.36\r\n'
         f'Referer: {referer or "https://www.rockstargames.com/"}\r\n'
