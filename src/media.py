@@ -73,7 +73,7 @@ def official_remote_clip(url,dest,referer='https://www.rockstargames.com/'):
     headers=(
         'User-Agent: Mozilla/5.0 AppleWebKit/537.36 Chrome/129 Safari/537.36\r\n'
         f'Referer: {referer or "https://www.rockstargames.com/"}\r\n'
-        f'Origin: {urlparse(url).scheme}://{urlparse(url).netloc}\r\n'
+        f'Origin: {urllib.parse.urlparse(url).scheme}://{urllib.parse.urlparse(url).netloc}\r\n'
         'Accept: */*\r\n'
     )
     vf='scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,fps=30,format=yuv420p'
