@@ -19,7 +19,7 @@ jobs:
   queue:
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
-      (github.event.workflow_run.event == 'schedule' || github.event.workflow_run.event == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && startsWith(github.event.workflow_run.head_commit.message, '[run-production] TOPIC=')))
+      (github.event.workflow_run.event == 'schedule' || github.event.workflow_run.event == 'workflow_dispatch' || ((github.event.workflow_run.event == 'push' && startsWith(github.event.workflow_run.head_commit.message, '[run-production] TOPIC=')) || (github.event.workflow_run.event == 'push' && startsWith(github.event.workflow_run.head_commit.message, '[run-private] TOPIC='))))
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
