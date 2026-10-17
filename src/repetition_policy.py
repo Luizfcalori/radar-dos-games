@@ -109,8 +109,7 @@ def subject_ok(phrase,asset):
     if not (_mw4_curated_still(asset) or _enshrouded_curated_still(asset)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
-    named_terms=("park hyun jun","john price","kate laswell","cinder's cradle",
-                 "sparkworks","thalas","enshrouded")
+    named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
     if any(term in text for term in named_terms):
         return False
     return True
