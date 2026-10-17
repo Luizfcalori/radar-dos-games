@@ -302,3 +302,5 @@ jobs:
 
 # Recheck trigger: import newly approved production artifacts when workflow file changes.
 # Manual recovery trigger: refresh approved queue after a successful production run.
+
+# Manual recovery requested 2026-10-17T23:48Z: import latest approved Enshrouded production package.
