@@ -1,10 +1,15 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-18T13:32:53.208242+00:00",
-  "total_discovered": 100,
+  "updated_at": "2026-10-18T21:28:58.963790+00:00",
+  "total_discovered": 101,
   "ready_for_tiktok": 97,
   "waiting_media": [
+    {
+      "youtube_id": "FWfua78AQis",
+      "title": "Provando que a comunidade gamer é unida",
+      "reason": "original_media_not_recovered_yet"
+    },
     {
       "youtube_id": "4rHekP89KHY",
       "title": "O QUE O TRAILER DE YEAT MOSTRA? 👀🎮 Curtiu? Siga o Radar dos Games para #Fortnite #Yeat",
@@ -22,6 +27,12 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "FWfua78AQis",
+      "youtube_url": "https://www.youtube.com/shorts/FWfua78AQis",
+      "title": "Provando que a comunidade gamer é unida",
+      "status": "waiting_media"
+    },
     {
       "youtube_id": "47OUb24YQwQ",
       "youtube_url": "https://www.youtube.com/shorts/47OUb24YQwQ",
