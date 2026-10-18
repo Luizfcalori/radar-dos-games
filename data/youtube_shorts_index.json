@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-17T09:02:55.955436+00:00",
-  "total_discovered": 97,
-  "ready_for_tiktok": 94,
+  "updated_at": "2026-10-18T13:32:53.208242+00:00",
+  "total_discovered": 100,
+  "ready_for_tiktok": 97,
   "waiting_media": [
     {
       "youtube_id": "4rHekP89KHY",
@@ -22,6 +22,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "47OUb24YQwQ",
+      "youtube_url": "https://www.youtube.com/shorts/47OUb24YQwQ",
+      "title": "ENSHROUDED 1.0: A REGIÃO NOVA QUE MUDA TUDO",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "LqIbBNQECVI",
+      "youtube_url": "https://www.youtube.com/shorts/LqIbBNQECVI",
+      "title": "NOVE MAGIAS NOVAS E UM COMBATE MAIS COMPLETO",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "MSCLG-K3Lds",
+      "youtube_url": "https://www.youtube.com/shorts/MSCLG-K3Lds",
+      "title": "SPARKWORKS: AGORA DÁ PARA CRIAR SEUS PRÓPRIOS DESAFIOS",
+      "status": "approved"
+    },
     {
       "youtube_id": "I15NE7R75bY",
       "youtube_url": "https://www.youtube.com/shorts/I15NE7R75bY",
