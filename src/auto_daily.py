@@ -697,6 +697,8 @@ def main():
     # o brief genérico nem herdar o tema de uma produção anterior.
     if forced_topic_slug == ascii_slug("Free Fire"):
         manual = load_manual_brief("production/manual-brief-free-fire-2026-10-13.json")
+    elif forced_topic_slug == ascii_slug("Microsoft Rewards"):
+        manual = load_manual_brief("production/manual-brief-microsoft-rewards-2026-10-19.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
@@ -771,7 +773,11 @@ def main():
                         else (
                             "production/manual-brief-enshrouded-2026-10-17.json"
                             if manual.get("content_id") == "manual-enshrouded-1-0-launch-2026-10-17"
+                            else (
+                            "production/manual-brief-microsoft-rewards-2026-10-19.json"
+                            if manual.get("content_id") == "microsoft-rewards-brasil-2026-10-19"
                             else "production/manual-brief.json"
+                        )
                         )
                     )
                 )
