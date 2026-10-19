@@ -1,0 +1,155 @@
+name: Import Microsoft Rewards Shorts to TikTok Helper
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-microsoft-rewards-2026-to-tiktok-helper.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-microsoft-rewards-2026-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved Microsoft Rewards package
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-39230880500
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 39230880500
+
+      - name: Validate all three Shorts and final QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3; do
+            test -s "output/shorts/short_${n}.mp4"
+            test -s "output/shorts/short_${n}_cover.jpg"
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          qa=json.loads(Path("output/final-qa.json").read_text(encoding="utf-8"))
+          assert qa.get("status")=="APPROVED", qa
+          assert len(qa.get("approved_short_hooks") or [])==3, qa
+          assert qa.get("short_hooks_exact")=="APPROVED", qa
+          assert qa.get("short_semantic_selection")=="APPROVED", qa
+          print("MICROSOFT_REWARDS_SHORTS_QA_OK")
+          PY
+
+      - name: Publish three Shorts and covers for TikTok Helper
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-microsoft-rewards-assets
+          cp output/shorts/short_1.mp4 tiktok-microsoft-rewards-assets/microsoft-rewards-2026-by2uGmQl3OY.mp4
+          cp output/shorts/short_2.mp4 tiktok-microsoft-rewards-assets/microsoft-rewards-2026-3AopWwqqOig.mp4
+          cp output/shorts/short_3.mp4 tiktok-microsoft-rewards-assets/microsoft-rewards-2026-dOdAIp7wnXk.mp4
+          cp output/shorts/short_1_cover.jpg tiktok-microsoft-rewards-assets/microsoft-rewards-2026-by2uGmQl3OY.jpg
+          cp output/shorts/short_2_cover.jpg tiktok-microsoft-rewards-assets/microsoft-rewards-2026-3AopWwqqOig.jpg
+          cp output/shorts/short_3_cover.jpg tiktok-microsoft-rewards-assets/microsoft-rewards-2026-dOdAIp7wnXk.jpg
+
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-microsoft-rewards-assets/* --clobber
+
+      - name: Add Microsoft Rewards Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          p=Path("data/tiktok_queue.json")
+          q=json.loads(p.read_text(encoding="utf-8"))
+          old=q.get("items") or []
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          now=datetime.now(timezone.utc).isoformat()
+          items=[
+            {
+              "id":"yt-by2uGmQl3OY",
+              "title":"MICROSOFT REWARDS: DÁ PARA GANHAR JOGOS?",
+              "media_url":f"{base}/microsoft-rewards-2026-by2uGmQl3OY.mp4",
+              "thumbnail_url":f"{base}/microsoft-rewards-2026-by2uGmQl3OY.jpg",
+              "post_text":"MICROSOFT REWARDS: DÁ PARA GANHAR JOGOS? 🎮\n\nEntenda como os pontos funcionam e quais recompensas podem aparecer para sua conta e região. Confira sempre as regras oficiais.\n\n#RadarDosGames #MicrosoftRewards #Xbox #Games #Gaming #TikTokGames",
+              "status":"approved",
+              "youtube_id":"by2uGmQl3OY",
+              "youtube_url":"https://www.youtube.com/shorts/by2uGmQl3OY",
+              "source":"microsoft_rewards_2026_approved",
+              "source_run_id":39230880500,
+              "short_number":1,
+              "approved_at":now
+            },
+            {
+              "id":"yt-3AopWwqqOig",
+              "title":"COMO FUNCIONAM OS PONTOS DO REWARDS?",
+              "media_url":f"{base}/microsoft-rewards-2026-3AopWwqqOig.mp4",
+              "thumbnail_url":f"{base}/microsoft-rewards-2026-3AopWwqqOig.jpg",
+              "post_text":"COMO FUNCIONAM OS PONTOS DO REWARDS? 🎯\n\nAs formas de ganhar pontos e as opções de resgate podem variar por região. Veja os detalhes oficiais antes de trocar seus pontos.\n\n#RadarDosGames #MicrosoftRewards #Bing #Xbox #Gaming #TikTokGames",
+              "status":"approved",
+              "youtube_id":"3AopWwqqOig",
+              "youtube_url":"https://www.youtube.com/shorts/3AopWwqqOig",
+              "source":"microsoft_rewards_2026_approved",
+              "source_run_id":39230880500,
+              "short_number":2,
+              "approved_at":now
+            },
+            {
+              "id":"yt-dOdAIp7wnXk",
+              "title":"VALE A PENA USAR O REWARDS NO XBOX?",
+              "media_url":f"{base}/microsoft-rewards-2026-dOdAIp7wnXk.mp4",
+              "thumbnail_url":f"{base}/microsoft-rewards-2026-dOdAIp7wnXk.jpg",
+              "post_text":"VALE A PENA USAR O REWARDS NO XBOX? 🎮\n\nConheça o programa Microsoft Rewards e confira quais opções estão disponíveis na sua região. Regras e resgates podem mudar.\n\n#RadarDosGames #MicrosoftRewards #XboxGamePass #Xbox #Games #TikTokGames",
+              "status":"approved",
+              "youtube_id":"dOdAIp7wnXk",
+              "youtube_url":"https://www.youtube.com/shorts/dOdAIp7wnXk",
+              "source":"microsoft_rewards_2026_approved",
+              "source_run_id":39230880500,
+              "short_number":3,
+              "approved_at":now
+            }
+          ]
+          ids={x["id"] for x in items}
+          yids={x["youtube_id"] for x in items}
+          old=[x for x in old if x.get("id") not in ids and x.get("youtube_id") not in yids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(items+old)[:200]
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":len(items),"total":len(q["items"]),"ids":[x["id"] for x in items]},ensure_ascii=False))
+          PY
+
+      - name: Commit updated TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "Microsoft Rewards Shorts already present."
+            exit 0
+          fi
+          git commit -m "tiktok: add approved Microsoft Rewards Shorts to helper"
+          git pull --rebase origin main
+          git push origin main
