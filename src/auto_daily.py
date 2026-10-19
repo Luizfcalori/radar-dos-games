@@ -1,4 +1,5 @@
 # Castlevania retry: use the explicit production trigger so the manual brief is honored.
+# QSSR PS5 brief is explicitly mapped above and uses approved official gameplay URLs.
 # [run-production] TOPIC=Deadlock — validate embedded video extraction in the locked-topic pipeline.
 #!/usr/bin/env python3
 """Monta automaticamente a pauta diária do Radar dos Games a partir da pesquisa RSS.
