@@ -1,0 +1,62 @@
+{
+  "valid_until": "2026-10-27T23:59:00Z",
+  "content_id": "manual-witcher-3-remastered-patch-501-switch2-2026-10-19",
+  "title": "The Witcher 3: Wild Hunt Remastered — Patch 5.01, Switch 2 e Songs of the Past",
+  "headline": "THE WITCHER 3 REMASTERED: PATCH 5.01 CHEGA AO SWITCH 2",
+  "primary_source": "https://www.thewitcher.com/de/en/news/52111/patch-5-01-out-now-for-the-nintendo-switch-2-version-of-the-witcher-3-wild-hunt-remastered",
+  "media_source_urls": [
+    "https://www.thewitcher.com/de/en/news/52111/patch-5-01-out-now-for-the-nintendo-switch-2-version-of-the-witcher-3-wild-hunt-remastered",
+    "https://www.cdprojekt.com/en/media/news/the-witcher-3-wild-hunt-remastered-available-now/",
+    "https://press.cdprojektred.com/en/news/1839/the-witcher-3-wild-hunt-remastered-announced-songs-of-the-past-gets-first-look",
+    "https://press.cdprojektred.com/en/160/829"
+  ],
+  "source_urls": [
+    "https://www.thewitcher.com/de/en/news/52111/patch-5-01-out-now-for-the-nintendo-switch-2-version-of-the-witcher-3-wild-hunt-remastered",
+    "https://www.cdprojekt.com/en/media/news/the-witcher-3-wild-hunt-remastered-available-now/",
+    "https://press.cdprojektred.com/en/news/1839/the-witcher-3-wild-hunt-remastered-announced-songs-of-the-past-gets-first-look"
+  ],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=IGk17XQ7IrQ",
+    "https://www.youtube.com/watch?v=SB3siHVCHpY",
+    "https://www.youtube.com/watch?v=nYwe_WHARdc"
+  ],
+  "video_fallback_urls": [
+    "https://www.youtube.com/watch?v=PNqmGT9mkOg",
+    "https://www.youtube.com/watch?v=bgLa7ODpr0I"
+  ],
+  "video_roles": {},
+  "video_labels": {},
+  "visual_reference_images": [],
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Tema bloqueado: The Witcher 3: Wild Hunt Remastered. Não trocar por outro jogo.",
+    "Atualização de 19 de outubro de 2026: Patch 5.01 para Nintendo Switch 2 está sendo distribuído; cobrir melhorias de nitidez/resolução, desempenho, áudio e correções conforme as notas oficiais.",
+    "Contextualizar o remaster lançado em 29 de setembro de 2026, com melhorias visuais e de performance, combate, habilidades, animações e suporte a mods entre plataformas.",
+    "Mencionar Songs of the Past como expansão anunciada para 2027, sem apresentar como já lançada.",
+    "Usar somente trailers e gameplay de The Witcher 3 publicados pelos canais oficiais The Witcher/CD PROJEKT RED ou PlayStation, mantendo a fonte de cada trecho.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts 9:16, cada um com assunto próprio, capa própria e CTA Radar dos Games.",
+    "Manter a intro oficial integral; a gameplay começa somente depois do fim da intro.",
+    "Usar voz Thalita Multilingual PT-BR V3, português brasileiro natural, preservando a pronúncia original de The Witcher, Geralt, Ciri, Letten e Songs of the Past.",
+    "Não afirmar que o patch resolveu todos os problemas; relatar apenas correções documentadas.",
+    "Antes de aprovar, conferir se o áudio está completo, se a fala acompanha as cenas e se não há repetição artificial de gameplay.",
+    "RECUPERAÇÃO DE MÍDIA: tentar todas as URLs de vídeo aprovadas individualmente; se uma falhar, seguir para as rotas alternativas oficiais. Não abandonar após falha de um único vídeo.",
+    "Se uma rota falhar, registrar o diagnóstico e continuar as rotas alternativas que também mostrem The Witcher 3; nunca trocar o tema por outro jogo."
+  ],
+  "short_hooks": [
+    "THE WITCHER 3: O QUE MUDA COM O PATCH 5.01?",
+    "REMASTERED: AS MELHORIAS QUE VOCÊ PRECISA VER",
+    "SONGS OF THE PAST: A NOVA AVENTURA DE 2027"
+  ],
+  "script_blocks": [
+    "The Witcher 3: Wild Hunt está em destaque outra vez. O remaster chegou em setembro com melhorias para uma das aventuras de mundo aberto mais conhecidas dos games, e agora o Patch 5.01 também está chegando à versão de Nintendo Switch 2. Neste vídeo, vamos separar o que já está disponível, o que foi corrigido e o que ainda está no horizonte para Geralt e o universo de The Witcher.",
+    "No Switch 2, a atualização 5.01 traz ajustes de nitidez e resolução, melhorias de desempenho, correções de áudio e outras correções técnicas descritas nas notas oficiais. É uma atualização importante para quem joga no portátil ou alterna entre os modos de uso, mas vale manter a expectativa realista: notas de patch documentam mudanças específicas, não garantem que todos os problemas possíveis tenham desaparecido.",
+    "O remaster lançado em 29 de setembro também moderniza partes centrais da experiência. A CD Projekt Red destaca melhorias visuais e de desempenho, mudanças no combate, uma revisão do sistema de habilidades e animações reformuladas. No PC, há suporte a Path Tracing, enquanto a versão de Nintendo Switch 2 é uma edição nativa; os recursos variam conforme a plataforma, então não dá para tratar todas as versões como tecnicamente idênticas.",
+    "A atualização reúne ainda as expansões Hearts of Stone e Blood and Wine para os proprietários elegíveis do jogo-base, permitindo revisitar histórias que ampliam bastante a jornada. Para quem está voltando agora, isso significa uma aventura que vai muito além da campanha principal: contratos de monstros, escolhas difíceis, personagens marcantes e regiões com atmosferas bem diferentes.",
+    "E o futuro também já tem nome. Songs of the Past foi anunciado como uma nova expansão para 2027 e levará Geralt à região de Letten, descrita como um lugar de tradições rurais que esconde um segredo sombrio. Ela ainda não foi lançada; por enquanto, o material divulgado é uma primeira amostra do que está sendo preparado para a próxima etapa da saga.",
+    "A pergunta agora é qual parte mais importa para você: as melhorias do remaster, o desempenho no Nintendo Switch 2 ou a expectativa pela nova expansão? O Patch 5.01 é a novidade imediata, enquanto Songs of the Past fica para 2027. Se você está voltando ao Continente, conte nos comentários em qual plataforma joga e qual mudança quer testar primeiro."
+  ],
+  "minimum_assets": 3,
+  "minimum_video_assets": 3,
+  "minimum_unique_video_seconds": 45,
+  "minimum_image_assets": 0
+}
