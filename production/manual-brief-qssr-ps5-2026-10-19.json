@@ -1,7 +1,7 @@
 {
   "valid_until": "2026-10-26T23:59:00Z",
   "content_id": "qssr-ps5-2026-10-19",
-  "title": "QSSR no PS5 comum: como a nova IA melhora os gráficos e quais jogos já usam",
+  "title": "QSSR PS5 comum: como a nova IA melhora os gráficos e quais jogos já usam",
   "headline": "QSSR NO PS5: A IA QUE MELHORA OS GRÁFICOS CHEGOU",
   "primary_source": "https://blog.br.playstation.com/?p=112757",
   "source_urls": [
@@ -17,7 +17,12 @@
     "https://blog.br.playstation.com/2026/08/28/marvels-wolverine-detalhes-sobre-as-habilidades-mutantes-de-logan-recursos-de-jogo-e-mais/",
     "https://blog.br.playstation.com/2026/08/12/ghost-of-yotei-edicao-completa-chega-para-ps5-em-1o-de-outubro/"
   ],
-  "video_urls": [],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=FSvuOsm73ww",
+    "https://www.youtube.com/watch?v=lgtmLfSTKrs",
+    "https://www.youtube.com/watch?v=zrkTbZFU0ko",
+    "https://www.youtube.com/watch?v=7GTANDv2crI"
+  ],
   "video_fallback_urls": [],
   "video_roles": {},
   "video_labels": {},
