@@ -17,10 +17,20 @@
     "https://www.xbox.com/pt-BR",
     "https://www.microsoft.com/pt-br"
   ],
-  "video_urls": [],
-  "video_fallback_urls": [],
-  "video_roles": {},
-  "video_labels": {},
+  "video_urls": [
+    "https://www.youtube.com/watch?v=tFFwWUv0PkE"
+  ],
+  "video_fallback_urls": [
+    "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/"
+  ],
+  "video_roles": {
+    "https://www.youtube.com/watch?v=tFFwWUv0PkE": "explainer oficial do canal XBOX ON sobre como acumular e resgatar pontos; conferir que as cenas usadas correspondam ao Rewards",
+    "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/": "fonte oficial Xbox Wire Brasil atualizada em dezembro de 2025"
+  },
+  "video_labels": {
+    "https://www.youtube.com/watch?v=tFFwWUv0PkE": "Como ganhar e resgatar pontos no Xbox Rewards",
+    "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/": "Rewards Xbox Brasil — explicação oficial"
+  },
   "visual_reference_images": [],
   "approved_for_publish": true,
   "editorial_rules": [
