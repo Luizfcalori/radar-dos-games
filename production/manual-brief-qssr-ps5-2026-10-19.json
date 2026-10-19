@@ -1,0 +1,53 @@
+{
+  "valid_until": "2026-10-26T23:59:00Z",
+  "content_id": "qssr-ps5-2026-10-19",
+  "title": "QSSR no PS5 comum: como a nova IA melhora os gráficos e quais jogos já usam",
+  "headline": "QSSR NO PS5: A IA QUE MELHORA OS GRÁFICOS CHEGOU",
+  "primary_source": "https://blog.br.playstation.com/?p=112757",
+  "source_urls": [
+    "https://blog.br.playstation.com/?p=112757",
+    "https://blog.playstation.com/2026/10/01/ai-upscaling-is-coming-to-ps5/",
+    "https://www.itatiaia.com.br/games/upscaling-com-ia-chega-ao-ps5-e-estreia-em-marvels-wolverine-e-ghost-of-yotei/",
+    "https://www.techradar.com/gaming/sony-has-revealed-its-new-qssr-upscaling-tech-for-the-base-ps5-with-tech-analysts-confirming-an-exceptional-quality-boost-for-marvels-wolverine-while-ghost-of-yotei-saw-less-dramatic-improvements"
+  ],
+  "media_source_urls": [
+    "https://blog.br.playstation.com/?p=112757",
+    "https://www.playstation.com/pt-br/games/marvels-wolverine/",
+    "https://www.playstation.com/pt-br/games/ghost-of-yotei/",
+    "https://blog.br.playstation.com/2026/08/28/marvels-wolverine-detalhes-sobre-as-habilidades-mutantes-de-logan-recursos-de-jogo-e-mais/",
+    "https://blog.br.playstation.com/2026/08/12/ghost-of-yotei-edicao-completa-chega-para-ps5-em-1o-de-outubro/"
+  ],
+  "video_urls": [],
+  "video_fallback_urls": [],
+  "video_roles": {},
+  "video_labels": {},
+  "visual_reference_images": [],
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Tema bloqueado: QSSR no PS5 convencional. Não trocar por outra pauta.",
+    "Explicar que Quick Spectral Super Resolution é uma tecnologia de upscaling com IA da Sony, criada a partir do Project Amethyst com a AMD, otimizada para o PS5 padrão.",
+    "Os primeiros jogos anunciados com suporte são Marvel's Wolverine e Ghost of Yōtei, com patches de 1º de outubro de 2026.",
+    "Distinguir QSSR de PSSR: PSSR continua sendo a solução de ponta no PS5 Pro; não afirmar que QSSR torna o PS5 padrão equivalente ao Pro.",
+    "A tecnologia melhora detalhes e estabilidade da imagem; não prometer aumento universal de FPS ou resolução 4K nativa.",
+    "Usar mídia oficial de PlayStation e gameplay real dos jogos quando disponível. Se uma fonte falhar, procurar alternativas oficiais e continuar; não encerrar por falha de uma URL.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts 9:16, cada um com assunto próprio, capa própria e CTA Radar dos Games.",
+    "Manter intro oficial integral; gameplay começa somente depois do fim da intro.",
+    "Usar voz Thalita Multilingual PT-BR V3, pronunciar QSSR como sigla e manter Marvel's Wolverine e Ghost of Yōtei com nomes originais.",
+    "Inspecionar os frames e garantir correspondência entre narração e imagens. Não preencher com gameplay genérico desconexo.",
+    "Produção de 19 de outubro de 2026: usar este briefing explícito e não substituir por seleção automática."
+  ],
+  "short_hooks": [
+    "PS5 COMUM GANHA IA NOS GRÁFICOS!",
+    "QSSR É IGUAL AO PSSR DO PS5 PRO?",
+    "QUAIS JOGOS JÁ USAM QSSR NO PS5?"
+  ],
+  "script_blocks": [
+    "O PS5 comum acaba de ganhar uma novidade que até pouco tempo parecia exclusiva do modelo Pro: reconstrução de imagem com inteligência artificial. A Sony anunciou a Quick Spectral Super Resolution, ou QSSR, uma tecnologia criada para melhorar a nitidez e a estabilidade visual sem exigir o mesmo poder computacional do PS5 Pro. Mas o que muda de verdade, quais jogos já receberam suporte e será que isso transforma o console padrão em um Pro? Bora entender no Radar dos Games.",
+    "A QSSR nasceu do Project Amethyst, colaboração entre Sony e AMD voltada a gráficos com inteligência artificial. A ideia é reconstruir a imagem com mais detalhe e reduzir instabilidades visuais, usando uma arquitetura neural simplificada e uma implementação ajustada ao hardware do PS5 tradicional. Isso importa porque o console padrão não tem a mesma capacidade dedicada de processamento de aprendizado de máquina disponível no PS5 Pro. Portanto, a Sony adaptou a abordagem para caber no orçamento de desempenho do aparelho.",
+    "Os primeiros jogos confirmados são Marvel's Wolverine e Ghost of Yōtei. Os dois receberam atualizações em primeiro de outubro de 2026 para oferecer QSSR como opção gráfica no PS5 padrão. Em Wolverine, a tecnologia busca dar mais clareza a ambientes movimentados, fachadas e detalhes durante a ação. Em Ghost of Yōtei, a promessa é resolver melhor os detalhes de personagens e paisagens. O resultado, porém, pode variar de jogo para jogo, porque cada estúdio ajusta o recurso ao seu próprio motor gráfico.",
+    "Atenção para uma diferença importante: QSSR não é simplesmente o PSSR do PS5 Pro com outro nome. A Sony diz que o PSSR continua sendo a solução de ponta do modelo Pro, enquanto o QSSR é uma versão voltada ao desempenho do console convencional. Isso também não significa que todo jogo vai rodar com mais quadros por segundo, nem que o PS5 padrão passa a entregar 4K nativo em qualquer situação. O benefício principal anunciado é melhorar a qualidade da imagem reconstruída e sua estabilidade.",
+    "E o que vem depois? A Sony afirmou que pretende disponibilizar a biblioteca QSSR amplamente aos desenvolvedores PlayStation. Isso abre caminho para mais jogos adotarem a tecnologia, mas ainda não existe uma lista completa de títulos futuros confirmados. Então, desconfie de publicações que prometam suporte imediato em todos os jogos ou garantam ganhos idênticos em qualquer modo gráfico. O recurso depende de implementação e atualização de cada jogo.",
+    "Para conferir a novidade, atualize Marvel's Wolverine ou Ghost of Yōtei no PS5 convencional e procure as opções gráficas disponíveis na versão instalada. Compare cenas semelhantes, prestando atenção em detalhes finos, bordas em movimento e estabilidade da imagem. Não confunda uma opção de reconstrução por IA com um upgrade de hardware: o console continua sendo o mesmo, mas agora os desenvolvedores têm mais uma ferramenta para equilibrar qualidade visual e desempenho.",
+    "Agora queremos saber: você prefere que mais jogos do PS5 comum recebam QSSR ou acha que esse tipo de melhoria deve ficar concentrado no PS5 Pro? Comenta aqui e acompanha o Radar dos Games para mais novidades de tecnologia, jogos e atualizações que realmente fazem diferença."
+  ]
+}
