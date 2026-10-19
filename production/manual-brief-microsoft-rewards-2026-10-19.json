@@ -18,18 +18,22 @@
     "https://www.microsoft.com/pt-br"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=tFFwWUv0PkE"
+    "https://www.youtube.com/watch?v=tFFwWUv0PkE",
+    "https://www.youtube.com/watch?v=s_iV0waQ6BQ"
   ],
   "video_fallback_urls": [
+    "https://www.youtube.com/watch?v=s_iV0waQ6BQ",
     "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/"
   ],
   "video_roles": {
     "https://www.youtube.com/watch?v=tFFwWUv0PkE": "explainer oficial do canal XBOX ON sobre como acumular e resgatar pontos; conferir que as cenas usadas correspondam ao Rewards",
-    "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/": "fonte oficial Xbox Wire Brasil atualizada em dezembro de 2025"
+    "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/": "fonte oficial Xbox Wire Brasil atualizada em dezembro de 2025",
+    "https://www.youtube.com/watch?v=s_iV0waQ6BQ": "guia oficial XBOX ON sobre as mudanças do Xbox Rewards para 2026; usar apenas trechos diretamente relacionados a pontos, missões e resgates"
   },
   "video_labels": {
     "https://www.youtube.com/watch?v=tFFwWUv0PkE": "Como ganhar e resgatar pontos no Xbox Rewards",
-    "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/": "Rewards Xbox Brasil — explicação oficial"
+    "https://news.xbox.com/pt-br/2025/12/09/rewards-jogue-ganhe-e-resgate-recompensas-com-xbox-game-pass/": "Rewards Xbox Brasil — explicação oficial",
+    "https://www.youtube.com/watch?v=s_iV0waQ6BQ": "Guia Xbox Rewards 2026 — XBOX ON"
   },
   "visual_reference_images": [],
   "approved_for_publish": true,
@@ -64,8 +68,8 @@
     "A Microsoft também publicou mudanças nas missões do Xbox em janeiro de 2025, incluindo expansão de Quests para PC Game Pass e regras de elegibilidade para pontos obtidos por gameplay. Isso ajuda a entender por que tutoriais antigos podem não corresponder à experiência atual. Ainda assim, cada oferta tem suas condições, e não dá para afirmar que todo jogador receberá a mesma quantidade de pontos. Se você joga no console ou no PC, abra o hub oficial e verifique quais tarefas aparecem na sua conta antes de planejar uma meta de resgate.",
     "Então, vale a pena? Se você já usa o Bing, acompanha o painel e joga Xbox, o Rewards pode ser um extra interessante desde que as atividades disponíveis façam sentido para sua rotina. O segredo é não tratar pontos como salário, não comprar algo só para pontuar e não contar com uma recompensa antes de conferir o catálogo. Agora queremos saber da comunidade: você usa Microsoft Rewards no Brasil? Qual recompensa aparece para você e quais missões realmente valem o tempo? Conta nos comentários e acompanha o Radar dos Games para mais dicas úteis do universo gamer."
   ],
-  "minimum_assets": 6,
+  "minimum_assets": 3,
   "minimum_video_assets": 3,
   "minimum_unique_video_seconds": 180,
-  "minimum_image_assets": 2
+  "minimum_image_assets": 0
 }
