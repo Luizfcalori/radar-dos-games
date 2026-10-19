@@ -64,7 +64,7 @@ jobs:
               with urllib.request.urlopen(req,timeout=30) as r:
                   return json.load(r)
 
-          runs=api(f"/repos/{repo}/actions/runs?status=success&per_page=40").get("workflow_runs",[])
+          runs=api(f"/repos/{repo}/actions/runs?per_page=40").get("workflow_runs",[])
           cutoff=datetime.now(timezone.utc)-timedelta(hours=72)
           selected=[]
           Path("candidates").mkdir(exist_ok=True)
@@ -125,6 +125,26 @@ jobs:
                       continue
                   status=str(qa.get("status") or "").upper()
                   if not status.startswith("APPROVED"):
+                      continue
+
+                  # Accept a run whose render/QA and four private YouTube uploads
+                  # succeeded even if the final Git push failed due to a race.
+                  upload_names=[
+                      "youtube-master-result.json",
+                      "youtube-short-1-result.json",
+                      "youtube-short-2-result.json",
+                      "youtube-short-3-result.json",
+                  ]
+                  upload_files=[next(iter(d.rglob(n)),None) for n in upload_names]
+                  if not all(upload_files):
+                      continue
+                  upload_ok=True
+                  for upload_file in upload_files:
+                      raw=Path(upload_file).read_text(encoding="utf-8",errors="replace")
+                      if '"uploadStatus": "uploaded"' not in raw or '"privacyStatus": "private"' not in raw:
+                          upload_ok=False
+                          break
+                  if not upload_ok:
                       continue
 
                   titles=[]
