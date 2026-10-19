@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-18T21:28:58.963790+00:00",
-  "total_discovered": 101,
-  "ready_for_tiktok": 97,
+  "updated_at": "2026-10-19T14:11:53.264710+00:00",
+  "total_discovered": 104,
+  "ready_for_tiktok": 100,
   "waiting_media": [
     {
       "youtube_id": "FWfua78AQis",
@@ -27,6 +27,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "dOdAIp7wnXk",
+      "youtube_url": "https://www.youtube.com/shorts/dOdAIp7wnXk",
+      "title": "VALE A PENA USAR O REWARDS NO XBOX?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "3AopWwqqOig",
+      "youtube_url": "https://www.youtube.com/shorts/3AopWwqqOig",
+      "title": "COMO FUNCIONAM OS PONTOS DO REWARDS?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "by2uGmQl3OY",
+      "youtube_url": "https://www.youtube.com/shorts/by2uGmQl3OY",
+      "title": "MICROSOFT REWARDS: DÁ PARA GANHAR JOGOS?",
+      "status": "approved"
+    },
     {
       "youtube_id": "FWfua78AQis",
       "youtube_url": "https://www.youtube.com/shorts/FWfua78AQis",
