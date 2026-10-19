@@ -423,7 +423,36 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add data/published.json
           git diff --cached --quiet || git commit -m "bot: registrar pauta agendada"
-          git push
+          if ! git push origin main; then
+            echo "Push concorrente detectado; reconstruindo o registro sobre a main mais recente."
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          selected = json.loads(Path("output/selected.json").read_text(encoding="utf-8"))
+          master_meta = json.loads(Path("output/master-youtube.json").read_text(encoding="utf-8"))
+          p = Path("data/published.json")
+          history = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"videos": []}
+          history.setdefault("videos", [])
+          if not any(v.get("content_id") == selected.get("content_id") for v in history["videos"]):
+              history["videos"].append({
+                  "content_id": selected["content_id"],
+                  "title": selected["title"],
+                  "url": selected["url"],
+                  "published_at": master_meta.get("publishAt") or datetime.now(timezone.utc).isoformat(),
+                  "scheduled": bool(master_meta.get("publishAt")),
+              })
+          history["videos"] = history["videos"][-200:]
+          p.write_text(json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+            git add data/published.json
+            if ! git diff --cached --quiet; then
+              git commit -m "bot: registrar pauta agendada (race recovery)"
+              git push origin main || echo "AVISO: o vídeo foi validado e enviado; o registro de histórico será reconciliado na próxima execução."
+            fi
+          fi
 
       - name: Guardar pacote final e diagnósticos
         if: always()
