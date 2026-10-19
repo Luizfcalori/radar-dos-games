@@ -701,6 +701,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-microsoft-rewards-2026-10-19.json")
     elif forced_topic_slug == ascii_slug("The Witcher 3: Wild Hunt"):
         manual = load_manual_brief("production/manual-brief-witcher-3-remastered-2026-10-19.json")
+    elif forced_topic_slug == ascii_slug("QSSR PS5"):
+        manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
@@ -724,6 +726,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-enshrouded-2026-10-17.json")
         elif forced_topic_slug == ascii_slug("The Witcher 3: Wild Hunt"):
             manual = load_manual_brief("production/manual-brief-witcher-3-remastered-2026-10-19.json")
+        elif forced_topic_slug == ascii_slug("QSSR PS5"):
+            manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -783,7 +787,11 @@ def main():
                             else (
                                 "production/manual-brief-witcher-3-remastered-2026-10-19.json"
                                 if manual.get("content_id") == "manual-witcher-3-remastered-patch-501-switch2-2026-10-19"
-                                else "production/manual-brief.json"
+                                else (
+                                    "production/manual-brief-qssr-ps5-2026-10-19.json"
+                                    if manual.get("content_id") == "qssr-ps5-2026-10-19"
+                                    else "production/manual-brief.json"
+                                )
                             )
                         )
                         )
