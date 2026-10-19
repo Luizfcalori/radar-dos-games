@@ -1,0 +1,155 @@
+name: Import The Witcher 3 Shorts to TikTok Helper
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-witcher-3-2026-10-19-to-tiktok-helper.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-witcher-3-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved Witcher production package
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-39252632904
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 39252632904
+
+      - name: Validate three approved Shorts and final QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3; do
+            test -s "output/shorts/short_${n}.mp4"
+            test -s "output/shorts/short_${n}_cover.jpg"
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          qa=json.loads(Path("output/final-qa.json").read_text(encoding="utf-8"))
+          assert qa.get("status") == "APPROVED", qa
+          assert len(qa.get("approved_short_hooks") or []) == 3, qa
+          assert qa.get("short_hooks_exact") == "APPROVED", qa
+          assert qa.get("short_semantic_selection") == "APPROVED", qa
+          print("WITCHER_SHORTS_QA_OK")
+          PY
+
+      - name: Publish three Shorts and covers for TikTok Helper
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-witcher-3-assets
+          cp output/shorts/short_1.mp4 tiktok-witcher-3-assets/the-witcher-3-2026-_Dnc_1tIFI.mp4
+          cp output/shorts/short_2.mp4 tiktok-witcher-3-assets/the-witcher-3-2026-42bFCkPP_2E.mp4
+          cp output/shorts/short_3.mp4 tiktok-witcher-3-assets/the-witcher-3-2026-8EZScYaZIj8.mp4
+          cp output/shorts/short_1_cover.jpg tiktok-witcher-3-assets/the-witcher-3-2026-_Dnc_1tIFI.jpg
+          cp output/shorts/short_2_cover.jpg tiktok-witcher-3-assets/the-witcher-3-2026-42bFCkPP_2E.jpg
+          cp output/shorts/short_3_cover.jpg tiktok-witcher-3-assets/the-witcher-3-2026-8EZScYaZIj8.jpg
+
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-witcher-3-assets/* --clobber
+
+      - name: Add Witcher Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          p=Path("data/tiktok_queue.json")
+          q=json.loads(p.read_text(encoding="utf-8"))
+          old=q.get("items") or []
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          now=datetime.now(timezone.utc).isoformat()
+          items=[
+            {
+              "id":"yt-_Dnc_1tIFI",
+              "title":"THE WITCHER 3: O QUE MUDA COM O PATCH 5.01?",
+              "media_url":f"{base}/the-witcher-3-2026-_Dnc_1tIFI.mp4",
+              "thumbnail_url":f"{base}/the-witcher-3-2026-_Dnc_1tIFI.jpg",
+              "post_text":"THE WITCHER 3: O QUE MUDA COM O PATCH 5.01? ⚔️\n\nA atualização do Nintendo Switch 2 traz ajustes de imagem, desempenho, áudio e outras correções. Confira as notas oficiais para ver os detalhes da versão.\n\n#RadarDosGames #TheWitcher3 #NintendoSwitch2 #Gaming #Games #TikTokGames",
+              "status":"approved",
+              "youtube_id":"-_Dnc_1tIFI",
+              "youtube_url":"https://www.youtube.com/shorts/-_Dnc_1tIFI",
+              "source":"the_witcher_3_remastered_approved",
+              "source_run_id":39252632904,
+              "short_number":1,
+              "approved_at":now
+            },
+            {
+              "id":"yt-42bFCkPP_2E",
+              "title":"THE WITCHER 3 REMASTERED: MELHORIAS QUE VOCÊ PRECISA VER",
+              "media_url":f"{base}/the-witcher-3-2026-42bFCkPP_2E.mp4",
+              "thumbnail_url":f"{base}/the-witcher-3-2026-42bFCkPP_2E.jpg",
+              "post_text":"THE WITCHER 3 REMASTERED: MELHORIAS QUE VOCÊ PRECISA VER 🎮\n\nVeja o que mudou na edição remasterizada e lembre-se: o resultado pode variar conforme a plataforma.\n\n#RadarDosGames #TheWitcher3 #Gaming #Games #TikTokGames",
+              "status":"approved",
+              "youtube_id":"42bFCkPP_2E",
+              "youtube_url":"https://www.youtube.com/shorts/42bFCkPP_2E",
+              "source":"the_witcher_3_remastered_approved",
+              "source_run_id":39252632904,
+              "short_number":2,
+              "approved_at":now
+            },
+            {
+              "id":"yt-8EZScYaZIj8",
+              "title":"SONGS OF THE PAST: A NOVA AVENTURA DE 2027",
+              "media_url":f"{base}/the-witcher-3-2026-8EZScYaZIj8.mp4",
+              "thumbnail_url":f"{base}/the-witcher-3-2026-8EZScYaZIj8.jpg",
+              "post_text":"SONGS OF THE PAST: A NOVA AVENTURA DE 2027 ⚔️\n\nA nova aventura foi anunciada para 2027. Ainda não foi lançada; acompanhe os canais oficiais para novas informações.\n\n#RadarDosGames #TheWitcher3 #SongsOfThePast #Gaming #Games #TikTokGames",
+              "status":"approved",
+              "youtube_id":"8EZScYaZIj8",
+              "youtube_url":"https://www.youtube.com/shorts/8EZScYaZIj8",
+              "source":"the_witcher_3_remastered_approved",
+              "source_run_id":39252632904,
+              "short_number":3,
+              "approved_at":now
+            }
+          ]
+          ids={x["id"] for x in items}
+          yids={x["youtube_id"] for x in items}
+          old=[x for x in old if x.get("id") not in ids and x.get("youtube_id") not in yids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(items+old)[:200]
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":len(items),"total":len(q["items"]),"ids":[x["id"] for x in items]},ensure_ascii=False))
+          PY
+
+      - name: Commit updated TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          if git diff --cached --quiet; then
+            echo "The Witcher 3 Shorts already present."
+            exit 0
+          fi
+          git commit -m "tiktok: add approved The Witcher 3 Shorts to helper"
+          git pull --rebase origin main
+          git push origin main
