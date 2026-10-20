@@ -121,6 +121,7 @@ jobs:
       - name: Pesquisar pautas atuais nas fontes oficiais
         run: python src/research.py
 
+      # Tema explícito evita que uma correção técnica altere a pauta solicitada.
       - name: Bloquear execução de produção sem tema explícito
         if: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')) }}
         run: |
