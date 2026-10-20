@@ -201,8 +201,8 @@ jobs:
           script = Path("output/auto-script.txt").read_text(encoding="utf-8")
           words = len(script.split())
           print(f"Master narration words: {words}")
-          if words < 450:
-              raise SystemExit(f"QUALITY_BLOCK: roteiro do Master tem {words} palavras; mínimo editorial 450 para evitar vídeo excessivamente curto")
+          if words < 500:
+              raise SystemExit(f"QUALITY_BLOCK: roteiro do Master tem {words} palavras; mínimo editorial 500 para garantir tempo editorial suficiente")
           PY
 
       - name: Narrar após decupagem com a voz Thalita PT-BR
