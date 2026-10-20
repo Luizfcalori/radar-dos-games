@@ -729,6 +729,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-witcher-3-remastered-2026-10-19.json")
         elif forced_topic_slug == ascii_slug("QSSR PS5"):
             manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
+        elif forced_topic_slug == ascii_slug("Mycopunk"):
+            manual = load_manual_brief("production/manual-brief-mycopunk-1-0-2026-10-20.json")
         elif forced_topic_slug == ascii_slug("Once Human — Isles of Abyss"):
             # Use the refreshed brief with two distinct, publisher-approved Isles of Abyss trailers.
             manual = load_manual_brief("production/manual-brief-once-human-isles-of-abyss-2026-10-20.json")
