@@ -731,7 +731,7 @@ def main():
             manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
         elif forced_topic_slug == ascii_slug("Once Human — Isles of Abyss"):
             # Use the refreshed brief with two distinct, publisher-approved Isles of Abyss trailers.
-        manual = load_manual_brief("production/manual-brief-once-human-isles-of-abyss-2026-10-20.json")
+            manual = load_manual_brief("production/manual-brief-once-human-isles-of-abyss-2026-10-20.json")
         else:
             manual = None
     if not candidates and not manual:
