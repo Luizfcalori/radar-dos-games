@@ -448,24 +448,27 @@ def make_script(candidate, parser):
     platform_text = ", ".join(plats) if plats else ""
     blocks = [
         f"{title}. A {src} publicou a informação em sua fonte oficial, e o assunto é {game}.",
-        (f"A publicação informa que o lançamento de {game} está previsto para {launch_date}. Essa é a data indicada no material consultado."
+        (f"O material informa que o lançamento de {game} está previsto para {launch_date}. Essa é a data indicada na publicação consultada, e não uma estimativa acrescentada pelo Radar."
          if launch_date else
-         f"O texto oficial reúne detalhes específicos sobre {game}. O resumo fica limitado ao que a publicação realmente informa."),
+         f"O ponto de partida é o anúncio publicado sobre {game}. Para entender a novidade, vale separar o que a fonte apresenta como informação concreta das perguntas que ainda dependem de novos comunicados."),
         (f"O anúncio também revela novos personagens para {game}. Esse é um dos pontos destacados pela própria publicação."
          if has_characters else
-         (f"A notícia trata de uma atualização de {game}, conforme o material oficial."
+         (f"A notícia trata de uma atualização de {game}, conforme o material oficial. O foco editorial é explicar o que a atualização pretende acrescentar, sem transformar objetivos anunciados em recursos que não foram confirmados."
           if has_update else
-          f"A publicação acrescenta contexto sobre {game}, sem confirmar recursos que não estejam descritos na fonte.")),
+          f"A publicação acrescenta contexto sobre {game}. O texto disponível é a base para esta análise; por isso, qualquer detalhe que não esteja descrito ali permanece fora das afirmações do Radar.")),
         (f"Sobre plataformas de {game}, o material cita {platform_text}. A confirmação deve ficar restrita às plataformas mencionadas oficialmente."
          if platform_text else
-         "A disponibilidade por plataforma só deve ser afirmada quando estiver explícita no anúncio oficial."),
+         f"A disponibilidade por plataforma é uma informação importante para quem acompanha {game}, mas só deve ser afirmada quando estiver explícita no anúncio oficial. Não vamos presumir versões, datas ou serviços que a fonte não confirme."),
         (f"O artigo também apresenta material visual associado à notícia sobre {game}{', incluindo trailer ou gameplay' if has_trailer else ''}. Essas imagens ajudam a contextualizar o anúncio, mas não comprovam detalhes que o texto não confirma."
          if parser.media else
-         "A publicação consultada é a referência principal para conferir os detalhes anunciados."),
-        (f"Para quem acompanha {game}, a informação mais concreta é o que a fonte confirmou sobre lançamento e conteúdo."
-         if launch_date or has_characters else
-         f"Para quem acompanha {game}, vale separar os fatos publicados de qualquer especulação sobre o futuro do projeto."),
-        "Até que a fonte oficial divulgue outros dados sobre {game}, recursos, modos ou datas não mencionados aqui devem continuar tratados como não confirmados.",
+         f"A publicação consultada é a referência principal para conferir os detalhes anunciados sobre {game}. O material visual, quando disponível, deve servir para contextualizar a notícia, e não para inventar funções ou acontecimentos que não estejam demonstrados."),
+        f"Para avaliar o alcance desta novidade em {game}, a pergunta central é o que muda de forma concreta para quem joga. A resposta precisa vir dos recursos, modos, condições ou objetivos descritos pela fonte, sem transformar possibilidades em promessas.",
+        f"Também é importante observar o contexto do anúncio de {game}. Uma atualização pode ter objetivos diferentes de uma expansão ou de um lançamento completo; o Radar deve manter essa distinção e usar a nomenclatura adotada no comunicado oficial.",
+        f"Se a publicação descreve objetivos para a atualização de {game}, esses objetivos devem ser apresentados como intenção declarada pelos responsáveis. Isso é diferente de garantir um resultado para todos os jogadores, algo que só pode ser avaliado com informações e experiência concretas.",
+        f"Outro cuidado é não confundir material promocional com uma lista completa de mudanças. Os vídeos e imagens associados a {game} ajudam a visualizar a novidade, mas os detalhes não mostrados continuam dependendo do texto oficial ou de futuras informações dos desenvolvedores.",
+        f"Para quem acompanha {game}, vale conferir os próximos comunicados e observar se surgem notas detalhadas, demonstrações adicionais ou esclarecimentos sobre disponibilidade. Esses pontos só devem entrar numa atualização do Radar quando houver uma fonte identificável que os sustente.",
+        f"Em resumo, a notícia sobre {game} deve ser entendida pelo que foi efetivamente publicado: o anúncio, os objetivos declarados e os detalhes confirmados. Essa separação evita misturar informação, expectativa da comunidade e especulação como se fossem a mesma coisa.",
+        f"Até que a fonte oficial divulgue outros dados sobre {game}, recursos, modos ou datas não mencionados aqui devem continuar tratados como não confirmados.",
         f"E agora queremos saber: qual parte deste anúncio sobre {game} mais chamou sua atenção? Comente, acompanhe o Radar dos Games e inscreva-se para receber as próximas notícias."
     ]
     return "\n\n".join(blocks)
