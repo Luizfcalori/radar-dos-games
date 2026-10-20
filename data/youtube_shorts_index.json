@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-19T14:11:53.264710+00:00",
-  "total_discovered": 104,
-  "ready_for_tiktok": 100,
+  "updated_at": "2026-10-20T12:26:39.338651+00:00",
+  "total_discovered": 107,
+  "ready_for_tiktok": 103,
   "waiting_media": [
     {
       "youtube_id": "FWfua78AQis",
@@ -27,6 +27,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "-_Dnc_1tIFI",
+      "youtube_url": "https://www.youtube.com/shorts/-_Dnc_1tIFI",
+      "title": "THE WITCHER 3: O QUE MUDA COM O PATCH 5.01?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "42bFCkPP_2E",
+      "youtube_url": "https://www.youtube.com/shorts/42bFCkPP_2E",
+      "title": "REMASTERED: AS MELHORIAS QUE VOCÊ PRECISA VER",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "8EZScYaZIj8",
+      "youtube_url": "https://www.youtube.com/shorts/8EZScYaZIj8",
+      "title": "SONGS OF THE PAST: A NOVA AVENTURA DE 2027",
+      "status": "approved"
+    },
     {
       "youtube_id": "dOdAIp7wnXk",
       "youtube_url": "https://www.youtube.com/shorts/dOdAIp7wnXk",
