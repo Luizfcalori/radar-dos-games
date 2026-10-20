@@ -33,7 +33,7 @@ jobs:
               (r.event === 'schedule' ||
                r.event === 'workflow_dispatch' ||
                (r.event === 'push' &&
-                /\[run-private\]|\[run-production\]/i.test(r.head_commit?.message || ''))
+                /\[run-private\]|\[run-production\]/i.test(r.head_commit?.message || '')))
             );
             if (!production.length) {
               core.warning('Nenhuma execução de produção encontrada no histórico recente.');
