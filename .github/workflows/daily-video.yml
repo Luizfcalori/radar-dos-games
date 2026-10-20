@@ -124,13 +124,10 @@ jobs:
       - name: Bloquear execução de produção sem tema explícito
         if: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')) }}
         run: |
-          MESSAGE="${{ github.event.head_commit.message }}"
-          if [[ "$MESSAGE" != *"TOPIC="* ]]; then
-            echo "::error::Falta TOPIC=<jogo> no título do commit. Use [run-private] TOPIC=Mycopunk para não trocar a pauta nem executar AUTO por engano."
+          if [[ "${{ github.event.head_commit.message }}" != *"TOPIC="* ]]; then
+            echo "::error::Execução bloqueada: informe TOPIC=<jogo> no título do commit."
             exit 1
           fi
-          TOPIC="${MESSAGE#*TOPIC=}"
-          TOPIC="${TOPIC%%
 
       - name: Escolher pauta e montar roteiro/plano automaticamente
         env:
