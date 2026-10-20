@@ -1,0 +1,170 @@
+name: Import Once Human Isles of Abyss Shorts to TikTok Helper
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-once-human-isles-of-abyss-to-tiktok-helper.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-once-human-isles-of-abyss-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved Once Human production package
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-39432487667
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 39432487667
+
+      - name: Validate approved Shorts and QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("output")
+          qa=json.loads((p/"final-qa.json").read_text(encoding="utf-8"))
+          sel=json.loads((p/"selected.json").read_text(encoding="utf-8"))
+          assert qa.get("status") == "APPROVED", qa
+          assert qa.get("pro_score", 0) >= 85, qa
+          assert "once human" in sel.get("title","").lower(), sel.get("title")
+          assert sel.get("manual_brief") is True
+          assert len(qa.get("shorts") or []) == 3
+          assert len(qa.get("approved_short_hooks") or []) == 3
+          assert qa.get("short_hooks_exact") == "APPROVED"
+          assert qa.get("short_semantic_selection") == "APPROVED"
+          for n in (1,2,3):
+              assert (p/"shorts"/f"short_{n}.mp4").is_file()
+              assert (p/"shorts"/f"short_{n}_cover.jpg").is_file()
+              meta=json.loads((p/f"short-{n}-youtube.json").read_text(encoding="utf-8"))
+              assert meta.get("title")
+          print("ONCE_HUMAN_TIKTOK_SOURCE_QA_OK")
+          PY
+
+      - name: Upload three Shorts and covers to TikTok Helper assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p once-human-assets
+          cp output/shorts/short_1.mp4 once-human-isles-of-abyss-2026-short-1.mp4
+          cp output/shorts/short_2.mp4 once-human-isles-of-abyss-2026-short-2.mp4
+          cp output/shorts/short_3.mp4 once-human-isles-of-abyss-2026-short-3.mp4
+          cp output/shorts/short_1_cover.jpg once-human-isles-of-abyss-2026-short-1.jpg
+          cp output/shorts/short_2_cover.jpg once-human-isles-of-abyss-2026-short-2.jpg
+          cp output/shorts/short_3_cover.jpg once-human-isles-of-abyss-2026-short-3.jpg
+          mv once-human-isles-of-abyss-2026-short-*.* once-human-assets/
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Downloads para publicação manual no TikTok Helper."
+          gh release upload "$TAG" once-human-assets/* --clobber
+
+      - name: Verify all six remote assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 3 --max-time 120 --range 0-1023 "$BASE/once-human-isles-of-abyss-2026-short-$n.$ext" -o /dev/null
+              echo "REMOTE_OK short-$n.$ext"
+            done
+          done
+
+      - name: Add three Once Human Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime,timezone
+          p=Path("data/tiktok_queue.json")
+          q=json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          titles=[
+            "NAVIOS, ILHAS E TESOUROS NO FUNDO DO MAR!",
+            "LULA GIGANTE, TUBARÕES E BATALHAS NAVAIS!",
+            "ISLES OF ABYSS CHEGA COM SERVIDORES NA AMÉRICA DO SUL!"
+          ]
+          captions=[
+            "NAVIOS, ILHAS E TESOUROS NO FUNDO DO MAR! 🌊🚢 Once Human: Isles of Abyss leva a sobrevivência para o oceano, com ilhas para explorar e tesouros submersos.\n\n🎮 Siga o Radar dos Games para mais novidades!\n\n#OnceHuman #IslesOfAbyss #Gaming #Games #RadarDosGames #TikTokGames",
+            "LULA GIGANTE, TUBARÕES E BATALHAS NAVAIS! 🦈⚓ Em Once Human: Isles of Abyss, o oceano também esconde ameaças. Confira os perigos que podem transformar cada expedição em uma batalha.\n\n🎮 Siga o Radar dos Games!\n\n#OnceHuman #IslesOfAbyss #Gameplay #Gaming #RadarDosGames #TikTokGames",
+            "ISLES OF ABYSS CHEGA COM SERVIDORES NA AMÉRICA DO SUL! 🌎🌊 Veja o que foi anunciado para a nova experiência oceânica de Once Human e fique de olho nas informações oficiais.\n\n🎮 Acompanhe o Radar dos Games!\n\n#OnceHuman #IslesOfAbyss #GamingNews #Games #RadarDosGames #TikTokGames"
+          ]
+          ids=["M5-zPE_WzeY","wYOKgd0bczc","AJbpAQqNM0g"]
+          prefix="once-human-isles-of-abyss-2026-short-"
+          new=[]
+          for n in (1,2,3):
+            key=f"{prefix}{n}"
+            new.append({
+              "id":key,
+              "title":titles[n-1],
+              "media_url":f"{base}/{key}.mp4",
+              "thumbnail_url":f"{base}/{key}.jpg",
+              "post_text":captions[n-1],
+              "status":"approved",
+              "youtube_id":ids[n-1],
+              "youtube_url":f"https://www.youtube.com/shorts/{ids[n-1]}",
+              "source":"once_human_isles_of_abyss_2026_10_20_approved",
+              "source_run_id":39432487667,
+              "short_number":n,
+              "approved_at":now,
+              "synced_at":now
+            })
+          keys={x["id"] for x in new}
+          ytids={x["youtube_id"] for x in new}
+          old=[x for x in old if x.get("id") not in keys and x.get("youtube_id") not in ytids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(new+old)[:200]
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":3,"preserved":len(old),"total":len(q["items"]),"titles":titles},ensure_ascii=False))
+          PY
+
+      - name: Commit queue and verify remote helper records
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: add Once Human Isles of Abyss Shorts to TikTok Helper"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-remote.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-remote.json",encoding="utf-8"))
+          ids={f"once-human-isles-of-abyss-2026-short-{n}" for n in (1,2,3)}
+          found=[x for x in q.get("items",[]) if x.get("id") in ids]
+          assert len(found)==3, (len(found),ids)
+          assert all(x.get("status")=="approved" and x.get("media_url","").endswith(".mp4") and x.get("post_text") for x in found)
+          print("TIKTOK_HELPER_ONCE_HUMAN_OK",len(found),"QUEUE_TOTAL",len(q.get("items",[])))
+          PY
