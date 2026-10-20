@@ -50,7 +50,7 @@ jobs:
                           script = (step.get("with") or {}).get("script")
                           if isinstance(script, str):
                               with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=False) as tmp:
-                                  tmp.write(script)
+                                  tmp.write("async function __check__() {\\n" + script + "\\n}\\n")
                                   script_path = tmp.name
                               try:
                                   subprocess.run(["node", "--check", script_path], check=True, capture_output=True, text=True)
