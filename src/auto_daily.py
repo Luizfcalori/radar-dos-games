@@ -730,6 +730,7 @@ def main():
         elif forced_topic_slug == ascii_slug("QSSR PS5"):
             manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
         elif forced_topic_slug == ascii_slug("Mycopunk"):
+            # Prefer accessible official trailers; age-gated URLs must not be the only source.
             manual = load_manual_brief("production/manual-brief-mycopunk-1-0-2026-10-20.json")
         elif forced_topic_slug == ascii_slug("Once Human — Isles of Abyss"):
             # Use the refreshed brief with two distinct, publisher-approved Isles of Abyss trailers.
