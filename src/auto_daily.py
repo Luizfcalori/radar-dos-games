@@ -366,7 +366,7 @@ def validate_script_context(candidate, script):
             f"EDITORIAL_TOPIC_BLOCK: pauta rejeitada ({verdict['category']}): "
             f"{candidate.get('title', '')!r}; {verdict['reason']}"
         )
-    paragraphs = [sentence(p) for p in re.split(r"\\n\\s*\\n", script or "") if sentence(p)]
+    paragraphs = [sentence(p) for p in re.split(r"\n\s*\n", script or "") if sentence(p)]
     if len(paragraphs) < 4:
         raise RuntimeError("EDITORIAL_SCRIPT_BLOCK: roteiro sem desenvolvimento suficiente")
     normalized = [ascii_slug(p) for p in paragraphs]
