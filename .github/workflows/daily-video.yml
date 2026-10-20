@@ -244,6 +244,7 @@ jobs:
         run: python src/visual_frame_qa.py
 
       - name: Reconstruir 3 Shorts Premium V4
+        timeout-minutes: 30
         run: python src/shorts_v4.py
 
       - name: QA bloqueante Premium V4
