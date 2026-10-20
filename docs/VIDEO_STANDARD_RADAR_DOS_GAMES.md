@@ -155,3 +155,13 @@ Implementação em `src/repetition_policy.py`, usada pelo Diretor Premium V4 e p
 - Relatórios: `output/anti-repetition-director.json` antes de renderizar e `output/anti-repetition-qa.json` depois dos Shorts.
 
 Padrões preservados: intro oficial integral, voz Thalita PT-BR, tratamento cinematográfico, 3 Shorts independentes com layout aprovado e capas oficiais.
+
+
+## Trava editorial de pauta e contexto
+
+Antes de produzir, a pipeline deve classificar a pauta e permitir somente:
+- jogo específico com anúncio, gameplay, trailer, lançamento, atualização, DLC, conteúdo ou outra novidade verificável;
+- atualização concreta de Xbox, PlayStation (PS5/PS4), Nintendo, PC ou serviço gamer, como sistema, firmware, compatibilidade, catálogo ou recursos;
+- notícia da indústria somente quando vinculada a um jogo ou mudança de plataforma identificável.
+
+Recusar automaticamente assuntos promocionais ou gerais sem contexto gamer concreto (por exemplo, recompensas, resumos vagos de showcase ou agregados de notícias sem jogo identificado). O roteiro deve passar por validação de contexto e repetição antes de renderização/upload. Aprovação técnica de vídeo/capa não substitui aprovação editorial. Se não houver pauta elegível, a execução deve falhar sem enviar vídeos.
