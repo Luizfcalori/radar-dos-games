@@ -84,5 +84,16 @@ class EditorialTopicGateTests(unittest.TestCase):
             validate_script_context(candidate, "Parágrafo um.\n\nParágrafo dois.\n\nParágrafo três.\n\nParágrafo quatro.")
 
 
+    def test_script_gate_blocks_repeated_paragraphs(self):
+        candidate = {
+            "title": "Warhammer Survivors launches November 10, new characters revealed",
+            "summary": "Official trailer reveals new characters and launch date."
+        }
+        repeated = "Warhammer Survivors lança em novembro e apresenta novos personagens."
+        script = "\n\n".join([repeated, repeated, repeated, repeated])
+        with self.assertRaisesRegex(RuntimeError, "EDITORIAL_REPETITION_BLOCK"):
+            validate_script_context(candidate, script)
+
+
 if __name__ == "__main__":
     unittest.main()
