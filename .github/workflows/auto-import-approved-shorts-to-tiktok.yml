@@ -324,3 +324,5 @@ jobs:
 # Manual recovery trigger: refresh approved queue after a successful production run.
 
 # Manual recovery requested 2026-10-17T23:48Z: import latest approved Enshrouded production package.
+
+# Re-run trigger: import newly approved Mycopunk shorts package from the latest successful production.
