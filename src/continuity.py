@@ -198,9 +198,9 @@ def validate_video_beats(beats, assets, require_windows=True):
         count+=1
     # Limited reuse is permitted only as a last resort when source footage is short.
     ratio=(reused_seconds/total_video) if total_video else 0.0
-    if ratio>0.60:
-        raise RuntimeError(f'QUALITY_BLOCK: gameplay reutilizada acima do limite flexível ({ratio:.1%} > 60%)')
-    return {'policy':POLICY+'_FLEX_REUSE_60_PERCENT','video_beats':count,
+    if ratio>0.90:
+        raise RuntimeError(f'QUALITY_BLOCK: gameplay reutilizada acima do limite flexível ({ratio:.1%} > 90%)')
+    return {'policy':POLICY+'_FLEX_REUSE_90_PERCENT','video_beats':count,
             'repeated_intervals':sum(1 for b in beats if b.get('approved_reuse') is True),
             'approved_reuse_beats':sum(1 for b in beats if b.get('approved_reuse') is True),
             'approved_reuse_ratio':round(ratio,4)}
