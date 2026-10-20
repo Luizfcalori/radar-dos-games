@@ -237,6 +237,7 @@ jobs:
         run: python src/repetition_policy.py output/auto-media-plan.json output/clips.json
 
       - name: Renderizar Master Premium V4
+        timeout-minutes: 15
         run: python src/render_v4.py output/render.json
 
       - name: QA visual por frames do Master
