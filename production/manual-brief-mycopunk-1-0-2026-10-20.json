@@ -14,9 +14,12 @@
     "https://store.steampowered.com/app/3247750/Mycopunk/"
   ],
   "video_urls": [
+    "https://www.youtube.com/watch?v=8jK_8tbfswk",
+    "https://www.youtube.com/watch?v=uggR1kFcdck"
+  ],
+  "video_fallback_urls": [
     "https://www.youtube.com/watch?v=5ooY6UxegBY"
   ],
-  "video_fallback_urls": [],
   "short_hooks": [
     "MYCOPUNK 1.0 CHEGOU AO PC E PS5!",
     "ARMAS MALUCAS E UPGRADES EM GRADE!",
@@ -33,7 +36,8 @@
     "Não afirmar lançamento de DLC, mapa lunar X11-B, novas granadas ou outras novidades não confirmadas nas fontes oficiais.",
     "Voz Thalita Multilingual PT-BR V3; manter a pronúncia original de Mycopunk, Pigeons at Play, Devolver Digital, SAXON e Roachard. Revisar áudio dos nomes antes de liberar.",
     "Intro oficial integral, Master cinematográfico 16:9 e exatamente 3 Shorts Premium V4 9:16, cada um com capa própria.",
-    "Permitir outros trechos oficiais de gameplay do mesmo jogo quando combinarem com a fala; nunca substituir a pauta por outro jogo."
+    "Permitir outros trechos oficiais de gameplay do mesmo jogo quando combinarem com a fala; nunca substituir a pauta por outro jogo.",
+    "Fallback de mídia: o ID 5ooY6UxegBY foi bloqueado por restrição etária no runner e não deve ser a única fonte. Priorizar os trailers alternativos aprovados 8jK_8tbfswk e uggR1kFcdck; continuar apenas com vídeo oficial acessível e mídia oficial do jogo."
   ],
   "script_blocks": [
     "Mycopunk chegou ao dia mais importante da sua jornada: em 20 de outubro de 2026, o shooter deixa o acesso antecipado e estreia oficialmente na versão 1.0, com lançamento no PC e chegada ao PlayStation 5. A proposta continua sendo uma mistura caótica de tiroteio em primeira pessoa, saque, robôs desajustados e uma ameaça de alienígenas fúngicos. E o diferencial não é só enfrentar hordas: é transformar cada missão em um laboratório de armas absurdas.",
