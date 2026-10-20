@@ -1,0 +1,83 @@
+name: Radar dos Games - Watchdog a cada 30 minutos
+
+on:
+  schedule:
+    - cron: "0,30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: radar-production-watchdog
+  cancel-in-progress: false
+
+jobs:
+  inspect-latest-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Conferir produção, artefatos e tentativas
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const response = await github.rest.actions.listWorkflowRunsForRepo({
+              owner, repo, per_page: 50
+            });
+            const runs = response.data.workflow_runs;
+            const production = runs.filter(r =>
+              r.name === 'Radar dos Games - Daily Auto Master + 3 Shorts' &&
+              (r.event === 'schedule' ||
+               r.event === 'workflow_dispatch' ||
+               (r.event === 'push' &&
+                /\[run-private\]|\[run-production\]/i.test(r.head_commit?.message || ''))
+            );
+            if (!production.length) {
+              core.warning('Nenhuma execução de produção encontrada no histórico recente.');
+              await core.summary.addHeading('Radar dos Games — monitoramento')
+                .addRaw('Nenhuma produção encontrada nos últimos 50 runs.').write();
+              return;
+            }
+            production.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+            const latest = production[0];
+            const jobsResp = await github.rest.actions.listJobsForWorkflowRun({
+              owner, repo, run_id: latest.id, per_page: 100
+            });
+            const jobs = jobsResp.data.jobs;
+            const artifactsResp = latest.status === 'completed' && latest.conclusion === 'success'
+              ? await github.rest.actions.listWorkflowRunArtifacts({owner, repo, run_id: latest.id, per_page: 100})
+              : {data:{artifacts:[]}};
+            const artifacts = artifactsResp.data.artifacts || [];
+            const failedJobs = jobs.filter(j => j.conclusion === 'failure');
+            const activeProduction = production.find(r => r.status === 'in_progress' || r.status === 'queued');
+            core.info(JSON.stringify({
+              latest:{id:latest.id,status:latest.status,conclusion:latest.conclusion,attempt:latest.run_attempt,url:latest.html_url},
+              activeProduction:activeProduction?.id || null,
+              failedJobs:failedJobs.map(j=>({name:j.name,id:j.id})),
+              artifacts:artifacts.map(a=>({name:a.name,expired:a.expired,size:a.size_in_bytes}))
+            }, null, 2));
+            let retry = false;
+            if (latest.status === 'completed' && latest.conclusion === 'failure' &&
+                latest.run_attempt < 3 && !activeProduction) {
+              await github.rest.actions.reRunFailedJobs({owner, repo, run_id:latest.id});
+              retry = true;
+              core.warning('Falha detectada; solicitada nova tentativa limitada aos trabalhos que falharam.');
+            }
+            const summary = core.summary
+              .addHeading('Radar dos Games — verificação periódica')
+              .addTable([
+                [{data:'Item',header:true},{data:'Estado',header:true}],
+                ['Execução mais recente', String(latest.id)],
+                ['Status', latest.status],
+                ['Conclusão', latest.conclusion || 'em andamento'],
+                ['Tentativa', String(latest.run_attempt)],
+                ['Trabalhos com falha', failedJobs.map(j=>j.name).join(', ') || 'nenhum registrado'],
+                ['Artefatos', artifacts.map(a=>a.name).join(', ') || (latest.conclusion === 'success' ? 'nenhum encontrado' : 'aguardando conclusão')],
+                ['Nova tentativa solicitada', retry ? 'sim' : 'não']
+              ])
+              .addLink('Abrir execução', latest.html_url)
+              .addRaw('\nO monitor verifica estado e solicita repetição limitada de trabalhos falhos. Ele não altera automaticamente código desconhecido nem declara os vídeos publicados sem evidências.');
+            await summary.write();
