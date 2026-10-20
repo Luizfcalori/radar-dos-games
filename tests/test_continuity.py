@@ -27,17 +27,17 @@ class ContinuityTests(unittest.TestCase):
         self.assertEqual(fallback[0]['index'],2)
         self.assertEqual(fallback[1],0)
 
-    def test_exhaustion_blocks_reused_gameplay(self):
+    def test_exhaustion_allows_limited_reuse_as_last_resort(self):
         t=VideoTimeline(self.assets)
         for _ in range(4):
             t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        with self.assertRaisesRegex(RuntimeError,'acabou a gameplay inédita'):
-            t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        fallback=t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        self.assertTrue(fallback[3]['reused_source'])
         repeated=[{'media_index':1,'duration':5,'source_window':{'start':0,'end':5}},
                   {'media_index':1,'duration':5,'source_window':{'start':0,'end':5},
-                   'approved_reuse':True}]
-        with self.assertRaisesRegex(RuntimeError,'reutiliza gameplay'):
-            validate_video_beats(repeated,self.assets)
+                   'approved_reuse':True},
+                  {'media_index':2,'duration':5,'source_window':{'start':0,'end':5}}]
+        self.assertEqual(validate_video_beats(repeated,self.assets)['approved_reuse_beats'],1)
 
     def test_overlap_across_scenes_and_aliases_blocked(self):
         self.assets[2]['duplicate_of']=1
