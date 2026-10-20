@@ -158,6 +158,9 @@ class VideoTimeline:
                 for w in merge_reviewed_windows((scene.get('visual_windows') or {}).get(str(idx),[]),source_duration):
                     if w.get('reviewed') is not True or not w.get('evidence'): continue
                     if 'title_card' in set(w.get('semantic_categories',[])): continue
+                    # Named subjects remain mandatory even when relaxed gameplay reuse is enabled.
+                    if required_subjects and not scene.get("allow_official_subject_fallback"):
+                        if not set(required_subjects).issubset(set(w.get('subjects',[]))): continue
                     end=min(float(w['end']),source_duration-EPS) if source_duration>0 else float(w['end'])
                     lo=float(w['start'])
                     if end<=lo+EPS: continue
