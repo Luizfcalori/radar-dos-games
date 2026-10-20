@@ -729,6 +729,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-witcher-3-remastered-2026-10-19.json")
         elif forced_topic_slug == ascii_slug("QSSR PS5"):
             manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
+        elif forced_topic_slug == ascii_slug("Once Human — Isles of Abyss"):
+            manual = load_manual_brief("production/manual-brief-once-human-isles-of-abyss-2026-10-20.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -771,6 +773,9 @@ def main():
             "published_at": now.isoformat(),
             "score": 999,
             "manual_brief_path": (
+                "production/manual-brief-once-human-isles-of-abyss-2026-10-20.json"
+                if manual.get("content_id") == "manual-once-human-isles-of-abyss-launch-2026-10-20"
+                else (
                 "production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json"
                 if manual.get("content_id") == "manual-arc-raiders-pve-toggle-oct-2026"
                 else (
@@ -797,6 +802,7 @@ def main():
                         )
                         )
                     )
+                )
                 )
             ),
         }
