@@ -19,7 +19,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: "15 11 * * *"
+    - cron: "0 23 * * *"
   push:
     branches: [main]
     paths:
