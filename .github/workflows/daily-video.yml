@@ -136,6 +136,21 @@ jobs:
           PUBLISH_PRIVACY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload)) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private] TOPIC='))) && 'private' || 'unlisted' }}
         run: python src/auto_daily.py
 
+      - name: Bloquear reenvio de conteúdo já registrado
+        if: ${{ github.event_name == 'push' && (startsWith(github.event.head_commit.message, '[run-production] TOPIC=') || startsWith(github.event.head_commit.message, '[run-private] TOPIC=')) || github.event_name == 'workflow_dispatch' && (inputs.publish || inputs.private_upload) || github.event_name == 'schedule' }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          selected = json.loads(Path("output/selected.json").read_text(encoding="utf-8"))
+          content_id = selected.get("content_id")
+          history_path = Path("data/published.json")
+          history = json.loads(history_path.read_text(encoding="utf-8")) if history_path.exists() else {"videos": []}
+          if content_id and any(item.get("content_id") == content_id for item in history.get("videos", [])):
+              raise SystemExit(f"DUPLICATE_BLOCK: content_id {content_id} já consta em data/published.json; envio bloqueado para evitar duplicatas.")
+          print(f"Conteúdo ainda não registrado; envio permitido: {content_id}")
+          PY
+
       - name: Aplicar agenda nativa do YouTube
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-production] TOPIC=')) }}
         run: |
