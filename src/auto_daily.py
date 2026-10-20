@@ -309,6 +309,80 @@ def game_name(title):
     return re.split(r"\s+[|–—]\s+", title, maxsplit=1)[0][:70].strip()
 
 
+
+def classify_topic(title, summary=""):
+    """Allow game-specific news and meaningful platform updates; reject unrelated/general filler."""
+    text = clean(f"{title} {summary}").casefold()
+    slug = ascii_slug(text)
+    platform_terms = (
+        "xbox", "playstation", "ps5", "ps4", "nintendo switch", "steam deck",
+        "firmware", "console update", "system update", "atualizacao do sistema",
+        "atualizacao do xbox", "atualizacao do ps5", "atualizacao do ps4",
+        "game pass", "ps plus", "playstation plus", "backward compatibility",
+        "retrocompatibilidade", "compatibilidade"
+    )
+    platform_update_terms = (
+        "update", "updated", "updating", "firmware", "patch", "atualizacao",
+        "atualiza", "novidade", "recurso", "feature", "support", "suporte",
+        "compatibilidade", "correcao", "correcoes", "desempenho", "performance",
+        "game pass", "ps plus", "playstation plus", "catalog", "catalogo"
+    )
+    if any(term in slug for term in ("microsoft rewards", "id xbox", "ign showcase recap", "top news roundup", "gaming news roundup")):
+        # Generic brand/service headlines are only eligible when they explicitly describe a
+        # concrete gaming-platform change, not a broad recap or rewards/promotional topic.
+        if not (any(p in slug for p in ("xbox", "playstation", "ps5", "ps4")) and
+                any(t in slug for t in ("atualizacao", "update", "firmware", "recurso", "compatibilidade"))):
+            return {"allowed": False, "category": "assunto-geral", "reason": "pauta genérica/serviço sem mudança gamer concreta"}
+
+    has_platform = any(term in slug for term in platform_terms)
+    has_platform_change = any(term in slug for term in platform_update_terms)
+    if has_platform and has_platform_change:
+        return {"allowed": True, "category": "atualizacao-plataforma", "reason": "mudança concreta em plataforma/serviço gamer"}
+
+    game_signals = (
+        "gameplay", "trailer", "dlc", "expansion", "patch", "update", "launch",
+        "launches", "release date", "early access", "demo", "beta", "new characters",
+        "characters revealed", "gameplay reveal", "announced", "announces", "reveals",
+        "revealed", "new map", "season", "quest", "boss", "campaign", "jogo",
+        "jogavel", "lancamento", "personagens", "mapa", "expansao", "atualizacao"
+    )
+    has_game_signal = any(term in slug for term in game_signals)
+    blocked_broad = any(term in slug for term in (
+        "showcase recap", "all new", "industry roundup", "gaming roundup",
+        "microsoft rewards", "rewards points", "weekly gaming news", "gaming industry"
+    ))
+    if has_game_signal and not blocked_broad:
+        return {"allowed": True, "category": "jogo-ou-noticia-de-jogo", "reason": "pauta com sinal concreto de jogo"}
+    # A named game can appear without obvious keywords, but AUTO must not guess from a
+    # generic headline. Require an explicit game/topic signal or a platform change.
+    return {"allowed": False, "category": "sem-contexto", "reason": "não foi possível confirmar jogo específico ou mudança concreta de plataforma"}
+
+
+def validate_script_context(candidate, script):
+    """Block scripts that mislabel the topic or pad narration by repeating generic claims."""
+    verdict = classify_topic(candidate.get("title", ""), candidate.get("summary", ""))
+    if not verdict["allowed"]:
+        raise RuntimeError(
+            f"EDITORIAL_TOPIC_BLOCK: pauta rejeitada ({verdict['category']}): "
+            f"{candidate.get('title', '')!r}; {verdict['reason']}"
+        )
+    paragraphs = [sentence(p) for p in re.split(r"\\n\\s*\\n", script or "") if sentence(p)]
+    if len(paragraphs) < 4:
+        raise RuntimeError("EDITORIAL_SCRIPT_BLOCK: roteiro sem desenvolvimento suficiente")
+    normalized = [ascii_slug(p) for p in paragraphs]
+    for i, left in enumerate(normalized):
+        for j in range(i + 1, len(normalized)):
+            right = normalized[j]
+            if not left or not right:
+                continue
+            a, b = set(left.split()), set(right.split())
+            overlap = jaccard(a, b)
+            if overlap >= 0.72:
+                raise RuntimeError(
+                    f"EDITORIAL_REPETITION_BLOCK: parágrafos {i+1} e {j+1} repetem a mesma ideia (similaridade {overlap:.2f})"
+                )
+    return verdict
+
 def topic_tokens(title):
     name = game_name(title)
     toks = [x for x in ascii_slug(name).split() if len(x) >= 3 and x not in GENERIC_TOPIC_WORDS]
@@ -837,6 +911,11 @@ def main():
             if forced.upper() != "AUTO" and forced.lower() not in c.get("title", "").lower():
                 continue
 
+            topic_verdict = classify_topic(c.get("title", ""), c.get("summary", ""))
+            if not topic_verdict["allowed"]:
+                errors.append({"title": c.get("title"), "error": f"EDITORIAL_TOPIC_BLOCK: {topic_verdict['reason']}"})
+                continue
+
             repeat = repetition_check(c, history, now)
             if repeat["blocked"] and forced.upper() == "AUTO":
                 errors.append({"title": c.get("title"), "error": "; ".join(repeat["reasons"])})
@@ -913,6 +992,7 @@ def main():
         parser = winner["parser"]
         selected_media = winner["media"]
         script = make_script(selected, parser)
+    validate_script_context(selected, script)
     media_sources = winner.get("media_sources") or {asset_url: selected["url"] for _, asset_url in selected_media}
     # Apenas o esboço; a narração final só existe após a decupagem da mídia.
     (OUT / "auto-script-outline.txt").write_text(script + "\n", encoding="utf-8")
