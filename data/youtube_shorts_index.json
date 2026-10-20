@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-20T12:26:39.338651+00:00",
-  "total_discovered": 107,
-  "ready_for_tiktok": 103,
+  "updated_at": "2026-10-20T17:24:45.594886+00:00",
+  "total_discovered": 113,
+  "ready_for_tiktok": 109,
   "waiting_media": [
     {
       "youtube_id": "FWfua78AQis",
@@ -27,6 +27,42 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "M5-zPE_WzeY",
+      "youtube_url": "https://www.youtube.com/shorts/M5-zPE_WzeY",
+      "title": "NAVIOS, ILHAS E TESOUROS NO FUNDO DO MAR!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "wYOKgd0bczc",
+      "youtube_url": "https://www.youtube.com/shorts/wYOKgd0bczc",
+      "title": "LULA GIGANTE, TUBARÕES E BATALHAS NAVAIS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "AJbpAQqNM0g",
+      "youtube_url": "https://www.youtube.com/shorts/AJbpAQqNM0g",
+      "title": "ISLES OF ABYSS CHEGA COM SERVIDORES NA AMÉRICA DO SUL!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "J-utgCqephU",
+      "youtube_url": "https://www.youtube.com/shorts/J-utgCqephU",
+      "title": "PS5 COMUM GANHA IA NOS GRÁFICOS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "XncRj0XVzCo",
+      "youtube_url": "https://www.youtube.com/shorts/XncRj0XVzCo",
+      "title": "QSSR É IGUAL AO PSSR DO PS5 PRO?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "_6PBbytouAU",
+      "youtube_url": "https://www.youtube.com/shorts/_6PBbytouAU",
+      "title": "QUAIS JOGOS JÁ USAM QSSR NO PS5?",
+      "status": "approved"
+    },
     {
       "youtube_id": "-_Dnc_1tIFI",
       "youtube_url": "https://www.youtube.com/shorts/-_Dnc_1tIFI",

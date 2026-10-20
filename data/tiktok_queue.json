@@ -1,44 +1,8 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-20T16:22:02.938538+00:00",
+  "updated_at": "2026-10-20T17:24:45.594886+00:00",
   "items": [
-    {
-      "id": "mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-approved-39450744246-short-1",
-      "title": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!",
-      "post_text": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Mycopunk10LançamentoNoPCEPS5 #PlayStation #Gaming #Games #TikTokGames",
-      "status": "approved",
-      "source_run_id": 39450744246,
-      "short_number": 1,
-      "approved_at": "2026-10-20T16:21:59.993466+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-1.jpg"
-    },
-    {
-      "id": "mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-approved-39450744246-short-2",
-      "title": "ARMAS MALUCAS E UPGRADES EM GRADE!",
-      "post_text": "ARMAS MALUCAS E UPGRADES EM GRADE!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Mycopunk10LançamentoNoPCEPS5 #PlayStation #Gaming #Games #TikTokGames",
-      "status": "approved",
-      "source_run_id": 39450744246,
-      "short_number": 2,
-      "approved_at": "2026-10-20T16:21:59.993466+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-2.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-2.jpg"
-    },
-    {
-      "id": "mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-approved-39450744246-short-3",
-      "title": "ATÉ QUATRO JOGADORES CONTRA ALIENS FÚNGICOS!",
-      "post_text": "ATÉ QUATRO JOGADORES CONTRA ALIENS FÚNGICOS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Mycopunk10LançamentoNoPCEPS5 #PlayStation #Gaming #Games #TikTokGames",
-      "status": "approved",
-      "source_run_id": 39450744246,
-      "short_number": 3,
-      "approved_at": "2026-10-20T16:21:59.993466+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-3.jpg"
-    },
     {
       "id": "once-human-isles-of-abyss-2026-short-1",
       "title": "NAVIOS, ILHAS E TESOUROS NO FUNDO DO MAR!",
@@ -48,11 +12,12 @@
       "status": "approved",
       "youtube_id": "M5-zPE_WzeY",
       "youtube_url": "https://www.youtube.com/shorts/M5-zPE_WzeY",
-      "source": "once_human_isles_of_abyss_2026_10_20_approved",
+      "source": "youtube_channel",
       "source_run_id": 39432487667,
       "short_number": 1,
       "approved_at": "2026-10-20T14:24:54.598584+00:00",
-      "synced_at": "2026-10-20T14:24:54.598584+00:00"
+      "synced_at": "2026-10-20T14:24:54.598584+00:00",
+      "youtube_published_at": null
     },
     {
       "id": "once-human-isles-of-abyss-2026-short-2",
@@ -63,11 +28,12 @@
       "status": "approved",
       "youtube_id": "wYOKgd0bczc",
       "youtube_url": "https://www.youtube.com/shorts/wYOKgd0bczc",
-      "source": "once_human_isles_of_abyss_2026_10_20_approved",
+      "source": "youtube_channel",
       "source_run_id": 39432487667,
       "short_number": 2,
       "approved_at": "2026-10-20T14:24:54.598584+00:00",
-      "synced_at": "2026-10-20T14:24:54.598584+00:00"
+      "synced_at": "2026-10-20T14:24:54.598584+00:00",
+      "youtube_published_at": null
     },
     {
       "id": "once-human-isles-of-abyss-2026-short-3",
@@ -78,11 +44,60 @@
       "status": "approved",
       "youtube_id": "AJbpAQqNM0g",
       "youtube_url": "https://www.youtube.com/shorts/AJbpAQqNM0g",
-      "source": "once_human_isles_of_abyss_2026_10_20_approved",
+      "source": "youtube_channel",
       "source_run_id": 39432487667,
       "short_number": 3,
       "approved_at": "2026-10-20T14:24:54.598584+00:00",
-      "synced_at": "2026-10-20T14:24:54.598584+00:00"
+      "synced_at": "2026-10-20T14:24:54.598584+00:00",
+      "youtube_published_at": null
+    },
+    {
+      "id": "ps5-comum-ganha-ia-nos-graficos-shorts-approved-39259401764-short-1",
+      "title": "PS5 COMUM GANHA IA NOS GRÁFICOS!",
+      "post_text": "PS5 COMUM GANHA IA NOS GRÁFICOS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #QSSRPS5ComumComoANovaIAMelhoraOs #PlayStation #Gaming #Games #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39259401764,
+      "short_number": 1,
+      "approved_at": "2026-10-19T13:57:36.825380+00:00",
+      "source": "youtube_channel",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-1.jpg",
+      "youtube_id": "J-utgCqephU",
+      "youtube_url": "https://www.youtube.com/shorts/J-utgCqephU",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-20T17:24:45.594886+00:00"
+    },
+    {
+      "id": "ps5-comum-ganha-ia-nos-graficos-shorts-approved-39259401764-short-2",
+      "title": "QSSR É IGUAL AO PSSR DO PS5 PRO?",
+      "post_text": "QSSR É IGUAL AO PSSR DO PS5 PRO?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #QSSRPS5ComumComoANovaIAMelhoraOs #PlayStation #Gaming #Games #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39259401764,
+      "short_number": 2,
+      "approved_at": "2026-10-19T13:57:36.825380+00:00",
+      "source": "youtube_channel",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-2.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-2.jpg",
+      "youtube_id": "XncRj0XVzCo",
+      "youtube_url": "https://www.youtube.com/shorts/XncRj0XVzCo",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-20T17:24:45.594886+00:00"
+    },
+    {
+      "id": "ps5-comum-ganha-ia-nos-graficos-shorts-approved-39259401764-short-3",
+      "title": "QUAIS JOGOS JÁ USAM QSSR NO PS5?",
+      "post_text": "QUAIS JOGOS JÁ USAM QSSR NO PS5?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #QSSRPS5ComumComoANovaIAMelhoraOs #PlayStation #Gaming #Games #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39259401764,
+      "short_number": 3,
+      "approved_at": "2026-10-19T13:57:36.825380+00:00",
+      "source": "youtube_channel",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-3.jpg",
+      "youtube_id": "_6PBbytouAU",
+      "youtube_url": "https://www.youtube.com/shorts/_6PBbytouAU",
+      "youtube_published_at": null,
+      "synced_at": "2026-10-20T17:24:45.594886+00:00"
     },
     {
       "id": "yt-_Dnc_1tIFI",
@@ -1736,6 +1751,42 @@
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     },
     {
+      "id": "mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-approved-39450744246-short-1",
+      "title": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!",
+      "post_text": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Mycopunk10LançamentoNoPCEPS5 #PlayStation #Gaming #Games #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39450744246,
+      "short_number": 1,
+      "approved_at": "2026-10-20T16:21:59.993466+00:00",
+      "source": "approved_production_artifact_auto",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-1.jpg"
+    },
+    {
+      "id": "mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-approved-39450744246-short-2",
+      "title": "ARMAS MALUCAS E UPGRADES EM GRADE!",
+      "post_text": "ARMAS MALUCAS E UPGRADES EM GRADE!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Mycopunk10LançamentoNoPCEPS5 #PlayStation #Gaming #Games #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39450744246,
+      "short_number": 2,
+      "approved_at": "2026-10-20T16:21:59.993466+00:00",
+      "source": "approved_production_artifact_auto",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-2.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-2.jpg"
+    },
+    {
+      "id": "mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-approved-39450744246-short-3",
+      "title": "ATÉ QUATRO JOGADORES CONTRA ALIENS FÚNGICOS!",
+      "post_text": "ATÉ QUATRO JOGADORES CONTRA ALIENS FÚNGICOS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #Mycopunk10LançamentoNoPCEPS5 #PlayStation #Gaming #Games #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39450744246,
+      "short_number": 3,
+      "approved_at": "2026-10-20T16:21:59.993466+00:00",
+      "source": "approved_production_artifact_auto",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-39450744246-short-3.jpg"
+    },
+    {
       "id": "ps5-comum-ganha-ia-nos-graficos-shorts-approved-39259427174-short-1",
       "title": "PS5 COMUM GANHA IA NOS GRÁFICOS!",
       "post_text": "PS5 COMUM GANHA IA NOS GRÁFICOS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #QSSRPS5ComumComoANovaIAMelhoraOs #PlayStation #Gaming #Games #TikTokGames",
@@ -1770,42 +1821,6 @@
       "source": "approved_production_artifact_auto",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259427174-short-3.mp4",
       "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259427174-short-3.jpg"
-    },
-    {
-      "id": "ps5-comum-ganha-ia-nos-graficos-shorts-approved-39259401764-short-1",
-      "title": "PS5 COMUM GANHA IA NOS GRÁFICOS!",
-      "post_text": "PS5 COMUM GANHA IA NOS GRÁFICOS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #QSSRPS5ComumComoANovaIAMelhoraOs #PlayStation #Gaming #Games #TikTokGames",
-      "status": "approved",
-      "source_run_id": 39259401764,
-      "short_number": 1,
-      "approved_at": "2026-10-19T13:57:36.825380+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-1.jpg"
-    },
-    {
-      "id": "ps5-comum-ganha-ia-nos-graficos-shorts-approved-39259401764-short-2",
-      "title": "QSSR É IGUAL AO PSSR DO PS5 PRO?",
-      "post_text": "QSSR É IGUAL AO PSSR DO PS5 PRO?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #QSSRPS5ComumComoANovaIAMelhoraOs #PlayStation #Gaming #Games #TikTokGames",
-      "status": "approved",
-      "source_run_id": 39259401764,
-      "short_number": 2,
-      "approved_at": "2026-10-19T13:57:36.825380+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-2.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-2.jpg"
-    },
-    {
-      "id": "ps5-comum-ganha-ia-nos-graficos-shorts-approved-39259401764-short-3",
-      "title": "QUAIS JOGOS JÁ USAM QSSR NO PS5?",
-      "post_text": "QUAIS JOGOS JÁ USAM QSSR NO PS5?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RadarDosGames #QSSRPS5ComumComoANovaIAMelhoraOs #PlayStation #Gaming #Games #TikTokGames",
-      "status": "approved",
-      "source_run_id": 39259401764,
-      "short_number": 3,
-      "approved_at": "2026-10-19T13:57:36.825380+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/ps5-comum-ganha-ia-nos-graficos-shorts-39259401764-short-3.jpg"
     },
     {
       "id": "fortnite-yeat-2026-10-15-short-2",
