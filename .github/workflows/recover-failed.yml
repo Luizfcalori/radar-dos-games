@@ -1,0 +1,55 @@
+name: Radar dos Games - Recovery de falhas
+
+on:
+  workflow_run:
+    workflows: ["Radar dos Games - Daily Auto Master + 3 Shorts"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: radar-recovery-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  retry-failed-jobs:
+    if: >-
+      ${{ github.event.workflow_run.conclusion == 'failure' &&
+          github.event.workflow_run.run_attempt < 3 &&
+          (contains(github.event.workflow_run.head_commit.message, '[run-private]') ||
+           contains(github.event.workflow_run.head_commit.message, '[run-production]') ||
+           github.event.workflow_run.event == 'schedule' ||
+           github.event.workflow_run.event == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reexecutar apenas os trabalhos que falharam
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            core.warning(`Run ${run.id} failed on attempt ${run.run_attempt}; retrying failed jobs automatically.`);
+            await github.rest.actions.reRunFailedJobs({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run.id
+            });
+            core.info(`Requested retry for failed jobs in run ${run.id}.`);
+
+  report-final-failure:
+    if: >-
+      ${{ github.event.workflow_run.conclusion == 'failure' &&
+          github.event.workflow_run.run_attempt >= 3 }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Registrar bloqueio após tentativas automáticas
+        run: |
+          {
+            echo "## Radar dos Games: falha persistente"
+            echo ""
+            echo "A execução ${{ github.event.workflow_run.html_url }} falhou após ${{ github.event.workflow_run.run_attempt }} tentativa(s)."
+            echo "As novas tentativas automáticas foram limitadas para evitar loops infinitos e uploads duplicados."
+            echo "Consulte os logs e artefatos da execução para identificar a etapa bloqueada."
+          } >> "$GITHUB_STEP_SUMMARY"
