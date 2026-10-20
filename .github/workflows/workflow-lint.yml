@@ -28,24 +28,42 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import subprocess
           import sys
+          import tempfile
           import yaml
 
           files = sorted(Path(".github/workflows").glob("*.yml"))
           files += sorted(Path(".github/workflows").glob("*.yaml"))
           errors = []
+          scripts_checked = 0
           for path in files:
               try:
                   parsed = yaml.safe_load(path.read_text(encoding="utf-8"))
                   if not isinstance(parsed, dict):
                       raise ValueError("top-level YAML document must be a mapping")
-                  if "jobs" not in parsed:
+                  if not isinstance(parsed.get("jobs"), dict):
                       raise ValueError("missing top-level jobs mapping")
                   print(f"YAML OK: {path}")
+                  for job in parsed["jobs"].values():
+                      for step in job.get("steps", []) or []:
+                          script = (step.get("with") or {}).get("script")
+                          if isinstance(script, str):
+                              with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=False) as tmp:
+                                  tmp.write(script)
+                                  script_path = tmp.name
+                              try:
+                                  subprocess.run(["node", "--check", script_path], check=True, capture_output=True, text=True)
+                              except subprocess.CalledProcessError as exc:
+                                  raise ValueError(f"invalid JavaScript in actions/github-script block: {exc.stderr or exc.stdout}")
+                              finally:
+                                  Path(script_path).unlink(missing_ok=True)
+                              scripts_checked += 1
+                              print(f"JavaScript OK: {path}")
               except Exception as exc:
                   errors.append(f"{path}: {type(exc).__name__}: {exc}")
           if errors:
               print("\n".join(errors), file=sys.stderr)
               raise SystemExit(1)
-          print(f"Validated {len(files)} workflow YAML files.")
+          print(f"Validated {len(files)} workflow YAML files and {scripts_checked} inline JavaScript scripts.")
           PY
