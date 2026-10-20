@@ -267,13 +267,13 @@ def replace_short_repeats(scene,assets):
     timeline=VideoTimeline(assets)
     used_stills=set()
 
-    # Seed the timeline with all existing video beats using VideoTimeline's canonical
-    # identity (content_identity / duplicate_of / file identity), not a parallel key.
-    # Existing collisions are recorded rather than hidden; replacements must avoid them.
+    # Seed only video beats that are not already flagged as reused. Reused
+    # master footage must be replaced in a Short, where we can select fresh
+    # reviewed intervals from the same approved source.
     for beat in beats:
         idx=int(beat["media_index"])
         asset=assets[idx]
-        if asset.get("type")!="video":
+        if asset.get("type")!="video" or beat.get("approved_reuse") is True:
             continue
         w=beat.get("source_window")
         if w:
@@ -282,9 +282,28 @@ def replace_short_repeats(scene,assets):
 
     for beat in beats:
         asset=assets[int(beat["media_index"])]
+        duration=float(beat["duration"])
+        if asset.get("type")=="video" and beat.get("approved_reuse") is True:
+            idx=int(asset["index"])
+            total=float(asset.get("duration") or 0)
+            choices=[]
+            for w in merge_reviewed_windows(windows.get(str(idx),[]),total):
+                lo=float(w["start"])
+                hi=min(float(w["end"]),total-0.001 if total>0 else float(w["end"]))
+                if hi-lo < duration+0.1:
+                    continue
+                for free_lo,free_hi in timeline.free(idx,lo,hi):
+                    if free_hi-free_lo >= duration+0.1:
+                        choices.append((idx,free_lo,free_hi,w))
+            if not choices:
+                raise RuntimeError("QUALITY_BLOCK: Short sem intervalo inédito para substituir gameplay reutilizada")
+            idx,lo,hi,w=max(choices,key=lambda x:(x[2]-x[1],-x[0],-x[1]))
+            beat["source_window"]={"start":lo,"end":hi}
+            beat["approved_reuse"]=False
+            timeline.reserve(idx,lo,duration,allow_reuse=False)
+            continue
         if asset.get("type")!="image":
             continue
-        duration=float(beat["duration"])
         key=asset_identity(asset)
         if key not in used_stills and duration<=MAX_STATIC_BEAT_SECONDS+0.001 and subject_ok(beat.get("text",""),asset):
             used_stills.add(key)
