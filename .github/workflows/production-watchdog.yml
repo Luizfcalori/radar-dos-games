@@ -62,7 +62,7 @@ jobs:
             let retry = false;
             if (latest.status === 'completed' && latest.conclusion === 'failure' &&
                 latest.run_attempt < 3 && !activeProduction) {
-              await github.rest.actions.reRunFailedJobs({owner, repo, run_id:latest.id});
+              await github.request('POST /repos/{owner}/{repo}/actions/runs/{run_id}/rerun-failed-jobs', { owner, repo, run_id: latest.id });
               retry = true;
               core.warning('Falha detectada; solicitada nova tentativa limitada aos trabalhos que falharam.');
             }
