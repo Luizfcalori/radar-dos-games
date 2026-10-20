@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from src.auto_daily import make_script
+from src.auto_daily import classify_topic, make_script, validate_script_context
 from src.narration_qa import main as narration_qa
 
 
@@ -45,6 +45,43 @@ class SourceGroundedNarrationTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(RuntimeError, "narração contém linguagem meta/privada"):
                 narration_qa(str(path))
+
+
+class EditorialTopicGateTests(unittest.TestCase):
+    def test_accepts_specific_game_news(self):
+        verdict = classify_topic(
+            "Warhammer Survivors launches November 10, new characters revealed",
+            "Official trailer reveals two new characters and launch date."
+        )
+        self.assertTrue(verdict["allowed"])
+        self.assertEqual(verdict["category"], "jogo-ou-noticia-de-jogo")
+
+    def test_accepts_concrete_console_update(self):
+        verdict = classify_topic(
+            "Xbox update adds new accessibility features",
+            "The system update adds new accessibility features and fixes."
+        )
+        self.assertTrue(verdict["allowed"])
+        self.assertEqual(verdict["category"], "atualizacao-plataforma")
+
+    def test_rejects_unrelated_rewards_topic(self):
+        verdict = classify_topic(
+            "Microsoft Rewards: points and offers this week",
+            "A roundup of points and offers."
+        )
+        self.assertFalse(verdict["allowed"])
+
+    def test_rejects_generic_showcase_recap_without_specific_game(self):
+        verdict = classify_topic(
+            "ID Xbox / IGN Showcase recap all new",
+            "A general roundup of announcements without a specific game."
+        )
+        self.assertFalse(verdict["allowed"])
+
+    def test_script_gate_blocks_topic_without_context(self):
+        candidate = {"title": "Microsoft Rewards: points and offers this week", "summary": "A roundup of points."}
+        with self.assertRaisesRegex(RuntimeError, "EDITORIAL_TOPIC_BLOCK"):
+            validate_script_context(candidate, "Parágrafo um.\\n\\nParágrafo dois.\\n\\nParágrafo três.\\n\\nParágrafo quatro.")
 
 
 if __name__ == "__main__":
