@@ -1,0 +1,51 @@
+name: Validate GitHub Actions workflow YAML
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-workflow-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install YAML parser
+        run: python -m pip install --disable-pip-version-check pyyaml
+      - name: Validate every workflow file
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+          import yaml
+
+          files = sorted(Path(".github/workflows").glob("*.yml"))
+          files += sorted(Path(".github/workflows").glob("*.yaml"))
+          errors = []
+          for path in files:
+              try:
+                  parsed = yaml.safe_load(path.read_text(encoding="utf-8"))
+                  if not isinstance(parsed, dict):
+                      raise ValueError("top-level YAML document must be a mapping")
+                  if "jobs" not in parsed:
+                      raise ValueError("missing top-level jobs mapping")
+                  print(f"YAML OK: {path}")
+              except Exception as exc:
+                  errors.append(f"{path}: {type(exc).__name__}: {exc}")
+          if errors:
+              print("\n".join(errors), file=sys.stderr)
+              raise SystemExit(1)
+          print(f"Validated {len(files)} workflow YAML files.")
+          PY
