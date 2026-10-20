@@ -518,4 +518,4 @@ jobs:
             output/*youtube*.json
           retention-days: 7
 
-# Trigger a controlled production run after watchdog recovery fix.
+# Trigger a controlled AUTO production run after watchdog recovery fix.
