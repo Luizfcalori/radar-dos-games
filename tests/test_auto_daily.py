@@ -81,7 +81,7 @@ class EditorialTopicGateTests(unittest.TestCase):
     def test_script_gate_blocks_topic_without_context(self):
         candidate = {"title": "Microsoft Rewards: points and offers this week", "summary": "A roundup of points."}
         with self.assertRaisesRegex(RuntimeError, "EDITORIAL_TOPIC_BLOCK"):
-            validate_script_context(candidate, "Parágrafo um.\\n\\nParágrafo dois.\\n\\nParágrafo três.\\n\\nParágrafo quatro.")
+            validate_script_context(candidate, "Parágrafo um.\n\nParágrafo dois.\n\nParágrafo três.\n\nParágrafo quatro.")
 
 
 if __name__ == "__main__":
