@@ -347,3 +347,4 @@ if __name__=="__main__":
     render(sys.argv[1])
 
 # Timeline concat timestamp normalization fix verified by CI
+# CI note: keep timeline normalization covered by regression validation
