@@ -517,3 +517,5 @@ jobs:
             output/shorts/*_cover-policy.json
             output/*youtube*.json
           retention-days: 7
+
+# Trigger a controlled production run after watchdog recovery fix.
