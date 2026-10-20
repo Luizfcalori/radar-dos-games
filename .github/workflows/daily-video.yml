@@ -80,7 +80,7 @@ concurrency:
   # Topic-specific private runs, including approved media-fix reruns, must carry TOPIC=<game> in the commit title.
   # ARC Raiders run retriggered after the approved script and excluded-condition fixes.
   group: ${{ github.event_name == 'push' && 'radar-dos-games-push' || 'radar-dos-games-daily' }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   validate-code:
