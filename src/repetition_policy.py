@@ -94,6 +94,20 @@ def _enshrouded_curated_still(asset):
     )
 
 
+def _fight_night_curated_still(asset):
+    """Permit only sourced EA/Fight Night official stills as a Shorts continuity fallback."""
+    role=str(asset.get("role") or "")
+    url=str(asset.get("url") or "").casefold()
+    label=str(asset.get("source_label") or "").casefold()
+    return (
+        asset.get("type") == "image"
+        and role.startswith(("official_subject_reference_", "official_context_"))
+        and "fight night" in (url + " " + label)
+        and ("ea.com" in url or "eaassets-a.akamaihd.net" in url)
+        and bool(asset.get("source"))
+    )
+
+
 def subject_ok(phrase,asset):
     """Require subject matching, except narrowly scoped same-game official still bridges."""
     if match_score(phrase,asset)>0:
@@ -106,7 +120,7 @@ def subject_ok(phrase,asset):
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not (_mw4_curated_still(asset) or _enshrouded_curated_still(asset)):
+    if not (_mw4_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -116,7 +130,7 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _enshrouded_curated_still(asset):
+    if _mw4_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -127,7 +141,7 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if (_mw4_curated_still(asset) or _enshrouded_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    return 14.0 if (_mw4_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
@@ -203,7 +217,7 @@ def validate_master(scenes,assets):
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
                     beat.get("visual_evidence") == "official_image_subject_label"
-                    and _mw4_curated_still(asset)
+                    and (_mw4_curated_still(asset) or _fight_night_curated_still(asset))
                 )
                 if not tracker.can_use(
                     asset, beat.get("text",""), scene_no, cursor, d,
@@ -302,7 +316,7 @@ def replace_short_repeats(scene,assets):
                 still_choices = [
                     a for a in assets.values()
                     if a.get("type") == "image"
-                    and int(a["index"]) not in used_stills
+                    and asset_identity(a) not in used_stills
                     and duration <= MAX_STATIC_BEAT_SECONDS + 0.001
                     and subject_ok(beat.get("text", ""), a)
                 ]
