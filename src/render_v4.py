@@ -53,6 +53,15 @@ def has_audio(path):
     except Exception:
         return False
 
+def has_video(path):
+    try:
+        out=subprocess.check_output([
+            "ffprobe","-v","error","-select_streams","v:0","-show_entries","stream=codec_type","-of","csv=p=0",str(path)
+        ],text=True).strip()
+        return bool(out)
+    except Exception:
+        return False
+
 def asset_map(items):
     out={}
     for pos,item in enumerate(items,1):
@@ -154,6 +163,8 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
         "-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-video_track_timescale","90000",str(dest)
     ])
 
+    if not has_video(dest):
+        raise RuntimeError(f"QUALITY_BLOCK: beat renderizado sem stream de vídeo: {dest}")
     if abs(probe_duration(dest)-duration)>0.08:
         raise RuntimeError("QUALITY_BLOCK: duração renderizada não corresponde ao corte")
 
