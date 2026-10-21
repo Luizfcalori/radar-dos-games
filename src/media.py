@@ -496,24 +496,12 @@ def main(path):
             elif 'youtube.com' in low or 'youtu.be' in low or social_post_url(u):info=ytdlp(u,dest)
             else:info=download(u,dest,source if str(source).startswith('http') else None)
             if not info:dest.unlink(missing_ok=True);continue
-            # URL variants can point to the exact same downloaded video. Deduplicate by
-            # file content before counting assets or unique footage duration.
-            if wanted=='video':
-                try:
-                    digest=sha256_file(dest)
-                except OSError:
-                    digest=''
-                if digest and digest in seen_content_hashes:
-                    print('duplicate video content rejected',u,'sha256',digest,flush=True)
-                    dest.unlink(missing_ok=True)
-                    continue
             if wanted=='video':
                 min_d=float(item.get('min_duration',8))
                 if float(info.get('duration',0))<min_d:
                     print('duration reject',info.get('duration'),u);dest.unlink(missing_ok=True);continue
-                # Different URLs can resolve to byte-identical copies. Reject the
-                # duplicate after download/probe, before it inflates the usable
-                # footage pool and causes the director to loop the same gameplay.
+                # URL variants can resolve to byte-identical files. Hash once,
+                # after technical validation and before counting the asset/duration.
                 digest=sha256_file(dest)
                 if digest in seen_content:
                     print('content duplicate rejected',u,'sha256',digest,flush=True)
@@ -521,7 +509,6 @@ def main(path):
                     continue
                 seen_content.add(digest)
             seen.add(u)
-            if wanted=='video' and digest:seen_content_hashes.add(digest)
             if movie_key:seen_movie_sources.add(movie_key)
             assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u,'source':source,
                            'relevance_evidence':evidence,'source_label':label,'approved':True,'duration':float(info.get('duration',0)),
