@@ -145,8 +145,9 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         # and per-image limits; unrelated sources are never admitted.
         if contextual_images:
             picks.extend(sorted(contextual_images,key=rank))
-        elif images and visual_inventory is None and not matched_stills:
-            picks.append(matches[0])
+        # Never use an unrelated image merely because the semantic inventory is
+        # unavailable. A still must match the narration or qualify as a verified
+        # official, topic-bound contextual image above.
         if not picks:
             raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem vídeo reconhecido nem imagem oficial identificável")
         # A semantic label mismatch is not a hard block when official gameplay
