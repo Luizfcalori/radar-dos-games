@@ -1,0 +1,97 @@
+name: Fix existing Saros YouTube titles
+on:
+  push:
+    paths:
+      - ".github/workflows/fix-saros-youtube-titles.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fix-titles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Update titles on existing private videos only
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          EXPECTED_CHANNEL_ID: "UCSZJZE-E10SVdx42wrDeWhw"
+        run: |
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          client_id = os.environ["YT_CLIENT_ID"]
+          client_secret = os.environ["YT_CLIENT_SECRET"]
+          refresh_token = os.environ["YT_REFRESH_TOKEN"]
+          expected_channel = os.environ["EXPECTED_CHANNEL_ID"]
+
+          def request(url, data=None, headers=None, method=None):
+              req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  return json.loads(resp.read().decode("utf-8"))
+
+          token_data = urllib.parse.urlencode({
+              "client_id": client_id,
+              "client_secret": client_secret,
+              "refresh_token": refresh_token,
+              "grant_type": "refresh_token",
+          }).encode()
+          token = request("https://oauth2.googleapis.com/token", token_data).get("access_token")
+          if not token:
+              raise SystemExit("OAuth refresh did not return an access token.")
+          headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
+          channel = request("https://www.googleapis.com/youtube/v3/channels?part=id&mine=true", headers=headers)
+          ids = [x["id"] for x in channel.get("items", [])]
+          if expected_channel not in ids:
+              raise SystemExit(f"STOP: authenticated channel mismatch. Expected {expected_channel}; got {ids}")
+
+          videos = [
+              ("E6COlRVY4qs", "Saros: atualização Zenith traz novas formas de jogar"),
+              ("DQt5cEWRjSo", "Saros: novidades da atualização Zenith #Shorts"),
+              ("rKEz_mjf-GY", "Saros: o que muda na atualização Zenith #Shorts"),
+              ("MV2L8GwhkLw", "Saros: novas formas de jogar explicadas #Shorts"),
+          ]
+          for video_id, new_title in videos:
+              data = request(
+                  "https://www.googleapis.com/youtube/v3/videos?part=snippet,status&id=" + video_id,
+                  headers=headers,
+              )
+              items = data.get("items", [])
+              if len(items) != 1:
+                  raise SystemExit(f"STOP: could not uniquely retrieve video {video_id}")
+              item = items[0]
+              if item["snippet"].get("channelId") != expected_channel:
+                  raise SystemExit(f"STOP: {video_id} belongs to another channel")
+              if item.get("status", {}).get("privacyStatus") != "private":
+                  raise SystemExit(f"STOP: {video_id} is not private; no changes made to this item")
+              snippet = item["snippet"]
+              body = {
+                  "id": video_id,
+                  "snippet": {
+                      "title": new_title,
+                      "description": snippet.get("description", ""),
+                      "categoryId": snippet.get("categoryId", "20"),
+                  },
+                  "status": {"privacyStatus": "private"},
+              }
+              if snippet.get("tags") is not None:
+                  body["snippet"]["tags"] = snippet["tags"]
+              encoded = json.dumps(body, ensure_ascii=False).encode("utf-8")
+              updated = request(
+                  "https://www.googleapis.com/youtube/v3/videos?part=snippet,status",
+                  data=encoded,
+                  headers={**headers, "Content-Type": "application/json"},
+                  method="PUT",
+              )
+              print(json.dumps({
+                  "videoId": updated.get("id"),
+                  "channelId": updated.get("snippet", {}).get("channelId"),
+                  "title": updated.get("snippet", {}).get("title"),
+                  "privacyStatus": updated.get("status", {}).get("privacyStatus"),
+              }, ensure_ascii=False))
+          print("SUCCESS: all four existing videos updated; no re-upload performed.")
+          PY
