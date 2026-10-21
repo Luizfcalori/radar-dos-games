@@ -807,6 +807,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-witcher-3-remastered-2026-10-19.json")
     elif forced_topic_slug == ascii_slug("QSSR PS5"):
         manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
+    elif forced_topic_slug == ascii_slug("Fight Night"):
+        manual = load_manual_brief("production/manual-brief-fight-night-return-2026-10-21.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
@@ -840,6 +842,8 @@ def main():
         elif forced_topic_slug == ascii_slug("Once Human — Isles of Abyss"):
             # Use the refreshed brief with two distinct, publisher-approved Isles of Abyss trailers.
             manual = load_manual_brief("production/manual-brief-once-human-isles-of-abyss-2026-10-20.json")
+        elif forced_topic_slug == ascii_slug("Fight Night"):
+            manual = load_manual_brief("production/manual-brief-fight-night-return-2026-10-21.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -882,6 +886,9 @@ def main():
             "published_at": now.isoformat(),
             "score": 999,
             "manual_brief_path": (
+                "production/manual-brief-fight-night-return-2026-10-21.json"
+                if manual.get("content_id") == "manual-fight-night-return-announcement-2026-10-21"
+                else (
                 "production/manual-brief-once-human-isles-of-abyss-2026-10-20.json"
                 if manual.get("content_id") == "manual-once-human-isles-of-abyss-launch-2026-10-20"
                 else (
@@ -911,6 +918,7 @@ def main():
                         )
                         )
                     )
+                )
                 )
                 )
             ),
