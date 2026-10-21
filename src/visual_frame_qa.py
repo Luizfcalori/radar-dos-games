@@ -69,11 +69,37 @@ def main():
     checkpoints = [min(safe_end, max(0.25, d * (i + 0.5) / count)) for i in range(count)]
     rows=[];bad=[]
     for i,t in enumerate(checkpoints,1):
-        p=OUT/f"frame_{i:02d}.jpg"; sample(master,t,p); m=metrics(p)
+        p=OUT/f"frame_{i:02d}.jpg"
+        sample(master,t,p)
+        m=metrics(p)
+        def acceptable(v):
+            return v["dark_ratio"] <= .90 and v["mean"] >= 12 and v["std"] >= 7
+        chosen_t=t
+        # Retry nearby content if a checkpoint lands on a brief concat cut.
+        # A persistent dark/blank region still fails the visual gate.
+        if not acceptable(m):
+            candidates=[]
+            for delta in (-1.5,1.5,-3.0,3.0,-5.0,5.0):
+                candidate_t=min(safe_end,max(.25,t+delta))
+                if abs(candidate_t-t)<0.1:
+                    continue
+                candidate=OUT/f"frame_{i:02d}_retry.jpg"
+                sample(master,candidate_t,candidate)
+                cm=metrics(candidate)
+                passed=acceptable(cm)
+                candidates.append((passed,abs(candidate_t-t),candidate_t,candidate,cm))
+            good=[c for c in candidates if c[0]]
+            if good:
+                pick=min(good,key=lambda c:c[1])
+                chosen_t, candidate, m = pick[2], pick[3], pick[4]
+                candidate.replace(p)
+            else:
+                for c in candidates:
+                    c[3].unlink(missing_ok=True)
         status="APPROVED"
-        if m["dark_ratio"]>.90 or m["mean"]<12 or m["std"]<7:
+        if not acceptable(m):
             status="REVIEW"; bad.append(i)
-        rows.append({"index":i,"time":round(t,3),"path":str(p),**m,"status":status})
+        rows.append({"index":i,"time":round(chosen_t,3),"path":str(p),**m,"status":status})
     # Um frame de transição muito escuro é tolerado; padrão repetido não.
     status="APPROVED" if len(bad)<=1 else "BLOCKED"
     result={
