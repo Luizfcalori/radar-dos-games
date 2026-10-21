@@ -165,3 +165,6 @@ Antes de produzir, a pipeline deve classificar a pauta e permitir somente:
 - notícia da indústria somente quando vinculada a um jogo ou mudança de plataforma identificável.
 
 Recusar automaticamente assuntos promocionais ou gerais sem contexto gamer concreto (por exemplo, recompensas, resumos vagos de showcase ou agregados de notícias sem jogo identificado). O roteiro deve passar por validação de contexto e repetição antes de renderização/upload. Aprovação técnica de vídeo/capa não substitui aprovação editorial. Se não houver pauta elegível, a execução deve falhar sem enviar vídeos.
+
+
+Execução de revisão editorial: usar o modo privado (`[run-private] TOPIC=AUTO`) para gerar Master + 3 Shorts e revisar o tema/roteiro sem agendamento público. A publicação só deve ser autorizada após conferência humana do contexto, da narração e dos quatro arquivos.
