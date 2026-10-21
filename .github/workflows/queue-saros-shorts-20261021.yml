@@ -59,10 +59,35 @@ jobs:
           from pathlib import Path
           from datetime import datetime, timezone
           p=Path("data/tiktok_queue.json")
-          q=json.loads(p.read_text(encoding="utf-8"))
-          items=q.setdefault("items",[])
+          original=p.read_text(encoding="utf-8")
+          decoder=json.JSONDecoder()
+          documents=[]
+          pos=0
+          while pos < len(original):
+              start=original.find("{", pos)
+              if start < 0:
+                  break
+              try:
+                  doc, end=decoder.raw_decode(original, start)
+              except json.JSONDecodeError:
+                  pos=start+1
+                  continue
+              if isinstance(doc, dict):
+                  documents.append(doc)
+              pos=end
+          roots=[d for d in documents if isinstance(d.get("items"), list)]
+          if not roots:
+              raise SystemExit("Could not recover a valid queue object; refusing to overwrite history.")
+          q=roots[0]
+          items=q["items"]
+          seen={str(x.get("id")) for x in items if isinstance(x,dict) and x.get("id")}
+          for extra in roots[1:]:
+              for item in extra.get("items",[]):
+                  if isinstance(item,dict) and item.get("id") and str(item["id"]) not in seen:
+                      items.append(item)
+                      seen.add(str(item["id"]))
           rid="39591112132"
-          if any(str(x.get("source_run_id"))==rid for x in items):
+          if any(str(x.get("source_run_id"))==rid for x in items if isinstance(x,dict)):
               raise SystemExit("This Saros package is already in the queue; refusing duplicates.")
           defaults=[
             "Saros: modificadores de proteção explicados",
