@@ -1,8 +1,56 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-21T13:13:11.078021+00:00",
+  "updated_at": "2026-10-21T18:15:13.522782+00:00",
   "items": [
+    {
+      "id": "39645208774-short-1",
+      "title": "FIGHT NIGHT ESTÁ VOLTANDO DEPOIS DE 15 ANOS",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39645208774-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39645208774-short-1.jpg",
+      "post_text": "FIGHT NIGHT ESTÁ VOLTANDO DEPOIS DE 15 ANOS\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n#RadarDosGames #FightNight #Games #Gaming #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39645208774,
+      "short_number": 1,
+      "approved_at": "2026-10-21T18:15:13.522660+00:00",
+      "source": "approved_production_artifact_auto",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "0Lo8uAbMlww",
+      "youtube_url": "https://www.youtube.com/shorts/0Lo8uAbMlww",
+      "youtube_published_at": null
+    },
+    {
+      "id": "39645208774-short-2",
+      "title": "A EA CONFIRMOU O RETORNO — MAS NÃO MOSTROU GAMEPLAY",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39645208774-short-2.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39645208774-short-2.jpg",
+      "post_text": "A EA CONFIRMOU O RETORNO — MAS NÃO MOSTROU GAMEPLAY\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n#RadarDosGames #FightNight #Games #Gaming #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39645208774,
+      "short_number": 2,
+      "approved_at": "2026-10-21T18:15:13.522732+00:00",
+      "source": "approved_production_artifact_auto",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "xjhhdF6CA58",
+      "youtube_url": "https://www.youtube.com/shorts/xjhhdF6CA58",
+      "youtube_published_at": null
+    },
+    {
+      "id": "39645208774-short-3",
+      "title": "FIGHT NIGHT CONSEGUE SUPERAR UNDISPUTED?",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39645208774-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39645208774-short-3.jpg",
+      "post_text": "FIGHT NIGHT CONSEGUE SUPERAR UNDISPUTED?\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n#RadarDosGames #FightNight #Games #Gaming #TikTokGames",
+      "status": "approved",
+      "source_run_id": 39645208774,
+      "short_number": 3,
+      "approved_at": "2026-10-21T18:15:13.522779+00:00",
+      "source": "approved_production_artifact_auto",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "eSi38LJTCA4",
+      "youtube_url": "https://www.youtube.com/shorts/eSi38LJTCA4",
+      "youtube_published_at": null
+    },
     {
       "id": "mycopunk-1-0-chegou-ao-pc-e-ps5-shorts-approved-39450744246-short-1",
       "title": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!",
@@ -2250,4 +2298,4 @@
       "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/warhammer-survivors-o-que-foi-confirmado-shorts-37648412782-short-3.jpg"
     }
   ]
-}
+}\n
