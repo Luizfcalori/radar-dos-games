@@ -55,63 +55,49 @@ jobs:
       - name: Add exactly three Saros Shorts to TikTok Helper queue
         run: |
           python - <<'PY'
-          import json, re
+          import json, re, os
           from pathlib import Path
           from datetime import datetime, timezone
           p=Path("data/tiktok_queue.json")
-          original=p.read_text(encoding="utf-8")
-          decoder=json.JSONDecoder()
-          documents=[]
-          pos=0
-          while pos < len(original):
-              start=original.find("{", pos)
-              if start < 0:
-                  break
-              try:
-                  doc, end=decoder.raw_decode(original, start)
-              except json.JSONDecodeError:
-                  pos=start+1
-                  continue
-              if isinstance(doc, dict):
-                  documents.append(doc)
-              pos=end
-          roots=[d for d in documents if isinstance(d.get("items"), list)]
-          if not roots:
-              raise SystemExit("Could not recover a valid queue object; refusing to overwrite history.")
-          q=roots[0]
+          original=p.read_text(encoding="utf-8").rstrip()
+          # Repair the historical literal backslash-n suffix without discarding queue data.
+          while original.endswith(r"\\n"):
+              original=original[:-2].rstrip()
+          q=json.loads(original)
+          if not isinstance(q,dict) or not isinstance(q.get("items"),list):
+              raise SystemExit("Queue JSON has an unexpected structure; refusing to overwrite history.")
           items=q["items"]
-          seen={str(x.get("id")) for x in items if isinstance(x,dict) and x.get("id")}
-          for extra in roots[1:]:
-              for item in extra.get("items",[]):
-                  if isinstance(item,dict) and item.get("id") and str(item["id"]) not in seen:
-                      items.append(item)
-                      seen.add(str(item["id"]))
           rid="39591112132"
-          if any(str(x.get("source_run_id"))==rid for x in items if isinstance(x,dict)):
-              raise SystemExit("This Saros package is already in the queue; refusing duplicates.")
           defaults=[
             "Saros: modificadores de proteção explicados",
             "Saros: New Game+ com Eclipse Layers",
             "Saros: Overlord Rush reúne oito chefes",
           ]
+          existing={str(x.get("id")) for x in items if isinstance(x,dict)}
           for n in range(1,4):
+            item_id=f"{rid}-short-{n}"
+            if item_id in existing:
+              print(f"{item_id} already queued; skipping duplicate.")
+              continue
             raw=json.loads(Path(f"output/saros-short-{n}.json").read_text(encoding="utf-8"))
             title=re.sub(r"(?i)#shorts?\\b","",str(raw.get("title") or defaults[n-1])).strip(" -|")
-            base=f"https://github.com/{__import__('os').environ.get('GITHUB_REPOSITORY','Luizfcalori/radar-dos-games')}/releases/download/tiktok-approved-assets/39591112132-saros-short-{n}"
+            base=f"https://github.com/{os.environ.get('GITHUB_REPOSITORY','Luizfcalori/radar-dos-games')}/releases/download/tiktok-approved-assets/39591112132-saros-short-{n}"
             items.append({
-              "id":f"{rid}-short-{n}",
+              "id":item_id,
               "title":title,
+              "post_text":f"{title}\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n#RadarDosGames #Saros #PlayStation5 #Gaming #Games",
+              "status":"approved",
+              "source_run_id":int(rid),
+              "short_number":n,
+              "approved_at":datetime.now(timezone.utc).isoformat(),
+              "source":"Saros Zenith rebuilt artifact",
               "media_url":base+".mp4",
               "thumbnail_url":base+".jpg",
               "platform":"tiktok_helper_manual_posting",
-              "status":"approved",
-              "source_run_id":int(rid),
-              "source":"Saros Zenith rebuilt artifact",
-              "queued_at":datetime.now(timezone.utc).isoformat(),
               "notes":"Pronto para postagem manual pelo TikTok Helper; não publicado automaticamente no TikTok."
             })
           q["updated_at"]=datetime.now(timezone.utc).isoformat()
-          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
           PY
       - name: Commit queue entries
         run: |
