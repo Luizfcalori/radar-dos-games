@@ -56,5 +56,6 @@
   "minimum_video_assets": 1,
   "minimum_unique_video_seconds": 15,
   "minimum_image_assets": 1,
-  "short_media_fallback_policy": "Se não houver intervalo inédito de gameplay aprovado para um beat de Short, pode-se usar uma imagem estática oficial, aprovada e específica de Fight Night, apenas se passar a validação de assunto e o limite de duração estática. Nunca reutilizar a mesma imagem dentro do Short; não usar imagens genéricas de boxe."
+  "short_media_fallback_policy": "Se não houver intervalo inédito de gameplay aprovado para um beat de Short, permitir imagem estática distinta com subject match; como fallback específico deste tema, aceitar somente imagens aprovadas cujo role seja official_subject_reference_ ou official_context_, cuja URL seja da EA (ea.com ou eaassets-a.akamaihd.net), cujo URL ou source_label identifique Fight Night e que tenham source preenchido. Respeitar limite de 3,5 segundos por beat e nunca reutilizar a mesma imagem dentro do Short. Não usar imagens genéricas de boxe.",
+  "short_media_fallback_requires_official_ea_host": true
 }
