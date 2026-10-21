@@ -209,9 +209,9 @@ def official_saros_art():
     page = "https://blog.playstation.com/2026/10/19/the-saros-zenith-update-out-today-brings-more-ways-to-play-for-newcomers-and-veterans-alike/"
     request = urllib.request.Request(page, headers={"User-Agent": "Mozilla/5.0 RadarDosGamesCoverQA/1.0"})
     html = urllib.request.urlopen(request, timeout=30).read().decode("utf-8", "ignore")
-    match = re.search(r"<meta[^>]+property=['\\"]og:image['\\"][^>]+content=['\\"]([^'\\"]+)", html, re.I)
+    match = re.search(r"""<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)""", html, re.I)
     if not match:
-        match = re.search(r"<meta[^>]+content=['\\"]([^'\\"]+)['\\"][^>]+property=['\\"]og:image['\\"]", html, re.I)
+        match = re.search(r"""<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']""", html, re.I)
     if not match:
         raise RuntimeError("QUALITY_BLOCK: imagem oficial og:image de Saros não encontrada.")
     image_url = match.group(1).replace("&amp;", "&")
