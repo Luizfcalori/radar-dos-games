@@ -4,9 +4,11 @@ import json
 import math
 import os
 import subprocess
+import re
+import urllib.request
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter, ImageOps
 
 OUT = Path("output")
 SHORTS = OUT / "shorts"
@@ -199,42 +201,136 @@ def make_short(master, config, index):
          "-movflags", "+faststart", output])
     return output
 
-def make_master_thumbnail(legacy_thumb, destination):
-    image = Image.open(legacy_thumb).convert("RGBA").resize((1280, 720))
-    layer = Image.new("RGBA", image.size, (0, 0, 0, 0))
-    draw = ImageDraw.Draw(layer)
-    draw.rounded_rectangle((85, 500, 1195, 635), radius=12, fill=(3, 10, 20, 238),
-                           outline=(57, 255, 99, 255), width=5)
-    image = Image.alpha_composite(image, layer)
-    draw = ImageDraw.Draw(image)
-    line1 = "ATUALIZAÇÃO ZENITH"
-    line2 = "ACESSIBILIDADE  •  NEW GAME+  •  OVERLORD RUSH"
-    f1, f2 = font(43), font(25)
-    box1 = draw.textbbox((0, 0), line1, font=f1, stroke_width=1)
-    box2 = draw.textbbox((0, 0), line2, font=f2, stroke_width=1)
-    draw.text(((1280 - (box1[2] - box1[0])) / 2, 514), line1, font=f1,
-              fill=(255, 255, 255, 255), stroke_width=1, stroke_fill=(0, 0, 0, 255))
-    draw.text(((1280 - (box2[2] - box2[0])) / 2, 574), line2, font=f2,
-              fill=(75, 245, 255, 255), stroke_width=1, stroke_fill=(0, 0, 0, 255))
-    image.convert("RGB").save(destination, quality=95)
+def official_saros_art():
+    """Fetch official Saros key art from the official PlayStation Blog, never a video frame."""
+    destination = OUT / "saros-official-keyart.jpg"
+    if destination.exists() and destination.stat().st_size > 30_000:
+        return destination
+    page = "https://blog.playstation.com/2026/10/19/the-saros-zenith-update-out-today-brings-more-ways-to-play-for-newcomers-and-veterans-alike/"
+    request = urllib.request.Request(page, headers={"User-Agent": "Mozilla/5.0 RadarDosGamesCoverQA/1.0"})
+    html = urllib.request.urlopen(request, timeout=30).read().decode("utf-8", "ignore")
+    match = re.search(r'<meta[^>]+property=["\\']og:image["\\'][^>]+content=["\\']([^"\\']+)', html, re.I)
+    if not match:
+        match = re.search(r'<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+property=["\\']og:image["\\']', html, re.I)
+    if not match:
+        raise RuntimeError("QUALITY_BLOCK: imagem oficial og:image de Saros não encontrada.")
+    image_url = match.group(1).replace("&amp;", "&")
+    req = urllib.request.Request(image_url, headers={"User-Agent": "Mozilla/5.0"})
+    data = urllib.request.urlopen(req, timeout=30).read()
+    if len(data) < 30_000:
+        raise RuntimeError("QUALITY_BLOCK: arte oficial de Saros baixada está vazia/inválida.")
+    destination.write_bytes(data)
+    with Image.open(destination) as im:
+        im.verify()
+    print("Official Saros key art:", image_url)
+    return destination
 
-def make_short_cover(video, title, destination):
-    frame = OUT / "shorts" / (Path(destination).stem + "_frame.jpg")
-    run(["ffmpeg", "-y", "-ss", "5", "-i", video, "-frames:v", "1", "-q:v", "2", frame])
-    image = Image.open(frame).convert("RGB").resize((1080, 1920))
-    overlay = Image.new("RGBA", image.size, (0, 0, 0, 0))
-    draw = ImageDraw.Draw(overlay)
-    draw.rectangle((0, 0, 1080, 150), fill=(0, 0, 0, 180))
-    draw.rectangle((0, 142, 1080, 153), fill=(57, 255, 99, 255))
-    draw.rectangle((0, 1370, 1080, 1920), fill=(2, 7, 15, 220))
-    image = Image.alpha_composite(image.convert("RGBA"), overlay)
-    draw = ImageDraw.Draw(image)
-    draw.text((55, 48), "RADAR DOS GAMES", font=font(43), fill="white",
-              stroke_width=2, stroke_fill="black")
-    wrapped = title.replace(" - ", "\n")
-    draw.multiline_text((55, 1450), wrapped, font=font(52), fill="white",
-                        spacing=14, stroke_width=2, stroke_fill="black")
-    image.convert("RGB").save(destination, quality=94)
+
+def make_cover_base(source, size, center=(0.5, 0.45)):
+    with Image.open(source) as original:
+        im = ImageOps.fit(original.convert("RGB"), size, method=Image.Resampling.LANCZOS, centering=center)
+    im = ImageEnhance.Contrast(im).enhance(1.18)
+    im = ImageEnhance.Color(im).enhance(1.12)
+    im = ImageEnhance.Sharpness(im).enhance(1.08)
+    return im
+
+
+def brand_badge(draw, width, y, scale=1.0):
+    # Same approved Radar visual language: compact brand badge, neon-green outline,
+    # cinematic black plate; do not replace it with an unrelated template.
+    f = font(int(30 * scale))
+    label = "RADAR DOS GAMES"
+    box = draw.textbbox((0, 0), label, font=f, stroke_width=2)
+    tw = box[2] - box[0]
+    pad = int(20 * scale)
+    h = int(54 * scale)
+    x = (width - tw - 2 * pad) // 2
+    draw.rounded_rectangle((x, y, x + tw + 2 * pad, y + h), radius=int(10*scale),
+                           fill=(3, 7, 12, 235), outline=(57, 255, 20, 255), width=max(3, int(4*scale)))
+    draw.text((x + pad, y + int(8*scale)), label, font=f, fill=(248,249,251,255),
+              stroke_width=2, stroke_fill=(0,0,0,255))
+
+
+def make_master_thumbnail(official_art, destination):
+    W, H = 1280, 720
+    image = make_cover_base(official_art, (W, H), center=(0.58, 0.45)).convert("RGBA")
+    # Cinematic shadow zone at left keeps the official artwork visible and titles readable.
+    shade = Image.new("RGBA", (W,H), (0,0,0,0))
+    sd = ImageDraw.Draw(shade, "RGBA")
+    for x in range(0, 780, 12):
+        alpha = max(0, 205 - int(x / 780 * 205))
+        sd.rectangle((x,0,x+14,H), fill=(0,0,0,alpha))
+    sd.rectangle((0, 565, W, H), fill=(0,0,0,95))
+    image = Image.alpha_composite(image, shade)
+    overlay = Image.new("RGBA", image.size, (0,0,0,0))
+    draw = ImageDraw.Draw(overlay, "RGBA")
+    brand_badge(draw, W, 24, 0.86)
+    draw.polygon([(36,145),(68,145),(48,390),(18,390)], fill=(57,255,20,245))
+    title = "SAROS: ATUALIZAÇÃO ZENITH"
+    subtitle = "NEW GAME+  •  ACESSIBILIDADE  •  OVERLORD RUSH"
+    f1, f2 = font(56), font(24)
+    draw.text((54, 330), title, font=f1, fill=(248,249,251,255), stroke_width=5, stroke_fill=(0,0,0,255))
+    draw.text((56, 405), "MAIS FORMAS DE JOGAR", font=font(39), fill=(57,255,20,255),
+              stroke_width=4, stroke_fill=(0,0,0,255))
+    draw.rounded_rectangle((48, 590, 900, 646), radius=9, fill=(3,7,12,225),
+                           outline=(57,255,20,230), width=3)
+    draw.text((68, 606), subtitle, font=f2, fill=(248,249,251,255), stroke_width=2, stroke_fill=(0,0,0,255))
+    Image.alpha_composite(image, overlay).convert("RGB").save(destination, quality=95, subsampling=0)
+    with Image.open(destination) as check:
+        if check.size != (1280,720):
+            raise RuntimeError("QUALITY_BLOCK: Master cover has wrong dimensions.")
+    if destination.stat().st_size < 30_000:
+        raise RuntimeError("QUALITY_BLOCK: Master cover is too small.")
+
+
+def make_short_cover(official_art, title, destination, index):
+    W, H = 1080, 1920
+    image = make_cover_base(official_art, (W,H), center=(0.54,0.42)).convert("RGBA")
+    # Preserve the premium cinematic look while keeping the official key art as the hero.
+    shade = Image.new("RGBA", (W,H), (0,0,0,0))
+    sd = ImageDraw.Draw(shade, "RGBA")
+    sd.rectangle((0,0,W,165), fill=(2,6,11,210))
+    for y in range(1040,H,14):
+        alpha = min(225, 65 + int((y-1040)/(H-1040)*160))
+        sd.rectangle((0,y,W,y+16), fill=(0,0,0,alpha))
+    image = Image.alpha_composite(image, shade)
+    overlay = Image.new("RGBA", image.size, (0,0,0,0))
+    draw = ImageDraw.Draw(overlay, "RGBA")
+    brand_badge(draw, W, 36, 1.0)
+    draw.polygon([(42,1170),(70,1170),(48,1715),(20,1715)], fill=(57,255,20,255))
+    # Unique editorial headline for each Short; generous safe margins prevent clipping.
+    wrapped = title.upper().replace(" - ", "\\n")
+    f = font(66 if len(title) < 27 else 57)
+    draw.rounded_rectangle((58, 1250, 1020, 1585), radius=12, fill=(2,6,11,220),
+                           outline=(57,255,20,245), width=4)
+    draw.multiline_text((92, 1292), wrapped, font=f, fill=(248,249,251,255),
+                        spacing=18, stroke_width=3, stroke_fill=(0,0,0,255))
+    draw.line((88, 1745, 992, 1745), fill=(57,255,20,255), width=8)
+    draw.text((88, 1780), "SAROS  •  RADAR DOS GAMES", font=font(29),
+              fill=(248,249,251,255), stroke_width=2, stroke_fill=(0,0,0,255))
+    Image.alpha_composite(image, overlay).convert("RGB").save(destination, quality=95, subsampling=0)
+    with Image.open(destination) as check:
+        if check.size != (1080,1920):
+            raise RuntimeError(f"QUALITY_BLOCK: Short {index} cover has wrong dimensions.")
+    if destination.stat().st_size < 30_000:
+        raise RuntimeError(f"QUALITY_BLOCK: Short {index} cover is too small.")
+
+
+def apply_cover_opening(video, cover, duration=1.4):
+    """Put the exact approved cover at t=0 of each Short and preserve original audio/duration."""
+    video, cover = Path(video), Path(cover)
+    temp = video.with_name(video.stem + ".cover-opening.tmp.mp4")
+    before = probe_duration(video)
+    run(["ffmpeg", "-y", "-v", "error", "-i", str(video),
+         "-loop", "1", "-framerate", "30", "-i", str(cover),
+         "-filter_complex", f"[1:v]scale=1080:1920,setsar=1[cover];[0:v][cover]overlay=0:0:enable='lt(t,{duration:.3f})':eof_action=pass,format=yuv420p[v]",
+         "-map", "[v]", "-map", "0:a?", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+         "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart", str(temp)])
+    after = probe_duration(temp)
+    if not temp.exists() or temp.stat().st_size < 1000 or abs(after-before) > 0.12:
+        temp.unlink(missing_ok=True)
+        raise RuntimeError(f"QUALITY_BLOCK: opening cover failed for {video.name}: {before:.3f}->{after:.3f}")
+    temp.replace(video)
 
 def write_metadata():
     source_url = "https://blog.playstation.com/2026/10/19/the-saros-zenith-update-out-today-brings-more-ways-to-play-for-newcomers-and-veterans-alike/"
@@ -267,9 +363,13 @@ def main():
     master, master_duration = make_master(source, legacy_timings, new_timings, OUT / "new-voice.mp3")
     for i, config in enumerate(SHORT_CONFIG, 1):
         make_short(master, config, i)
+    # Covers always use official Saros key art, never the legacy thumbnail or random video frames.
+    official_art = official_saros_art()
+    make_master_thumbnail(official_art, OUT / "thumbnail.jpg")
+    for i, config in enumerate(SHORT_CONFIG, 1):
         cover = SHORTS / f"short_{i}_cover.jpg"
-        make_short_cover(SHORTS / f"short_{i}.mp4", config["title"], cover)
-    make_master_thumbnail(legacy_thumb, OUT / "thumbnail.jpg")
+        make_short_cover(official_art, config["title"], cover, i)
+        apply_cover_opening(SHORTS / f"short_{i}.mp4", cover, duration=1.4)
     write_metadata()
 
     # Basic deliverable QA: one master, exactly three shorts, correct formats/durations.
