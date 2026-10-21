@@ -426,7 +426,35 @@ def replace_short_repeats(scene,assets):
     clips_path=Path("output/clips.json")
     if clips_path.is_file():
         try:
-            clips_doc=json.loads(clips_path.read_text(encoding="utf-8"))
+            raw=clips_path.read_text(encoding="utf-8").lstrip("\\ufeff")
+            # Recover safely if a prior run appended a second JSON object: parse
+            # complete top-level documents and merge their asset inventories.
+            decoder=json.JSONDecoder()
+            docs=[]
+            cursor=0
+            while cursor < len(raw):
+                while cursor < len(raw) and raw[cursor].isspace():
+                    cursor += 1
+                if cursor >= len(raw):
+                    break
+                doc, end=decoder.raw_decode(raw, cursor)
+                if not isinstance(doc, dict):
+                    raise ValueError("clips.json contém documento JSON que não é objeto")
+                docs.append(doc)
+                cursor=end
+            if not docs:
+                raise ValueError("clips.json está vazio")
+            clips_doc=docs[0]
+            merged_assets=[]
+            seen_assets=set()
+            for doc in docs:
+                for asset in doc.get("assets") or []:
+                    key=(str(asset.get("index")),str(asset.get("path") or asset.get("url") or ""))
+                    if key not in seen_assets:
+                        seen_assets.add(key)
+                        merged_assets.append(asset)
+            if merged_assets:
+                clips_doc["assets"]=merged_assets
             existing={int(a.get("index",0)) for a in clips_doc.get("assets") or []}
             generated=[a for idx,a in assets.items() if int(idx) not in existing
                        and str(a.get("role") or "").startswith("official_context_fight_night_frame_")]
