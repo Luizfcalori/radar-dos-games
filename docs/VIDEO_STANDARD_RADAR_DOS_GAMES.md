@@ -168,3 +168,17 @@ Recusar automaticamente assuntos promocionais ou gerais sem contexto gamer concr
 
 
 Execução de revisão editorial: usar o modo privado (`[run-private] TOPIC=AUTO`) para gerar Master + 3 Shorts e revisar o tema/roteiro sem agendamento público. A publicação só deve ser autorizada após conferência humana do contexto, da narração e dos quatro arquivos.
+
+## Regra permanente — lições da produção Fight Night (21/10/2026)
+
+Aplicar a toda pauta futura, não apenas a Fight Night:
+
+- **Identidade do assunto é obrigatória; tipo de mídia é flexível.** Nunca trocar o jogo, franquia ou assunto para preencher a timeline.
+- Procurar primeiro gameplay/vídeo oficial e contextual. Se o acervo aprovado não tiver intervalos inéditos suficientes, usar imagem estática oficial do mesmo assunto como fallback editorial — em vez de repetir gameplay ou inserir imagens genéricas.
+- Imagens oficiais podem ter nomes opacos no CDN. Validar pelo host oficial aprovado, origem preenchida e contexto/role aprovado; não rejeitar automaticamente uma arte pertinente só porque o nome do arquivo não identifica o jogo.
+- A flexibilização vale somente para a **categoria visual inferida**; não flexibiliza a identidade do assunto, fontes autorizadas, evidência de revisão, nem requisitos explícitos de sujeitos nomeados.
+- Cada cena deve continuar coerente com a fala. Não apresentar material de arquivo como gameplay novo, nem transformar rumores em fatos.
+- Antes de bloquear por falta de gameplay, tentar a sequência: consolidar janelas revisadas adjacentes sem atravessar lacunas/cartelas; consumir fragmentos inéditos restantes; recorrer a imagens oficiais/contextuais aprovadas; só então bloquear se não houver cobertura segura.
+- Não reutilizar o mesmo intervalo de vídeo nem a mesma imagem dentro de um Short quando houver alternativa aprovada. Não afrouxar controles antirrepetição para “passar” o QA.
+- Falhas devem ser corrigidas na etapa responsável e reexecutadas de forma idempotente, preservando artefatos/etapas já aprovados e evitando uploads duplicados.
+- Só declarar produção concluída depois de validar o Master e **exatamente 3 Shorts**, os quatro arquivos/capas, QA audiovisual e estado real dos envios. “Na fila do TikTok Helper” não significa “publicado no TikTok”.
