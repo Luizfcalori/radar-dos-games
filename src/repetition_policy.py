@@ -296,7 +296,24 @@ def replace_short_repeats(scene,assets):
                     if free_hi-free_lo >= duration+0.1:
                         choices.append((idx,free_lo,free_hi,w))
             if not choices:
-                raise RuntimeError("QUALITY_BLOCK: Short sem intervalo inédito para substituir gameplay reutilizada")
+                # If no unseen approved gameplay interval remains, use a distinct
+                # approved, topic-matched still for this short beat when it fits
+                # the static-shot limit. Never reuse a still within the same Short.
+                still_choices = [
+                    a for a in assets.values()
+                    if a.get("type") == "image"
+                    and int(a["index"]) not in used_stills
+                    and duration <= MAX_STATIC_BEAT_SECONDS + 0.001
+                    and subject_ok(beat.get("text", ""), a)
+                ]
+                if not still_choices:
+                    raise RuntimeError("QUALITY_BLOCK: Short sem intervalo inédito ou imagem aprovada compatível para substituir gameplay reutilizada")
+                still = still_choices[0]
+                beat["media_index"] = int(still["index"])
+                beat.pop("source_window", None)
+                beat["approved_reuse"] = False
+                used_stills.add(asset_identity(still))
+                continue
             idx,lo,hi,w=max(choices,key=lambda x:(x[2]-x[1],-x[0],-x[1]))
             beat["source_window"]={"start":lo,"end":hi}
             beat["approved_reuse"]=False
