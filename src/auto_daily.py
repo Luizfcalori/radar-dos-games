@@ -300,6 +300,8 @@ def game_name(title):
         r"\s+is\s+available\b", r"\s+available\s+now\b", r"\s+launches\b", r"\s+launching\b",
         r"\s+gets\b", r"\s+receives\b", r"\s+reveals\b", r"\s+revealed\b", r"\s+announces\b",
         r"\s+watch\b", r"\s+shows\b", r"\s+showcases\b", r"\s+release\s+date\b",
+        r"\s+update\b", r"\s+out\s+today\b", r"\s+brings\b", r"\s+adds\b",
+        r"\s+introduces\b", r"\s+reveals\b", r"\s+for\s+newcomers\b",
     ]
     for pat in cuts:
         m = re.search(pat, title, re.I)
@@ -478,6 +480,10 @@ def pt_headline(candidate, parser):
         headline = f"{game}: lançamento ganha novos detalhes"
     else:
         headline = f"{game}: veja o que foi confirmado oficialmente"
+    # Editorial fallback blocks raw English feed headlines from reaching YouTube.
+    headline = re.sub(r"\s+", " ", headline).strip(" -:|")
+    if not headline or re.search(r"\b(newcomers|veterans|brings|today|update out|for new)\b", headline, re.I):
+        headline = f"{game}: novidade oficial explicada em português"
     return headline[:96].rstrip(" -:|")
 
 
@@ -1182,8 +1188,13 @@ def main():
 
     privacy = os.getenv("PUBLISH_PRIVACY", "unlisted").strip() or "unlisted"
     master_meta, shorts_meta = build_metadata(selected, parser, privacy)
+    short_title_suffixes = ["o que foi confirmado", "o que muda no jogo", "o que vem agora"]
+    game_for_titles = game_name(selected.get("title", "")) or "Novidade gamer"
     for i, meta in enumerate(shorts_meta):
-        meta["title"] = short_hooks[i] + " #Shorts"
+        short_title = f"{game_for_titles}: {short_title_suffixes[i]}"
+        if len(short_title) > 92:
+            short_title = f"{game_for_titles[:52].rstrip()} — {short_title_suffixes[i]}"
+        meta["title"] = short_title + " #Shorts"
     if manual:
         headline = sentence(manual.get("headline") or master_meta["title"])[:100]
         master_meta["title"] = headline
