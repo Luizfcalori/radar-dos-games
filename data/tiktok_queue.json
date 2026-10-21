@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-21T18:15:13.522782+00:00",
+  "updated_at": "2026-10-21T18:35:07.945154+00:00",
   "items": [
     {
       "id": "39645208774-short-1",
@@ -2296,6 +2296,42 @@
       "source": "approved_production_artifact_auto",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/warhammer-survivors-o-que-foi-confirmado-shorts-37648412782-short-3.mp4",
       "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/warhammer-survivors-o-que-foi-confirmado-shorts-37648412782-short-3.jpg"
+    },
+    {
+      "id": "39591112132-short-1",
+      "title": "Saros: modificadores de proteção explicados #Shorts",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39591112132-saros-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39591112132-saros-short-1.jpg",
+      "platform": "tiktok_helper_manual_posting",
+      "status": "approved",
+      "source_run_id": 39591112132,
+      "source": "Saros Zenith rebuilt artifact",
+      "queued_at": "2026-10-21T18:35:07.945051+00:00",
+      "notes": "Pronto para postagem manual pelo TikTok Helper; não publicado automaticamente no TikTok."
+    },
+    {
+      "id": "39591112132-short-2",
+      "title": "Saros: New Game+ com Eclipse Layers #Shorts",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39591112132-saros-short-2.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39591112132-saros-short-2.jpg",
+      "platform": "tiktok_helper_manual_posting",
+      "status": "approved",
+      "source_run_id": 39591112132,
+      "source": "Saros Zenith rebuilt artifact",
+      "queued_at": "2026-10-21T18:35:07.945114+00:00",
+      "notes": "Pronto para postagem manual pelo TikTok Helper; não publicado automaticamente no TikTok."
+    },
+    {
+      "id": "39591112132-short-3",
+      "title": "Saros: Overlord Rush reúne oito chefes #Shorts",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39591112132-saros-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/39591112132-saros-short-3.jpg",
+      "platform": "tiktok_helper_manual_posting",
+      "status": "approved",
+      "source_run_id": 39591112132,
+      "source": "Saros Zenith rebuilt artifact",
+      "queued_at": "2026-10-21T18:35:07.945152+00:00",
+      "notes": "Pronto para postagem manual pelo TikTok Helper; não publicado automaticamente no TikTok."
     }
   ]
-}\n
+}
