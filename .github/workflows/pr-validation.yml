@@ -1,6 +1,8 @@
 name: Radar dos Games - Pull Request Validation
 
 on:
+  push:
+    branches: ["fix/dedupe-media-content-2026-10-21"]
   pull_request:
     branches: [main]
     paths:
