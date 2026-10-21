@@ -9,6 +9,7 @@ import hashlib
 import json
 import re
 import sys
+import subprocess
 import unicodedata
 from collections import defaultdict
 from pathlib import Path
@@ -95,19 +96,51 @@ def _enshrouded_curated_still(asset):
 
 
 def _fight_night_curated_still(asset):
-    """Permit only sourced EA/Fight Night official stills as a Shorts continuity fallback."""
+    """Allow official EA stills or distinct frames extracted from approved Fight Night archival footage."""
     role=str(asset.get("role") or "")
     url=str(asset.get("url") or "").casefold()
     label=str(asset.get("source_label") or "").casefold()
-    return (
-        asset.get("type") == "image"
-        and role.startswith(("official_subject_reference_", "official_context_"))
-        # The brief already curates these assets for the selected Fight Night topic;
-        # EA CDN URLs sometimes use opaque filenames without the game name.
+    official_ea_still = (
+        role.startswith(("official_subject_reference_", "official_context_"))
         and ("ea.com" in url or "eaassets-a.akamaihd.net" in url)
         and bool(asset.get("source"))
         and bool(label or url)
     )
+    extracted_archival_frame = (
+        role.startswith("official_context_fight_night_frame_")
+        and "fight night champion archival gameplay frame" in label
+        and bool(asset.get("source"))
+        and ("youtube.com" in url or "youtu.be" in url)
+    )
+    return asset.get("type") == "image" and (official_ea_still or extracted_archival_frame)
+
+
+def _extract_fight_night_frame(video, timestamp, index):
+    """Create a unique still from already-approved archival Fight Night footage for fallback beats."""
+    src=Path(str(video.get("path") or ""))
+    if not src.is_file():
+        return None
+    dest=src.parent / f"fight_night_short_frame_{index}_{int(timestamp*1000)}.jpg"
+    try:
+        subprocess.run([
+            "ffmpeg","-y","-v","error","-ss",f"{max(0.0,float(timestamp)):.3f}",
+            "-i",str(src),"-frames:v","1","-vf","scale=720:-2",
+            "-q:v","3",str(dest)
+        ],check=True,timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        dest.unlink(missing_ok=True)
+        return None
+    if not dest.is_file() or dest.stat().st_size < 1000:
+        dest.unlink(missing_ok=True)
+        return None
+    return {
+        "index": int(index), "type":"image", "path":str(dest),
+        "url":str(video.get("url") or ""),
+        "source":str(video.get("source") or video.get("url") or ""),
+        "source_label":"Fight Night Champion archival gameplay frame",
+        "role":f"official_context_fight_night_frame_{index}",
+        "approved":True, "duration":0.0
+    }
 
 
 def subject_ok(phrase,asset):
@@ -323,7 +356,31 @@ def replace_short_repeats(scene,assets):
                     and subject_ok(beat.get("text", ""), a)
                 ]
                 if not still_choices:
-                    raise RuntimeError("QUALITY_BLOCK: Short sem intervalo inédito ou imagem aprovada compatível para substituir gameplay reutilizada")
+                    # The official EA page may expose only one still. Build distinct,
+                    # source-traceable archival frames from the approved Fight Night
+                    # video so a Short can continue without recycling the same image.
+                    next_index=max([int(k) for k in assets.keys()] + [0]) + 1
+                    frame_number=0
+                    for video in videos:
+                        total=float(video.get("duration") or 0)
+                        if total < 1:
+                            continue
+                        # Use different points across the source; frames are stills,
+                        # explicitly labeled archival, never represented as new-game footage.
+                        for timestamp in [min(total-0.2, max(0.2, total*f)) for f in (0.12,0.24,0.36,0.48,0.60,0.72,0.84,0.93)]:
+                            frame=_extract_fight_night_frame(video,timestamp,next_index+frame_number)
+                            if frame:
+                                assets[int(frame["index"])]=frame
+                                frame_number+=1
+                    still_choices = [
+                        a for a in assets.values()
+                        if a.get("type") == "image"
+                        and asset_identity(a) not in used_stills
+                        and duration <= MAX_STATIC_BEAT_SECONDS + 0.001
+                        and subject_ok(beat.get("text", ""), a)
+                    ]
+                if not still_choices:
+                    raise RuntimeError("QUALITY_BLOCK: Short sem intervalo inédito nem quadro de arquivo Fight Night disponível")
                 still = still_choices[0]
                 beat["media_index"] = int(still["index"])
                 beat.pop("source_window", None)
