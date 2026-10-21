@@ -74,6 +74,43 @@ jobs:
           python src/voice.py production/saros-rebuild-short-3.txt output/shorts/short_3_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
       - name: Rebuild with official Saros artwork and cover-first Shorts
         run: python src/rebuild_saros_existing.py
+      - name: Rebuild all four covers with the shared Radar premium generator
+        run: |
+          set -euo pipefail
+          test -s output/saros-official-keyart.jpg
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          p = Path("output/saros-official-keyart.jpg")
+          with Image.open(p) as im:
+              w, h = im.size
+          asset = {
+            "index": 1, "approved": True, "type": "image",
+            "path": str(p), "width": w, "height": h,
+            "role": "official_saros_key_art",
+            "source_label": "Saros official PlayStation key art",
+            "url": "https://blog.playstation.com/2026/10/19/the-saros-zenith-update-out-today-brings-more-ways-to-play-for-newcomers-and-veterans-alike/",
+            "relevance_evidence": "official exact Saros game key art; Zenith update; protection modifiers; New Game Plus Eclipse Layers; Overlord Rush eight bosses",
+            "source": "PlayStation Blog",
+            "duration": 0
+          }
+          Path("output/clips.json").write_text(json.dumps({"assets":[asset]}, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+          python src/premium_covers.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("output/cover-suite-policy.json")
+          data=json.loads(p.read_text(encoding="utf-8"))
+          if data.get("status") != "APPROVED_PREMIUM":
+              raise SystemExit("QUALITY_BLOCK: shared premium generator did not approve all covers")
+          if data.get("template_version") != "radar-premium-auto-v1-2026-10-07":
+              raise SystemExit("QUALITY_BLOCK: unexpected cover template")
+          if len(data.get("short_openings", [])) != 3 or any(x.get("status") != "APPROVED" for x in data.get("short_openings", [])):
+              raise SystemExit("QUALITY_BLOCK: not all three Shorts have matching 1.4-second cover openings")
+          print("SHARED_PREMIUM_COVER_POLICY_OK")
+          PY
       - name: Cover and video quality gates
         run: |
           set -euo pipefail
