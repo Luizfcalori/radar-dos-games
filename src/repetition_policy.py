@@ -420,6 +420,21 @@ def replace_short_repeats(scene,assets):
         beat["source_window"]={"start":lo,"end":hi}
         # Reserve immediately using the exact same interval semantics as final QA.
         timeline.reserve(idx,lo,duration,allow_reuse=False)
+    # Persist generated archival stills into the same clips asset inventory.
+    # The later premium QA reloads clips.json from disk; without this write-back,
+    # Shorts reference generated indices that the final QA cannot resolve.
+    clips_path=Path("output/clips.json")
+    if clips_path.is_file():
+        try:
+            clips_doc=json.loads(clips_path.read_text(encoding="utf-8"))
+            existing={int(a.get("index",0)) for a in clips_doc.get("assets") or []}
+            generated=[a for idx,a in assets.items() if int(idx) not in existing
+                       and str(a.get("role") or "").startswith("official_context_fight_night_frame_")]
+            if generated:
+                clips_doc.setdefault("assets",[]).extend(generated)
+                clips_path.write_text(json.dumps(clips_doc,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+        except (OSError,ValueError,TypeError) as exc:
+            raise RuntimeError(f"QUALITY_BLOCK: não foi possível persistir quadros de arquivo no inventário: {exc}")
     validate_short(beats,assets)
     return beats
 
