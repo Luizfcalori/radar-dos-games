@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-20T17:24:45.594886+00:00",
-  "total_discovered": 113,
-  "ready_for_tiktok": 109,
+  "updated_at": "2026-10-21T13:13:11.078021+00:00",
+  "total_discovered": 116,
+  "ready_for_tiktok": 112,
   "waiting_media": [
     {
       "youtube_id": "FWfua78AQis",
@@ -27,6 +27,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "UhEa75FqF4I",
+      "youtube_url": "https://www.youtube.com/shorts/UhEa75FqF4I",
+      "title": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "vE6S_PXAnaI",
+      "youtube_url": "https://www.youtube.com/shorts/vE6S_PXAnaI",
+      "title": "ARMAS MALUCAS E UPGRADES EM GRADE!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Mr0xAZPyxuc",
+      "youtube_url": "https://www.youtube.com/shorts/Mr0xAZPyxuc",
+      "title": "ATÉ QUATRO JOGADORES CONTRA ALIENS FÚNGICOS!",
+      "status": "approved"
+    },
     {
       "youtube_id": "M5-zPE_WzeY",
       "youtube_url": "https://www.youtube.com/shorts/M5-zPE_WzeY",
