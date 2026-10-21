@@ -2,11 +2,15 @@ name: Radar dos Games - Pull Request Validation
 
 on:
   push:
-    branches: ["fix/dedupe-media-content-2026-10-21"]
+    branches: ["main", "fix/dedupe-media-content-2026-10-21"]
   pull_request:
     branches: [main]
     paths:
       - "src/media.py"
+      - "src/media_first.py"
+      - "src/continuity.py"
+      - "docs/VIDEO_STANDARD_RADAR_DOS_GAMES.md"
+      - "docs/SHORTS_STANDARD.md"
       - "tests/**"
       - "requirements.txt"
       - ".github/workflows/pr-validation.yml"
