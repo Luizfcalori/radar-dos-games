@@ -35,6 +35,21 @@ class SourceGroundedNarrationTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "narração contém linguagem meta/privada"):
                 narration_qa(str(path))
 
+    def test_narration_qa_blocks_repeated_long_headline(self):
+        repeated = (
+            "The Saros Zenith update out today brings more ways to play for newcomers and veterans alike"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "script.txt"
+            path.write_text(
+                repeated + ". A novidade chega hoje.\n\n"
+                + repeated + ". O anúncio traz opções novas.\n\n"
+                + repeated + ". A atualização já está disponível.",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "narração contém linguagem meta/privada"):
+                narration_qa(str(path))
+
     def test_narration_qa_blocks_english_leakage_and_keyword_salad(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "script.txt"
