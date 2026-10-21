@@ -1,0 +1,100 @@
+# Queue the three already-uploaded Fight Night Shorts for TikTok Helper; never upload to YouTube again.
+name: Radar dos Games - Enfileirar Fight Night no TikTok Helper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/queue-fight-night-20261021.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  queue-fight-night:
+    if: startsWith(github.event.head_commit.message, '[queue-fight-night] RUN=39645208774')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download completed production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-39645208774
+          path: source
+          repository: ${{ github.repository }}
+          run-id: 39645208774
+          github-token: ${{ github.token }}
+
+      - name: Publish approved Shorts to stable storage and update TikTok Helper queue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-upload
+          for N in 1 2 3; do
+            test -s "source/shorts/short_${N}.mp4"
+            test -s "source/youtube-short-${N}-result.json"
+            test -s "source/short-${N}-youtube.json"
+            cp "source/shorts/short_${N}.mp4" "tiktok-upload/39645208774-short-${N}.mp4"
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "source/shorts/short_${N}.mp4" -frames:v 1 -vf "scale=720:-2" "tiktok-upload/39645208774-short-${N}.jpg"
+          done
+
+          if ! gh release view tiktok-approved-assets >/dev/null 2>&1; then
+            gh release create tiktok-approved-assets --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados para o Radar TikTok Helper. Publicação final no TikTok continua manual."
+          fi
+          gh release upload tiktok-approved-assets tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          run_id = 39645208774
+          repo = os.environ['GITHUB_REPOSITORY']
+          base = f'https://github.com/{repo}/releases/download/tiktok-approved-assets'
+          queue_path = Path('data/tiktok_queue.json')
+          queue = json.loads(queue_path.read_text(encoding='utf-8'))
+          old = queue.get('items', [])
+          new = []
+          for n in (1, 2, 3):
+              result = json.loads(Path(f'source/youtube-short-{n}-result.json').read_text(encoding='utf-8'))
+              meta = json.loads(Path(f'source/short-{n}-youtube.json').read_text(encoding='utf-8'))
+              vid = result.get('id')
+              assert vid, f'Missing confirmed YouTube ID for Short {n}'
+              title = meta.get('title', 'Radar dos Games').replace(' #Shorts', '').strip()
+              new.append({
+                  'id': f'{run_id}-short-{n}',
+                  'title': title,
+                  'media_url': f'{base}/{run_id}-short-{n}.mp4',
+                  'thumbnail_url': f'{base}/{run_id}-short-{n}.jpg',
+                  'post_text': f'{title}\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n#RadarDosGames #FightNight #Games #Gaming #TikTokGames',
+                  'status': 'approved',
+                  'source_run_id': run_id,
+                  'short_number': n,
+                  'approved_at': datetime.now(timezone.utc).isoformat(),
+                  'source': 'approved_production_artifact_auto',
+                  'platform': 'tiktok_helper_manual_posting',
+                  'youtube_id': vid,
+                  'youtube_url': f'https://www.youtube.com/shorts/{vid}',
+                  'youtube_published_at': None,
+              })
+          ids = {x['id'] for x in new}
+          queue['version'] = 2
+          queue['updated_at'] = datetime.now(timezone.utc).isoformat()
+          queue['items'] = new + [x for x in old if x.get('id') not in ids]
+          queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + '\\n', encoding='utf-8')
+          print(json.dumps({'queued_shorts': len(new), 'source_run_id': run_id, 'youtube_ids': [x['youtube_id'] for x in new]}, ensure_ascii=False))
+          PY
+
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          git diff --cached --quiet || git commit -m "bot: queue Fight Night Shorts for TikTok Helper"
+          git push
