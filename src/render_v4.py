@@ -380,5 +380,5 @@ def render(manifest_path):
 if __name__=="__main__":
     render(sys.argv[1])
 
-# Timeline concat timestamp normalization fix verified by CI
+# Timeline concat timestamp normalization and per-beat video-stream validation verified by CI
 # CI note: keep timeline normalization covered by regression validation
