@@ -460,7 +460,7 @@ def replace_short_repeats(scene,assets):
                        and str(a.get("role") or "").startswith("official_context_fight_night_frame_")]
             if generated:
                 clips_doc.setdefault("assets",[]).extend(generated)
-                clips_path.write_text(json.dumps(clips_doc,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+            clips_path.write_text(json.dumps(clips_doc,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         except (OSError,ValueError,TypeError) as exc:
             raise RuntimeError(f"QUALITY_BLOCK: não foi possível persistir quadros de arquivo no inventário: {exc}")
     validate_short(beats,assets)
