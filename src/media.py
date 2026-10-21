@@ -451,7 +451,7 @@ def blocked_candidate(url,item):
 
 def main(path):
     spec=json.loads(Path(path).read_text(encoding='utf-8'));out=Path('output/media');out.mkdir(parents=True,exist_ok=True)
-    assets=[];errors=[];seq=0;seen=set();seen_movie_sources=set();seen_content_hashes=set()
+    assets=[];errors=[];seq=0;seen=set();seen_content=set();seen_movie_sources=set();seen_content_hashes=set()
     for item in spec.get('media',[]):
         wanted=item.get('type','video');role=item.get('role','');max_assets=int(item.get('max_assets',4));candidates=[]
         if item.get('steam_app_id'):
@@ -511,6 +511,15 @@ def main(path):
                 min_d=float(item.get('min_duration',8))
                 if float(info.get('duration',0))<min_d:
                     print('duration reject',info.get('duration'),u);dest.unlink(missing_ok=True);continue
+                # Different URLs can resolve to byte-identical copies. Reject the
+                # duplicate after download/probe, before it inflates the usable
+                # footage pool and causes the director to loop the same gameplay.
+                digest=sha256_file(dest)
+                if digest in seen_content:
+                    print('content duplicate rejected',u,'sha256',digest,flush=True)
+                    dest.unlink(missing_ok=True)
+                    continue
+                seen_content.add(digest)
             seen.add(u)
             if wanted=='video' and digest:seen_content_hashes.add(digest)
             if movie_key:seen_movie_sources.add(movie_key)
