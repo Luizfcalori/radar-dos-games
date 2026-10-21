@@ -55,5 +55,6 @@
   "minimum_assets": 2,
   "minimum_video_assets": 1,
   "minimum_unique_video_seconds": 15,
-  "minimum_image_assets": 1
+  "minimum_image_assets": 1,
+  "short_media_fallback_policy": "Se não houver intervalo inédito de gameplay aprovado para um beat de Short, pode-se usar uma imagem estática oficial, aprovada e específica de Fight Night, apenas se passar a validação de assunto e o limite de duração estática. Nunca reutilizar a mesma imagem dentro do Short; não usar imagens genéricas de boxe."
 }
