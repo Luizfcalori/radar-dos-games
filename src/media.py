@@ -18,6 +18,14 @@ LOW_VALUE_TOKENS=(
 STEAM_VIDEO_HOST='https://video.fastly.steamstatic.com/'
 NEWISTY_BASE='https://newisty.com/api/video-downloader'
 
+def sha256_file(path, chunk_size=1024*1024):
+    """Calcula SHA-256 em blocos para não carregar vídeos grandes inteiros na RAM."""
+    digest=hashlib.sha256()
+    with open(path,'rb') as stream:
+        for chunk in iter(lambda:stream.read(chunk_size),b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
 def probe_info(p):
     if not p.exists() or p.stat().st_size < 20000:return None
     try:
@@ -492,7 +500,7 @@ def main(path):
             # file content before counting assets or unique footage duration.
             if wanted=='video':
                 try:
-                    digest=hashlib.sha256(dest.read_bytes()).hexdigest()
+                    digest=sha256_file(dest)
                 except OSError:
                     digest=''
                 if digest and digest in seen_content_hashes:
