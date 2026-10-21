@@ -16,37 +16,37 @@ MASTER_TITLES = [
     "ZENITH - NOVAS FORMAS DE JOGAR",
     "MAIS TEMPO PARA REAGIR",
     "AUTO-FIRE E MIRA POR MOVIMENTO",
-    "10 NOVOS MODIFICADORES DE PROTECAO",
+    "10 NOVOS MODIFICADORES DE PROTEÇÃO",
     "NEW GAME+ - ECLIPSE LAYERS",
     "25 TRIALS PARA COMBINAR",
     "COROA DOURADA E 12 VISIONS",
     "OVERLORD RUSH - DESAFIO DE CHEFES",
-    "TRES MODOS DE CHEFES",
-    "OITO CHEFES EM SEQUENCIA",
+    "TRÊS MODOS DE CHEFES",
+    "OITO CHEFES EM SEQUÊNCIA",
     "PLACAR GLOBAL POR ARMA",
-    "ATUALIZACAO GRATUITA",
-    "QUAL NOVIDADE VOCE VAI TESTAR?",
+    "ATUALIZAÇÃO GRATUITA",
+    "QUAL NOVIDADE VOCÊ VAI TESTAR?",
 ]
 SHORT_CONFIG = [
     {
         "start": 51.2, "duration": 18.6,
         "voice": SHORTS / "short_1_voice.mp3",
-        "title": "MODIFICADORES DE PROTECAO",
-        "cta": "VOCE TESTARIA ESSE MODIFICADOR?",
+        "title": "MODIFICADORES DE PROTEÇÃO",
+        "cta": "VOCÊ TESTARIA ESSE MODIFICADOR?",
         "filename": SHORTS / "short_1.mp4",
     },
     {
         "start": 130.5, "duration": 17.5,
         "voice": SHORTS / "short_2_voice.mp3",
         "title": "NEW GAME+ EM CAMADAS",
-        "cta": "VOCE ENCARARIA ESSE DESAFIO?",
+        "cta": "VOCÊ ENCARARIA ESSE DESAFIO?",
         "filename": SHORTS / "short_2.mp4",
     },
     {
         "start": 154.3, "duration": 20.3,
         "voice": SHORTS / "short_3_voice.mp3",
-        "title": "OITO CHEFES EM SEQUENCIA",
-        "cta": "QUAL MODO VOCE ESCOLHERIA?",
+        "title": "OITO CHEFES EM SEQUÊNCIA",
+        "cta": "QUAL MODO VOCÊ ESCOLHERIA?",
         "filename": SHORTS / "short_3.mp4",
     },
 ]
@@ -207,7 +207,7 @@ def make_master_thumbnail(legacy_thumb, destination):
                            outline=(57, 255, 99, 255), width=5)
     image = Image.alpha_composite(image, layer)
     draw = ImageDraw.Draw(image)
-    line1 = "ATUALIZACAO ZENITH"
+    line1 = "ATUALIZAÇÃO ZENITH"
     line2 = "ACESSIBILIDADE  •  NEW GAME+  •  OVERLORD RUSH"
     f1, f2 = font(43), font(25)
     box1 = draw.textbbox((0, 0), line1, font=f1, stroke_width=1)
