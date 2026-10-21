@@ -31,6 +31,11 @@ jobs:
           run-id: 39645208774
           github-token: ${{ github.token }}
 
+      - name: Install FFmpeg for thumbnails
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
       - name: Publish approved Shorts to stable storage and update TikTok Helper queue
         env:
           GH_TOKEN: ${{ github.token }}
