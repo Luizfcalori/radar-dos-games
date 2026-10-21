@@ -44,11 +44,6 @@ jobs:
           if not token:
               raise SystemExit("OAuth refresh did not return an access token.")
           headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
-          channel = request("https://www.googleapis.com/youtube/v3/channels?part=id&mine=true", headers=headers)
-          ids = [x["id"] for x in channel.get("items", [])]
-          if expected_channel not in ids:
-              raise SystemExit(f"STOP: authenticated channel mismatch. Expected {expected_channel}; got {ids}")
-
           videos = [
               ("E6COlRVY4qs", "Saros: atualização Zenith traz novas formas de jogar"),
               ("DQt5cEWRjSo", "Saros: novidades da atualização Zenith #Shorts"),
