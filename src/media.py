@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Aquisição de mídia com prova de relevância por jogo e QA semântico."""
-import html,json,os,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
+import hashlib,html,json,os,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 
 try:
@@ -443,7 +443,7 @@ def blocked_candidate(url,item):
 
 def main(path):
     spec=json.loads(Path(path).read_text(encoding='utf-8'));out=Path('output/media');out.mkdir(parents=True,exist_ok=True)
-    assets=[];errors=[];seq=0;seen=set();seen_movie_sources=set()
+    assets=[];errors=[];seq=0;seen=set();seen_movie_sources=set();seen_content_hashes=set()
     for item in spec.get('media',[]):
         wanted=item.get('type','video');role=item.get('role','');max_assets=int(item.get('max_assets',4));candidates=[]
         if item.get('steam_app_id'):
@@ -488,11 +488,23 @@ def main(path):
             elif 'youtube.com' in low or 'youtu.be' in low or social_post_url(u):info=ytdlp(u,dest)
             else:info=download(u,dest,source if str(source).startswith('http') else None)
             if not info:dest.unlink(missing_ok=True);continue
+            # URL variants can point to the exact same downloaded video. Deduplicate by
+            # file content before counting assets or unique footage duration.
+            if wanted=='video':
+                try:
+                    digest=hashlib.sha256(dest.read_bytes()).hexdigest()
+                except OSError:
+                    digest=''
+                if digest and digest in seen_content_hashes:
+                    print('duplicate video content rejected',u,'sha256',digest,flush=True)
+                    dest.unlink(missing_ok=True)
+                    continue
             if wanted=='video':
                 min_d=float(item.get('min_duration',8))
                 if float(info.get('duration',0))<min_d:
                     print('duration reject',info.get('duration'),u);dest.unlink(missing_ok=True);continue
             seen.add(u)
+            if wanted=='video' and digest:seen_content_hashes.add(digest)
             if movie_key:seen_movie_sources.add(movie_key)
             assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u,'source':source,
                            'relevance_evidence':evidence,'source_label':label,'approved':True,'duration':float(info.get('duration',0)),
