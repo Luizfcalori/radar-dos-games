@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/verify-saros-cover-fix.yml"
       - "src/rebuild_saros_existing.py"
+      - "src/premium_covers.py"
 
 permissions:
   contents: read
