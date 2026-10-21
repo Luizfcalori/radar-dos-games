@@ -1,0 +1,124 @@
+name: Saros cover correction - safe render only
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/verify-saros-cover-fix.yml"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: radar-saros-cover-correction
+  cancel-in-progress: false
+
+jobs:
+  render-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install FFmpeg, fonts and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core unzip
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Recover source video and timing map
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p output/shorts /tmp/saros-legacy
+          curl -fL --retry 3 -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/12337061067/zip" -o /tmp/saros-legacy.zip
+          unzip -q /tmp/saros-legacy.zip -d /tmp/saros-legacy
+          test -s /tmp/saros-legacy/master.mp4
+          test -s /tmp/saros-legacy/voice-timings.json
+          test -s /tmp/saros-legacy/thumbnail.jpg
+          cp /tmp/saros-legacy/master.mp4 output/master-source.mp4
+          cp /tmp/saros-legacy/voice-timings.json output/legacy-voice-timings.json
+          cp /tmp/saros-legacy/thumbnail.jpg output/legacy-thumbnail.jpg
+      - name: Validate editorial scripts
+        run: |
+          python src/narration_qa.py production/saros-rebuild-master.txt
+          python - <<'PY'
+          from pathlib import Path
+          script = Path("production/saros-rebuild-master.txt").read_text(encoding="utf-8")
+          if len(script.split()) < 500 or len([p for p in script.split("\\n\\n") if p.strip()]) != 13:
+              raise SystemExit("QUALITY_BLOCK: Master needs 500+ words in 13 aligned blocks.")
+          for i in range(1, 4):
+              words = len(Path(f"production/saros-rebuild-short-{i}.txt").read_text(encoding="utf-8").split())
+              if not 30 <= words <= 55:
+                  raise SystemExit(f"QUALITY_BLOCK: Short {i} narration length invalid: {words}")
+          PY
+      - name: Generate Thalita PT-BR narration
+        run: |
+          python src/voice.py production/saros-rebuild-master.txt output/new-voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared --segments-json output/new-voice-timings.json
+          cp -R output/voice_segments output/master_voice_segments
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("output/new-voice-timings.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          for segment in data.get("segments", []):
+              segment["file"] = segment.get("file", "").replace("output/voice_segments/", "output/master_voice_segments/")
+          p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+          PY
+          python src/voice.py production/saros-rebuild-short-1.txt output/shorts/short_1_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
+          python src/voice.py production/saros-rebuild-short-2.txt output/shorts/short_2_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
+          python src/voice.py production/saros-rebuild-short-3.txt output/shorts/short_3_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
+      - name: Rebuild with official Saros artwork and cover-first Shorts
+        run: python src/rebuild_saros_existing.py
+      - name: Cover and video quality gates
+        run: |
+          set -euo pipefail
+          python -m py_compile src/rebuild_saros_existing.py
+          test -s output/thumbnail.jpg
+          test -s output/shorts/short_1_cover.jpg
+          test -s output/shorts/short_2_cover.jpg
+          test -s output/shorts/short_3_cover.jpg
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          expected = {"output/thumbnail.jpg": (1280,720), **{f"output/shorts/short_{i}_cover.jpg": (1080,1920) for i in range(1,4)}}
+          from PIL import Image
+          for name, size in expected.items():
+              p=Path(name)
+              with Image.open(p) as im:
+                  im.verify()
+              with Image.open(p) as im:
+                  if im.size != size or p.stat().st_size < 30000:
+                      raise SystemExit(f"QUALITY_BLOCK: invalid cover {name}: {im.size}, {p.stat().st_size}")
+              print("COVER_OK", name, size, p.stat().st_size)
+          for i in range(1,4):
+              p=Path(f"output/shorts/short_{i}.mp4")
+              d=float(subprocess.run(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",str(p)],capture_output=True,text=True,check=True).stdout.strip())
+              if not 15 <= d <= 25:
+                  raise SystemExit(f"QUALITY_BLOCK: Short {i} duration {d:.2f}s")
+              print("SHORT_OK", i, round(d,2), "seconds; cover opening was applied by render script")
+          PY
+      - name: Upload corrected covers and private review videos (no YouTube upload)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saros-corrected-covers-review-only
+          path: |
+            output/thumbnail.jpg
+            output/saros-official-keyart.jpg
+            output/shorts/short_1_cover.jpg
+            output/shorts/short_2_cover.jpg
+            output/shorts/short_3_cover.jpg
+            output/master.mp4
+            output/shorts/short_1.mp4
+            output/shorts/short_2.mp4
+            output/shorts/short_3.mp4
+            output/master-youtube.json
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+          if-no-files-found: warn
+          retention-days: 14
