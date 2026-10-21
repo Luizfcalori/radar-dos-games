@@ -1,0 +1,234 @@
+name: Rebuild Saros narration from existing video
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/rebuild-saros-from-existing.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: radar-saros-existing-rebuild
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install FFmpeg and fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core unzip
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Recover already-rendered Master and its timing map
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p output/shorts /tmp/saros-legacy
+          curl -fL --retry 3 \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/12337061067/zip" \
+            -o /tmp/saros-legacy.zip
+          unzip -q /tmp/saros-legacy.zip -d /tmp/saros-legacy
+          test -s /tmp/saros-legacy/master.mp4
+          test -s /tmp/saros-legacy/voice-timings.json
+          test -s /tmp/saros-legacy/thumbnail.jpg
+          cp /tmp/saros-legacy/master.mp4 output/master-source.mp4
+          cp /tmp/saros-legacy/voice-timings.json output/legacy-voice-timings.json
+          cp /tmp/saros-legacy/thumbnail.jpg output/legacy-thumbnail.jpg
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 output/master-source.mp4
+
+      - name: Validate corrected editorial script
+        run: |
+          python src/narration_qa.py production/saros-rebuild-master.txt
+          python - <<'PY'
+          from pathlib import Path
+          script = Path("production/saros-rebuild-master.txt").read_text(encoding="utf-8")
+          words = len(script.split())
+          paragraphs = [p for p in script.split("\n\n") if p.strip()]
+          print(f"Master script: {words} words / {len(paragraphs)} paragraphs")
+          if words < 500 or len(paragraphs) != 13:
+              raise SystemExit("QUALITY_BLOCK: Master script must contain at least 500 words in 13 aligned blocks.")
+          for i in range(1, 4):
+              short = Path(f"production/saros-rebuild-short-{i}.txt").read_text(encoding="utf-8")
+              if not 30 <= len(short.split()) <= 55:
+                  raise SystemExit(f"QUALITY_BLOCK: Short {i} narration length is outside the natural range.")
+          PY
+
+      - name: Generate Master narration with Thalita PT-BR
+        run: |
+          python src/voice.py production/saros-rebuild-master.txt output/new-voice.mp3 \
+            --voice pt-BR-ThalitaMultilingualNeural \
+            --prepared \
+            --segments-json output/new-voice-timings.json
+          cp -R output/voice_segments output/master_voice_segments
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("output/new-voice-timings.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          for segment in data.get("segments", []):
+              old = segment.get("file", "")
+              segment["file"] = old.replace("output/voice_segments/", "output/master_voice_segments/")
+          p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+
+      - name: Generate exactly three Short narrations with Thalita PT-BR
+        run: |
+          python src/voice.py production/saros-rebuild-short-1.txt output/shorts/short_1_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
+          python src/voice.py production/saros-rebuild-short-2.txt output/shorts/short_2_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
+          python src/voice.py production/saros-rebuild-short-3.txt output/shorts/short_3_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
+
+      - name: Rebuild Master audio, correct title bars and create three gameplay Shorts
+        run: python src/rebuild_saros_existing.py
+
+      - name: Validate final video files and metadata
+        run: |
+          set -euo pipefail
+          test -s output/master.mp4
+          test -s output/thumbnail.jpg
+          test -s output/shorts/short_1.mp4
+          test -s output/shorts/short_2.mp4
+          test -s output/shorts/short_3.mp4
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          paths = [Path("output/master.mp4")] + [Path(f"output/shorts/short_{i}.mp4") for i in range(1,4)]
+          for path in paths:
+              d = float(subprocess.run(
+                  ["ffprobe","-v","error","-show_entries","format=duration","-of","default=nw=1:nk=1",str(path)],
+                  capture_output=True,text=True,check=True).stdout.strip())
+              print(path, round(d,2), "seconds")
+          meta = json.loads(Path("output/master-youtube.json").read_text(encoding="utf-8"))
+          if meta.get("privacy") != "private":
+              raise SystemExit("QUALITY_BLOCK: uploads must remain private.")
+          PY
+
+      - name: Verify Radar dos Games YouTube OAuth
+        id: youtube_check
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/check_youtube.py
+
+      - name: Upload rebuilt Master privately
+        id: upload_master
+        if: ${{ steps.youtube_check.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+
+      - name: Upload rebuilt Short 1 privately
+        id: upload_short_1
+        if: ${{ steps.youtube_check.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+
+      - name: Upload rebuilt Short 2 privately
+        id: upload_short_2
+        if: ${{ steps.youtube_check.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+
+      - name: Upload rebuilt Short 3 privately
+        id: upload_short_3
+        if: ${{ steps.youtube_check.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Record rebuilt Saros release after all four private uploads succeed
+        if: ${{ steps.upload_master.outcome == 'success' && steps.upload_short_1.outcome == 'success' && steps.upload_short_2.outcome == 'success' && steps.upload_short_3.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          content_id = "manual-saros-zenith-narration-rebuild-2026-10-21-v2"
+          path = Path("data/published.json")
+          history = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"videos": []}
+          history.setdefault("videos", [])
+          if not any(v.get("content_id") == content_id for v in history["videos"]):
+              meta = json.loads(Path("output/master-youtube.json").read_text(encoding="utf-8"))
+              result = json.loads(Path("output/youtube-master-result.json").read_text(encoding="utf-8"))
+              history["videos"].append({
+                  "content_id": content_id,
+                  "title": meta["title"],
+                  "url": "https://blog.playstation.com/2026/10/19/the-saros-zenith-update-out-today-brings-more-ways-to-play-for-newcomers-and-veterans-alike/",
+                  "youtube_url": "https://www.youtube.com/watch?v=" + result["id"],
+                  "published_at": datetime.now(timezone.utc).isoformat(),
+                  "scheduled": False,
+                  "privacy": "private",
+              })
+          history["videos"] = history["videos"][-200:]
+          path.write_text(json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published.json
+          git diff --cached --quiet || git commit -m "bot: register rebuilt Saros narration"
+          git push origin main
+
+      - name: Upload rebuilt videos and review files as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saros-zenith-rebuilt-master-and-3-shorts
+          path: |
+            output/master.mp4
+            output/thumbnail.jpg
+            output/shorts/short_1.mp4
+            output/shorts/short_2.mp4
+            output/shorts/short_3.mp4
+            output/shorts/short_1_cover.jpg
+            output/shorts/short_2_cover.jpg
+            output/shorts/short_3_cover.jpg
+            output/new-voice.mp3
+            output/master-youtube.json
+            output/short-1-youtube.json
+            output/short-2-youtube.json
+            output/short-3-youtube.json
+            production/saros-rebuild-master.txt
+            production/saros-rebuild-short-1.txt
+            production/saros-rebuild-short-2.txt
+            production/saros-rebuild-short-3.txt
+          if-no-files-found: warn
+          retention-days: 14
