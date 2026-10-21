@@ -261,19 +261,42 @@ def render(manifest_path):
         })
 
     visuals=tmp/"body_visuals.mp4"
-    # Use the concat filter instead of the concat demuxer: MP4 packet timestamps
-    # from individually rendered beats can cause the demuxer to shorten the
-    # assembled timeline even when every beat passed its own duration QA.
-    inputs=[]
-    graph=[]
-    for i,p in enumerate(pieces):
-        inputs += ["-i",str(p)]
-        graph.append(f"[{i}:v]setpts=PTS-STARTPTS,setsar=1[v{i}]")
-    labels="".join(f"[v{i}]" for i in range(len(pieces)))
-    graph.append(f"{labels}concat=n={len(pieces)}:v=1:a=0,fps={FPS},setpts=PTS-STARTPTS,format=yuv420p[v]")
-    sh(["ffmpeg","-y","-v","error",*inputs,"-filter_complex",";".join(graph),
-        "-map","[v]","-an","-c:v","libx264","-preset","veryfast","-crf","20",
-        "-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",str(visuals)])
+    # Concatena em lotes pequenos para evitar falhas do FFmpeg ao construir
+    # filtergraphs com dezenas/centenas de inputs. Cada lote é normalizado para
+    # timestamps a partir de zero; o estágio final também usa concat filter.
+    batch_size=20
+    batch_outputs=[]
+    for batch_no,start in enumerate(range(0,len(pieces),batch_size),1):
+        batch=pieces[start:start+batch_size]
+        batch_out=tmp/f"body_visuals_batch_{batch_no:02d}.mp4"
+        inputs=[]
+        graph=[]
+        for i,p in enumerate(batch):
+            inputs += ["-i",str(p)]
+            graph.append(f"[{i}:v]setpts=PTS-STARTPTS,setsar=1[v{i}]")
+        labels="".join(f"[v{i}]" for i in range(len(batch)))
+        graph.append(f"{labels}concat=n={len(batch)}:v=1:a=0,fps={FPS},setpts=PTS-STARTPTS,format=yuv420p[v]")
+        sh(["ffmpeg","-y","-v","error",*inputs,"-filter_complex",";".join(graph),
+            "-map","[v]","-an","-c:v","libx264","-preset","veryfast","-crf","20",
+            "-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",str(batch_out)])
+        if probe_duration(batch_out)<=0:
+            raise RuntimeError(f"QUALITY_BLOCK: lote visual {batch_no} sem duração válida")
+        batch_outputs.append(batch_out)
+
+    if len(batch_outputs)==1:
+        import shutil
+        shutil.copy2(batch_outputs[0],visuals)
+    else:
+        inputs=[]
+        graph=[]
+        for i,p in enumerate(batch_outputs):
+            inputs += ["-i",str(p)]
+            graph.append(f"[{i}:v]setpts=PTS-STARTPTS,setsar=1[v{i}]")
+        labels="".join(f"[v{i}]" for i in range(len(batch_outputs)))
+        graph.append(f"{labels}concat=n={len(batch_outputs)}:v=1:a=0,fps={FPS},setpts=PTS-STARTPTS,format=yuv420p[v]")
+        sh(["ffmpeg","-y","-v","error",*inputs,"-filter_complex",";".join(graph),
+            "-map","[v]","-an","-c:v","libx264","-preset","veryfast","-crf","20",
+            "-pix_fmt","yuv420p","-r",str(FPS),"-video_track_timescale","90000",str(visuals)])
     visual_seconds=probe_duration(visuals)
     if abs(visual_seconds-cursor)>1.0:
         raise RuntimeError(f"QUALITY_BLOCK: timeline visual divergiu dos beats (vídeo={visual_seconds:.3f}s, esperado={cursor:.3f}s)")
