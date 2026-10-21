@@ -1061,6 +1061,39 @@ def main():
             planned_video_urls.add(url)
         media_items.append(item)
 
+    # Automatic productions also inspect the original publisher page for extra official video embeds.
+    # This is a fallback pool, not a replacement for relevance/visual QA.
+    if not manual:
+        source_page = str(selected.get("url") or "")
+        if source_page.startswith("https://"):
+            media_items.append({
+                "type": "video",
+                "url": source_page,
+                "role": "official_topic_page_video_fallback",
+                "source_label": "Official publisher topic page",
+                "max_assets": 8,
+                "min_duration": 5,
+                "source_proof": source_page,
+                "relevance_evidence": "official_topic_page_video_fallback",
+            })
+        # Grounded 2's official game and Xbox product pages expose additional
+        # publisher-controlled trailers when the news article only exposes one clip.
+        if "grounded 2" in str(selected.get("title") or "").casefold():
+            for official_page in (
+                "https://grounded2.obsidian.net/",
+                "https://www.xbox.com/en-US/games/grounded-2",
+            ):
+                media_items.append({
+                    "type": "video",
+                    "url": official_page,
+                    "role": "official_grounded2_video_fallback",
+                    "source_label": "Official Grounded 2 publisher/platform page",
+                    "max_assets": 8,
+                    "min_duration": 5,
+                    "source_proof": official_page,
+                    "relevance_evidence": "official_game_page_video_fallback",
+                })
+
     # Manual briefs can carry a curated pool of official videos that is larger
     # than the article parser's discovered media. Enqueue every unique candidate
     # explicitly, in order, so a failed first URL cannot hide the remaining pool.
@@ -1122,11 +1155,11 @@ def main():
     minimum_video_assets = int(manual.get("minimum_video_assets", 4 if
         str(manual.get("content_id","")).startswith("manual-castlevania-")
         else (3 if str(manual.get("title","")).casefold() == "arc raiders" else 1)
-    )) if manual else 1
+    )) if manual else 2
     minimum_unique_video_seconds = float(manual.get("minimum_unique_video_seconds", 180 if
         str(manual.get("content_id","")).startswith("manual-castlevania-")
         else (90 if str(manual.get("title","")).casefold() == "arc raiders" else 15)
-    )) if manual else 15
+    )) if manual else 75
     minimum_image_assets = int(manual.get("minimum_image_assets", 0)) if manual else 0
 
     plan = {
