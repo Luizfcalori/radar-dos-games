@@ -2,10 +2,22 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from src.media import sha256_file
+from src.media import sha256_file, youtube_video_id
 
 
 class MediaDeduplicationTests(unittest.TestCase):
+    def test_youtube_watch_and_embed_urls_share_identity(self):
+        watch = "https://www.youtube.com/watch?v=pry9pkfKUJk"
+        embed = "https://www.youtube.com/embed/pry9pkfKUJk?feature=oembed"
+        self.assertEqual(youtube_video_id(watch), "pry9pkfKUJk")
+        self.assertEqual(youtube_video_id(embed), youtube_video_id(watch))
+
+    def test_youtube_short_link_shares_identity(self):
+        self.assertEqual(
+            youtube_video_id("https://youtu.be/pry9pkfKUJk?si=abc"),
+            "pry9pkfKUJk",
+        )
+
     def test_identical_video_bytes_have_same_digest(self):
         with tempfile.TemporaryDirectory() as tmp:
             first = Path(tmp) / "first.mp4"
