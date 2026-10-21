@@ -42,3 +42,11 @@
 - O padrão Premium não autoriza remover a revisão editorial, o QA semântico, a inspeção visual por frames ou a validação técnica.
 - Nenhum serviço pago é requisito para o layout.
 - O layout legado `RADAR_SHORTS_CLASSIC_V1` permanece apenas para compatibilidade histórica e não deve ser usado na pipeline diária.
+
+## Regra permanente de contingência de mídia — aprendizados Fight Night (21/10/2026)
+
+- Preservar o assunto e a fonte autorizada como restrições rígidas; não substituir o jogo por mídia genérica.
+- Se não houver gameplay inédito suficiente para um Short, permitir imagens estáticas oficiais e contextuais do mesmo jogo, desde que aprovadas e rastreáveis (host/fonte oficial, role/contexto e subject match). Nomes opacos de CDN não são, isoladamente, motivo para reprovar uma imagem oficial pertinente.
+- A sequência de contingência é: ampliar corretamente janelas adjacentes revisadas; usar fragmentos inéditos restantes; usar imagens oficiais distintas e contextualizadas; bloquear somente se ainda não houver mídia segura.
+- Limites de duração por beat, inspeção, coerência fala-imagem e proibição de repetir o mesmo intervalo/imagem permanecem ativos. Não afrouxar o QA de identidade nem a regra antirrepetição.
+- Corrigir e testar a etapa que falhou sem reiniciar ou refazer etapas já aprovadas quando isso puder ser evitado. As tentativas de correção e a fila de postagem devem ser idempotentes para impedir Shorts duplicados.
