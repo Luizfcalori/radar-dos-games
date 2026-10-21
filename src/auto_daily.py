@@ -300,6 +300,8 @@ def game_name(title):
         r"\s+is\s+available\b", r"\s+available\s+now\b", r"\s+launches\b", r"\s+launching\b",
         r"\s+gets\b", r"\s+receives\b", r"\s+reveals\b", r"\s+revealed\b", r"\s+announces\b",
         r"\s+watch\b", r"\s+shows\b", r"\s+showcases\b", r"\s+release\s+date\b",
+        r"\s+update\b", r"\s+out\s+today\b", r"\s+brings\b", r"\s+adds\b",
+        r"\s+introduces\b", r"\s+reveals\b", r"\s+for\s+newcomers\b",
     ]
     for pat in cuts:
         m = re.search(pat, title, re.I)
