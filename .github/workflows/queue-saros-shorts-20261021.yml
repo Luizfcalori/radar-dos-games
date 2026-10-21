@@ -1,0 +1,96 @@
+name: Queue Saros Shorts for TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/queue-saros-shorts-20261021.yml"
+permissions:
+  actions: read
+  contents: write
+jobs:
+  queue:
+    if: startsWith(github.event.head_commit.message, '[queue-saros] RUN=39591112132')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg jq
+      - name: Download validated Saros rebuild artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/saros output
+          gh api /repos/${GITHUB_REPOSITORY}/actions/artifacts/12341878092/zip > /tmp/saros.zip
+          unzip -q /tmp/saros.zip -d /tmp/saros
+          find /tmp/saros -type f -name 'short_*.mp4' -print
+          for n in 1 2 3; do
+            src="$(find /tmp/saros -type f -name "short_${n}.mp4" -print -quit)"
+            test -n "$src" && test -s "$src"
+            cp "$src" "output/saros-short-${n}.mp4"
+            meta="$(find /tmp/saros -type f \( -name "short-${n}-youtube.json" -o -name "short_${n}-youtube.json" \) -print -quit)"
+            if [ -n "$meta" ]; then cp "$meta" "output/saros-short-${n}.json"; else echo '{}' > "output/saros-short-${n}.json"; fi
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "output/saros-short-${n}.mp4" -frames:v 1 -vf 'scale=720:-2' "output/saros-short-${n}.jpg"
+            test -s "output/saros-short-${n}.jpg"
+          done
+      - name: Publish MP4s and covers as release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view tiktok-approved-assets >/dev/null
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              name="39591112132-saros-short-${n}.${ext}"
+              gh release upload tiktok-approved-assets "output/saros-short-${n}.${ext}" --clobber --name "$name"
+            done
+          done
+      - name: Add exactly three Saros Shorts to TikTok Helper queue
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          from datetime import datetime, timezone
+          p=Path("data/tiktok_queue.json")
+          q=json.loads(p.read_text(encoding="utf-8"))
+          items=q.setdefault("items",[])
+          rid="39591112132"
+          if any(str(x.get("source_run_id"))==rid for x in items):
+              raise SystemExit("This Saros package is already in the queue; refusing duplicates.")
+          defaults=[
+            "Saros: modificadores de proteção explicados",
+            "Saros: New Game+ com Eclipse Layers",
+            "Saros: Overlord Rush reúne oito chefes",
+          ]
+          for n in range(1,4):
+            raw=json.loads(Path(f"output/saros-short-{n}.json").read_text(encoding="utf-8"))
+            title=re.sub(r"(?i)#shorts?\\b","",str(raw.get("title") or defaults[n-1])).strip(" -|")
+            base=f"https://github.com/{__import__('os').environ.get('GITHUB_REPOSITORY','Luizfcalori/radar-dos-games')}/releases/download/tiktok-approved-assets/39591112132-saros-short-{n}"
+            items.append({
+              "id":f"{rid}-short-{n}",
+              "title":title,
+              "media_url":base+".mp4",
+              "thumbnail_url":base+".jpg",
+              "platform":"tiktok_helper_manual_posting",
+              "status":"approved",
+              "source_run_id":int(rid),
+              "source":"Saros Zenith rebuilt artifact",
+              "queued_at":datetime.now(timezone.utc).isoformat(),
+              "notes":"Pronto para postagem manual pelo TikTok Helper; não publicado automaticamente no TikTok."
+            })
+          q["updated_at"]=datetime.now(timezone.utc).isoformat()
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          PY
+      - name: Commit queue entries
+        run: |
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          git commit -m "bot: queue Saros Shorts for TikTok Helper"
+          git push
