@@ -264,7 +264,7 @@ def render(manifest_path):
     # Concatena em lotes pequenos para evitar falhas do FFmpeg ao construir
     # filtergraphs com dezenas/centenas de inputs. Cada lote é normalizado para
     # timestamps a partir de zero; o estágio final também usa concat filter.
-    batch_size=20
+    batch_size=max(1,min(20,int(m.get("render_batch_size",20))))
     batch_outputs=[]
     for batch_no,start in enumerate(range(0,len(pieces),batch_size),1):
         batch=pieces[start:start+batch_size]
