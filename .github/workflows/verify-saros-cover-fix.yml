@@ -48,7 +48,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           script = Path("production/saros-rebuild-master.txt").read_text(encoding="utf-8")
-          if len(script.split()) < 500 or len([p for p in script.split("\\n\\n") if p.strip()]) != 13:
+          if len(script.split()) < 500 or len([p for p in script.split("\n\n") if p.strip()]) != 13:
               raise SystemExit("QUALITY_BLOCK: Master needs 500+ words in 13 aligned blocks.")
           for i in range(1, 4):
               words = len(Path(f"production/saros-rebuild-short-{i}.txt").read_text(encoding="utf-8").split())
@@ -66,7 +66,7 @@ jobs:
           data = json.loads(p.read_text(encoding="utf-8"))
           for segment in data.get("segments", []):
               segment["file"] = segment.get("file", "").replace("output/voice_segments/", "output/master_voice_segments/")
-          p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+          p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
           python src/voice.py production/saros-rebuild-short-1.txt output/shorts/short_1_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
           python src/voice.py production/saros-rebuild-short-2.txt output/shorts/short_2_voice.mp3 --voice pt-BR-ThalitaMultilingualNeural --prepared
