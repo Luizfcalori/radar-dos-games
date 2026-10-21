@@ -3,6 +3,7 @@
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 FORBIDDEN = [
@@ -34,6 +35,43 @@ FORBIDDEN = [
     r"\b(?:a edição|a montagem|o master|o vídeo final)\b.{0,80}\b(?:precisa|deve|tem que)\b.{0,80}\b(?:usar cenas diferentes|preencher o tempo|repetir imagens|evitar repetição)\b",
 ]
 
+def repeated_long_phrases(text):
+    """Bloqueia vazamento de manchete/título repetido em vários parágrafos."""
+    paragraphs = [p for p in text.split("\n\n") if p.strip()]
+    normalized = []
+    for paragraph in paragraphs:
+        value = unicodedata.normalize("NFKD", paragraph.casefold())
+        value = "".join(ch for ch in value if not unicodedata.combining(ch))
+        normalized.append(re.findall(r"[a-z0-9]+", value))
+
+    # Exige frases de 7 a 14 palavras repetidas em pelo menos 3 parágrafos
+    # diferentes. Isso evita bloquear expressões curtas naturais e CTAs.
+    occurrences = {}
+    for paragraph_index, words in enumerate(normalized):
+        seen_here = set()
+        for size in range(7, 15):
+            for start in range(0, len(words) - size + 1):
+                phrase = tuple(words[start:start + size])
+                if phrase in seen_here:
+                    continue
+                seen_here.add(phrase)
+                row = occurrences.setdefault(phrase, set())
+                row.add(paragraph_index)
+
+    hits = []
+    for phrase, paragraph_indexes in occurrences.items():
+        if len(paragraph_indexes) >= 3:
+            hits.append({
+                "pattern": "repeated_long_phrase_across_paragraphs",
+                "match": " ".join(phrase),
+                "paragraph_count": len(paragraph_indexes),
+            })
+    # Retorna apenas as frases mais longas para evitar dezenas de alertas derivados
+    # da mesma manchete repetida.
+    hits.sort(key=lambda item: (len(item["match"].split()), item["paragraph_count"]), reverse=True)
+    return hits[:5]
+
+
 def main(path):
     p=Path(path)
     text=p.read_text(encoding="utf-8")
@@ -43,6 +81,7 @@ def main(path):
         m=re.search(pat,low,re.I|re.S)
         if m:
             hits.append({"pattern":pat,"match":text[m.start():m.end()]})
+    hits.extend(repeated_long_phrases(text))
     # "Você" é tratamento normal de audiência em português brasileiro e não
     # caracteriza, por si só, conversa privada/meta. Só padrões explícitos acima
     # devem bloquear; registrar a contagem para diagnóstico sem reprovar o roteiro.
