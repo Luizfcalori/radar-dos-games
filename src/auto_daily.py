@@ -24,9 +24,9 @@ from urllib.parse import urljoin, urlparse
 import requests
 
 try:
-    from media import steam_candidates, discover_social_posts, social_profile_url, social_post_url
+    from media import steam_candidates, discover_social_posts, social_profile_url, social_post_url, youtube_video_id
 except ImportError:
-    from src.media import steam_candidates, discover_social_posts, social_profile_url, social_post_url
+    from src.media import steam_candidates, discover_social_posts, social_profile_url, social_post_url, youtube_video_id
 
 OUT = Path("output")
 DATA = Path("data")
@@ -196,13 +196,12 @@ def canonical_media(items):
     images = []
     for kind, url in items:
         url = url.replace("&amp;", "&")
-        # YouTube usa o query param ?v= como identidade do vídeo. Remover a
-        # query inteira fazia vídeos diferentes virarem a mesma chave (/watch).
-        if "youtube.com/watch" in url.lower():
-            m = re.search(r"[?&]v=([^&#]+)", url, re.I)
-            key = "youtube:" + (m.group(1) if m else url)
-        elif "youtu.be/" in url.lower():
-            key = "youtube:" + urlparse(url).path.strip("/").split("/")[0]
+        # Identidade canônica cobre watch, embed, youtu.be, shorts e live.
+        # Sem isso, um trailer encontrado em formatos diferentes parece ser
+        # duas fontes e infla artificialmente a variedade disponível.
+        video_id = youtube_video_id(url) if kind == "video" else ""
+        if video_id:
+            key = "youtube:" + video_id
         else:
             key = re.sub(r"[?#].*$", "", url)
         if key in seen or not media_quality(kind, url):
@@ -961,8 +960,11 @@ def main():
                     errors.append({"title": c.get("title"), "error": f"somente {len(media)} mídias descobertas"})
                     continue
                 score, mix = candidate_score(c, index, media, repeat)
-                if mix["videos"] < 1:
-                    errors.append({"title": c.get("title"), "error": "sem gameplay/vídeo oficial em movimento"})
+                # O plano de produção exige duas fontes de vídeo distintas.
+                # Uma URL duplicada do mesmo trailer não deve ganhar a pauta
+                # nem empurrar a falha de diversidade para o diretor no fim.
+                if mix["videos"] < 2:
+                    errors.append({"title": c.get("title"), "error": f"somente {mix['videos']} vídeo(s) único(s); mínimo exigido: 2"})
                     continue
                 evaluated.append({
                     "candidate": c,

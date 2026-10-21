@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Aquisição de mídia com prova de relevância por jogo e QA semântico."""
-import html,json,os,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
+import hashlib,html,json,os,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 
 try:
@@ -17,6 +17,32 @@ LOW_VALUE_TOKENS=(
 )
 STEAM_VIDEO_HOST='https://video.fastly.steamstatic.com/'
 NEWISTY_BASE='https://newisty.com/api/video-downloader'
+
+def sha256_file(path, chunk_size=1024*1024):
+    """Calcula SHA-256 em blocos para não carregar vídeos grandes inteiros na RAM."""
+    digest=hashlib.sha256()
+    with open(path,'rb') as stream:
+        for chunk in iter(lambda:stream.read(chunk_size),b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+def youtube_video_id(url):
+    """Extrai o ID canônico de um vídeo do YouTube em formatos comuns."""
+    try:
+        parsed=urllib.parse.urlparse(str(url))
+        host=(parsed.hostname or '').lower()
+        parts=[part for part in parsed.path.split('/') if part]
+        if host in ('youtu.be','www.youtu.be'):
+            return parts[0] if parts else ''
+        if host.endswith('youtube.com') or host.endswith('youtube-nocookie.com'):
+            if parsed.path=='/watch':
+                return (urllib.parse.parse_qs(parsed.query).get('v') or [''])[0]
+            if len(parts)>=2 and parts[0] in ('embed','shorts','live','v'):
+                return parts[1]
+    except Exception:
+        pass
+    return ''
+
 
 def probe_info(p):
     if not p.exists() or p.stat().st_size < 20000:return None
@@ -443,7 +469,7 @@ def blocked_candidate(url,item):
 
 def main(path):
     spec=json.loads(Path(path).read_text(encoding='utf-8'));out=Path('output/media');out.mkdir(parents=True,exist_ok=True)
-    assets=[];errors=[];seq=0;seen=set();seen_movie_sources=set()
+    assets=[];errors=[];seq=0;seen=set();seen_video_ids=set();seen_content=set();seen_movie_sources=set();seen_content_hashes=set()
     for item in spec.get('media',[]):
         wanted=item.get('type','video');role=item.get('role','');max_assets=int(item.get('max_assets',4));candidates=[]
         if item.get('steam_app_id'):
@@ -463,6 +489,10 @@ def main(path):
         got=0
         for u,evidence,label in candidates[:60]:
             if u in seen:continue
+            video_id=youtube_video_id(u) if wanted=='video' else ''
+            if video_id and video_id in seen_video_ids:
+                print('duplicate YouTube video ID rejected',u,'video_id',video_id,flush=True)
+                continue
             movie_key=(source,label) if item.get("steam_app_id") and label else None
             if movie_key and movie_key in seen_movie_sources:continue
             low=u.lower();clean=low.split('?')[0];isimg=clean.endswith(IMAGE_EXTS) or bool(item.get('force_image',False) and wanted=='image');isstream=clean.endswith(STREAM_EXTS);isdrive='drive.google.com/file/d/' in low
@@ -492,7 +522,16 @@ def main(path):
                 min_d=float(item.get('min_duration',8))
                 if float(info.get('duration',0))<min_d:
                     print('duration reject',info.get('duration'),u);dest.unlink(missing_ok=True);continue
+                # URL variants can resolve to byte-identical files. Hash once,
+                # after technical validation and before counting the asset/duration.
+                digest=sha256_file(dest)
+                if digest in seen_content:
+                    print('content duplicate rejected',u,'sha256',digest,flush=True)
+                    dest.unlink(missing_ok=True)
+                    continue
+                seen_content.add(digest)
             seen.add(u)
+            if video_id:seen_video_ids.add(video_id)
             if movie_key:seen_movie_sources.add(movie_key)
             assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u,'source':source,
                            'relevance_evidence':evidence,'source_label':label,'approved':True,'duration':float(info.get('duration',0)),

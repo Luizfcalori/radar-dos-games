@@ -148,8 +148,11 @@ class VideoTimeline:
                     candidates.append((rank,asset,lo,length,w))
         reused=False
         if not candidates:
-            # After all unique reviewed intervals are exhausted, permit short,
-            # reviewed gameplay reuse from the same approved source as a last resort.
+            # First consume any remaining reviewed, non-overlapping fragments, even
+            # when they are shorter than the normal one-second candidate floor.
+            # This avoids marking fresh frames as reused merely because the last
+            # available window is short. Only overlap when no fresh fragment remains.
+            fresh_fallback=[]
             fallback=[]
             for asset in assets:
                 idx=int(asset['index'])
@@ -158,21 +161,30 @@ class VideoTimeline:
                 for w in merge_reviewed_windows((scene.get('visual_windows') or {}).get(str(idx),[]),source_duration):
                     if w.get('reviewed') is not True or not w.get('evidence'): continue
                     if 'title_card' in set(w.get('semantic_categories',[])): continue
-                    # Named subjects remain mandatory even when relaxed gameplay reuse is enabled.
                     if required_subjects and not scene.get("allow_official_subject_fallback"):
                         if not set(required_subjects).issubset(set(w.get('subjects',[]))): continue
                     end=min(float(w['end']),source_duration-EPS) if source_duration>0 else float(w['end'])
                     lo=float(w['start'])
                     if end<=lo+EPS: continue
-                    length=min(3.5,remaining,end-lo)
-                    if length<=0: continue
                     key=self.identity(idx)
-                    prior=sum(max(0,min(end,b)-max(lo,a)) for a,b in self.used[key])
-                    fallback.append(((prior,-len(set(w.get('semantic_categories',[])) & expected),-idx,lo),asset,lo,length,w))
-            if not fallback:
-                raise RuntimeError(f'QUALITY_BLOCK: sem gameplay aprovada utilizável para a fala: {text}')
-            _,asset,lo,length,w=min(fallback,key=lambda x:x[0])
-            reused=True
+                    categories=set(w.get('semantic_categories',[]))
+                    for free_lo,free_hi in self.free(idx,lo,end):
+                        room=free_hi-free_lo
+                        if room>=0.25-EPS:
+                            length=min(3.5,remaining,room)
+                            fresh_fallback.append(((length, bool(expected & categories),-idx,-free_lo),asset,free_lo,length,w))
+                    length=min(3.5,remaining,end-lo)
+                    if length>0:
+                        prior=sum(max(0,min(end,b)-max(lo,a)) for a,b in self.used[key])
+                        fallback.append(((prior,-len(categories & expected),-idx,lo),asset,lo,length,w))
+            if fresh_fallback:
+                _,asset,lo,length,w=max(fresh_fallback,key=lambda x:x[0])
+                reused=False
+            else:
+                if not fallback:
+                    raise RuntimeError(f'QUALITY_BLOCK: sem gameplay aprovada utilizável para a fala: {text}')
+                _,asset,lo,length,w=min(fallback,key=lambda x:x[0])
+                reused=True
         else:
             _,asset,lo,length,w=max(candidates,key=lambda x:x[0])
         reserved=math.ceil((length-1e-8)*30)/30
