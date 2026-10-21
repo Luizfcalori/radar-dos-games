@@ -751,7 +751,32 @@ def fetch_manual_media(brief):
         ):
             curated.append(("video", url))
 
-    curated.extend(combined.media)
+    # Recover direct media from the exact official source pages named in the brief.
+    # YouTube embeds are not treated as downloadable media here: GitHub runners can
+    # be rate-limited by YouTube, so prefer direct PlayStation-hosted video assets.
+    trusted_hosts = (".playstation.com", ".playstation.net", ".sony.com", ".sony.net")
+    for source_url in list(brief.get("media_source_urls", []) or []):
+        if not isinstance(source_url, str) or not source_url.startswith("https://"):
+            continue
+        host = urlparse(source_url).netloc.lower()
+        if not any(host == suffix.lstrip(".") or host.endswith(suffix) for suffix in trusted_hosts):
+            continue
+        try:
+            page = fetch_page(source_url)
+            for kind, asset_url in page.media:
+                asset_host = urlparse(asset_url).netloc.lower()
+                if kind == "video":
+                    direct_video = bool(re.search(r"\\.(?:mp4|webm|mov|m4v|m3u8|mpd)(?:$|\\?)", asset_url, re.I))
+                    trusted_video_host = any(
+                        asset_host == suffix.lstrip(".") or asset_host.endswith(suffix)
+                        for suffix in trusted_hosts
+                    )
+                    if direct_video and trusted_video_host:
+                        curated.append(("video", asset_url))
+                elif kind == "image":
+                    curated.append(("image", asset_url))
+        except Exception as exc:
+            errors.append({"url": source_url, "error": str(exc)[:180]})
     media = canonical_media(curated)
     # A single explicitly approved trailer is valid source footage. Topic-specific
     # stills are added later as separate media items; never pad with page ads.
