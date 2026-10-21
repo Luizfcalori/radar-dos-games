@@ -102,9 +102,11 @@ def _fight_night_curated_still(asset):
     return (
         asset.get("type") == "image"
         and role.startswith(("official_subject_reference_", "official_context_"))
-        and "fight night" in (url + " " + label)
+        # The brief already curates these assets for the selected Fight Night topic;
+        # EA CDN URLs sometimes use opaque filenames without the game name.
         and ("ea.com" in url or "eaassets-a.akamaihd.net" in url)
         and bool(asset.get("source"))
+        and bool(label or url)
     )
 
 
