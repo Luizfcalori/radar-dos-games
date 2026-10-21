@@ -8,6 +8,7 @@ on:
       - ".github/workflows/verify-saros-cover-fix.yml"
       - "src/rebuild_saros_existing.py"
       - "src/premium_covers.py"
+      - "src/cover_qa.py"
 
 permissions:
   contents: read
@@ -112,6 +113,26 @@ jobs:
               raise SystemExit("QUALITY_BLOCK: not all three Shorts have matching 1.4-second cover openings")
           print("SHARED_PREMIUM_COVER_POLICY_OK")
           PY
+      - name: Run mandatory four-cover and first-frame QA
+        run: |
+          set -euo pipefail
+          python -m py_compile src/premium_covers.py src/cover_qa.py
+          python src/cover_qa.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("output/cover-qa.json")
+          data=json.loads(p.read_text(encoding="utf-8"))
+          if data.get("status") != "APPROVED_PREMIUM":
+              raise SystemExit("QUALITY_BLOCK: cover QA did not approve premium covers")
+          if data.get("premium_cover_qa") != "APPROVED" or data.get("fallback_used"):
+              raise SystemExit("QUALITY_BLOCK: premium QA missing or fallback used")
+          if len(data.get("covers", [])) != 4 or len(data.get("short_openings", [])) != 3:
+              raise SystemExit("QUALITY_BLOCK: expected exactly four covers and three approved openings")
+          if any(x.get("status") != "APPROVED" for x in data["short_openings"]):
+              raise SystemExit("QUALITY_BLOCK: a Short first-frame check failed")
+          print("COVER_QA_APPROVED_PREMIUM")
+          PY
       - name: Cover and video quality gates
         run: |
           set -euo pipefail
@@ -147,6 +168,8 @@ jobs:
           name: saros-corrected-covers-review-only
           path: |
             output/thumbnail.jpg
+            output/cover-qa.json
+            output/cover-suite-policy.json
             output/saros-official-keyart.jpg
             output/shorts/short_1_cover.jpg
             output/shorts/short_2_cover.jpg
