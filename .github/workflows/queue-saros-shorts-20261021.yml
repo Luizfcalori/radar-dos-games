@@ -48,7 +48,8 @@ jobs:
           for n in 1 2 3; do
             for ext in mp4 jpg; do
               name="39591112132-saros-short-${n}.${ext}"
-              gh release upload tiktok-approved-assets "output/saros-short-${n}.${ext}" --clobber --name "$name"
+              cp "output/saros-short-${n}.${ext}" "output/$name"
+            gh release upload tiktok-approved-assets "output/$name" --clobber
             done
           done
       - name: Add exactly three Saros Shorts to TikTok Helper queue
