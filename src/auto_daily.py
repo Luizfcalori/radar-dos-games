@@ -772,7 +772,9 @@ def main():
     manual = load_manual_brief()
     # Pautas especiais independentes mantêm briefs próprios para não sobrescrever
     # o brief genérico nem herdar o tema de uma produção anterior.
-    if forced_topic_slug == ascii_slug("Free Fire"):
+    if forced_topic_slug == ascii_slug("Saros Zenith"):
+        manual = load_manual_brief("production/manual-brief-saros-zenith-2026-10-21.json")
+    elif forced_topic_slug == ascii_slug("Free Fire"):
         manual = load_manual_brief("production/manual-brief-free-fire-2026-10-13.json")
     elif forced_topic_slug == ascii_slug("Microsoft Rewards"):
         manual = load_manual_brief("production/manual-brief-microsoft-rewards-2026-10-19.json")
@@ -783,7 +785,9 @@ def main():
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
-        if forced_topic_slug == ascii_slug("League of Legends"):
+        if forced_topic_slug == ascii_slug("Saros Zenith"):
+            manual = load_manual_brief("production/manual-brief-saros-zenith-2026-10-21.json")
+        elif forced_topic_slug == ascii_slug("League of Legends"):
             manual = load_manual_brief("production/manual-brief-league-of-legends-2026-10-14.json")
         elif forced_topic_slug == ascii_slug("Phantom Blade Zero"):
             manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
