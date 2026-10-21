@@ -36,6 +36,39 @@ class MediaFirstTests(unittest.TestCase):
         # Hashed filenames still receive a topic label only because the image
         # is served from the exact official article URL.
         self.assertEqual(self.assets[1]["source_label"],"Battlefield 6")
+    def test_official_image_with_opaque_cdn_name_uses_verified_source_host(self):
+        # Fight Night lesson: an official EA CDN filename may be opaque, and
+        # the source page can differ from the selected landing page on the same host.
+        self.assets[1].update({
+            "url":"https://cdn.news.example/assets/9f8e7d6c5b4a.png",
+            "source":"https://news.example/official-game-page",
+            "role":"official_subject_reference_01",
+            "source_label":"",
+        })
+        plan,script,report=compile_storyboard(
+            self.plan,self.clips,
+            {"url":"https://news.example/test","title":"Battlefield 6"},
+            self.outline
+        )
+        self.assertIn(13, plan["scenes"][0]["media_first_assets"])
+        self.assertEqual(self.assets[1]["source_label"],"Battlefield 6")
+
+    def test_unrelated_host_official_role_is_not_admitted_as_contextual_fallback(self):
+        self.assets[1].update({
+            "url":"https://cdn.unrelated.example/assets/9f8e7d6c5b4a.png",
+            "source":"https://unrelated.example/official-game-page",
+            "role":"official_subject_reference_01",
+            "source_label":"",
+        })
+        # The ordinary image can still be chosen by explicit relevance; it must
+        # not gain the privileged contextual-image fallback solely from its role.
+        plan,script,report=compile_storyboard(
+            self.plan,self.clips,
+            {"url":"https://news.example/test","title":"Battlefield 6"},
+            self.outline
+        )
+        self.assertNotIn(13, plan["scenes"][2]["media_first_assets"])
+
     def test_final_script_digest_is_byte_stable(self):
         plan,script,report=compile_storyboard(self.plan,self.clips,{"url":"https://news.example/test","title":"Battlefield 6"},self.outline)
         data=script.encode("utf-8")
