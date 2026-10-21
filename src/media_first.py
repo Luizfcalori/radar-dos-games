@@ -72,18 +72,24 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
     # material even when CDN filenames are hashes. No unrelated source is admitted.
     def source_key(value):
         parsed=urlparse(str(value or ""))
-        return (parsed.netloc.lower(), parsed.path.rstrip("/"))
+        host=(parsed.hostname or "").lower()
+        if host.startswith("www."):
+            host=host[4:]
+        return (host, parsed.path.rstrip("/"))
     primary_source=source_key(selected.get("url"))
     contextual_images=[]
     for asset in images:
-        source_domain=urlparse(str(asset.get("source") or "")).netloc.lower()
-        image_url=str(asset.get("url") or "").casefold()
-        curated_same_game=(
-            str(asset.get("role") or "").startswith("official_subject_reference_")
-            and "callofduty.com" in source_domain
-            and "/mw4/" in image_url
-        )
-        if (source_key(asset.get("source"))==primary_source and primary_source[0]) or curated_same_game:
+        asset_role=str(asset.get("role") or "")
+        asset_source=source_key(asset.get("source"))
+        # A CDN filename may be opaque. Trust the verified official page host
+        # plus an explicit, reviewed official-image role—not the filename alone.
+        # Requiring the source host to match the selected official source keeps
+        # the fallback topic-bound and prevents generic third-party images.
+        official_role=asset_role.startswith((
+            "official_subject_reference_", "official_context_"
+        ))
+        same_official_host=bool(primary_source[0] and asset_source[0]==primary_source[0])
+        if official_role and same_official_host:
             if not asset.get("source_label"):
                 asset["source_label"]=str(selected.get("title") or topic)
             contextual_images.append(asset)
