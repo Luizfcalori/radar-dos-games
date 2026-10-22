@@ -91,12 +91,23 @@ def render_piece(asset,duration,dest,piece_no,card=None,keyword="",scene_first=F
     else:
         if not source_window: raise RuntimeError("QUALITY_BLOCK: vídeo sem intervalo explícito")
         seek=float(source_window["start"])
-        if source_window and seek+duration>float(source_window["end"])+0.01:
-            raise RuntimeError("QUALITY_BLOCK: corte extrapolou janela visual aprovada")
+        window_end=float(source_window["end"])
+        source_limit=None
+        if seek+duration>window_end+0.01:
+            # Never read beyond the semantically approved source window. If the
+            # discrepancy is at most 0.25s, cap the INPUT at the approved end
+            # and let the existing short tail pad cover only missing frames.
+            # Larger gaps remain a hard QA failure; no looping or extra footage.
+            available=max(0.0,window_end-seek)
+            if duration-available>0.25:
+                raise RuntimeError("QUALITY_BLOCK: corte extrapolou janela visual aprovada")
+            source_limit=available
         if seek+duration>probe_duration(path)+0.04:
             raise RuntimeError("QUALITY_BLOCK: fonte menor que o corte, loop proibido")
         inp=[]
         if seek>0:inp += ["-ss",f"{seek:.3f}"]
+        if source_limit is not None:
+            inp += ["-t",f"{source_limit:.3f}"]
         inp += ["-i",str(path)]
 
     # Movimento sempre preserva a fonte completa. Fundo preenche sem crop no foreground.
