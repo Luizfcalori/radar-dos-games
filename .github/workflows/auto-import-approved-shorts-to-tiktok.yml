@@ -245,20 +245,17 @@ jobs:
                       if tag.lower() not in {"#shorts","#youtubeshorts"} and tag.lower() not in {x.lower() for x in found}:
                           found.append(tag)
 
-                  # TikTok Helper only: prioritize discoverability for Brazilian gaming audiences.
-                  # Keep two highly relevant topic tags, two discovery tags, and the channel brand.
-                  discovery_priority=["#GamesBrasil","#GamerBrasil","#TikTokGames","#NotíciasGamer"]
-                  brand="#RadarDosGames"
-                  generic={x.lower() for x in discovery_priority+[brand,"#Gaming","#Gamer","#Games","#GameNews"]}
-                  specific=[t for t in found if t.lower() not in generic]
-                  tags=specific[:2]
+                  # TikTok Helper only: maximize relevance and discovery; no channel-branded hashtag.
+                  # Use up to 3 topic/game-specific tags and fill remaining slots with broad gaming discovery tags.
+                  discovery_priority=["#Gaming","#Gamer","#Games","#TikTokGames","#GameTok","#GamerLife","#Jogos","#Gameplay"]
+                  discovery_lower={x.lower() for x in discovery_priority}
+                  specific=[t for t in found if t.lower() not in discovery_lower and t.lower() not in {"#shorts","#youtubeshorts","#radardosgames"}]
+                  tags=specific[:3]
                   for tag in discovery_priority:
-                      if len(tags)>=4:
+                      if len(tags)>=5:
                           break
                       if tag.lower() not in {x.lower() for x in tags}:
                           tags.append(tag)
-                  if brand.lower() not in {x.lower() for x in tags}:
-                      tags.append(brand)
                   tags=tags[:5]
 
                   new.append({
