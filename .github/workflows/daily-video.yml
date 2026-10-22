@@ -521,3 +521,4 @@ jobs:
           retention-days: 7
 
 # Trigger a controlled AUTO production run after watchdog recovery fix.
+# Mega Man: Dual Override explicit-topic lock: use official-source manual brief.
