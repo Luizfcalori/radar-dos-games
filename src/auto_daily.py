@@ -644,7 +644,7 @@ def build_metadata(candidate, parser, privacy):
         if tag_key(h) in {"game", "games", "gaming", "video", "news", "official"}:
             continue
         topic_tags.append(h)
-    hashtags = ["#RadarDosGames"] + topic_tags[:3]
+    hashtags = topic_tags[:4]
     hashtags = hashtags[:4]
 
     desc = (
