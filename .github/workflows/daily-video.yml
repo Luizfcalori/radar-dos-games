@@ -276,7 +276,8 @@ jobs:
           m = probe(master)
           md = float(m["format"]["duration"])
           mv = next(x for x in m["streams"] if x["codec_type"] == "video")
-          assert 210 <= md <= 420, md
+          # Allow extended Masters (up to 20 minutes); reject only too-short or runaway renders.
+          assert 210 <= md <= 1200, md
           assert (int(mv["width"]), int(mv["height"])) == (1920, 1080)
           assert any(x["codec_type"] == "audio" for x in m["streams"])
           qa = json.loads(Path("output/qa.json").read_text(encoding="utf-8"))
