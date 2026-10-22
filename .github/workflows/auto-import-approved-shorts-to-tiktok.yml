@@ -46,7 +46,10 @@ jobs:
           repo=os.environ["REPO"]
           token=os.environ["GH_TOKEN"]
           qpath=Path("data/tiktok_queue.json")
-          queue=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          queue_raw=qpath.read_text(encoding="utf-8") if qpath.exists() else ""
+          # Recover from a legacy literal \\n suffix that made valid queue JSON fail to parse.
+          queue_raw=queue_raw.rstrip().removesuffix("\\\\n")
+          queue=json.loads(queue_raw) if queue_raw else {"version":2,"items":[]}
           old_items=queue.get("items") or []
           imported_runs={str(x.get("source_run_id")) for x in old_items if x.get("source_run_id")}
           imported_titles={str(x.get("title") or "").strip().casefold() for x in old_items if x.get("status")=="approved"}
