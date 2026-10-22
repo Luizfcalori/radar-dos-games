@@ -245,13 +245,14 @@ jobs:
                       if tag.lower() not in {"#shorts","#youtubeshorts"} and tag.lower() not in {x.lower() for x in found}:
                           found.append(tag)
 
-                  # Hashtag strategy: topic/franchise-specific first, then discovery tags.
-                  # Keep a hard cap of five and always include the channel brand.
-                  broad_priority=["#Gaming","#Gamer","#Games","#TikTokGames","#GameNews"]
+                  # TikTok Helper only: prioritize discoverability for Brazilian gaming audiences.
+                  # Keep two highly relevant topic tags, two discovery tags, and the channel brand.
+                  discovery_priority=["#GamesBrasil","#GamerBrasil","#TikTokGames","#NotíciasGamer"]
                   brand="#RadarDosGames"
-                  specific=[t for t in found if t.lower() not in {x.lower() for x in broad_priority+[brand]}]
-                  tags=specific[:3]
-                  for tag in broad_priority:
+                  generic={x.lower() for x in discovery_priority+[brand,"#Gaming","#Gamer","#Games","#GameNews"]}
+                  specific=[t for t in found if t.lower() not in generic]
+                  tags=specific[:2]
+                  for tag in discovery_priority:
                       if len(tags)>=4:
                           break
                       if tag.lower() not in {x.lower() for x in tags}:
