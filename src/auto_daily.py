@@ -1319,3 +1319,5 @@ if __name__ == "__main__":
 # [run-production] TOPIC=Deadlock — retry with explicit topic lock and Solomon gameplay-page media fallback.
 
 # Media fallback fix 2026-10-16: enqueue every unique publisher-curated video URL before media QA.
+
+# Controlled rerun after Master render timeout increased to 60 minutes.
