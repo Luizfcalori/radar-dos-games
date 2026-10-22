@@ -1235,26 +1235,25 @@ def main():
     privacy = os.getenv("PUBLISH_PRIVACY", "unlisted").strip() or "unlisted"
     master_meta, shorts_meta = build_metadata(selected, parser, privacy)
     for i, meta in enumerate(shorts_meta):
-        meta["title"] = short_hooks[i] + " #Shorts"
+        meta["title"] = short_hooks[i]
     if manual:
         headline = sentence(manual.get("headline") or master_meta["title"])[:100]
         master_meta["title"] = headline
         all_sources = manual.get("source_urls") or [selected["url"]]
         source_lines = "\n".join(f"- {u}" for u in all_sources[:8])
-        game_tag = hashtag(selected.get("title") or "") or "#Games"
-        source_tag = hashtag(source_name(selected["url"])) or "#Gaming"
+        topic_hashtags = " ".join(hashtags[:4])
         master_meta["description"] = (
             f"🎮 {headline}\n\n"
-            "Especial aprofundado do Radar dos Games com informações das fontes oficiais consultadas, "
+            "Especial aprofundado com informações das fontes oficiais consultadas, "
             "contexto do anúncio e separação clara entre fatos confirmados e interpretações.\n\n"
             f"🔎 Fontes consultadas:\n{source_lines}\n\n"
-            f"#RadarDosGames {game_tag} {source_tag} #Gaming"
+            f"{topic_hashtags}"
         )
         for i, meta in enumerate(shorts_meta):
             meta["description"] = (
-                f"{headline}. Recorte {i+1}/3 do especial do Radar dos Games.\n\n"
+                f"{headline}. Recorte {i+1}/3 do especial.\n\n"
                 f"Fonte principal: {selected['url']}\n\n"
-                f"#RadarDosGames {game_tag} {source_tag} #Gaming #Shorts"
+                f"{topic_hashtags}"
             )
     (OUT / "master-youtube.json").write_text(json.dumps(master_meta, ensure_ascii=False, indent=2), encoding="utf-8")
     for i, meta in enumerate(shorts_meta, 1):
