@@ -31,14 +31,17 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Verificar ferramentas pré-instaladas
-        timeout-minutes: 1
+      - name: Instalar somente ffmpeg com timeout de rede
+        timeout-minutes: 5
         run: |
           set -eu
           command -v python
           command -v gh
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo timeout 120 apt-get update -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 -o Acquire::Retries=1 -qq
+            sudo timeout 150 apt-get install -y -qq --no-install-recommends ffmpeg
+          fi
           command -v ffmpeg
-          echo "Ferramentas essenciais já disponíveis no runner; sem apt-get update/install."
 
       - name: Localizar pacotes aprovados ainda não importados
         run: |
