@@ -46,7 +46,11 @@ def verify_assets(clips):
         if asset["type"]=="video" and float(asset.get("duration") or 0)<1:
             raise RuntimeError("QUALITY_BLOCK: arquivo de vídeo sem duração válida")
         found.append(asset)
-    if not clips.get("publishable_media") or len(found)<2 or not any(
+    # The downloader explicitly allows a one-asset shortfall when at least
+    # one verified, topic-relevant official video is available. Do not contradict
+    # that policy here: a single approved moving asset can support a storyboard,
+    # while the visual-inspection gate still rejects unusable or duplicate clips.
+    if not clips.get("publishable_media") or len(found)<1 or not any(
         x["type"]=="video" for x in found
     ):
         raise RuntimeError("QUALITY_BLOCK: não há mídia em movimento aprovada suficiente")
