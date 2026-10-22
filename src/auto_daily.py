@@ -645,7 +645,7 @@ def build_metadata(candidate, parser, privacy):
             continue
         topic_tags.append(h)
     master_hashtags = topic_tags[:15]
-    hashtags = topic_tags[:4]
+    hashtags = topic_tags[:5]
 
     desc = (
         f"🎮 {headline}.\n\n"
@@ -677,10 +677,10 @@ def build_metadata(candidate, parser, privacy):
         short_desc = (
             f"{headline}. Recorte {i}/3 do Radar dos Games.\n\n"
             f"Fonte oficial: {candidate['url']}\n\n"
-            + " ".join(hashtags + ["#Shorts"])
+            + " ".join(hashtags)
         )
         shorts.append({
-            "title": st + " #Shorts",
+            "title": st,
             "description": short_desc,
             "tags": tags + ["Shorts"],
             "privacy": privacy,
@@ -1242,7 +1242,7 @@ def main():
         all_sources = manual.get("source_urls") or [selected["url"]]
         source_lines = "\n".join(f"- {u}" for u in all_sources[:8])
         topic_hashtags = " ".join(master_hashtags[:15])
-        short_topic_hashtags = " ".join(hashtags[:4])
+        short_topic_hashtags = " ".join(hashtags[:5])
         master_meta["description"] = (
             f"🎮 {headline}\n\n"
             "Especial aprofundado com informações das fontes oficiais consultadas, "
