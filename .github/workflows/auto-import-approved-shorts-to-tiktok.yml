@@ -244,11 +244,12 @@ jobs:
                       tag="#"+re.sub(r"[^\w]","",t,flags=re.UNICODE)
                       if tag.lower() not in {"#shorts","#youtubeshorts"} and tag.lower() not in {x.lower() for x in tags}:
                           tags.append(tag)
-                      if len(tags)>=5:
+                      # Reserve one of the five available hashtags for the channel brand.
+                      if len(tags)>=4:
                           break
-                  for g in ["#RadarDosGames","#Games","#Gaming","#TikTokGames"]:
-                      if g.lower() not in {x.lower() for x in tags}:
-                          tags.append(g)
+                  if "#RadarDosGames".lower() not in {x.lower() for x in tags}:
+                      tags.append("#RadarDosGames")
+                  tags=tags[:5]
 
                   new.append({
                       "id":f"{slug}-approved-{rid}-short-{n}",
