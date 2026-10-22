@@ -629,13 +629,13 @@ def build_metadata(candidate, parser, privacy):
     focus = ", ".join(kws[:3]) if kws else "as principais novidades confirmadas"
     plat_txt = ", ".join(plats[:3]) if plats else "as plataformas citadas oficialmente"
 
-    # Hashtags enxutas: marca + jogo + termos diretamente ligados à pauta.
-    # Evita palavras genéricas de SEO e limita o excesso de tags repetidas.
+    # Hashtags do Master: até 15 termos relevantes, específicos e deduplicados.
+    # Shorts continuam com um conjunto mais curto e contextualizado.
     def tag_key(value):
         return unicodedata.normalize("NFKD", value.lstrip("#")).encode("ascii", "ignore").decode().lower()
 
     topic_tags = []
-    for item in [game] + kws[:4] + plats[:1]:
+    for item in [game] + kws[:10] + plats[:5]:
         h = hashtag(item)
         if not h or len(h) < 4:
             continue
@@ -644,8 +644,8 @@ def build_metadata(candidate, parser, privacy):
         if tag_key(h) in {"game", "games", "gaming", "video", "news", "official"}:
             continue
         topic_tags.append(h)
+    master_hashtags = topic_tags[:15]
     hashtags = topic_tags[:4]
-    hashtags = hashtags[:4]
 
     desc = (
         f"🎮 {headline}.\n\n"
@@ -653,7 +653,7 @@ def build_metadata(candidate, parser, privacy):
         "A ideia é mostrar o contexto sem transformar rumor em fato e, sempre que possível, combinar gameplay/trailer com imagens oficiais.\n\n"
         f"🔎 Fonte oficial: {candidate['url']}\n\n"
         "📡 Acompanhe o Radar dos Games para notícias, lançamentos, gameplays e atualizações sem repetição de pauta.\n\n"
-        + " ".join(hashtags)
+        + " ".join(master_hashtags)
     )
 
     tags = ["Radar dos Games", game, src] + plats + kws[:5]
@@ -1241,7 +1241,8 @@ def main():
         master_meta["title"] = headline
         all_sources = manual.get("source_urls") or [selected["url"]]
         source_lines = "\n".join(f"- {u}" for u in all_sources[:8])
-        topic_hashtags = " ".join(hashtags[:4])
+        topic_hashtags = " ".join(master_hashtags[:15])
+        short_topic_hashtags = " ".join(hashtags[:4])
         master_meta["description"] = (
             f"🎮 {headline}\n\n"
             "Especial aprofundado com informações das fontes oficiais consultadas, "
@@ -1253,7 +1254,7 @@ def main():
             meta["description"] = (
                 f"{headline}. Recorte {i+1}/3 do especial.\n\n"
                 f"Fonte principal: {selected['url']}\n\n"
-                f"{topic_hashtags}"
+                f"{short_topic_hashtags}"
             )
     (OUT / "master-youtube.json").write_text(json.dumps(master_meta, ensure_ascii=False, indent=2), encoding="utf-8")
     for i, meta in enumerate(shorts_meta, 1):
