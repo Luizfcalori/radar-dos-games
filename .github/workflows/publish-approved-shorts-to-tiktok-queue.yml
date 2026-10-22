@@ -132,7 +132,10 @@ jobs:
                       dynamic.append(tag)
 
               topic_words = re.findall(r'[A-Za-zÀ-ÿ0-9]{4,}', title)
-              stop = {'para','como','mais','esse','essa','sobre','games','game','radar','shorts','short'}
+              stop = {
+                  'para','como','mais','esse','essa','sobre','games','game','radar','shorts','short',
+                  'veja','jogo','jogos','novo','nova','agora','chegou','acao','vale','parte'
+              }
               for word in topic_words:
                   if word.lower() in stop:
                       continue
@@ -142,16 +145,18 @@ jobs:
 
               chosen = []
               seen = set()
+              generic_keys = {'radardosgames','games','gaming','tiktokgames','shorts','youtubeshorts'}
               for tag in dynamic:
                   key = unicodedata.normalize('NFKD', tag).encode('ascii', 'ignore').decode().lower()
-                  if not key or key in seen:
+                  if not key or key in seen or key in generic_keys or len(key) < 4:
                       continue
                   seen.add(key)
                   chosen.append(tag)
-                  if len(chosen) >= 4:
+                  if len(chosen) >= 3:
                       break
 
-              generic = ['#RadarDosGames', '#Games', '#Gaming', '#TikTokGames']
+              # Até cinco hashtags: três de pauta + marca e plataforma.
+              generic = ['#RadarDosGames', '#TikTokGames']
               hashtags = chosen + [x for x in generic if x.lower() not in {y.lower() for y in chosen}]
 
               post_text = (
