@@ -629,12 +629,23 @@ def build_metadata(candidate, parser, privacy):
     focus = ", ".join(kws[:3]) if kws else "as principais novidades confirmadas"
     plat_txt = ", ".join(plats[:3]) if plats else "as plataformas citadas oficialmente"
 
-    hashtags = ["#RadarDosGames"]
-    for item in [game] + plats[:2] + kws[:2]:
+    # Hashtags enxutas: marca + jogo + termos diretamente ligados à pauta.
+    # Evita palavras genéricas de SEO e limita o excesso de tags repetidas.
+    def tag_key(value):
+        return unicodedata.normalize("NFKD", value.lstrip("#")).encode("ascii", "ignore").decode().lower()
+
+    topic_tags = []
+    for item in [game] + kws[:4] + plats[:1]:
         h = hashtag(item)
-        if h and h.lower() not in {x.lower() for x in hashtags}:
-            hashtags.append(h)
-    hashtags = hashtags[:6]
+        if not h or len(h) < 4:
+            continue
+        if tag_key(h) in {tag_key(x) for x in topic_tags}:
+            continue
+        if tag_key(h) in {"#game", "#games", "#gaming", "#video", "#news", "#official"}:
+            continue
+        topic_tags.append(h)
+    hashtags = ["#RadarDosGames"] + topic_tags[:3]
+    hashtags = hashtags[:4]
 
     desc = (
         f"🎮 {headline}.\n\n"
