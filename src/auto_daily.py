@@ -845,6 +845,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-once-human-isles-of-abyss-2026-10-20.json")
         elif forced_topic_slug == ascii_slug("Fight Night"):
             manual = load_manual_brief("production/manual-brief-fight-night-return-2026-10-21.json")
+        elif forced_topic_slug == ascii_slug("Final Fantasy Resonance"):
+            manual = load_manual_brief("production/manual-brief-final-fantasy-resonance-2026-10-22.json")
         else:
             manual = None
     if not candidates and not manual:
