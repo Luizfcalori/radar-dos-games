@@ -135,9 +135,10 @@ jobs:
                   key=unicodedata.normalize('NFKD',x).encode('ascii','ignore').decode().lower()
                   if not x or not key or key in seen or x.lower() in {'#shorts','#youtubeshorts'}: continue
                   seen.add(key); chosen.append(x)
-                  if len(chosen)>=4: break
-              generic=['#RadarDosGames','#Games','#Gaming','#TikTokGames']
-              hashtags=chosen+[x for x in generic if x.lower() not in {y.lower() for y in chosen}]
+                  if len(chosen)>=5: break
+              # TikTok Helper: usar somente até 5 hashtags fortes e relevantes ao tema.
+              # Não acrescentar hashtags genéricas de marca/plataforma automaticamente.
+              hashtags=chosen[:5]
               entry={
                 'id':f'{slug}-approved-{run_id}-short-{n}',
                 'title':title,
