@@ -164,7 +164,7 @@ async def synthesize_one(text: str, output: Path, voice: str):
             metadata.unlink(missing_ok=True)
             if not retryable or attempt == max_attempts - 1:
                 raise
-            delays = (15, 30, 60, 90, 120, 120)
+            delays = (30, 60, 120, 180, 240, 300)
             delay = delays[attempt]
             print(
                 f"Edge TTS throttled ({name}); retry {attempt + 1}/{max_attempts - 1} "
@@ -238,7 +238,7 @@ async def synthesize(text: str, output: str, voice: str = VOICE, segments_json: 
     for i, paragraph in enumerate(paragraphs, 1):
         # Throttle connection bursts between paragraph requests to reduce 429s.
         if i > 1:
-            await asyncio.sleep(3)
+            await asyncio.sleep(8)
         seg = seg_dir / f"segment_{i:02d}.mp3"
         word_events = await synthesize_one(paragraph, seg, voice)
         d = duration(seg)
