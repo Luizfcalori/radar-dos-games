@@ -630,6 +630,7 @@ def build_metadata(candidate, parser, privacy):
     plat_txt = ", ".join(plats[:3]) if plats else "as plataformas citadas oficialmente"
 
     # Hashtags do Master: até 15 termos relevantes, específicos e deduplicados.
+    # Keep these values scoped to build_metadata; manual descriptions build their own tags.
     # Shorts continuam com um conjunto mais curto e contextualizado.
     def tag_key(value):
         return unicodedata.normalize("NFKD", value.lstrip("#")).encode("ascii", "ignore").decode().lower()
