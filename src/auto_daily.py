@@ -846,6 +846,7 @@ def main():
         elif forced_topic_slug == ascii_slug("Fight Night"):
             manual = load_manual_brief("production/manual-brief-fight-night-return-2026-10-21.json")
         elif forced_topic_slug == ascii_slug("Final Fantasy Resonance"):
+        # Keep the requested game pinned for private, manually triggered productions.
             manual = load_manual_brief("production/manual-brief-final-fantasy-resonance-2026-10-22.json")
         else:
             manual = None
