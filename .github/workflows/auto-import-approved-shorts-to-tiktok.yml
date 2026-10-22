@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: radar-tiktok-auto-import-approved
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   import:
@@ -31,10 +31,14 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Instalar ferramentas
+      - name: Verificar ferramentas pré-instaladas
+        timeout-minutes: 1
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg unzip jq
+          set -eu
+          command -v python
+          command -v gh
+          command -v ffmpeg
+          echo "Ferramentas essenciais já disponíveis no runner; sem apt-get update/install."
 
       - name: Localizar pacotes aprovados ainda não importados
         run: |
