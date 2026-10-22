@@ -857,8 +857,11 @@ def main():
         elif forced_topic_slug == ascii_slug("Fight Night"):
             manual = load_manual_brief("production/manual-brief-fight-night-return-2026-10-21.json")
         elif forced_topic_slug == ascii_slug("Final Fantasy Resonance"):
-        # Keep the requested game pinned for private, manually triggered productions.
+            # Keep the requested game pinned for private, manually triggered productions.
             manual = load_manual_brief("production/manual-brief-final-fantasy-resonance-2026-10-22.json")
+        elif forced_topic_slug == ascii_slug("Mega Man: Dual Override"):
+            # Lock this explicit production to the official Capcom/Nintendo brief.
+            manual = load_manual_brief("production/manual-brief-mega-man-dual-override-2026-10-22.json")
         else:
             manual = None
     if not candidates and not manual:
