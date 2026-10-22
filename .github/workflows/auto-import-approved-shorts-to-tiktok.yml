@@ -239,16 +239,25 @@ jobs:
                       ],check=True)
 
                   desc=str(meta.get("description") or "")
-                  tags=[]
+                  found=[]
                   for t in re.findall(r"#([\wÀ-ÿ]+)",desc,flags=re.UNICODE):
                       tag="#"+re.sub(r"[^\w]","",t,flags=re.UNICODE)
-                      if tag.lower() not in {"#shorts","#youtubeshorts"} and tag.lower() not in {x.lower() for x in tags}:
-                          tags.append(tag)
-                      # Reserve one of the five available hashtags for the channel brand.
+                      if tag.lower() not in {"#shorts","#youtubeshorts"} and tag.lower() not in {x.lower() for x in found}:
+                          found.append(tag)
+
+                  # Hashtag strategy: topic/franchise-specific first, then discovery tags.
+                  # Keep a hard cap of five and always include the channel brand.
+                  broad_priority=["#Gaming","#Gamer","#Games","#TikTokGames","#GameNews"]
+                  brand="#RadarDosGames"
+                  specific=[t for t in found if t.lower() not in {x.lower() for x in broad_priority+[brand]}]
+                  tags=specific[:3]
+                  for tag in broad_priority:
                       if len(tags)>=4:
                           break
-                  if "#RadarDosGames".lower() not in {x.lower() for x in tags}:
-                      tags.append("#RadarDosGames")
+                      if tag.lower() not in {x.lower() for x in tags}:
+                          tags.append(tag)
+                  if brand.lower() not in {x.lower() for x in tags}:
+                      tags.append(brand)
                   tags=tags[:5]
 
                   new.append({
