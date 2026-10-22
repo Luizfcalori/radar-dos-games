@@ -1244,8 +1244,23 @@ def main():
         master_meta["title"] = headline
         all_sources = manual.get("source_urls") or [selected["url"]]
         source_lines = "\n".join(f"- {u}" for u in all_sources[:8])
-        topic_hashtags = " ".join(master_hashtags[:15])
-        short_topic_hashtags = " ".join(hashtags[:5])
+        # Build topic-specific hashtags locally: build_metadata keeps these lists
+        # internal, so do not reference its local variables from main().
+        tag_candidates = [
+            "Mega Man Dual Override", "Mega Man", "Proto Man", "Custom Chips",
+            "Override", "Twinkle Girl", "Astro Man", "Capcom", "Nintendo",
+            "Jogos 2027", "Notícias Gamer", "Radar dos Games",
+        ] if "mega man" in ascii_slug(headline) else [
+            game_name(manual.get("title") or headline), "Games", "Gaming",
+            "Notícias Gamer", "Radar dos Games",
+        ]
+        topic_tags = []
+        for item in tag_candidates:
+            tag = hashtag(item)
+            if tag and tag.casefold() not in {existing.casefold() for existing in topic_tags}:
+                topic_tags.append(tag)
+        topic_hashtags = " ".join(topic_tags[:15])
+        short_topic_hashtags = " ".join(topic_tags[:5])
         master_meta["description"] = (
             f"🎮 {headline}\n\n"
             "Especial aprofundado com informações das fontes oficiais consultadas, "
