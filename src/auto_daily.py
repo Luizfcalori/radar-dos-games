@@ -641,7 +641,7 @@ def build_metadata(candidate, parser, privacy):
             continue
         if tag_key(h) in {tag_key(x) for x in topic_tags}:
             continue
-        if tag_key(h) in {"#game", "#games", "#gaming", "#video", "#news", "#official"}:
+        if tag_key(h) in {"game", "games", "gaming", "video", "news", "official"}:
             continue
         topic_tags.append(h)
     hashtags = ["#RadarDosGames"] + topic_tags[:3]
