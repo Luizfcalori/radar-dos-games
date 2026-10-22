@@ -1,10 +1,25 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-21T13:13:11.078021+00:00",
-  "total_discovered": 116,
-  "ready_for_tiktok": 112,
+  "updated_at": "2026-10-22T14:39:51.338050+00:00",
+  "total_discovered": 122,
+  "ready_for_tiktok": 115,
   "waiting_media": [
+    {
+      "youtube_id": "4J11rX8qp-U",
+      "title": "A Coreia Está Pegando Fogo",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "wYDMp_a572w",
+      "title": "Combate Intenso",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "jFqiD7hw0hc",
+      "title": "Missão 1: O Início",
+      "reason": "original_media_not_recovered_yet"
+    },
     {
       "youtube_id": "FWfua78AQis",
       "title": "Provando que a comunidade gamer é unida",
@@ -27,6 +42,42 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "0Lo8uAbMlww",
+      "youtube_url": "https://www.youtube.com/shorts/0Lo8uAbMlww",
+      "title": "FIGHT NIGHT ESTÁ VOLTANDO DEPOIS DE 15 ANOS",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "xjhhdF6CA58",
+      "youtube_url": "https://www.youtube.com/shorts/xjhhdF6CA58",
+      "title": "A EA CONFIRMOU O RETORNO — MAS NÃO MOSTROU GAMEPLAY",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "eSi38LJTCA4",
+      "youtube_url": "https://www.youtube.com/shorts/eSi38LJTCA4",
+      "title": "FIGHT NIGHT CONSEGUE SUPERAR UNDISPUTED?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "4J11rX8qp-U",
+      "youtube_url": "https://www.youtube.com/shorts/4J11rX8qp-U",
+      "title": "A Coreia Está Pegando Fogo",
+      "status": "waiting_media"
+    },
+    {
+      "youtube_id": "wYDMp_a572w",
+      "youtube_url": "https://www.youtube.com/shorts/wYDMp_a572w",
+      "title": "Combate Intenso",
+      "status": "waiting_media"
+    },
+    {
+      "youtube_id": "jFqiD7hw0hc",
+      "youtube_url": "https://www.youtube.com/shorts/jFqiD7hw0hc",
+      "title": "Missão 1: O Início",
+      "status": "waiting_media"
+    },
     {
       "youtube_id": "UhEa75FqF4I",
       "youtube_url": "https://www.youtube.com/shorts/UhEa75FqF4I",
