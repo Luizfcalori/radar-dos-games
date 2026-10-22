@@ -156,8 +156,8 @@ jobs:
                       break
 
               # Até cinco hashtags: três de pauta + marca e plataforma.
-              generic = ['#RadarDosGames', '#TikTokGames']
-              hashtags = chosen + [x for x in generic if x.lower() not in {y.lower() for y in chosen}]
+              generic = []
+              hashtags = chosen[:5]
 
               post_text = (
                   f'{title}\n\n'
