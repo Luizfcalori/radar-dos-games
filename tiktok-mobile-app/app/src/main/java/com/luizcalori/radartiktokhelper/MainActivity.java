@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
     private static final String PUBLIC_FOLDER = Environment.DIRECTORY_MOVIES + "/RadarTikTokHelper";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService syncExecutor = Executors.newSingleThreadExecutor();
     private final ExecutorService imageExecutor = Executors.newSingleThreadExecutor();
     private final List<QueueItem> allItems = new ArrayList<>();
     private final List<QueueItem> visibleItems = new ArrayList<>();
@@ -262,7 +263,7 @@ public class MainActivity extends Activity {
 
     private void syncQueue(boolean toast) {
         status.setText("Sincronizando fila...");
-        executor.execute(() -> {
+        syncExecutor.execute(() -> {
             try {
                 String json;
                 String source;
