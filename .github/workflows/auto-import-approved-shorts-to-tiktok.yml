@@ -32,17 +32,16 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Instalar somente ffmpeg com timeout de rede
-        timeout-minutes: 5
+      - name: Verificar ferramentas sem depender de instalação de pacotes
         run: |
           set -eu
           command -v python
           command -v gh
-          if ! command -v ffmpeg >/dev/null 2>&1; then
-            sudo timeout 120 apt-get update -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 -o Acquire::Retries=1 -qq
-            sudo timeout 150 apt-get install -y -qq --no-install-recommends ffmpeg
+          if command -v ffmpeg >/dev/null 2>&1; then
+            echo "ffmpeg disponível"
+          else
+            echo "ffmpeg ausente; serão usadas as capas existentes nos artefatos aprovados"
           fi
-          command -v ffmpeg
 
       - name: Localizar pacotes aprovados ainda não importados
         run: |
@@ -233,11 +232,13 @@ jobs:
                   cover=next(iter(d.rglob(f"short_{n}_cover.jpg")),None)
                   if cover and Path(cover).exists() and Path(cover).stat().st_size>1000:
                       shutil.copy2(cover,jpg)
-                  else:
+                  elif shutil.which("ffmpeg"):
                       subprocess.run([
                           "ffmpeg","-hide_banner","-loglevel","error","-y",
                           "-ss","1","-i",str(src),"-frames:v","1","-vf","scale=720:-2",str(jpg)
                       ],check=True)
+                  else:
+                      raise RuntimeError(f"Short {n} não tem capa no artefato e ffmpeg não está disponível; não é seguro publicar thumbnail inválida.")
 
                   desc=str(meta.get("description") or "")
                   found=[]
