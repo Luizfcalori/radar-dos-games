@@ -822,6 +822,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
     elif forced_topic_slug == ascii_slug("Fight Night"):
         manual = load_manual_brief("production/manual-brief-fight-night-return-2026-10-21.json")
+    elif forced_topic_slug == ascii_slug("The Blood of Dawnwalker"):
+        manual = load_manual_brief("production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
@@ -863,6 +865,9 @@ def main():
         elif forced_topic_slug == ascii_slug("Mega Man: Dual Override"):
             # Lock this explicit production to the official Capcom/Nintendo brief.
             manual = load_manual_brief("production/manual-brief-mega-man-dual-override-2026-10-22.json")
+        elif forced_topic_slug == ascii_slug("The Blood of Dawnwalker"):
+            # Lock this production to the latest official Update 1.1 brief and curated game-specific footage.
+            manual = load_manual_brief("production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -905,6 +910,9 @@ def main():
             "published_at": now.isoformat(),
             "score": 999,
             "manual_brief_path": (
+                "production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json"
+                if manual.get("content_id") == "manual-the-blood-of-dawnwalker-update-1-1-2026-10-23"
+                else (
                 "production/manual-brief-fight-night-return-2026-10-21.json"
                 if manual.get("content_id") == "manual-fight-night-return-announcement-2026-10-21"
                 else (
@@ -937,6 +945,7 @@ def main():
                         )
                         )
                     )
+                )
                 )
                 )
                 )
