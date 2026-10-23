@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-23T00:29:04.545518+00:00",
-  "total_discovered": 125,
-  "ready_for_tiktok": 118,
+  "updated_at": "2026-10-23T10:03:10.884289+00:00",
+  "total_discovered": 128,
+  "ready_for_tiktok": 121,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "YyGhSrL2yKA",
+      "youtube_url": "https://www.youtube.com/shorts/YyGhSrL2yKA",
+      "title": "Saros: modificadores de proteção explicados",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "o2kDXYYSQ0c",
+      "youtube_url": "https://www.youtube.com/shorts/o2kDXYYSQ0c",
+      "title": "Saros: New Game+ com Eclipse Layers",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "ZqIS4oGwiPg",
+      "youtube_url": "https://www.youtube.com/shorts/ZqIS4oGwiPg",
+      "title": "Saros: Overlord Rush reúne oito chefes",
+      "status": "approved"
+    },
     {
       "youtube_id": "ZrmwwcC4qvY",
       "youtube_url": "https://www.youtube.com/shorts/ZrmwwcC4qvY",
