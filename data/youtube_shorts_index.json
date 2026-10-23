@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-22T14:39:51.338050+00:00",
-  "total_discovered": 122,
-  "ready_for_tiktok": 115,
+  "updated_at": "2026-10-23T00:29:04.545518+00:00",
+  "total_discovered": 125,
+  "ready_for_tiktok": 118,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "ZrmwwcC4qvY",
+      "youtube_url": "https://www.youtube.com/shorts/ZrmwwcC4qvY",
+      "title": "FINAL FANTASY RESONANCE JÁ CHEGOU: VEJA O HD-2D EM AÇÃO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "buICeG8v9U0",
+      "youtube_url": "https://www.youtube.com/shorts/buICeG8v9U0",
+      "title": "COMBATE POR TURNOS, FRAQUEZAS E ATAQUES RESONANCE",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "aNTfvPxzdzs",
+      "youtube_url": "https://www.youtube.com/shorts/aNTfvPxzdzs",
+      "title": "A DEMO TRANSFERE O PROGRESSO PARA O JOGO COMPLETO?",
+      "status": "approved"
+    },
     {
       "youtube_id": "0Lo8uAbMlww",
       "youtube_url": "https://www.youtube.com/shorts/0Lo8uAbMlww",
