@@ -1256,21 +1256,40 @@ def main():
         source_lines = "\n".join(f"- {u}" for u in all_sources[:8])
         # Build topic-specific hashtags locally: build_metadata keeps these lists
         # internal, so do not reference its local variables from main().
-        tag_candidates = [
-            "Mega Man Dual Override", "Mega Man", "Proto Man", "Custom Chips",
-            "Override", "Twinkle Girl", "Astro Man", "Capcom", "Nintendo",
-            "Jogos 2027", "Notícias Gamer", "Radar dos Games",
-        ] if "mega man" in ascii_slug(headline) else [
-            game_name(manual.get("title") or headline), "Games", "Gaming",
-            "Notícias Gamer", "Radar dos Games",
-        ]
+        manual_game = game_name(manual.get("title") or headline)
+        manual_slug = ascii_slug(" ".join([manual_game, headline]))
+        if "blood of dawnwalker" in manual_slug or "dawnwalker" in manual_slug:
+            # Tags editoriais específicas para The Blood of Dawnwalker.
+            # Master YouTube usa conjunto ampliado; TikTok Helper aplica sua própria regra de 5.
+            tag_candidates = [
+                "The Blood of Dawnwalker", "Dawnwalker", "Rebel Wolves",
+                "Vampire RPG", "Dark Fantasy", "Action RPG", "RPG Games",
+                "Open World RPG", "Fantasy Games", "Gaming News",
+                "Upcoming Games", "PC Gaming", "PlayStation 5",
+                "Xbox Series X", "Radar dos Games",
+            ]
+        elif "mega man" in manual_slug:
+            tag_candidates = [
+                "Mega Man Dual Override", "Mega Man", "Proto Man", "Capcom",
+                "Twinkle Girl", "Astro Man", "Action Platformer", "Platform Games",
+                "Nintendo", "PC Gaming", "PlayStation 5", "Xbox Series X",
+                "Gaming News", "Upcoming Games", "Radar dos Games",
+            ]
+        else:
+            # Não preencher com hashtags genéricas fixas: derivar termos do jogo/pauta.
+            tag_candidates = [manual_game]
+            tag_candidates.extend(keywords(headline, limit=12))
+            tag_candidates.extend(["Gaming News", "Upcoming Games", "Gameplay", "Radar dos Games"])
         topic_tags = []
+        seen_tag_keys = set()
         for item in tag_candidates:
             tag = hashtag(item)
-            if tag and tag.casefold() not in {existing.casefold() for existing in topic_tags}:
+            key = unicodedata.normalize("NFKD", tag.lstrip("#")).encode("ascii", "ignore").decode().lower() if tag else ""
+            if tag and len(tag) >= 4 and key not in seen_tag_keys:
                 topic_tags.append(tag)
+                seen_tag_keys.add(key)
         topic_hashtags = " ".join(topic_tags[:15])
-        short_topic_hashtags = " ".join(topic_tags[:5])
+        short_topic_hashtags = " ".join(topic_tags[:8])
         master_meta["description"] = (
             f"🎮 {headline}\n\n"
             "Especial aprofundado com informações das fontes oficiais consultadas, "
