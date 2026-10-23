@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/auto-import-approved-shorts-to-tiktok.yml'
+      - 'src/auto_daily.py'
 
 permissions:
   actions: read
@@ -338,7 +339,7 @@ jobs:
           git pull --rebase origin main
           git push origin main
 
-# Recheck trigger: import newly approved production artifacts when workflow file changes.
+# Recheck trigger: import newly approved production artifacts when workflow or production metadata logic changes.
 # Manual recovery trigger: refresh approved queue after a successful production run.
 
 # Manual recovery requested 2026-10-17T23:48Z: import latest approved Enshrouded production package.
