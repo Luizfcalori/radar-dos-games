@@ -247,13 +247,40 @@ jobs:
                       if tag.lower() not in {"#shorts","#youtubeshorts"} and tag.lower() not in {x.lower() for x in found}:
                           found.append(tag)
 
-                  # TikTok Helper only: maximize relevance and discovery; no channel-branded hashtag.
-                  # Use up to 3 topic/game-specific tags and fill remaining slots with broad gaming discovery tags.
-                  discovery_priority=["#Gaming","#Gamer","#Games","#TikTokGames","#GameTok","#GamerLife","#Jogos","#Gameplay"]
-                  discovery_lower={x.lower() for x in discovery_priority}
-                  specific=[t for t in found if t.lower() not in discovery_lower and t.lower() not in {"#shorts","#youtubeshorts","#radardosgames"}]
-                  tags=specific[:3]
-                  for tag in discovery_priority:
+                  # TikTok Helper: hashtags tailored to each Short, max 5, no channel-branded tag.
+                  # Keep the game/entity tag, add topic tags inferred from the actual title + description,
+                  # then use only a small number of broad discovery tags.
+                  context=(title+" "+desc).casefold()
+                  generic={"#shorts","#youtubeshorts","#radardosgames","#gaming","#gamer","#games","#tiktokgames","#gametok","#gamerlife","#jogos","#gameplay","#notíciasgamer","#noticiasgamer"}
+                  game_tags=[t for t in found if t.lower() not in generic]
+                  topic_rules=[
+                      (("vampir","vampire","coen"),["#Vampiros","#RPG"]),
+                      (("build","builds","reformule","reformular","upgrade","upgrades"),["#Builds","#RPG"]),
+                      (("atualiza","update","patch","mudanças","mudancas","correção","correcao"),["#Atualização","#NovidadesGamer"]),
+                      (("gameplay","combate","boss","chefes","inimigos"),["#Gameplay","#RPG"]),
+                      (("lançamento","lancamento","estreia","chegou"),["#Lançamento","#NovidadesGamer"]),
+                      (("demo","jogo completo","progresso"),["#Demo","#RPG"]),
+                      (("multiplayer","cooperativo","jogadores","coop"),["#Multiplayer","#Gameplay"]),
+                  ]
+                  topic_tags=[]
+                  for needles,candidates in topic_rules:
+                      if any(word in context for word in needles):
+                          for tag in candidates:
+                              if tag.lower() not in {x.lower() for x in topic_tags}:
+                                  topic_tags.append(tag)
+                  tags=[]
+                  # Preserve the most useful existing specific tags (especially the game name).
+                  for tag in game_tags:
+                      if tag.lower() not in {x.lower() for x in tags}:
+                          tags.append(tag)
+                      if len(tags)>=2:
+                          break
+                  for tag in topic_tags:
+                      if len(tags)>=4:
+                          break
+                      if tag.lower() not in {x.lower() for x in tags}:
+                          tags.append(tag)
+                  for tag in ["#Gaming","#GameTok","#Jogos"]:
                       if len(tags)>=5:
                           break
                       if tag.lower() not in {x.lower() for x in tags}:
