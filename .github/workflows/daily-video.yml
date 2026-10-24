@@ -525,3 +525,5 @@ jobs:
 
 # Trigger a controlled AUTO production run after watchdog recovery fix.
 # Mega Man: Dual Override explicit-topic lock: use official-source manual brief.
+
+# Wolf remaster retry after V4 sub-frame render guard fix.
