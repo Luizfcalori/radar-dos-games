@@ -913,50 +913,19 @@ def main():
             "source": "manual_brief",
             "published_at": now.isoformat(),
             "score": 999,
-            "manual_brief_path": (
-                "production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json"
-                if manual.get("content_id") == "manual-the-wolf-among-us-remastered-launch-2026-10-24"
-                else (
-                "production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json"
-                if manual.get("content_id") == "manual-the-blood-of-dawnwalker-update-1-1-2026-10-23"
-                else (
-                "production/manual-brief-fight-night-return-2026-10-21.json"
-                if manual.get("content_id") == "manual-fight-night-return-announcement-2026-10-21"
-                else (
-                "production/manual-brief-once-human-isles-of-abyss-2026-10-20.json"
-                if manual.get("content_id") == "manual-once-human-isles-of-abyss-launch-2026-10-20"
-                else (
-                "production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json"
-                if manual.get("content_id") == "manual-arc-raiders-pve-toggle-oct-2026"
-                else (
-                    "production/manual-brief-castlevania-2026-10-15.json"
-                    if manual.get("content_id") == "manual-castlevania-belmonts-curse-2026-10-15"
-                    else (
-                        "production/manual-brief-call-of-duty-modern-warfare-4-2026-10-16.json"
-                        if manual.get("content_id") == "manual-call-of-duty-modern-warfare-4-campaign-early-access-2026-10-16"
-                        else (
-                            "production/manual-brief-enshrouded-2026-10-17.json"
-                            if manual.get("content_id") == "manual-enshrouded-1-0-launch-2026-10-17"
-                            else (
-                            "production/manual-brief-microsoft-rewards-2026-10-19.json"
-                            if manual.get("content_id") == "microsoft-rewards-brasil-2026-10-19"
-                            else (
-                                "production/manual-brief-witcher-3-remastered-2026-10-19.json"
-                                if manual.get("content_id") == "manual-witcher-3-remastered-patch-501-switch2-2026-10-19"
-                                else (
-                                    "production/manual-brief-qssr-ps5-2026-10-19.json"
-                                    if manual.get("content_id") == "qssr-ps5-2026-10-19"
-                                    else "production/manual-brief.json"
-                                )
-                            )
-                        )
-                        )
-                    )
-                )
-                )
-                )
-                )
-            ),
+            "manual_brief_path": {
+                "manual-the-wolf-among-us-remastered-launch-2026-10-24": "production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json",
+                "manual-the-blood-of-dawnwalker-update-1-1-2026-10-23": "production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json",
+                "manual-fight-night-return-announcement-2026-10-21": "production/manual-brief-fight-night-return-2026-10-21.json",
+                "manual-once-human-isles-of-abyss-launch-2026-10-20": "production/manual-brief-once-human-isles-of-abyss-2026-10-20.json",
+                "manual-arc-raiders-pve-toggle-oct-2026": "production/manual-brief-arc-raiders-pve-toggle-2026-10-15.json",
+                "manual-castlevania-belmonts-curse-2026-10-15": "production/manual-brief-castlevania-2026-10-15.json",
+                "manual-call-of-duty-modern-warfare-4-campaign-early-access-2026-10-16": "production/manual-brief-call-of-duty-modern-warfare-4-2026-10-16.json",
+                "manual-enshrouded-1-0-launch-2026-10-17": "production/manual-brief-enshrouded-2026-10-17.json",
+                "microsoft-rewards-brasil-2026-10-19": "production/manual-brief-microsoft-rewards-2026-10-19.json",
+                "manual-witcher-3-remastered-patch-501-switch2-2026-10-19": "production/manual-brief-witcher-3-remastered-2026-10-19.json",
+                "qssr-ps5-2026-10-19": "production/manual-brief-qssr-ps5-2026-10-19.json",
+            }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
         winner = {
