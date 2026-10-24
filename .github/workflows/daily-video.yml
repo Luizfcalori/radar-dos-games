@@ -42,6 +42,7 @@ on:
       - "production/manual-brief-microsoft-rewards-2026-10-19.json"
       - "production/manual-brief-saros-zenith-2026-10-21.json"
       - "production/manual-brief-fight-night-return-2026-10-21.json"
+      - "production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json"
       - "production/manual-brief-witcher-3-remastered-2026-10-19.json"
       - "production/manual-brief-qssr-ps5-2026-10-19.json"
       - "src/thumbnail.py"
