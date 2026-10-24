@@ -870,6 +870,8 @@ def main():
         elif forced_topic_slug == ascii_slug("The Blood of Dawnwalker"):
             # Lock this production to the latest official Update 1.1 brief and curated game-specific footage.
             manual = load_manual_brief("production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json")
+        elif forced_topic_slug == ascii_slug("The Wolf Among Us Remastered"):
+            manual = load_manual_brief("production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -912,6 +914,9 @@ def main():
             "published_at": now.isoformat(),
             "score": 999,
             "manual_brief_path": (
+                "production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json"
+                if manual.get("content_id") == "manual-the-wolf-among-us-remastered-launch-2026-10-24"
+                else (
                 "production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json"
                 if manual.get("content_id") == "manual-the-blood-of-dawnwalker-update-1-1-2026-10-23"
                 else (
