@@ -30,7 +30,7 @@
   "minimum_assets": 2,
   "minimum_video_assets": 2,
   "minimum_unique_video_seconds": 20,
-  "minimum_image_assets": 1,
+  "minimum_image_assets": 0,
   "editorial_rules": [
     "Tema travado: The Wolf Among Us Remastered. Não trocar por outro jogo.",
     "Usar como novidade principal os recursos confirmados pela Telltale em 21 de outubro de 2026 e a aproximação do lançamento digital em 29 de outubro de 2026.",
@@ -43,7 +43,8 @@
     "Exatamente três Shorts independentes, com ganchos distintos, sem reciclar o mesmo trecho principal; mostrar a capa nos primeiros segundos.",
     "TikTok Helper: no máximo cinco hashtags fortes e relevantes por descrição; não usar hashtag de marca como preenchimento automático.",
     "Enviar os quatro vídeos ao YouTube como privados, sem agendamento público. Só enviar após aprovação dos controles de qualidade.",
-    "Antes de aprovar, verificar áudio completo, sincronização narração/imagem, ausência de repetição artificial, capas e duração final."
+    "Antes de aprovar, verificar áudio completo, sincronização narração/imagem, ausência de repetição artificial, capas e duração final.",
+    "Mídia: exigir no mínimo dois vídeos específicos do jogo e 20 segundos únicos; imagens complementares são desejáveis, mas a indisponibilidade de stills não deve bloquear a produção se o material em movimento passar nos gates."
   ],
   "short_hooks": [
     "BIGBY ESTÁ MAIS ASSUSTADOR: VEJA A NOVA FORMA DE LOBO",
