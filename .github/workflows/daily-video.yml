@@ -82,7 +82,7 @@ concurrency:
   # running parallel upload jobs and creating duplicate YouTube videos.
   # Topic-specific private runs, including approved media-fix reruns, must carry TOPIC=<game> in the commit title.
   # ARC Raiders run retriggered after the approved script and excluded-condition fixes.
-  group: ${{ github.event_name == 'push' && 'radar-dos-games-push' || 'radar-dos-games-daily' }}
+  group: ${{ github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private]') && format('radar-dos-games-private-{0}', github.sha) || (github.event_name == 'push' && 'radar-dos-games-push' || 'radar-dos-games-daily') }}
   cancel-in-progress: false
 
 jobs:
