@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-23T10:03:10.884289+00:00",
-  "total_discovered": 128,
-  "ready_for_tiktok": 121,
+  "updated_at": "2026-10-24T13:31:12.367657+00:00",
+  "total_discovered": 131,
+  "ready_for_tiktok": 124,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "zPUGQPmg4VE",
+      "youtube_url": "https://www.youtube.com/shorts/zPUGQPmg4VE",
+      "title": "PROTO MAN JOGÁVEL MUDA A AÇÃO EM MEGA MAN: DUAL OVERRIDE",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "rlK0zT8bu4g",
+      "youtube_url": "https://www.youtube.com/shorts/rlK0zT8bu4g",
+      "title": "CUSTOM CHIPS E OVERRIDE: COMO O COMBATE PODE MUDAR",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "N42w35SEVpY",
+      "youtube_url": "https://www.youtube.com/shorts/N42w35SEVpY",
+      "title": "TWINKLE GIRL, ASTRO MAN E OS ROBOT MASTERS DE DUAL OVERRIDE",
+      "status": "approved"
+    },
     {
       "youtube_id": "YyGhSrL2yKA",
       "youtube_url": "https://www.youtube.com/shorts/YyGhSrL2yKA",
