@@ -1,0 +1,115 @@
+name: Radar dos Games - Enfileirar The Wolf Among Us Remastered no TikTok Helper
+
+on:
+  workflow_run:
+    workflows: ["Radar dos Games - Daily Auto Master + 3 Shorts"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  queue-shorts:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_commit.message, '[run-private] TOPIC=The Wolf Among Us Remastered')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download completed production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-${{ github.event.workflow_run.id }}
+          path: source
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Prepare three Shorts and cover images
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-upload
+          for N in 1 2 3; do
+            test -s "source/shorts/short_${N}.mp4"
+            test -s "source/youtube-short-${N}-result.json"
+            test -s "source/short-${N}-youtube.json"
+            cp "source/shorts/short_${N}.mp4" "tiktok-upload/${{ github.event.workflow_run.id }}-short-${N}.mp4"
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "source/shorts/short_${N}.mp4" -frames:v 1 -vf "scale=720:-2" "tiktok-upload/${{ github.event.workflow_run.id }}-short-${N}.jpg"
+          done
+
+      - name: Upload approved media to stable release storage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view tiktok-approved-assets >/dev/null 2>&1; then
+            gh release create tiktok-approved-assets --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados para o Radar TikTok Helper. A publicação final no TikTok continua manual."
+          fi
+          gh release upload tiktok-approved-assets tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+
+      - name: Add exactly three Shorts to TikTok Helper queue
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          run_id = int(os.environ["RUN_ID"])
+          repo = os.environ["GITHUB_REPOSITORY"]
+          base = f"https://github.com/{repo}/releases/download/tiktok-approved-assets"
+          queue_path = Path("data/tiktok_queue.json")
+          queue = json.loads(queue_path.read_text(encoding="utf-8"))
+          old = queue.get("items", [])
+          new = []
+          hashtags = ["#TheWolfAmongUs", "#Gaming", "#GamerTok", "#Jogos", "#PS5"]
+          for n in (1, 2, 3):
+              result = json.loads(Path(f"source/youtube-short-{n}-result.json").read_text(encoding="utf-8"))
+              meta = json.loads(Path(f"source/short-{n}-youtube.json").read_text(encoding="utf-8"))
+              video_id = result.get("id")
+              if not video_id:
+                  raise SystemExit(f"Missing confirmed YouTube ID for Short {n}; not queueing unverified media.")
+              title = meta.get("title", f"The Wolf Among Us Remastered — Short {n}").replace(" #Shorts", "").strip()
+              new.append({
+                  "id": f"{run_id}-short-{n}",
+                  "title": title,
+                  "media_url": f"{base}/{run_id}-short-{n}.mp4",
+                  "thumbnail_url": f"{base}/{run_id}-short-{n}.jpg",
+                  "post_text": f"{title}\n\n🎮 Curtiu? Siga para mais conteúdo gamer.\n\n" + " ".join(hashtags),
+                  "status": "approved",
+                  "source_run_id": run_id,
+                  "short_number": n,
+                  "approved_at": datetime.now(timezone.utc).isoformat(),
+                  "source": "approved_production_artifact_auto",
+                  "platform": "tiktok_helper_manual_posting",
+                  "youtube_id": video_id,
+                  "youtube_url": f"https://www.youtube.com/shorts/{video_id}",
+                  "youtube_published_at": None
+              })
+          ids = {item["id"] for item in new}
+          queue["version"] = 2
+          queue["updated_at"] = datetime.now(timezone.utc).isoformat()
+          queue["items"] = new + [item for item in old if item.get("id") not in ids]
+          queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps({"queued_shorts": len(new), "source_run_id": run_id}, ensure_ascii=False))
+          PY
+          git config user.name "radar-dos-games-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          git diff --cached --quiet || git commit -m "bot: queue The Wolf Among Us Remastered Shorts for TikTok Helper"
+          git push
