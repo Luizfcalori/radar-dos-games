@@ -258,6 +258,32 @@ def social_post_url(url):
         or ('facebook.com/' in low and ('/videos/' in low or 'watch' in low or '/reel/' in low))
     )
 
+def supported_video_page_url(url):
+    """Recognize explicit video pages on independent platforms supported by yt-dlp."""
+    try:
+        p=urllib.parse.urlparse(str(url))
+        host=(p.hostname or '').lower().removeprefix('www.')
+        path=p.path.strip('/')
+        if host in ('vimeo.com','player.vimeo.com'):
+            return bool(re.fullmatch(r'(?:video/)?\d+',path))
+        if host=='twitch.tv':
+            return bool(re.match(r'(?:videos/\d+|[^/]+/clip/[^/]+)',path))
+        if host=='clips.twitch.tv':
+            return bool(path)
+        if host in ('dailymotion.com','m.dailymotion.com'):
+            return bool(re.match(r'video/[^/?]+',path))
+        if host=='dai.ly':
+            return bool(path)
+        if host=='streamable.com':
+            return bool(path)
+        if host=='rumble.com':
+            return '/video' in path
+        if host in ('facebook.com','m.facebook.com','fb.watch'):
+            return '/videos/' in ('/'+path) or '/watch' in p.path or '/reel/' in ('/'+path) or host=='fb.watch'
+    except Exception:
+        return False
+    return False
+
 def social_profile_url(url):
     low=url.lower().split('?')[0].rstrip('/')
     return low in ('https://x.com/fortnitegame','https://twitter.com/fortnitegame',
@@ -376,7 +402,7 @@ def ytdlp(url,dest):
     low_url=url.lower()
     is_youtube='youtube.com' in low_url or 'youtu.be' in low_url
     is_social=social_post_url(url)
-    if not is_youtube and not is_social:return None
+    if not is_youtube and not is_social and not supported_video_page_url(url):return None
     is_actions=os.environ.get('GITHUB_ACTIONS','').lower()=='true'
     # Try multiple public player clients before the external queue. A video can
     # reject web_embedded while remaining available through iOS/TV player APIs.
@@ -606,7 +632,7 @@ def main(path):
             ):
                 info=official_remote_clip(u,dest,source if str(source).startswith('http') else 'https://www.rockstargames.com/')
             elif is_instagram_video_url(u) and wanted=='video':info=download_public_instagram(u,dest,probe_info)
-            elif 'youtube.com' in low or 'youtu.be' in low or social_post_url(u):info=ytdlp(u,dest)
+            elif 'youtube.com' in low or 'youtu.be' in low or social_post_url(u) or supported_video_page_url(u):info=ytdlp(u,dest)
             else:info=download(u,dest,source if str(source).startswith('http') else None)
             if not info:dest.unlink(missing_ok=True);continue
             if wanted=='video':
