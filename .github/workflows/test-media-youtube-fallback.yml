@@ -17,11 +17,14 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
       - name: Install media tools
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
-          python -m pip install -U --pre yt-dlp
+          python -m pip install -U 'yt-dlp[default]'
       - name: Build isolated media plan
         run: |
           cat > /tmp/media-plan.json <<'JSON'
