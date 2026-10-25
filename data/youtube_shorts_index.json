@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-24T13:31:12.367657+00:00",
-  "total_discovered": 131,
-  "ready_for_tiktok": 124,
+  "updated_at": "2026-10-25T12:13:58.211948+00:00",
+  "total_discovered": 134,
+  "ready_for_tiktok": 127,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "7q_AykfWMyA",
+      "youtube_url": "https://www.youtube.com/shorts/7q_AykfWMyA",
+      "title": "UPDATE 1.1: MAIS DE 1.100 MUDANÇAS — O QUE REALMENTE MELHOROU?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "qx3qLsskUCc",
+      "youtube_url": "https://www.youtube.com/shorts/qx3qLsskUCc",
+      "title": "DIA OU NOITE: COEN MUDA DE GUERREIRO PARA VAMPIRO",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "mrMpgliv5zw",
+      "youtube_url": "https://www.youtube.com/shorts/mrMpgliv5zw",
+      "title": "REFORMULE SUA BUILD — E AGORA DÁ ATÉ PARA ACARICIAR ANIMAIS",
+      "status": "approved"
+    },
     {
       "youtube_id": "zPUGQPmg4VE",
       "youtube_url": "https://www.youtube.com/shorts/zPUGQPmg4VE",
