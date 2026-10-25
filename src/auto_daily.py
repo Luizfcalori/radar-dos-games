@@ -832,6 +832,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json")
     elif forced_topic_slug == ascii_slug("Zenless Zone Zero"):
         manual = load_manual_brief("production/manual-brief-zenless-zone-zero-2026-10-25.json")
+    elif forced_topic_slug == ascii_slug("Animal Hospital"):
+        manual = load_manual_brief("production/manual-brief-animal-hospital-roblox-2026-10-25.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
@@ -843,6 +845,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
         elif forced_topic_slug == ascii_slug("Roblox"):
             manual = load_manual_brief("production/manual-brief-roblox-2026-10-13.json")
+        elif forced_topic_slug == ascii_slug("Animal Hospital"):
+            manual = load_manual_brief("production/manual-brief-animal-hospital-roblox-2026-10-25.json")
         elif forced_topic_slug == ascii_slug("Free Fire"):
             manual = load_manual_brief("production/manual-brief-free-fire-2026-10-13.json")
         elif forced_topic_slug == ascii_slug("Fortnite"):
