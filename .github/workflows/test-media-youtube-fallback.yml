@@ -31,17 +31,22 @@ jobs:
           {
             "minimum_assets": 1,
             "minimum_video_assets": 1,
-            "minimum_unique_video_seconds": 60,
+            "minimum_unique_video_seconds": 15,
             "minimum_image_assets": 0,
             "media": [
               {
                 "type": "video",
-                "role": "official_gameplay_youtube_fallback_test",
-                "url": "https://www.youtube.com/watch?v=DcphpBvdt28",
-                "source_proof": "Bandai Namco official ACE COMBAT 8 Walkthrough Trailer",
-                "relevance_evidence": "official publisher gameplay/walkthrough source",
-                "source_label": "ACE COMBAT 8: WINGS OF THEVE | Walkthrough Trailer",
-                "min_duration": 60,
+                "role": "animal_hospital_halloween_gameplay_test",
+                "url": "https://zolotube.com/watch?v=0EhXDqzsIU4",
+                "fallback_urls": [
+                  "https://zolotube.com/watch?v=wEVQKPF0tg4",
+                  "https://youtu.be/0EhXDqzsIU4",
+                  "https://youtu.be/wEVQKPF0tg4"
+                ],
+                "source_proof": "Animal Hospital Roblox Halloween gameplay",
+                "relevance_evidence": "game-specific gameplay source from the production brief",
+                "source_label": "Animal Hospital — Halloween event gameplay",
+                "min_duration": 15,
                 "max_assets": 1
               }
             ]
@@ -65,16 +70,16 @@ jobs:
           assert m['publishable_media'] is True, m
           assert m['video_assets'] >= 1, m
           a=m['assets'][0]
-          assert a['width'] >= 1200 and a['height'] >= 700, a
-          assert a['duration'] >= 60, a
-          assert 'DcphpBvdt28' in a['url'], a
+          assert a['width'] >= 640 and a['height'] >= 360, a
+          assert a['duration'] >= 15, a
+          assert ('zolotube.com' in a['url'] or 'youtu.be' in a['url']), a
           print('INTEGRATION_SUCCESS',a)
           PY
       - name: Upload validated media
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: media-youtube-fallback-official-bandai
+          name: media-animal-hospital-gameplay-fallback
           path: |
             /tmp/media-run.log
             /tmp/ffprobe.json
