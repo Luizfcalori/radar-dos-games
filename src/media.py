@@ -382,9 +382,9 @@ def ytdlp(url,dest):
     # reject web_embedded while remaining available through iOS/TV player APIs.
     height=720 if is_actions else 1080
     timeout=45 if is_actions else 35
-    clients=['mweb','android','tv','web_music','web_embedded','ios','android_vr','tv_embedded'] if is_actions and is_youtube else [None]
+    clients=['mweb','ios','android','web_music','web_embedded','tv_embedded'] if is_actions and is_youtube else [None]
     for client in clients:
-        args=['yt-dlp','--no-playlist','--playlist-end','1','--retries','1','--fragment-retries','1','--socket-timeout','15']
+        args=['yt-dlp','--no-cache-dir','--force-ipv4','--no-playlist','--playlist-end','1','--retries','2','--fragment-retries','2','--extractor-retries','2','--socket-timeout','20']
         if client:
             args += ['--extractor-args',f'youtube:player_client={client}']
         args += ['-f',f'bv*[height<={height}]+ba/b[height<={height}]/best','--merge-output-format','mp4','-o',str(dest),url]
