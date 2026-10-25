@@ -1,0 +1,69 @@
+{
+  "valid_until": "2026-11-10T23:59:00Z",
+  "content_id": "animal-hospital-roblox-halloween-event-part-2-2026-10-25",
+  "title": "Animal Hospital — Roblox: Halloween, anomalias e o próximo evento",
+  "headline": "ANIMAL HOSPITAL NO ROBLOX FICOU MAIS ASSUSTADOR NO HALLOWEEN!",
+  "primary_source": "https://www.roblox.com/pt/games/78515283254292/Animal-Hospital",
+  "media_source_urls": [
+    "https://www.roblox.com/pt/games/78515283254292/Animal-Hospital",
+    "https://animalhospitalwiki.com/updates/",
+    "https://animalhospitalwiki.com/animal-hospital-halloween-event/"
+  ],
+  "source_urls": [
+    "https://www.roblox.com/pt/games/78515283254292/Animal-Hospital",
+    "https://animalhospitalwiki.com/updates/",
+    "https://animalhospitalwiki.com/animal-hospital-halloween-event/",
+    "https://animalhospital.blog/updates/",
+    "https://animalhospital.blog/videos/"
+  ],
+  "video_urls": [
+    "https://youtu.be/0EhXDqzsIU4",
+    "https://youtu.be/XQT-INeE_Bk"
+  ],
+  "video_fallback_urls": [],
+  "video_roles": {
+    "https://youtu.be/0EhXDqzsIU4": "gameplay de Animal Hospital com foco no evento de Halloween, publicado em outubro de 2026",
+    "https://youtu.be/XQT-INeE_Bk": "gameplay específico de Animal Hospital mostrando anomalias e a atmosfera do hospital"
+  },
+  "video_labels": {
+    "https://youtu.be/0EhXDqzsIU4": "Animal Hospital — evento de Halloween e minijogo",
+    "https://youtu.be/XQT-INeE_Bk": "Animal Hospital — gameplay e anomalias"
+  },
+  "visual_reference_images": [],
+  "approved_for_publish": true,
+  "minimum_assets": 1,
+  "minimum_video_assets": 1,
+  "minimum_unique_video_seconds": 15,
+  "minimum_image_assets": 0,
+  "editorial_rules": [
+    "Tema travado: Animal Hospital (Anomaly), experiência específica do Roblox desenvolvida por Animal Anomaly. Não trocar por Roblox genérico ou outro jogo.",
+    "Novidade principal: evento Halloween! começou em 17 de outubro de 2026 e está ativo. A listagem do Roblox teve atualização em 21 de outubro, mas isso não confirma por si só novos recursos ou notas de patch.",
+    "Cobertura comunitária do evento relata minijogo de doces no balcão, moeda temporária de Halloween e quatro skins sazonais limitadas. Como não há patch notes completas do desenvolvedor, apresentar detalhes de mecânicas e skins como relatos de gameplay/comunidade, não como notas oficiais confirmadas.",
+    "O calendário do Roblox lista Halloween - Part 2 entre 27 e 31 de outubro de 2026; até a produção, não há detalhes oficiais de conteúdo publicados. Não inventar recompensas ou recursos da Parte 2.",
+    "Contexto de jogo: trabalhar no turno noturno de um hospital de animais, tratar pacientes e distinguir pacientes normais de anomalias. A expansão de setembro adicionou segundo andar, esgotos e laboratório com ferramenta de amostragem de DNA; mencionar apenas como contexto permanente, não como novidade desta semana.",
+    "Não afirmar que existem códigos ativos; fontes verificadas não listam códigos de resgate confirmados.",
+    "Usar somente imagens e vídeos claramente relacionados a Animal Hospital. Não usar cenas de outros jogos, anúncios irrelevantes ou repetir artificialmente a mesma sequência.",
+    "Voz obrigatória Thalita Multilingual PT-BR V3, português brasileiro natural; pronunciar nomes em inglês sem traduzir indevidamente.",
+    "Produzir exatamente 1 Master horizontal Full HD 1920x1080 e exatamente 3 Shorts Premium V4 verticais 1080x1920, com assuntos distintos e capa visível nos primeiros segundos.",
+    "Shorts independentes: 1) minijogo de doces e moeda temporária; 2) pacientes suspeitos e anomalias; 3) o que se sabe — e o que ainda não foi anunciado — sobre Halloween Parte 2.",
+    "TikTok Helper: no máximo cinco hashtags fortes e relevantes por descrição, sem preencher com hashtag de marca.",
+    "Enviar os quatro vídeos ao YouTube como privados, sem agendamento público, somente após QA completo.",
+    "Validar narração, sincronização fala/imagem, ausência de repetição artificial, capas e duração final antes de aprovar."
+  ],
+  "short_hooks": [
+    "ANIMAL HOSPITAL: O MINIJOGO DE HALLOWEEN MUDOU TUDO?",
+    "COMO SABER SE O PACIENTE É UMA ANOMALIA?",
+    "HALLOWEEN PARTE 2 CHEGA EM 27 DE OUTUBRO — O QUE JÁ SABEMOS?"
+  ],
+  "script_blocks": [
+    "Animal Hospital, o jogo de terror cooperativo do Roblox, está no clima de Halloween — e essa é a pauta de hoje no Radar dos Games. O evento temático começou em 17 de outubro e a comunidade já está mostrando o que mudou no hospital, incluindo um minijogo de doces e recompensas sazonais. Mas existe um detalhe importante: a página do jogo foi atualizada recentemente, porém isso não equivale a notas oficiais detalhadas. Vamos separar o que está confirmado, o que aparece nos relatos de jogadores e o que ainda falta descobrir.",
+    "A primeira novidade é o evento Halloween!, que está ativo durante a temporada de outubro e novembro. Vídeos recentes da comunidade mostram um minijogo no balcão de recepção em que os jogadores interagem com pacientes fantasiados e recebem uma moeda sazonal. Os relatos também citam quatro skins limitadas para funções do hospital. Como o desenvolvedor não publicou uma lista completa de mudanças, esses detalhes devem ser tratados como conteúdo observado por jogadores, e não como um comunicado oficial com todas as regras confirmadas.",
+    "A moeda de Halloween merece atenção porque, segundo os guias da comunidade, ela é temporária. A recomendação é acompanhar o balcão de recompensas e gastar as moedas dentro do período do evento, em vez de presumir que elas ficarão guardadas para sempre. As skins obtidas são descritas como permanentes, mas a moeda sazonal não. Antes de investir tempo, confira o que aparece na versão ao vivo do jogo: datas e disponibilidade podem variar conforme o calendário oficial e eventuais ajustes.",
+    "O coração de Animal Hospital continua o mesmo: sobreviver ao turno noturno, cuidar dos pacientes e perceber quando alguma coisa não bate. Nem todo paciente que chega ao balcão deve ser tratado como normal. Observar comportamento, aparência e sinais estranhos faz parte do desafio, e um erro pode transformar uma rotina médica em um susto. O evento de Halloween muda o clima e acrescenta atividades, mas não elimina a mecânica principal de reconhecer anomalias antes de agir.",
+    "Também vale lembrar uma expansão recente que continua no jogo: o segundo andar, a área dos esgotos e o laboratório. O sistema de amostragem de DNA permite coletar material de pacientes e preparar misturas no laboratório, abrindo espaço para experimentar efeitos e explorar áreas menos óbvias. Essa expansão não é uma novidade desta semana, mas ajuda a entender como o hospital cresceu ao longo dos últimos meses. Vamos evitar misturar conteúdos antigos com o evento atual só para parecer que há mais novidades.",
+    "E o que vem agora? A listagem de eventos do Roblox aponta Halloween — Parte 2 para a janela de 27 a 31 de outubro. Até o momento desta pauta, não foram publicados detalhes oficiais completos sobre o conteúdo dessa etapa. Isso significa que não dá para prometer novos monstros, classes, códigos ou recompensas específicas. O mais correto é acompanhar a página oficial e tratar qualquer lista que circule antes do anúncio como especulação, a menos que seja demonstrada e confirmada no jogo.",
+    "Outro ponto que costuma gerar confusão são os códigos. As verificações recentes não encontraram um sistema de resgate confirmado com códigos ativos, então não vamos inventar códigos nem prometer moedas grátis. Se aparecer um sistema oficial, ele precisa ser validado na página do jogo ou em um anúncio confiável. Até lá, o foco é aproveitar o evento, aprender a reconhecer os pacientes suspeitos e decidir quais recompensas sazonais valem o esforço antes que a janela termine.",
+    "Agora quero saber: você está jogando Animal Hospital durante o Halloween ou está esperando a Parte 2? Comenta qual foi a anomalia mais difícil de identificar e se você já conseguiu alguma skin sazonal. E lembre-se: a Parte 2 está listada para começar em 27 de outubro, mas os detalhes ainda não foram anunciados oficialmente. Acompanhe o Radar dos Games para mais novidades de Roblox com contexto, gameplay relacionado e sem transformar rumor em fato."
+  ],
+  "retry_marker": "2026-10-25T18:49Z"
+}
