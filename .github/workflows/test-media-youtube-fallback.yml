@@ -37,7 +37,7 @@ jobs:
               {
                 "type": "video",
                 "role": "animal_hospital_halloween_gameplay_test",
-                "url": "https://zolotube.com/watch?v=0EhXDqzsIU4",
+                "url": "https://rutube.ru/video/554e100e38689de0ed02b84a3da7d2d1/",
                 "fallback_urls": [
                   "https://zolotube.com/watch?v=wEVQKPF0tg4",
                   "https://youtu.be/0EhXDqzsIU4",
@@ -72,7 +72,7 @@ jobs:
           a=m['assets'][0]
           assert a['width'] >= 640 and a['height'] >= 360, a
           assert a['duration'] >= 15, a
-          assert ('zolotube.com' in a['url'] or 'youtu.be' in a['url']), a
+          assert ('rutube.ru' in a['url'] or 'zolotube.com' in a['url'] or 'youtu.be' in a['url']), a
           print('INTEGRATION_SUCCESS',a)
           PY
       - name: Upload validated media
