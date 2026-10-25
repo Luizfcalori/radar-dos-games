@@ -17,17 +17,17 @@
     "https://animalhospital.blog/videos/"
   ],
   "video_urls": [
-    "https://youtu.be/0EhXDqzsIU4",
-    "https://youtu.be/XQT-INeE_Bk"
+    "https://zolotube.com/watch?v=0EhXDqzsIU4",
+    "https://zolotube.com/watch?v=wEVQKPF0tg4"
   ],
   "video_fallback_urls": [],
   "video_roles": {
-    "https://youtu.be/0EhXDqzsIU4": "gameplay de Animal Hospital com foco no evento de Halloween, publicado em outubro de 2026",
-    "https://youtu.be/XQT-INeE_Bk": "gameplay específico de Animal Hospital mostrando anomalias e a atmosfera do hospital"
+    "https://zolotube.com/watch?v=0EhXDqzsIU4": "gameplay de Animal Hospital com foco no evento de Halloween, publicado em 17 de outubro de 2026",
+    "https://zolotube.com/watch?v=wEVQKPF0tg4": "gameplay específico de Animal Hospital com foco no evento de Halloween, publicado em 21 de outubro de 2026"
   },
   "video_labels": {
-    "https://youtu.be/0EhXDqzsIU4": "Animal Hospital — evento de Halloween e minijogo",
-    "https://youtu.be/XQT-INeE_Bk": "Animal Hospital — gameplay e anomalias"
+    "https://zolotube.com/watch?v=0EhXDqzsIU4": "Animal Hospital — evento de Halloween e minijogo",
+    "https://zolotube.com/watch?v=wEVQKPF0tg4": "Animal Hospital — gameplay do evento de Halloween"
   },
   "visual_reference_images": [],
   "approved_for_publish": true,
