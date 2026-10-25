@@ -5,10 +5,12 @@
   "headline": "ZENLESS ZONE ZERO MUDOU O COMBATE NA VERSÃO 3.3?",
   "primary_source": "https://www.hoyoverse.com/pt-pt/news/166759",
   "media_source_urls": [
+    "https://store.steampowered.com/app/4162040/",
     "https://www.hoyoverse.com/pt-pt/news/166759",
     "https://zenless.hoyoverse.com/en-us/video?catchSpider=1&page=newsLink"
   ],
   "source_urls": [
+    "https://store.steampowered.com/app/4162040/",
     "https://www.hoyoverse.com/pt-pt/news/166759",
     "https://www.hoyolab.com/article/47149468",
     "https://zenless.hoyoverse.com/en-us/video?catchSpider=1&page=newsLink"
@@ -41,7 +43,8 @@
     "TikTok Helper: máximo de cinco hashtags fortes e relevantes por descrição; não usar hashtag de marca como preenchimento automático.",
     "Enviar os quatro vídeos ao YouTube como privados, sem agendamento público. Só enviar após aprovação dos controles de qualidade.",
     "Antes de aprovar, verificar áudio completo, sincronização narração/imagem, ausência de repetição artificial, capas e duração final.",
-    "Usar somente o trailer oficial explicitamente aprovado e recortes distintos dele; não preencher com anúncios ou imagens de outros jogos."
+    "Usar somente o trailer oficial explicitamente aprovado e recortes distintos dele; não preencher com anúncios ou imagens de outros jogos.",
+    "Fallback de mídia autorizado: se o download do trailer do YouTube for bloqueado, tentar somente vídeos e capturas oficiais do app exato Zenless Zone Zero na Steam (app 4162040); não usar mídia de outros jogos."
   ],
   "short_hooks": [
     "ZENLESS 3.3: AGORA VOCÊ PILOTA MECHAS?",
@@ -57,5 +60,6 @@
     "Vale manter uma distinção importante: a atualização já foi lançada, então estamos falando de conteúdo disponível, não de uma promessa distante. Ao mesmo tempo, não existe motivo para inventar números de dano, tier lists definitivas ou garantias de que um agente será o melhor do jogo. Esses pontos dependem de testes e podem mudar com novas equipes e equipamentos. O que está confirmado é a chegada de Phoenix e Severian, a nova área narrativa, o combate com mechas e os eventos da versão 3.3.",
     "No visual, o trailer oficial mostra a escala da nova aventura e ajuda a apresentar a mistura de fantasia urbana, combate acelerado e cenários incomuns que define Zenless Zone Zero. Na produção, vamos usar apenas imagens oficiais relacionadas a esta atualização e recortes distintos, evitando repetir a mesma cena como se fossem novidades diferentes. Assim, cada Short terá um assunto específico: os mechas, os novos agentes e a história de Quietude Isle, enquanto o Master conecta os pontos e explica o que vale observar.",
     "Agora queremos saber a sua opinião: o que chama mais atenção na versão 3.3 — pilotar mechas, testar Phoenix e Severian ou descobrir o que acontece em Quietude Isle? Comenta sua escolha e acompanha o Radar dos Games para mais novidades verificadas, sem rumores tratados como fatos. Se você já experimentou a atualização, conta também como está sendo o combate com mechas e se ele acrescenta variedade às missões. A conversa da comunidade ajuda a entender quais recursos merecem uma análise mais aprofundada."
-  ]
+  ],
+  "steam_app_id": "4162040"
 }
