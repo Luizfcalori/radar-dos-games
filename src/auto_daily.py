@@ -919,6 +919,7 @@ def main():
             "score": 999,
             "manual_brief_path": {
                 "manual-the-wolf-among-us-remastered-launch-2026-10-24": "production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json",
+                "manual-zenless-zone-zero-version-3-3-journey-to-the-sky-2026-10-25": "production/manual-brief-zenless-zone-zero-2026-10-25.json",
                 "manual-the-blood-of-dawnwalker-update-1-1-2026-10-23": "production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json",
                 "manual-fight-night-return-announcement-2026-10-21": "production/manual-brief-fight-night-return-2026-10-21.json",
                 "manual-once-human-isles-of-abyss-launch-2026-10-20": "production/manual-brief-once-human-isles-of-abyss-2026-10-20.json",
