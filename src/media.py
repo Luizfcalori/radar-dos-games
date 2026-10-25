@@ -347,7 +347,7 @@ def piped_download(url,dest):
             def rank(fmt):
                 typ=str(fmt.get('mimeType') or fmt.get('format') or '').lower()
                 quality=str(fmt.get('quality') or '')
-                match=re.search(r'(\\d{3,4})p',quality)
+                match=re.search(r'(\d{3,4})p',quality)
                 height=int(match.group(1)) if match else 0
                 return (1 if 'mp4' in typ else 0,1 if 0<height<=720 else 0,height)
             streams=[x for x in streams if isinstance(x,dict) and str(x.get('url') or '').startswith('http')]
