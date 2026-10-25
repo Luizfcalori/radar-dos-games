@@ -37,9 +37,9 @@ jobs:
               {
                 "type": "video",
                 "role": "animal_hospital_halloween_gameplay_test",
-                "url": "https://rutube.ru/video/2ac36578f8896cce9c40815ce9bf538e/",
+                "url": "https://zolotube.com/watch?v=hKoQ67UL6ds",
                 "fallback_urls": [
-                  "https://rutube.ru/video/b4321c0d654662c55a61305c1b3722db/",
+                  "https://zolotube.com/watch?v=bVHWuFMRk2Y",
                   "https://rutube.ru/video/a9f301146140c0dba3429e41118bcbdb/",
                   "https://rutube.ru/video/080f24a0de6551c46e4f72f6faa669f1/",
                   "https://rutube.ru/video/12d08fe54428a40629d66056ef49d2cc/",
@@ -47,7 +47,7 @@ jobs:
                   "https://rutube.ru/video/c1ea19049f9b5fa5373d6fd1298fe137/",
                   "https://www.dailymotion.com/video/xb6iwqi",
                   "https://www.bilibili.tv/video/4800979151887360",
-                  "https://www.youtube.com/watch?v=oOCYoEQMoSU",
+                  "https://www.youtube.com/watch?v=mZTAjVrL0LE",
                   "https://www.youtube.com/watch?v=WejETWjm0oU",
                   "https://zolotube.com/watch?v=wEVQKPF0tg4",
                   "https://youtu.be/0EhXDqzsIU4",
