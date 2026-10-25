@@ -1,0 +1,61 @@
+{
+  "valid_until": "2026-11-05T23:59:00Z",
+  "content_id": "manual-zenless-zone-zero-version-3-3-journey-to-the-sky-2026-10-25",
+  "title": "Zenless Zone Zero 3.3: Phoenix, Severian e o combate com mechas",
+  "headline": "ZENLESS ZONE ZERO MUDOU O COMBATE NA VERSÃO 3.3?",
+  "primary_source": "https://www.hoyoverse.com/pt-pt/news/166759",
+  "media_source_urls": [
+    "https://www.hoyoverse.com/pt-pt/news/166759",
+    "https://zenless.hoyoverse.com/en-us/video?catchSpider=1&page=newsLink"
+  ],
+  "source_urls": [
+    "https://www.hoyoverse.com/pt-pt/news/166759",
+    "https://www.hoyolab.com/article/47149468",
+    "https://zenless.hoyoverse.com/en-us/video?catchSpider=1&page=newsLink"
+  ],
+  "video_urls": [
+    "https://youtu.be/4G2ZnN7kSDg"
+  ],
+  "video_fallback_urls": [],
+  "video_roles": {
+    "https://youtu.be/4G2ZnN7kSDg": "trailer oficial da versão 3.3"
+  },
+  "video_labels": {
+    "https://youtu.be/4G2ZnN7kSDg": "Trailer oficial Versão 3.3 — Journey to the Sky"
+  },
+  "visual_reference_images": [],
+  "approved_for_publish": true,
+  "minimum_assets": 1,
+  "minimum_video_assets": 1,
+  "minimum_unique_video_seconds": 15,
+  "minimum_image_assets": 0,
+  "editorial_rules": [
+    "Tema travado: Zenless Zone Zero, atualização 3.3 Journey to the Sky. Não trocar por outro jogo.",
+    "Usar apenas fatos confirmados pela HoYoverse e material oficial específico de Zenless Zone Zero.",
+    "Produzir exatamente 1 Master horizontal Full HD 1920x1080 e exatamente 3 Shorts verticais 1080x1920.",
+    "Novidades confirmadas: Versão 3.3 lançada em 21 de outubro de 2026; agentes S Phoenix e Severian; combate com mechas alternando ataques corpo a corpo e à distância; nova área Quietude Isle; capítulo principal Journey to the Sky; evento Spooky Funhouse Tales.",
+    "Phoenix é agente S de Anomalia de Fogo; Severian é agente S de Ataque de Vento. Não inventar estatísticas, rankings de meta ou taxa de uso.",
+    "Distinguir recursos já lançados de recursos futuros e não apresentar rumores como fatos.",
+    "Voz obrigatória Thalita Multilingual PT-BR V3, português brasileiro natural; manter nomes próprios em pronúncia original.",
+    "Exatamente três Shorts independentes, com ganchos distintos, sem reciclar o mesmo trecho principal; mostrar a capa nos primeiros segundos.",
+    "TikTok Helper: máximo de cinco hashtags fortes e relevantes por descrição; não usar hashtag de marca como preenchimento automático.",
+    "Enviar os quatro vídeos ao YouTube como privados, sem agendamento público. Só enviar após aprovação dos controles de qualidade.",
+    "Antes de aprovar, verificar áudio completo, sincronização narração/imagem, ausência de repetição artificial, capas e duração final.",
+    "Usar somente o trailer oficial explicitamente aprovado e recortes distintos dele; não preencher com anúncios ou imagens de outros jogos."
+  ],
+  "short_hooks": [
+    "ZENLESS 3.3: AGORA VOCÊ PILOTA MECHAS?",
+    "PHOENIX E SEVERIAN: O QUE CADA AGENTE FAZ?",
+    "QUIETUDE ISLE: O QUE MUDOU NA NOVA HISTÓRIA?"
+  ],
+  "script_blocks": [
+    "Zenless Zone Zero recebeu a versão 3.3, Journey to the Sky, em 21 de outubro de 2026, e a atualização trouxe uma mudança que merece atenção: pela primeira vez nesta história, os Proxies podem pilotar mechas de combate. A novidade combina ataques corpo a corpo e à distância, com possibilidade de alternar entre os dois estilos durante o confronto. Hoje vamos separar o que realmente chegou ao jogo, quem são os novos agentes e quais partes da atualização podem mudar a experiência de quem já explora Nova Eridu.",
+    "A atualização apresenta Phoenix e Severian, dois agentes de Classe S com funções diferentes. Phoenix é uma agente de Anomalia de Fogo, enquanto Severian é um agente de Ataque de Vento. A proposta não é simplesmente colocar dois personagens novos na tela: cada um chega com habilidades e estilos próprios, que podem influenciar a montagem de equipes. Antes de afirmar que algum deles é obrigatório ou domina o meta, porém, é preciso observar testes e resultados reais dentro do jogo, porque o desempenho depende de composição, equipamento e forma de jogar.",
+    "O combate com mechas é o destaque mais visual da versão. Durante a história, os jogadores podem controlar máquinas de combate e alternar entre golpes próximos e ataques à distância. A atualização também permite aproveitar o ambiente, incluindo explosivos e objetos pesados, para avançar em combates e desafios. Isso cria uma pausa interessante em relação às lutas tradicionais e acrescenta uma camada de ação à aventura. A HoYoverse também informou que essa mecânica continuará disponível em versões futuras, portanto não é apenas uma demonstração isolada.",
+    "A história Journey to the Sky leva os jogadores a Quietude Isle, uma área envolvida no conflito que atravessa a ilha celeste de Roscaelifer. Phoenix e Severian precisam lidar com uma situação em que antigas diferenças podem atrapalhar uma missão maior. A narrativa aproxima os dois personagens e continua explorando os mistérios ligados às três Sunbringers e aos Karma Cores. Para quem acompanha a trama, esse capítulo avança a história principal; para quem está chegando agora, vale lembrar que parte do contexto vem de versões anteriores.",
+    "A versão também traz atividades paralelas e recompensas. Entre elas está Spooky Funhouse Tales, evento temático que mistura veículos Trickmobile e desafios dentro de uma casa de diversões. Há ainda atividades relacionadas aos Bangboo, missões de investigação e melhorias de conveniência, como recomendações de equipes e orientações para alguns agentes. Nem toda novidade terá o mesmo peso para cada jogador: quem prioriza a história pode se interessar mais pela ilha e pelos mechas, enquanto quem busca recompensas pode preferir acompanhar o calendário de eventos.",
+    "Vale manter uma distinção importante: a atualização já foi lançada, então estamos falando de conteúdo disponível, não de uma promessa distante. Ao mesmo tempo, não existe motivo para inventar números de dano, tier lists definitivas ou garantias de que um agente será o melhor do jogo. Esses pontos dependem de testes e podem mudar com novas equipes e equipamentos. O que está confirmado é a chegada de Phoenix e Severian, a nova área narrativa, o combate com mechas e os eventos da versão 3.3.",
+    "No visual, o trailer oficial mostra a escala da nova aventura e ajuda a apresentar a mistura de fantasia urbana, combate acelerado e cenários incomuns que define Zenless Zone Zero. Na produção, vamos usar apenas imagens oficiais relacionadas a esta atualização e recortes distintos, evitando repetir a mesma cena como se fossem novidades diferentes. Assim, cada Short terá um assunto específico: os mechas, os novos agentes e a história de Quietude Isle, enquanto o Master conecta os pontos e explica o que vale observar.",
+    "Agora queremos saber a sua opinião: o que chama mais atenção na versão 3.3 — pilotar mechas, testar Phoenix e Severian ou descobrir o que acontece em Quietude Isle? Comenta sua escolha e acompanha o Radar dos Games para mais novidades verificadas, sem rumores tratados como fatos. Se você já experimentou a atualização, conta também como está sendo o combate com mechas e se ele acrescenta variedade às missões. A conversa da comunidade ajuda a entender quais recursos merecem uma análise mais aprofundada."
+  ]
+}
