@@ -793,7 +793,11 @@ def fetch_manual_media(brief):
     media = canonical_media(curated)
     # A single explicitly approved trailer is valid source footage. Topic-specific
     # stills are added later as separate media items; never pad with page ads.
-    if not media or not any(kind == "video" for kind, _ in media):
+    # If the official trailer host is blocked, a manual brief may explicitly
+    # provide the exact Steam app ID; the exact game's publisher-controlled CDN
+    # is then the approved independent route. Do not fail before that route runs.
+    has_exact_steam_fallback = str(brief.get("steam_app_id") or "").isdigit()
+    if (not media or not any(kind == "video" for kind, _ in media)) and not has_exact_steam_fallback:
         raise RuntimeError(
             "QUALITY_BLOCK: trailer oficial explicitamente aprovado indisponível; "
             "não será usada mídia genérica nem publicidade de páginas."
