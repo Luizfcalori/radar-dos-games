@@ -266,6 +266,11 @@ def supported_video_page_url(url):
         path=p.path.strip('/')
         if host in ('vimeo.com','player.vimeo.com'):
             return bool(re.fullmatch(r'(?:video/)?\d+',path))
+        # Animal Hospital production plan uses ZoloTube watch pages. Without this
+        # host-specific match, the exact game footage is rejected before yt-dlp
+        # ever gets a chance to try its generic extractor.
+        if host=='zolotube.com':
+            return p.path.rstrip('/')=='/watch' and bool((urllib.parse.parse_qs(p.query).get('v') or [''])[0])
         if host=='twitch.tv':
             return bool(re.match(r'(?:videos/\d+|[^/]+/clip/[^/]+)',path))
         if host=='clips.twitch.tv':
