@@ -271,6 +271,10 @@ def supported_video_page_url(url):
         # ever gets a chance to try its generic extractor.
         if host=='zolotube.com':
             return p.path.rstrip('/')=='/watch' and bool((urllib.parse.parse_qs(p.query).get('v') or [''])[0])
+        # Rutube é uma fonte alternativa para vídeos públicos quando ZoloTube/YouTube
+        # estão inacessíveis; a validação de duração, resolução e relevância continua obrigatória.
+        if host in ('rutube.ru','rutube.com'):
+            return bool(re.match(r'(?:video/|play/embed/)[a-zA-Z0-9]+', path))
         if host=='twitch.tv':
             return bool(re.match(r'(?:videos/\d+|[^/]+/clip/[^/]+)',path))
         if host=='clips.twitch.tv':
