@@ -327,6 +327,43 @@ def invidious_download(url,dest):
     return None
 
 
+def piped_download(url,dest):
+    """Independent Piped API fallback for public YouTube videos when runner IPs are bot-blocked."""
+    video_id=youtube_video_id(url)
+    if not video_id:return None
+    instances=[
+        'https://pipedapi.kavin.rocks',
+        'https://api.piped.projectsegfau.lt',
+        'https://pipedapi.adminforge.de',
+        'https://pipedapi.r4fo.com',
+        'https://pipedapi.in.projectsegfau.lt',
+    ]
+    for base in instances:
+        try:
+            api=base.rstrip('/')+'/streams/'+urllib.parse.quote(video_id)
+            with urllib.request.urlopen(req(api,'https://piped.video/'),timeout=12) as response:
+                data=json.loads(response.read(8*1024*1024).decode('utf-8','replace'))
+            streams=list(data.get('videoStreams') or [])
+            def rank(fmt):
+                typ=str(fmt.get('mimeType') or fmt.get('format') or '').lower()
+                quality=str(fmt.get('quality') or '')
+                match=re.search(r'(\\d{3,4})p',quality)
+                height=int(match.group(1)) if match else 0
+                return (1 if 'mp4' in typ else 0,1 if 0<height<=720 else 0,height)
+            streams=[x for x in streams if isinstance(x,dict) and str(x.get('url') or '').startswith('http')]
+            streams.sort(key=rank,reverse=True)
+            for stream in streams[:3]:
+                info=download(stream['url'],dest,base)
+                if info and float(info.get('duration',0))>=5:
+                    print('piped fallback success',base,video_id,stream.get('quality'),info,flush=True)
+                    return info
+                dest.unlink(missing_ok=True)
+        except Exception as exc:
+            print('piped fallback failed',base,video_id,type(exc).__name__,str(exc)[:160],flush=True)
+        dest.unlink(missing_ok=True)
+    return None
+
+
 def ytdlp(url,dest):
     low_url=url.lower()
     is_youtube='youtube.com' in low_url or 'youtu.be' in low_url
@@ -357,7 +394,9 @@ def ytdlp(url,dest):
             print('github actions youtube: using external fallback after all player clients failed',flush=True)
         info=newisty_download(url,dest,'720p' if is_actions else '1080p')
         if info:return info
-        return invidious_download(url,dest)
+        info=invidious_download(url,dest)
+        if info:return info
+        return piped_download(url,dest)
     return None
 
 
