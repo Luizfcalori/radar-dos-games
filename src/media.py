@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Aquisição de mídia com prova de relevância por jogo e QA semântico."""
-import hashlib,html,json,os,re,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
+import hashlib,html,json,os,re,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 
 try:
@@ -385,6 +385,9 @@ def ytdlp(url,dest):
     clients=['mweb','ios','android','web_music','web_embedded','tv_embedded'] if is_actions and is_youtube else [None]
     for client in clients:
         args=['yt-dlp','--no-cache-dir','--force-ipv4','--no-playlist','--playlist-end','1','--retries','2','--fragment-retries','2','--extractor-retries','2','--socket-timeout','20']
+        # YouTube increasingly requires its JavaScript challenge runtime; use Deno when installed.
+        if shutil.which('deno'):
+            args += ['--js-runtimes','deno']
         if client:
             args += ['--extractor-args',f'youtube:player_client={client}']
         args += ['-f',f'bv*[height<={height}]+ba/b[height<={height}]/best','--merge-output-format','mp4','-o',str(dest),url]
