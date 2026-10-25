@@ -454,7 +454,10 @@ def ytdlp(url,dest):
     # Try multiple public player clients before the external queue. A video can
     # reject web_embedded while remaining available through iOS/TV player APIs.
     height=720 if is_actions else 1080
-    timeout=45 if is_actions else 35
+    host=(urllib.parse.urlparse(url).hostname or '').lower().removeprefix('www.')
+    # Rutube's HLS manifests often take longer to resolve/download on hosted runners.
+    # Give it a bounded 150s window instead of repeatedly killing viable downloads at 45s.
+    timeout=(150 if host=='rutube.ru' else 90 if host=='zolotube.com' else 45) if is_actions else 35
     clients=['tv','web_safari','mweb','ios','android','web_music','web_embedded'] if is_actions and is_youtube else [None]
     for client in clients:
         args=['yt-dlp','--no-cache-dir','--force-ipv4','--no-playlist','--playlist-end','1','--retries','2','--fragment-retries','2','--extractor-retries','2','--socket-timeout','20']
