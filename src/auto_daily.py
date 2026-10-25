@@ -758,6 +758,7 @@ def fetch_manual_media(brief):
         if (
             "youtube.com/watch" in low
             or "youtu.be/" in low
+            or "zolotube.com/watch" in low
             or social_post_url(url)
             or low.endswith((".mp4", ".mov", ".webm", ".m4v", ".m3u8", ".mpd"))
         ):
