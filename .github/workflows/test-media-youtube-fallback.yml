@@ -98,7 +98,7 @@ jobs:
             /tmp/media-run.log
             /tmp/ffprobe.json
             output/clips.json
-            output/media/asset_01.mp4
+            output/media/*.mp4
           if-no-files-found: warn
           retention-days: 3
 
