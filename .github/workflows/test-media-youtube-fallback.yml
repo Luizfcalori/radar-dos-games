@@ -21,7 +21,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
-          python -m pip install -U yt-dlp
+          python -m pip install -U --pre yt-dlp
       - name: Build isolated media plan
         run: |
           cat > /tmp/media-plan.json <<'JSON'
