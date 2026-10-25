@@ -292,7 +292,15 @@ def invidious_download(url,dest):
     """Independent public-Invidious fallback when YouTube and the primary downloader are blocked."""
     video_id=youtube_video_id(url)
     if not video_id:return None
+    # Current public instances from the maintained Invidious directory.
+    # Older endpoints previously used here have been returning 401/403 or gone.
     instances=[
+        'https://yewtu.be',
+        'https://iv.ggtyler.dev',
+        'https://invidious.privacydev.net',
+        'https://yt.artemislena.eu',
+        'https://iv.melmac.space',
+        'https://inv.tux.pizza',
         'https://invidious.tiekoetter.com',
         'https://invidious.nerdvpn.de',
         'https://yt.chocolatemoo53.com',
