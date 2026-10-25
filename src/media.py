@@ -646,8 +646,18 @@ def main(path):
             if not info:dest.unlink(missing_ok=True);continue
             if wanted=='video':
                 min_d=float(item.get('min_duration',8))
+                min_width=int(item.get('min_width',640))
+                min_height=int(item.get('min_height',360))
                 if float(info.get('duration',0))<min_d:
                     print('duration reject',info.get('duration'),u);dest.unlink(missing_ok=True);continue
+                # A technically decodable file is not automatically publishable.
+                # Reject low-resolution sources here and continue through the
+                # candidate list, instead of stopping on a short 512x288 fallback.
+                width=int(info.get('width',0));height=int(info.get('height',0))
+                if width<min_width or height<min_height:
+                    print('resolution reject',f'{width}x{height}',f'minimum {min_width}x{min_height}',u,flush=True)
+                    dest.unlink(missing_ok=True)
+                    continue
                 # URL variants can resolve to byte-identical files. Hash once,
                 # after technical validation and before counting the asset/duration.
                 digest=sha256_file(dest)
