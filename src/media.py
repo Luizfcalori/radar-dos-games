@@ -288,6 +288,45 @@ def discover_social_posts(profile):
         print('official social discovery failed',profile,type(e).__name__,str(e)[:240],flush=True)
         return []
 
+def invidious_download(url,dest):
+    """Independent public-Invidious fallback when YouTube and the primary downloader are blocked."""
+    video_id=youtube_video_id(url)
+    if not video_id:return None
+    instances=[
+        'https://invidious.tiekoetter.com',
+        'https://invidious.nerdvpn.de',
+        'https://yt.chocolatemoo53.com',
+        'https://inv.nadeko.net',
+    ]
+    for base in instances:
+        try:
+            api=base+'/api/v1/videos/'+urllib.parse.quote(video_id)
+            with urllib.request.urlopen(req(api,base),timeout=15) as response:
+                data=json.loads(response.read(12*1024*1024).decode('utf-8','replace'))
+            formats=list(data.get('formatStreams') or [])+list(data.get('adaptiveFormats') or [])
+            def rank(fmt):
+                typ=str(fmt.get('type') or '').lower()
+                quality=str(fmt.get('qualityLabel') or fmt.get('quality') or '')
+                mp4=1 if ('mp4' in typ or str(fmt.get('container') or '').lower()=='mp4') else 0
+                match=re.search(r'(\d{3,4})p',quality)
+                height=int(match.group(1)) if match else 0
+                return (mp4,1 if 0<height<=720 else 0,height)
+            formats=[fmt for fmt in formats if isinstance(fmt,dict) and fmt.get('url')]
+            formats.sort(key=rank,reverse=True)
+            for fmt in formats[:3]:
+                stream_url=str(fmt.get('url') or '')
+                if not stream_url.startswith('http'):continue
+                info=download(stream_url,dest,base)
+                if info and float(info.get('duration',0))>=5:
+                    print('invidious fallback success',base,video_id,fmt.get('qualityLabel') or fmt.get('quality'),info,flush=True)
+                    return info
+                dest.unlink(missing_ok=True)
+        except Exception as exc:
+            print('invidious fallback failed',base,video_id,type(exc).__name__,str(exc)[:180],flush=True)
+        dest.unlink(missing_ok=True)
+    return None
+
+
 def ytdlp(url,dest):
     low_url=url.lower()
     is_youtube='youtube.com' in low_url or 'youtu.be' in low_url
@@ -316,7 +355,9 @@ def ytdlp(url,dest):
     if is_youtube:
         if is_actions:
             print('github actions youtube: using external fallback after all player clients failed',flush=True)
-        return newisty_download(url,dest,'720p' if is_actions else '1080p')
+        info=newisty_download(url,dest,'720p' if is_actions else '1080p')
+        if info:return info
+        return invidious_download(url,dest)
     return None
 
 
