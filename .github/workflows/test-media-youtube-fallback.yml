@@ -37,8 +37,17 @@ jobs:
               {
                 "type": "video",
                 "role": "animal_hospital_halloween_gameplay_test",
-                "url": "https://rutube.ru/video/554e100e38689de0ed02b84a3da7d2d1/",
+                "url": "https://rutube.ru/video/b4321c0d654662c55a61305c1b3722db/",
                 "fallback_urls": [
+                  "https://rutube.ru/video/a9f301146140c0dba3429e41118bcbdb/",
+                  "https://rutube.ru/video/080f24a0de6551c46e4f72f6faa669f1/",
+                  "https://rutube.ru/video/12d08fe54428a40629d66056ef49d2cc/",
+                  "https://rutube.ru/video/5a8ea6f04ed50f05ea82f10cc1e3c582/",
+                  "https://rutube.ru/video/c1ea19049f9b5fa5373d6fd1298fe137/",
+                  "https://www.dailymotion.com/video/xb6iwqi",
+                  "https://www.bilibili.tv/video/4800979151887360",
+                  "https://www.youtube.com/watch?v=oOCYoEQMoSU",
+                  "https://www.youtube.com/watch?v=WejETWjm0oU",
                   "https://zolotube.com/watch?v=wEVQKPF0tg4",
                   "https://youtu.be/0EhXDqzsIU4",
                   "https://youtu.be/wEVQKPF0tg4"
@@ -72,7 +81,7 @@ jobs:
           a=m['assets'][0]
           assert a['width'] >= 640 and a['height'] >= 360, a
           assert a['duration'] >= 15, a
-          assert ('rutube.ru' in a['url'] or 'zolotube.com' in a['url'] or 'youtu.be' in a['url']), a
+          assert any(host in a['url'] for host in ('rutube.ru','zolotube.com','youtu.be','youtube.com','dailymotion.com','bilibili.tv')), a
           print('INTEGRATION_SUCCESS',a)
           PY
       - name: Upload validated media
@@ -88,4 +97,4 @@ jobs:
           if-no-files-found: warn
           retention-days: 3
 
-# Validation rerun after production 429 hardening.
+# Validation includes alternate public video platforms after source access failures.
