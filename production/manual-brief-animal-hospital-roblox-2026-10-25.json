@@ -17,6 +17,7 @@
     "https://animalhospital.blog/videos/"
   ],
   "video_urls": [
+    "https://rutube.ru/video/2ac36578f8896cce9c40815ce9bf538e/",
     "https://rutube.ru/video/b4321c0d654662c55a61305c1b3722db/",
     "https://rutube.ru/video/a9f301146140c0dba3429e41118bcbdb/",
     "https://rutube.ru/video/080f24a0de6551c46e4f72f6faa669f1/",
@@ -32,6 +33,7 @@
     "https://zolotube.com/watch?v=wEVQKPF0tg4"
   ],
   "video_fallback_urls": [
+    "https://rutube.ru/video/2ac36578f8896cce9c40815ce9bf538e/",
     "https://rutube.ru/video/b4321c0d654662c55a61305c1b3722db/",
     "https://rutube.ru/video/a9f301146140c0dba3429e41118bcbdb/",
     "https://rutube.ru/video/080f24a0de6551c46e4f72f6faa669f1/",
@@ -62,7 +64,8 @@
     "https://www.dailymotion.com/video/xb6iwqi": "clipe curto de gameplay Animal Hospital no Roblox, apenas para cenas pontuais",
     "https://www.bilibili.tv/video/4800979151887360": "gameplay de Animal Hospital no Roblox em plataforma alternativa",
     "https://www.youtube.com/watch?v=oOCYoEQMoSU": "Animal Hospital full gameplay sem comentários, fallback do YouTube",
-    "https://www.youtube.com/watch?v=WejETWjm0oU": "Animal Hospital gameplay, fallback alternativo do YouTube"
+    "https://www.youtube.com/watch?v=WejETWjm0oU": "Animal Hospital gameplay, fallback alternativo do YouTube",
+    "https://rutube.ru/video/2ac36578f8896cce9c40815ce9bf538e/": "Animal Hospital walkthrough completo sem comentários, publicado no Rutube em julho de 2026"
   },
   "video_labels": {
     "https://rutube.ru/video/554e100e38689de0ed02b84a3da7d2d1/": "Animal Hospital — gameplay alternativo",
@@ -79,7 +82,8 @@
     "https://www.dailymotion.com/video/xb6iwqi": "clipe curto de gameplay Animal Hospital no Roblox",
     "https://www.bilibili.tv/video/4800979151887360": "Animal Hospital no Roblox em plataforma alternativa",
     "https://www.youtube.com/watch?v=oOCYoEQMoSU": "Animal Hospital full gameplay sem comentários",
-    "https://www.youtube.com/watch?v=WejETWjm0oU": "Animal Hospital gameplay"
+    "https://www.youtube.com/watch?v=WejETWjm0oU": "Animal Hospital gameplay",
+    "https://rutube.ru/video/2ac36578f8896cce9c40815ce9bf538e/": "Animal Hospital — walkthrough sem comentários"
   },
   "visual_reference_images": [],
   "approved_for_publish": true,
