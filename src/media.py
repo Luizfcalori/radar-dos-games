@@ -407,6 +407,44 @@ def piped_download(url,dest):
     return None
 
 
+
+def zolotube_direct_download(url,dest):
+    """Tenta extrair mídia direta do player ZoloTube antes de depender do extrator genérico."""
+    try:
+        with urllib.request.urlopen(req(url),timeout=25) as response:
+            page=html.unescape(response.read(12*1024*1024).decode('utf-8','ignore')).replace('\\\\/','/')
+    except Exception as exc:
+        print('zolotube page fetch failed',type(exc).__name__,str(exc)[:180],flush=True)
+        return None
+    # Players variam entre source/src, file/url e manifest JSON; preservar URLs assinadas.
+    patterns=[
+        r"""(?:src|file|url|source|contentUrl|hls|dash)\s*["']?\s*[:=]\s*["'](https?:\\/\\/[^"'\\s<>]+?\\.(?:mp4|m3u8|mpd)(?:\\?[^"'\\s<>]*)?)""",
+        r"""(?:src|href|data-src|data-video|data-url)\s*=\s*["'](https?://[^"'<> ]+\.(?:mp4|m3u8|mpd)(?:\?[^"'<> ]*)?)["']""",
+        r"""https?://[^"'<>\\s]+?\.(?:mp4|m3u8|mpd)(?:\?[^"'<>\\s]*)?"""
+    ]
+    candidates=[]
+    for pattern in patterns:
+        for match in re.findall(pattern,page,re.I):
+            value=match if isinstance(match,str) else match[0]
+            value=html.unescape(value).replace('\\\\u0026','&').replace('\\\\/','/')
+            value=value.rstrip('),;')
+            if value.startswith('http') and value not in candidates:
+                candidates.append(value)
+    print('zolotube direct media candidates',len(candidates),flush=True)
+    for candidate in candidates[:12]:
+        clean=candidate.lower().split('?')[0]
+        if clean.endswith(STREAM_EXTS):
+            info=stream_download(candidate,dest,url)
+        elif clean.endswith(VIDEO_EXTS):
+            info=download(candidate,dest,url)
+        else:
+            continue
+        if info and float(info.get('duration',0))>=15:
+            print('zolotube direct media success',info,flush=True)
+            return info
+        dest.unlink(missing_ok=True)
+    return None
+
 def ytdlp(url,dest):
     low_url=url.lower()
     is_youtube='youtube.com' in low_url or 'youtu.be' in low_url
@@ -641,6 +679,9 @@ def main(path):
             ):
                 info=official_remote_clip(u,dest,source if str(source).startswith('http') else 'https://www.rockstargames.com/')
             elif is_instagram_video_url(u) and wanted=='video':info=download_public_instagram(u,dest,probe_info)
+            elif urllib.parse.urlparse(u).hostname and urllib.parse.urlparse(u).hostname.lower().removeprefix('www.')=='zolotube.com':
+                info=zolotube_direct_download(u,dest)
+                if not info:info=ytdlp(u,dest)
             elif 'youtube.com' in low or 'youtu.be' in low or social_post_url(u) or supported_video_page_url(u):info=ytdlp(u,dest)
             else:info=download(u,dest,source if str(source).startswith('http') else None)
             if not info:dest.unlink(missing_ok=True);continue
