@@ -37,8 +37,9 @@ jobs:
               {
                 "type": "video",
                 "role": "animal_hospital_halloween_gameplay_test",
-                "url": "https://rutube.ru/video/b4321c0d654662c55a61305c1b3722db/",
+                "url": "https://rutube.ru/video/2ac36578f8896cce9c40815ce9bf538e/",
                 "fallback_urls": [
+                  "https://rutube.ru/video/b4321c0d654662c55a61305c1b3722db/",
                   "https://rutube.ru/video/a9f301146140c0dba3429e41118bcbdb/",
                   "https://rutube.ru/video/080f24a0de6551c46e4f72f6faa669f1/",
                   "https://rutube.ru/video/12d08fe54428a40629d66056ef49d2cc/",
@@ -70,17 +71,21 @@ jobs:
           python src/media.py /tmp/media-plan.json | tee /tmp/media-run.log
       - name: Verify resulting MP4
         run: |
-          test -s output/media/asset_01.mp4
           test -s output/clips.json
-          ffprobe -v error -show_entries stream=codec_name,width,height -show_entries format=duration -of json output/media/asset_01.mp4 | tee /tmp/ffprobe.json
           python - <<'PY'
-          import json
+          import json, pathlib, subprocess
           m=json.load(open('output/clips.json'))
           assert m['publishable_media'] is True, m
           assert m['video_assets'] >= 1, m
-          a=m['assets'][0]
-          assert a['width'] >= 640 and a['height'] >= 360, a
-          assert a['duration'] >= 15, a
+          a=next((x for x in m['assets'] if x.get('type')=='video'),None)
+          assert a, m
+          p=pathlib.Path(a['path'])
+          assert p.is_file() and p.stat().st_size>100000, a
+          probe=subprocess.run(['ffprobe','-v','error','-show_entries','stream=codec_name,width,height','-show_entries','format=duration','-of','json',str(p)],capture_output=True,text=True,check=True)
+          open('/tmp/ffprobe.json','w').write(probe.stdout)
+          info=json.loads(probe.stdout)
+          assert int(info['streams'][0]['width']) >= 640 and int(info['streams'][0]['height']) >= 360, {'asset':a,'probe':info}
+          assert float(info['format']['duration']) >= 15, {'asset':a,'probe':info}
           assert any(host in a['url'] for host in ('rutube.ru','zolotube.com','youtu.be','youtube.com','dailymotion.com','bilibili.tv')), a
           print('INTEGRATION_SUCCESS',a)
           PY
