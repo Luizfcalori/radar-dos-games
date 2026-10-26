@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-25T12:13:58.211948+00:00",
-  "total_discovered": 134,
-  "ready_for_tiktok": 127,
+  "updated_at": "2026-10-26T13:58:14.069239+00:00",
+  "total_discovered": 137,
+  "ready_for_tiktok": 130,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "wmMJcdDzWmU",
+      "youtube_url": "https://www.youtube.com/shorts/wmMJcdDzWmU",
+      "title": "BIGBY ESTÁ MAIS ASSUSTADOR: VEJA A NOVA FORMA DE LOBO",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "KT8DZMgVD2Q",
+      "youtube_url": "https://www.youtube.com/shorts/KT8DZMgVD2Q",
+      "title": "O MODO NOIR MUDA COMPLETAMENTE O CLIMA DE FABLETOWN",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Jvu15pf47Wc",
+      "youtube_url": "https://www.youtube.com/shorts/Jvu15pf47Wc",
+      "title": "CENAS PERDIDAS E MAIS DE UMA HORA DE BASTIDORES",
+      "status": "approved"
+    },
     {
       "youtube_id": "7q_AykfWMyA",
       "youtube_url": "https://www.youtube.com/shorts/7q_AykfWMyA",
