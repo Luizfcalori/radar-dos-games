@@ -20,7 +20,14 @@
   "video_fallback_urls": [],
   "video_roles": {},
   "video_labels": {},
-  "visual_reference_images": [],
+  "visual_reference_images": [
+    {
+      "url": "https://store.steampowered.com/app/2702430/Usual_June/",
+      "label": "Usual June — official Steam screenshots",
+      "source_proof": "https://store.steampowered.com/app/2702430/Usual_June/",
+      "allow_images_from_page": true
+    }
+  ],
   "steam_app_id": 2702430,
   "approved_for_publish": true,
   "minimum_assets": 1,
