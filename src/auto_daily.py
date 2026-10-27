@@ -887,6 +887,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json")
         elif forced_topic_slug == ascii_slug("Zenless Zone Zero"):
             manual = load_manual_brief("production/manual-brief-zenless-zone-zero-2026-10-25.json")
+        elif forced_topic_slug == ascii_slug("Usual June"):
+            manual = load_manual_brief("production/manual-brief-usual-june-2026-10-27.json")
         else:
             manual = None
     if not candidates and not manual:
