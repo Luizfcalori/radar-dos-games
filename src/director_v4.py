@@ -370,6 +370,8 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     exhausted = any(token in str(exc) for token in (
                         "faltam cenas inéditas correspondentes à fala",
                         "acabou a gameplay inédita aprovada para a fala",
+                        "vídeo acabaria antes da fala",
+                        "intervalo de gameplay repetido",
                     ))
                     if not exhausted:
                         raise
@@ -377,6 +379,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     # When those reviewed motion intervals are exhausted, permit
                     # approved, game-specific official stills from the acquired asset
                     # manifest as a continuity bridge; never broaden to generic art.
+                    topic_key = norm(plan.get("topic") or "")
                     fallback_pool = [
                         a for a in assets.values()
                         if a.get("approved", True)
@@ -384,9 +387,10 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         and str(a.get("role") or "").startswith(("official_subject_reference", "official_context_"))
                         and a.get("source")
                         and a.get("url")
-                        and "enshrouded" in (
+                        and topic_key
+                        and topic_key in norm(
                             str(a.get("url") or "") + " " + str(a.get("source_label") or "")
-                        ).casefold()
+                        )
                     ]
                     fallback_duration=min(remaining,3.5)
                     fallback_stills = [
