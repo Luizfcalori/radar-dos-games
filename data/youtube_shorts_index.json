@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-26T13:58:14.069239+00:00",
-  "total_discovered": 137,
-  "ready_for_tiktok": 130,
+  "updated_at": "2026-10-27T14:25:20.400166+00:00",
+  "total_discovered": 140,
+  "ready_for_tiktok": 133,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "X5lc7ntwfTE",
+      "youtube_url": "https://www.youtube.com/shorts/X5lc7ntwfTE",
+      "title": "ZENLESS 3.3: AGORA VOCÊ PILOTA MECHAS?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "_r23TUz7xaI",
+      "youtube_url": "https://www.youtube.com/shorts/_r23TUz7xaI",
+      "title": "PHOENIX E SEVERIAN: O QUE CADA AGENTE FAZ?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "N7GHoe_kfG0",
+      "youtube_url": "https://www.youtube.com/shorts/N7GHoe_kfG0",
+      "title": "QUIETUDE ISLE: O QUE MUDOU NA NOVA HISTÓRIA?",
+      "status": "approved"
+    },
     {
       "youtube_id": "wmMJcdDzWmU",
       "youtube_url": "https://www.youtube.com/shorts/wmMJcdDzWmU",
