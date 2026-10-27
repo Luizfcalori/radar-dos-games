@@ -114,17 +114,38 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Instalar ferramentas gratuitas
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar ferramentas gratuitas do sistema
+        timeout-minutes: 10
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Instalar dependências Python básicas
+        timeout-minutes: 10
+        run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          # Keep yt-dlp on the latest stable release and include the supported EJS components.
-          python -m pip install -U 'yt-dlp[default]'
-          # Open-source zero-shot visual recognition, CPU only; no paid API.
-          python -m pip install --quiet torch==2.5.1+cpu torchvision==0.20.1+cpu --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install --quiet transformers==4.46.3
+          pip install --retries 2 --timeout 60 -r requirements.txt
+
+      - name: Atualizar yt-dlp
+        timeout-minutes: 5
+        run: python -m pip install --retries 2 --timeout 60 -U 'yt-dlp[default]'
+
+      - name: Instalar visão computacional gratuita (PyTorch CPU)
+        timeout-minutes: 20
+        run: |
+          # Etapa separada e com limite explícito: evita que dependências pesadas
+          # deixem a instalação inteira sem diagnóstico por tempo indeterminado.
+          python -m pip install --retries 2 --timeout 60 --progress-bar off torch==2.5.1+cpu torchvision==0.20.1+cpu --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Instalar Transformers para análise visual
+        timeout-minutes: 8
+        run: python -m pip install --retries 2 --timeout 60 --progress-bar off transformers==4.46.3
 
       - name: Validar intro oficial permanente
         run: |
