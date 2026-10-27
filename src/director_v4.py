@@ -389,7 +389,9 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         and a.get("url")
                         and topic_key
                         and topic_key in norm(
-                            str(a.get("url") or "") + " " + str(a.get("source_label") or "")
+                            str(a.get("url") or "") + " " +
+                            str(a.get("source_label") or "") + " " +
+                            str(a.get("source") or "")
                         )
                     ]
                     fallback_duration=min(remaining,3.5)
