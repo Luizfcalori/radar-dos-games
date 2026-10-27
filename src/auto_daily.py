@@ -806,6 +806,8 @@ def fetch_manual_media(brief):
         )
     return combined, media, errors
 
+# Usual June private-run brief selection is intentionally pinned in both branches.
+
 def main():
     research_path = OUT / "research.json"
     if not research_path.exists():
