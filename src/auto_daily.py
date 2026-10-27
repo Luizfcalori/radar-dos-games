@@ -1103,6 +1103,7 @@ def main():
                 "source_label": str(visual.get("label") or "").strip()[:90],
                 "max_assets": 1,
                 "source_proof": visual.get("source_proof") or selected["url"],
+                "allow_images_from_page": bool(visual.get("allow_images_from_page", False)),
                 "relevance_evidence": "publisher_curated_subject_specific_still",
             })
 
