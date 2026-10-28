@@ -160,6 +160,8 @@ async def synthesize_one(text: str, output: Path, voice: str):
                 "429" in message
                 or "too many requests" in message
                 or "wssserverhandshakeerror" in name.casefold()
+                or "no audio was received" in message
+                or "noaudioreceived" in name.casefold()
             )
             output.unlink(missing_ok=True)
             metadata.unlink(missing_ok=True)
