@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-27T14:25:20.400166+00:00",
-  "total_discovered": 140,
-  "ready_for_tiktok": 133,
+  "updated_at": "2026-10-28T15:20:55.990181+00:00",
+  "total_discovered": 143,
+  "ready_for_tiktok": 136,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "WerVjvee4NU",
+      "youtube_url": "https://www.youtube.com/shorts/WerVjvee4NU",
+      "title": "ANIMAL HOSPITAL: O MINIJOGO DE HALLOWEEN MUDOU TUDO?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "nzzhkNPttew",
+      "youtube_url": "https://www.youtube.com/shorts/nzzhkNPttew",
+      "title": "COMO SABER SE O PACIENTE É UMA ANOMALIA?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Sm4DtpKZ6Qo",
+      "youtube_url": "https://www.youtube.com/shorts/Sm4DtpKZ6Qo",
+      "title": "HALLOWEEN PARTE 2 CHEGA EM 27 DE OUTUBRO — O QUE JÁ SABEMOS?",
+      "status": "approved"
+    },
     {
       "youtube_id": "X5lc7ntwfTE",
       "youtube_url": "https://www.youtube.com/shorts/X5lc7ntwfTE",
