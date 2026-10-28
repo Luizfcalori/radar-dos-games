@@ -1,6 +1,6 @@
 numpy<2
 opencv-python-headless==4.10.0.84
-edge-tts==7.2.3
+edge-tts==7.3.0
 google-api-python-client==2.184.0
 google-auth==2.41.1
 google-auth-oauthlib==1.2.2
