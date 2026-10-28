@@ -378,3 +378,5 @@ jobs:
 # Recovery trigger 2026-10-22: scan latest successful production and queue its three approved Shorts.
 
 # Trigger an immediate approved-short import check after the latest production artifact became available.
+
+# Manual recovery trigger for approved production Shorts.
