@@ -1,4 +1,4 @@
-# Production retry: preserve Thalita voice and back off aggressively on Edge TTS 429 responses.
+# Production fix: edge-tts 7.3.0 supports Microsoft's v2 handshake; preserve Thalita and bounded retries.
 #!/usr/bin/env python3
 """Narração PT-BR gratuita via edge-tts, com timings reais por parágrafo.
 
