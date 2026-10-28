@@ -8,29 +8,34 @@
     "https://remothered.com/news/out-now",
     "https://remothered.com/news/before-you-play",
     "https://stormindgames.com/remothered-red-nuns-legacy-is-out-now/",
-    "https://store.steampowered.com/app/3335310/Remothered_Red_Nuns_Legacy/"
+    "https://store.steampowered.com/app/3335310/Remothered_Red_Nuns_Legacy/",
+    "https://stormindgames.com/game/remothered-red-nuns-legacy/"
   ],
   "source_urls": [
     "https://remothered.com/news/out-now",
     "https://remothered.com/news/before-you-play",
-    "https://store.steampowered.com/app/3335310/Remothered_Red_Nuns_Legacy/"
+    "https://store.steampowered.com/app/3335310/Remothered_Red_Nuns_Legacy/",
+    "https://stormindgames.com/game/remothered-red-nuns-legacy/"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=pdEnIi5ZYug"
+    "https://www.youtube.com/watch?v=pdEnIi5ZYug",
+    "https://www.youtube.com/watch?v=4Aws4i_viGc"
   ],
   "video_fallback_urls": [],
   "video_roles": {
-    "https://www.youtube.com/watch?v=pdEnIi5ZYug": "trailer de lançamento oficial publicado pela Stormind Games"
+    "https://www.youtube.com/watch?v=pdEnIi5ZYug": "trailer oficial de lançamento publicado pela Stormind Games",
+    "https://www.youtube.com/watch?v=4Aws4i_viGc": "trailer oficial de gameplay publicado pelo canal Remothered"
   },
   "video_labels": {
-    "https://www.youtube.com/watch?v=pdEnIi5ZYug": "Remothered: Red Nun’s Legacy — Launch Trailer"
+    "https://www.youtube.com/watch?v=pdEnIi5ZYug": "Remothered: Red Nun’s Legacy — Launch Trailer",
+    "https://www.youtube.com/watch?v=4Aws4i_viGc": "Remothered: Red Nun’s Legacy — Gameplay Trailer"
   },
   "visual_reference_images": [],
   "steam_app_id": "3335310",
   "approved_for_publish": true,
   "minimum_assets": 1,
-  "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 15,
+  "minimum_video_assets": 2,
+  "minimum_unique_video_seconds": 20,
   "minimum_image_assets": 0,
   "editorial_rules": [
     "Tema bloqueado: Remothered: Red Nun’s Legacy. Não trocar por outro jogo.",
@@ -44,7 +49,8 @@
     "Criar exatamente três Shorts independentes com ganchos distintos, sem repetir artificialmente o mesmo trecho principal; mostrar a capa nos primeiros segundos.",
     "TikTok Helper: no máximo cinco hashtags fortes e relevantes por descrição; não usar #RadarDosGames.",
     "Enviar os quatro vídeos ao YouTube como privados, sem publicação pública, somente após aprovação dos controles de qualidade.",
-    "Antes de aprovar, verificar áudio completo, sincronização narração/imagem, ausência de repetição artificial, capas e duração final."
+    "Antes de aprovar, verificar áudio completo, sincronização narração/imagem, ausência de repetição artificial, capas e duração final.",
+    "Para evitar repetição visual, usar tanto o trailer oficial de lançamento quanto o trailer oficial de gameplay de junho de 2026, selecionando trechos distintos e contextualmente corretos. Não repetir artificialmente o mesmo trecho."
   ],
   "short_hooks": [
     "A RED NUN ESTÁ CAÇANDO VOCÊ — DÁ PARA ESCAPAR?",
