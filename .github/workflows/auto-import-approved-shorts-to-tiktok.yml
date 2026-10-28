@@ -1,4 +1,5 @@
 name: Radar TikTok - Auto Import Approved Production Shorts
+# Manual recovery trigger: scan newly approved private uploads on push.
 
 on:
   workflow_dispatch:
