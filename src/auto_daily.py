@@ -835,6 +835,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json")
     elif forced_topic_slug == ascii_slug("Zenless Zone Zero"):
         manual = load_manual_brief("production/manual-brief-zenless-zone-zero-2026-10-25.json")
+    elif forced_topic_slug == ascii_slug("Remothered: Red Nun’s Legacy"):
+        manual = load_manual_brief("production/manual-brief-remothered-red-nuns-legacy-2026-10-28.json")
     elif forced_topic_slug == ascii_slug("Clive Barker’s Hellraiser: Revival"):
         manual = load_manual_brief("production/manual-brief-clive-barkers-hellraiser-revival-2026-10-28.json")
         # Keep the title identity guard aligned with the explicit game name.
@@ -892,6 +894,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json")
         elif forced_topic_slug == ascii_slug("Zenless Zone Zero"):
             manual = load_manual_brief("production/manual-brief-zenless-zone-zero-2026-10-25.json")
+        elif forced_topic_slug == ascii_slug("Remothered: Red Nun’s Legacy"):
+            manual = load_manual_brief("production/manual-brief-remothered-red-nuns-legacy-2026-10-28.json")
         elif forced_topic_slug == ascii_slug("Clive Barker’s Hellraiser: Revival"):
             manual = load_manual_brief("production/manual-brief-clive-barkers-hellraiser-revival-2026-10-28.json")
         elif forced_topic_slug == ascii_slug("Usual June"):
@@ -938,6 +942,7 @@ def main():
             "published_at": now.isoformat(),
             "score": 999,
             "manual_brief_path": {
+                "manual-remothered-red-nuns-legacy-launch-2026-10-28": "production/manual-brief-remothered-red-nuns-legacy-2026-10-28.json",
                 "manual-the-wolf-among-us-remastered-launch-2026-10-24": "production/manual-brief-the-wolf-among-us-remastered-2026-10-24.json",
                 "manual-zenless-zone-zero-version-3-3-journey-to-the-sky-2026-10-25": "production/manual-brief-zenless-zone-zero-2026-10-25.json",
                 "manual-the-blood-of-dawnwalker-update-1-1-2026-10-23": "production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json",
