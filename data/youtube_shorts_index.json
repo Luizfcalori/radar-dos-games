@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-28T15:20:55.990181+00:00",
-  "total_discovered": 143,
-  "ready_for_tiktok": 136,
+  "updated_at": "2026-10-29T11:45:57.783759+00:00",
+  "total_discovered": 146,
+  "ready_for_tiktok": 139,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "Eolqg8mIWpM",
+      "youtube_url": "https://www.youtube.com/shorts/Eolqg8mIWpM",
+      "title": "USUAL JUNE ADIADO: O QUE MUDOU NA DATA?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "tKawMz89IA0",
+      "youtube_url": "https://www.youtube.com/shorts/tKawMz89IA0",
+      "title": "MONSTROS, FANTASMAS E COMBATE RÁPIDO: VEJA USUAL JUNE",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "VDuQdnrzdmk",
+      "youtube_url": "https://www.youtube.com/shorts/VDuQdnrzdmk",
+      "title": "USUAL JUNE TAMBÉM CHEGA AO XBOX — QUANDO?",
+      "status": "approved"
+    },
     {
       "youtube_id": "WerVjvee4NU",
       "youtube_url": "https://www.youtube.com/shorts/WerVjvee4NU",
