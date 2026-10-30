@@ -18,5 +18,5 @@ jobs:
           script: |
             const runId = 41054222196;
             const { owner, repo } = context.repo;
-            await github.rest.actions.forceCancelWorkflowRun({ owner, repo, run_id: runId });
+            await github.request('POST /repos/{owner}/{repo}/actions/runs/{run_id}/force-cancel', { owner, repo, run_id: runId });
             core.info(`Force-cancelled stale production run ${runId} to prevent duplicate uploads.`);
