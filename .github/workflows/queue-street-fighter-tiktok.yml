@@ -71,10 +71,10 @@ jobs:
           entries = []
           for n in (1, 2, 3):
               meta = json.loads((base / f'short-{n}-youtube.json').read_text(encoding='utf-8'))
-              title = re.sub(r'\\s+', ' ', re.sub(r'(?i)#shorts?\\b', '', str(meta.get('title') or 'Street Fighter'))).strip(' -|')
+              title = re.sub(r'\s+', ' ', re.sub(r'(?i)#shorts?\b', '', str(meta.get('title') or 'Street Fighter'))).strip(' -|')
               desc = str(meta.get('description') or '')
               candidates = []
-              candidates += re.findall(r'#([\\wÀ-ÿ]+)', desc, flags=re.UNICODE)
+              candidates += re.findall(r'#([\wÀ-ÿ]+)', desc, flags=re.UNICODE)
               tags = meta.get('tags') or []
               if isinstance(tags, str): tags = [x.strip() for x in tags.split(',')]
               candidates += tags
@@ -82,16 +82,16 @@ jobs:
               chosen, seen = [], set()
               blocked = {'radardosgames','shorts','youtubeshorts','games','gaming','tiktokgames'}
               for raw in candidates:
-                  tag = '#' + re.sub(r'[^\\w]', '', str(raw).lstrip('#'), flags=re.UNICODE)
+                  tag = '#' + re.sub(r'[^\w]', '', str(raw).lstrip('#'), flags=re.UNICODE)
                   key = unicodedata.normalize('NFKD', tag[1:]).encode('ascii','ignore').decode().lower()
                   if len(key) < 4 or key in blocked or key in seen: continue
                   seen.add(key); chosen.append(tag)
                   if len(chosen) == 5: break
-              post = title + '\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n' + ' '.join(chosen)
+              post = title + '\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n' + ' '.join(chosen)
               entries.append({'id': f'41054318606-short-{n}', 'title': title, 'post_text': post,
                   'video_asset': f'41054318606-short-{n}.mp4', 'thumbnail_asset': f'41054318606-short-{n}.jpg',
                   'status':'approved', 'source_run_id':41054318606, 'short_number':n})
-          Path('tiktok-upload/manifest.json').write_text(json.dumps({'items':entries},ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          Path('tiktok-upload/manifest.json').write_text(json.dumps({'items':entries},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print('Prepared exactly',len(entries),'Shorts')
           PY
 
@@ -151,7 +151,7 @@ jobs:
           q['updated_at']=datetime.now(timezone.utc).isoformat()
           q['items']=(added+remaining)[:120]
           p.parent.mkdir(parents=True,exist_ok=True)
-          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps({'added':len(added),'queue_total':len(q['items'])}))
           PY
           git config user.name "radar-tiktok-bot"
