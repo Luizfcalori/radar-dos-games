@@ -118,7 +118,23 @@ jobs:
           from datetime import datetime, timezone
           from pathlib import Path
           p=Path('data/tiktok_queue.json')
-          q=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'version':2,'items':[]}
+          raw=p.read_text(encoding='utf-8') if p.exists() else ''
+          try:
+              q=json.loads(raw) if raw.strip() else {'version':2,'items':[]}
+          except json.JSONDecodeError:
+              decoder=json.JSONDecoder()
+              pos=0
+              docs=[]
+              while pos < len(raw):
+                  while pos < len(raw) and raw[pos].isspace(): pos += 1
+                  if pos >= len(raw): break
+                  obj,end=decoder.raw_decode(raw,pos)
+                  docs.append(obj); pos=end
+              q={'version':2,'items':[]}
+              for doc in docs:
+                  q['items'].extend(doc.get('items',[]) if isinstance(doc,dict) else [])
+                  for key in ('source_channel','updated_at'):
+                      if isinstance(doc,dict) and key in doc: q[key]=doc[key]
           manifest=json.loads(Path('tiktok-upload/manifest.json').read_text(encoding='utf-8'))
           base=f"https://github.com/{os.environ['REPOSITORY']}/releases/download/tiktok-approved-assets"
           old=q.get('items') or []
