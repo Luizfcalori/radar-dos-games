@@ -1,0 +1,145 @@
+name: Queue Street Fighter Shorts for TikTok Helper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/queue-street-fighter-tiktok.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: radar-tiktok-street-fighter-41054318606
+  cancel-in-progress: false
+
+jobs:
+  queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved Street Fighter production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-41054318606
+          path: bundle
+          repository: ${{ github.repository }}
+          run-id: 41054318606
+          github-token: ${{ github.token }}
+
+      - name: Validate exactly three approved Shorts
+        id: approved
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESULT_1="$(find bundle -type f -name 'youtube-short-1-result.json' -print -quit)"
+          RESULT_2="$(find bundle -type f -name 'youtube-short-2-result.json' -print -quit)"
+          RESULT_3="$(find bundle -type f -name 'youtube-short-3-result.json' -print -quit)"
+          test -n "$RESULT_1" && test -n "$RESULT_2" && test -n "$RESULT_3"
+          BASE="$(dirname "$RESULT_1")"
+          for N in 1 2 3; do
+            test -s "$BASE/shorts/short_${N}.mp4"
+            test -s "$BASE/short-${N}-youtube.json"
+          done
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare Helper MP4s, thumbnails and captions
+        env:
+          BASE: ${{ steps.approved.outputs.base }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          mkdir -p tiktok-upload
+          for N in 1 2 3; do
+            SRC="$BASE/shorts/short_${N}.mp4"
+            cp "$SRC" "tiktok-upload/41054318606-short-${N}.mp4"
+            ffmpeg -hide_banner -loglevel error -y -ss 1 -i "$SRC" -frames:v 1 -vf "scale=720:-2" "tiktok-upload/41054318606-short-${N}.jpg"
+          done
+          python - <<'PY'
+          import json, re, unicodedata
+          from pathlib import Path
+          base = Path(__import__('os').environ['BASE'])
+          entries = []
+          for n in (1, 2, 3):
+              meta = json.loads((base / f'short-{n}-youtube.json').read_text(encoding='utf-8'))
+              title = re.sub(r'\\s+', ' ', re.sub(r'(?i)#shorts?\\b', '', str(meta.get('title') or 'Street Fighter'))).strip(' -|')
+              desc = str(meta.get('description') or '')
+              candidates = []
+              candidates += re.findall(r'#([\\wÀ-ÿ]+)', desc, flags=re.UNICODE)
+              tags = meta.get('tags') or []
+              if isinstance(tags, str): tags = [x.strip() for x in tags.split(',')]
+              candidates += tags
+              candidates += re.findall(r'[A-Za-zÀ-ÿ0-9]{4,}', title)
+              chosen, seen = [], set()
+              blocked = {'radardosgames','shorts','youtubeshorts','games','gaming','tiktokgames'}
+              for raw in candidates:
+                  tag = '#' + re.sub(r'[^\\w]', '', str(raw).lstrip('#'), flags=re.UNICODE)
+                  key = unicodedata.normalize('NFKD', tag[1:]).encode('ascii','ignore').decode().lower()
+                  if len(key) < 4 or key in blocked or key in seen: continue
+                  seen.add(key); chosen.append(tag)
+                  if len(chosen) == 5: break
+              post = title + '\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n' + ' '.join(chosen)
+              entries.append({'id': f'41054318606-short-{n}', 'title': title, 'post_text': post,
+                  'video_asset': f'41054318606-short-{n}.mp4', 'thumbnail_asset': f'41054318606-short-{n}.jpg',
+                  'status':'approved', 'source_run_id':41054318606, 'short_number':n})
+          Path('tiktok-upload/manifest.json').write_text(json.dumps({'items':entries},ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          print('Prepared exactly',len(entries),'Shorts')
+          PY
+
+      - name: Upload MP4s and covers to Helper asset release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="tiktok-approved-assets"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Assets aprovados para o Radar TikTok Helper."
+          fi
+          gh release upload "$TAG" tiktok-upload/*.mp4 tiktok-upload/*.jpg --clobber
+
+      - name: Add exactly three Street Fighter Shorts to TikTok Helper queue
+        env:
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          p=Path('data/tiktok_queue.json')
+          q=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'version':2,'items':[]}
+          manifest=json.loads(Path('tiktok-upload/manifest.json').read_text(encoding='utf-8'))
+          base=f"https://github.com/{os.environ['REPOSITORY']}/releases/download/tiktok-approved-assets"
+          old=q.get('items') or []
+          ids={x['id'] for x in manifest['items']}
+          remaining=[x for x in old if x.get('id') not in ids]
+          added=[]
+          for x in manifest['items']:
+              added.append({'id':x['id'],'title':x['title'],'media_url':f"{base}/{x['video_asset']}",
+                'thumbnail_url':f"{base}/{x['thumbnail_asset']}",'post_text':x['post_text'],
+                'status':'approved','source_run_id':41054318606,'short_number':x['short_number'],
+                'approved_at':datetime.now(timezone.utc).isoformat()})
+          q['version']=2
+          q['source_channel']='https://www.youtube.com/@Radardosgamesbr/shorts'
+          q['updated_at']=datetime.now(timezone.utc).isoformat()
+          q['items']=(added+remaining)[:120]
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          print(json.dumps({'added':len(added),'queue_total':len(q['items'])}))
+          PY
+          git config user.name "radar-tiktok-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tiktok_queue.json
+          git commit -m "bot: queue three approved Street Fighter Shorts for TikTok Helper"
+          git push origin main
