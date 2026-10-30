@@ -842,6 +842,8 @@ def main():
         # Keep the title identity guard aligned with the explicit game name.
     elif forced_topic_slug == ascii_slug("Usual June"):
         manual = load_manual_brief("production/manual-brief-usual-june-2026-10-27.json")
+    elif forced_topic_slug == ascii_slug("Street Fighter"):
+        manual = load_manual_brief("production/manual-brief-street-fighter-6-2026-10-30.json")
     elif forced_topic_slug == ascii_slug("Animal Hospital"):
         manual = load_manual_brief("production/manual-brief-animal-hospital-roblox-2026-10-25.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
@@ -900,6 +902,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-clive-barkers-hellraiser-revival-2026-10-28.json")
         elif forced_topic_slug == ascii_slug("Usual June"):
             manual = load_manual_brief("production/manual-brief-usual-june-2026-10-27.json")
+        elif forced_topic_slug == ascii_slug("Street Fighter"):
+            manual = load_manual_brief("production/manual-brief-street-fighter-6-2026-10-30.json")
         else:
             manual = None
     if not candidates and not manual:
