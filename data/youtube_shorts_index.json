@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-29T11:45:57.783759+00:00",
-  "total_discovered": 146,
-  "ready_for_tiktok": 139,
+  "updated_at": "2026-10-30T15:00:38.021175+00:00",
+  "total_discovered": 149,
+  "ready_for_tiktok": 142,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "HiYdt2AOIgs",
+      "youtube_url": "https://www.youtube.com/shorts/HiYdt2AOIgs",
+      "title": "HELLRAISER: O UPDATE 1.1 CORRIGE O QUÊ?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "5H60Zl49Amg",
+      "youtube_url": "https://www.youtube.com/shorts/5H60Zl49Amg",
+      "title": "A CONFIGURAÇÃO GÊNESIS É A ARMA MAIS SINISTRA DO JOGO?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "wrH8wAIK1_s",
+      "youtube_url": "https://www.youtube.com/shorts/wrH8wAIK1_s",
+      "title": "PINHEAD, CULTO E TERROR: SOBREVIVER AO LABIRINTO",
+      "status": "approved"
+    },
     {
       "youtube_id": "Eolqg8mIWpM",
       "youtube_url": "https://www.youtube.com/shorts/Eolqg8mIWpM",
