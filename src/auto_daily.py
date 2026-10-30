@@ -959,6 +959,7 @@ def main():
                 "microsoft-rewards-brasil-2026-10-19": "production/manual-brief-microsoft-rewards-2026-10-19.json",
                 "manual-witcher-3-remastered-patch-501-switch2-2026-10-19": "production/manual-brief-witcher-3-remastered-2026-10-19.json",
                 "qssr-ps5-2026-10-19": "production/manual-brief-qssr-ps5-2026-10-19.json",
+                "manual-street-fighter-6-arjun-year-4-2026-10-30": "production/manual-brief-street-fighter-6-2026-10-30.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
