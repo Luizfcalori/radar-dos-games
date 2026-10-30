@@ -149,7 +149,7 @@ jobs:
           q['version']=2
           q['source_channel']='https://www.youtube.com/@Radardosgamesbr/shorts'
           q['updated_at']=datetime.now(timezone.utc).isoformat()
-          q['items']=(added+remaining)[:120]
+          q['items']=added+remaining
           p.parent.mkdir(parents=True,exist_ok=True)
           p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps({'added':len(added),'queue_total':len(q['items'])}))
