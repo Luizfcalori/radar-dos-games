@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-30T15:00:38.021175+00:00",
-  "total_discovered": 149,
-  "ready_for_tiktok": 142,
+  "updated_at": "2026-10-31T08:51:45.004956+00:00",
+  "total_discovered": 152,
+  "ready_for_tiktok": 145,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "TSv3_dEoPSc",
+      "youtube_url": "https://www.youtube.com/shorts/TSv3_dEoPSc",
+      "title": "A RED NUN ESTÁ CAÇANDO VOCÊ — DÁ PARA ESCAPAR?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "TzTFlPR52dE",
+      "youtube_url": "https://www.youtube.com/shorts/TzTFlPR52dE",
+      "title": "TRÊS PODERES PSÍQUICOS PARA DESVENDAR O PESADELO",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "fHJHQm6H2UE",
+      "youtube_url": "https://www.youtube.com/shorts/fHJHQm6H2UE",
+      "title": "SUSAN ENTROU NA VILLA ASHMANN PARA SALVAR A FILHA",
+      "status": "approved"
+    },
     {
       "youtube_id": "HiYdt2AOIgs",
       "youtube_url": "https://www.youtube.com/shorts/HiYdt2AOIgs",
