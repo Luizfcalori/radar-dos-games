@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-10-31T08:51:45.004956+00:00",
-  "total_discovered": 152,
-  "ready_for_tiktok": 145,
+  "updated_at": "2026-11-01T14:25:59.664104+00:00",
+  "total_discovered": 155,
+  "ready_for_tiktok": 148,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "p56QsAVBm_o",
+      "youtube_url": "https://www.youtube.com/shorts/p56QsAVBm_o",
+      "title": "ARJUN CHEGOU AO STREET FIGHTER 6: VEJA O QUE MUDA NO COMBATE!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "6zxhPSYOptU",
+      "youtube_url": "https://www.youtube.com/shorts/6zxhPSYOptU",
+      "title": "STREET FIGHTER 6 ESTÁ NA EVO BRAZIL 2027: DATA E R$ 1 MILHÃO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Y6rb3D8YzS0",
+      "youtube_url": "https://www.youtube.com/shorts/Y6rb3D8YzS0",
+      "title": "TIFA E BOSCH JÁ TÊM JANELAS DE CHEGADA AO STREET FIGHTER 6!",
+      "status": "approved"
+    },
     {
       "youtube_id": "TSv3_dEoPSc",
       "youtube_url": "https://www.youtube.com/shorts/TSv3_dEoPSc",
