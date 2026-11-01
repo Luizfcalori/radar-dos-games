@@ -844,6 +844,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-usual-june-2026-10-27.json")
     elif forced_topic_slug == ascii_slug("Street Fighter"):
         manual = load_manual_brief("production/manual-brief-street-fighter-6-2026-10-30.json")
+    elif forced_topic_slug == ascii_slug("Football Manager 27"):
+        manual = load_manual_brief("production/manual-brief-football-manager-27-2026-11-01.json")
     elif forced_topic_slug == ascii_slug("Animal Hospital"):
         manual = load_manual_brief("production/manual-brief-animal-hospital-roblox-2026-10-25.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
@@ -904,6 +906,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-usual-june-2026-10-27.json")
         elif forced_topic_slug == ascii_slug("Street Fighter"):
             manual = load_manual_brief("production/manual-brief-street-fighter-6-2026-10-30.json")
+        elif forced_topic_slug == ascii_slug("Football Manager 27"):
+            manual = load_manual_brief("production/manual-brief-football-manager-27-2026-11-01.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -960,6 +964,7 @@ def main():
                 "manual-witcher-3-remastered-patch-501-switch2-2026-10-19": "production/manual-brief-witcher-3-remastered-2026-10-19.json",
                 "qssr-ps5-2026-10-19": "production/manual-brief-qssr-ps5-2026-10-19.json",
                 "manual-street-fighter-6-arjun-year-4-2026-10-30": "production/manual-brief-street-fighter-6-2026-10-30.json",
+                "manual-football-manager-27-launch-preview-shuffle-draft-2026-11-01": "production/manual-brief-football-manager-27-2026-11-01.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
