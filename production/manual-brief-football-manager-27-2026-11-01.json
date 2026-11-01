@@ -1,0 +1,67 @@
+{
+  "valid_until": "2026-11-03T23:59:00Z",
+  "content_id": "manual-football-manager-27-launch-preview-shuffle-draft-2026-11-01",
+  "title": "Football Manager 27",
+  "headline": "FOOTBALL MANAGER 27: TESTE GRÁTIS, SHUFFLE DRAFT E NOVIDADES ANTES DO LANÇAMENTO",
+  "primary_source": "https://www.footballmanager.com/news/football-manager-27-free-play-until-3-november",
+  "source_urls": [
+    "https://www.footballmanager.com/news/football-manager-27-free-play-until-3-november",
+    "https://www.footballmanager.com/news/football-manager-27-launches-10-november",
+    "https://www.footballmanager.com/fm27",
+    "https://steamcommunity.com/app/4530370/allnews/",
+    "https://store.steampowered.com/app/4530370/Football_Manager_27/"
+  ],
+  "media_source_urls": [
+    "https://store.steampowered.com/app/4530370/Football_Manager_27/",
+    "https://steamcommunity.com/app/4530370/allnews/",
+    "https://www.footballmanager.com/fm27"
+  ],
+  "video_urls": [
+    "https://www.youtube.com/watch?v=BFx05-AMBcU"
+  ],
+  "video_fallback_urls": [],
+  "video_roles": {
+    "https://www.youtube.com/watch?v=BFx05-AMBcU": "prévia oficial de gameplay de Football Manager 27 publicada pela Sports Interactive"
+  },
+  "video_labels": {
+    "https://www.youtube.com/watch?v=BFx05-AMBcU": "FM27 Gameplay Preview: New Features & Upgrades in Action"
+  },
+  "steam_app_id": "4530370",
+  "minimum_assets": 3,
+  "minimum_video_assets": 2,
+  "minimum_unique_video_seconds": 75,
+  "minimum_image_assets": 0,
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Tema bloqueado: Football Manager 27. Não trocar por outro jogo ou franquia.",
+    "Usar exclusivamente trailers, gameplay, capturas e imagens oficiais de Football Manager 27. Priorizar a página oficial do jogo na Steam e os vídeos publicados pela Sports Interactive/Football Manager.",
+    "Novidade principal em 1º de novembro de 2026: Launch Preview gratuito para PC e Mac até 6pm GMT de 3 de novembro, acessível por Steam, Epic Games Store e Microsoft Store; também há acesso por Xbox Game Pass Ultimate e PC Game Pass. Não dizer que Game Pass Core ou Essential está incluído.",
+    "Explicar que o progresso iniciado durante o período gratuito pode continuar no período pago de Launch Preview e no lançamento completo, sem reiniciar a carreira.",
+    "Destacar Shuffle Draft, novo modo multiplayer desenvolvido em parceria com FIFAe. Os formatos podem chegar a 32 participantes, com opções de liga ou mata-mata, draft e redraft. Também pode ser criado offline com equipes controladas pela IA.",
+    "Cobrir as melhorias confirmadas: interface e navegação mais intuitivas, layouts em tela cheia, Tactical Tweaks, Tactical Effectiveness, treino reformulado, match engine aprimorado, atmosfera de estádio, clima dinâmico, sorteios de copas, Transfer Deadline Day e feed de notícias reformulado.",
+    "Mencionar a Roshn Saudi League e a Arkema Première Ligue como ligas licenciadas oficialmente. A Roshn Saudi League adiciona 18 clubes e contribui para 59 nações jogáveis; não inventar número de clubes ou ligas além do confirmado.",
+    "Data de lançamento global: 10 de novembro de 2026. PC/Mac, PS5, Xbox Series X|S, iOS/Android via Netflix e FM27 Touch via Apple Arcade. A edição física de PS5 tem data posterior, portanto não confundir com o lançamento digital.",
+    "Avisar que a Launch Preview é uma versão de desenvolvimento próxima da final, mas ainda pode conter bugs e alguns elementos de clubes/jogadores podem estar ausentes ou sujeitos à aprovação dos detentores de direitos.",
+    "Voz Thalita Multilingual PT-BR V3. Preservar nomes oficiais e termos como Football Manager, Shuffle Draft, Tactical Tweaks, Tactical Effectiveness, FIFAe e Game Pass.",
+    "Master cinematográfico 16:9 e exatamente 3 Shorts Premium V4 em 9:16, cada um com gancho próprio e capa dedicada. Manter a intro oficial integral e não inserir gameplay antes do fim da intro.",
+    "TikTok Helper: no máximo cinco hashtags fortes e específicas por Short; não usar #RadarDosGames nem hashtags genéricas redundantes.",
+    "Enviar os quatro vídeos ao YouTube como privados, sem publicação pública, somente após aprovação de todos os controles de qualidade."
+  ],
+  "short_hooks": [
+    "FOOTBALL MANAGER 27 ESTÁ GRÁTIS — MAS SÓ ATÉ 3 DE NOVEMBRO!",
+    "SHUFFLE DRAFT: ATÉ 32 MANAGERS NA NOVA DISPUTA ONLINE!",
+    "59 NAÇÕES JOGÁVEIS E DUAS LIGAS LICENCIADAS: VEJA O QUE MUDOU!"
+  ],
+  "script_blocks": [
+    "Football Manager 27 já está dando aos jogadores a chance de assumir um clube antes do lançamento oficial. A Launch Preview está gratuita no PC e Mac até 3 de novembro, e o melhor detalhe é que a carreira iniciada nesse período pode continuar depois. Mas essa não é a única novidade. A nova edição traz mudanças na gestão, melhorias no dia de jogo e um modo multiplayer chamado Shuffle Draft, criado para colocar diferentes técnicos frente a frente. Hoje, no Radar dos Games, vamos reunir o que realmente está disponível e o que merece atenção antes da estreia completa.",
+    "A oportunidade mais urgente é o período gratuito. Até as seis da tarde, no horário de Greenwich, do dia 3 de novembro, é possível baixar a Launch Preview pela Steam, Epic Games Store ou Microsoft Store. Assinantes do Xbox Game Pass Ultimate e do PC Game Pass também podem acessar a experiência. Não é necessário cadastro adicional para quem utiliza as lojas digitais compatíveis: basta encontrar o jogo na plataforma e começar a carreira. É uma janela curta, então quem pretende experimentar a edição tem poucos dias para aproveitar.",
+    "E existe uma vantagem importante para quem começar agora: o progresso pode ser levado adiante. As carreiras iniciadas durante o período gratuito continuam no Launch Preview pago e também na versão completa, sem precisar começar tudo outra vez. A Sports Interactive apresenta essa edição de prévia como uma versão próxima do lançamento, com todos os modos disponíveis. Ainda assim, é importante lembrar que ela pode apresentar bugs e que alguns elementos de clubes e jogadores podem estar ausentes ou aguardando aprovação dos detentores de direitos.",
+    "A grande novidade para quem gosta de competir com amigos é Shuffle Draft. Desenvolvido em parceria com a FIFAe, o modo transforma a montagem do elenco em uma disputa estratégica. Os participantes recebem conjuntos de jogadores e precisam escolher suas peças dentro do tempo definido, tentando construir uma equipe equilibrada enquanto os adversários fazem o mesmo. Há formatos de liga e mata-mata, com eventos que podem reunir até 32 equipes. Também é possível organizar partidas offline, preenchendo vagas com técnicos controlados pela inteligência artificial.",
+    "O Shuffle Draft não termina quando a primeira escalação fica pronta. A opção de redraft permite devolver ou retirar jogadores do conjunto e substituir escolhas, acrescentando imprevisibilidade ao torneio. O anfitrião pode configurar até cinco rodadas de redraft, definindo as regras antes do evento. Os elencos podem reunir jogadores do futebol masculino ou feminino, mas as duas categorias não são misturadas na mesma disputa. Depois da seleção, a partida utiliza a estrutura tática e o motor de jogo da carreira tradicional, então conhecer funções, encaixes e instruções continua fazendo diferença.",
+    "Na gestão do clube, Football Manager 27 procura reduzir a quantidade de cliques e deixar as decisões mais acessíveis. A navegação foi reorganizada, os menus ganharam opções de personalização e a experiência em tela cheia foi aprimorada. O treinador também passa a ter novas ferramentas na beira do campo. Tactical Tweaks permite ajustar o comportamento da equipe durante a partida, enquanto Tactical Effectiveness conecta a compreensão tática dos jogadores, suas características e a preparação aos resultados do sistema escolhido. O treino reformulado ajuda a aproximar a preparação semanal do próximo adversário.",
+    "O dia de jogo também recebeu atenção. A Sports Interactive destaca melhorias no movimento dos atletas, na apresentação das partidas e na atmosfera dos estádios. Público, iluminação e condições climáticas ajudam a dar mais variedade aos confrontos, enquanto novas cenas de preparação tornam a chegada ao campo mais envolvente. Fora das quatro linhas, sorteios de copas, Transfer Deadline Day e um feed de notícias reformulado ampliam a sensação de acompanhar uma temporada completa, não apenas uma sequência de partidas isoladas.",
+    "A autenticidade também ganha reforços com novas licenças. A Roshn Saudi League entra oficialmente no jogo com seus 18 clubes, incluindo escudos, uniformes e fotografias de jogadores. A competição francesa Arkema Première Ligue também foi confirmada com licença completa. Com a liga saudita, Football Manager 27 passa a oferecer 59 nações jogáveis. Para quem gosta de iniciar carreiras em campeonatos diferentes ou construir projetos fora dos destinos mais tradicionais, essas adições aumentam as possibilidades de escolha.",
+    "O lançamento digital global de Football Manager 27 está marcado para 10 de novembro de 2026. A edição principal chega ao PC e Mac, PlayStation 5 e Xbox Series X|S, enquanto a versão Mobile será disponibilizada para iOS e Android por meio da Netflix. FM27 Touch também chega ao Apple Arcade na mesma data, com suporte a iPhone, iPad, Mac e Apple TV. As versões têm diferenças de plataforma e formato, por isso vale conferir qual edição corresponde ao dispositivo antes de comprar ou iniciar uma assinatura.",
+    "Football Manager 27 está chegando com uma combinação de acesso gratuito por tempo limitado, melhorias na experiência de gestão e uma opção multiplayer que muda a forma de montar equipes com amigos. Shuffle Draft é o destaque mais diferente, mas a evolução do treino, das instruções táticas e da apresentação das partidas também pode fazer diferença em cada temporada. Se você ainda não experimentou, a Launch Preview gratuita termina em 3 de novembro. Agora queremos saber: você vai começar uma carreira solo ou prefere testar o Shuffle Draft contra outros managers? Comente, inscreva-se e acompanhe o Radar dos Games para mais novidades."
+  ]
+}
