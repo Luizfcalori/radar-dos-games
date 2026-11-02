@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-01T14:25:59.664104+00:00",
-  "total_discovered": 155,
-  "ready_for_tiktok": 148,
+  "updated_at": "2026-11-02T19:17:15.829370+00:00",
+  "total_discovered": 158,
+  "ready_for_tiktok": 151,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "tyYp6HeEFdA",
+      "youtube_url": "https://www.youtube.com/shorts/tyYp6HeEFdA",
+      "title": "FOOTBALL MANAGER 27 ESTÁ GRÁTIS — MAS SÓ ATÉ 3 DE NOVEMBRO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "5--hyAXVtfc",
+      "youtube_url": "https://www.youtube.com/shorts/5--hyAXVtfc",
+      "title": "SHUFFLE DRAFT: ATÉ 32 MANAGERS NA NOVA DISPUTA ONLINE!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "q3M6IIJox-s",
+      "youtube_url": "https://www.youtube.com/shorts/q3M6IIJox-s",
+      "title": "59 NAÇÕES JOGÁVEIS E DUAS LIGAS LICENCIADAS: VEJA O QUE MUDOU!",
+      "status": "approved"
+    },
     {
       "youtube_id": "p56QsAVBm_o",
       "youtube_url": "https://www.youtube.com/shorts/p56QsAVBm_o",
