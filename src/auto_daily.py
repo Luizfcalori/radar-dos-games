@@ -910,6 +910,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-football-manager-27-2026-11-01.json")
         elif forced_topic_slug == ascii_slug("Solo Leveling: ARISE OVERDRIVE"):
             manual = load_manual_brief("production/manual-brief-solo-leveling-arise-overdrive-2026-11-02.json")
+        elif forced_topic_slug == ascii_slug("The Legend of Zelda: Ocarina of Time"):
+            manual = load_manual_brief("production/manual-brief-ocarina-of-time-switch-2-2026-11-02.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -968,6 +970,7 @@ def main():
                 "manual-street-fighter-6-arjun-year-4-2026-10-30": "production/manual-brief-street-fighter-6-2026-10-30.json",
                 "manual-football-manager-27-launch-preview-shuffle-draft-2026-11-01": "production/manual-brief-football-manager-27-2026-11-01.json",
                 "manual-solo-leveling-arise-overdrive-console-launch-2026-11-03": "production/manual-brief-solo-leveling-arise-overdrive-2026-11-02.json",
+                "manual-ocarina-of-time-switch-2-remake-launch-2026-11-05": "production/manual-brief-ocarina-of-time-switch-2-2026-11-02.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
