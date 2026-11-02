@@ -908,6 +908,8 @@ def main():
             manual = load_manual_brief("production/manual-brief-street-fighter-6-2026-10-30.json")
         elif forced_topic_slug == ascii_slug("Football Manager 27"):
             manual = load_manual_brief("production/manual-brief-football-manager-27-2026-11-01.json")
+        elif forced_topic_slug == ascii_slug("Solo Leveling: ARISE OVERDRIVE"):
+            manual = load_manual_brief("production/manual-brief-solo-leveling-arise-overdrive-2026-11-02.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -965,6 +967,7 @@ def main():
                 "qssr-ps5-2026-10-19": "production/manual-brief-qssr-ps5-2026-10-19.json",
                 "manual-street-fighter-6-arjun-year-4-2026-10-30": "production/manual-brief-street-fighter-6-2026-10-30.json",
                 "manual-football-manager-27-launch-preview-shuffle-draft-2026-11-01": "production/manual-brief-football-manager-27-2026-11-01.json",
+                "manual-solo-leveling-arise-overdrive-console-launch-2026-11-03": "production/manual-brief-solo-leveling-arise-overdrive-2026-11-02.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
