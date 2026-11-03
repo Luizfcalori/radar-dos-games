@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-02T19:17:15.829370+00:00",
-  "total_discovered": 158,
-  "ready_for_tiktok": 151,
+  "updated_at": "2026-11-03T16:31:09.163854+00:00",
+  "total_discovered": 161,
+  "ready_for_tiktok": 154,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "ryUaeZHvOJQ",
+      "youtube_url": "https://www.youtube.com/shorts/ryUaeZHvOJQ",
+      "title": "JINWOO CHEGA AOS CONSOLES EM 3 DE NOVEMBRO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "XDh7iwGUYdE",
+      "youtube_url": "https://www.youtube.com/shorts/XDh7iwGUYdE",
+      "title": "QUATRO CAÇADORES CONTRA CHEFES GIGANTES!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "npK-G2QA52Q",
+      "youtube_url": "https://www.youtube.com/shorts/npK-G2QA52Q",
+      "title": "O MONARCA DAS SOMBRAS TEM OITO CAMINHOS DE EVOLUÇÃO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "tyYp6HeEFdA",
       "youtube_url": "https://www.youtube.com/shorts/tyYp6HeEFdA",
