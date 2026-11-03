@@ -914,6 +914,7 @@ def main():
             manual = load_manual_brief("production/manual-brief-ocarina-of-time-switch-2-2026-11-02.json")
         elif forced_topic_slug == ascii_slug("Stellar Blade"):
             # Pin this private run to the verified Complete Edition launch brief.
+            # Official Nintendo trailers provide game-matched source footage for this run.
             manual = load_manual_brief("production/manual-brief-stellar-blade-complete-edition-2026-11-03.json")
         else:
             manual = None
