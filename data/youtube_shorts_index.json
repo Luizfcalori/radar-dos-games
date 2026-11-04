@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-03T16:31:09.163854+00:00",
-  "total_discovered": 161,
-  "ready_for_tiktok": 154,
+  "updated_at": "2026-11-04T16:36:43.391352+00:00",
+  "total_discovered": 164,
+  "ready_for_tiktok": 157,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "p7VBaeZldH8",
+      "youtube_url": "https://www.youtube.com/shorts/p7VBaeZldH8",
+      "title": "O clássico de 1998 está de volta em uma Hyrule totalmente renovada!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "zN0yDEBibgc",
+      "youtube_url": "https://www.youtube.com/shorts/zN0yDEBibgc",
+      "title": "Agora você pode cantar a melodia e fazer a Ocarina responder!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "nKAHBDu2Gyg",
+      "youtube_url": "https://www.youtube.com/shorts/nKAHBDu2Gyg",
+      "title": "O Museu dos Mil Monstros traz revanche contra inimigos derrotados!",
+      "status": "approved"
+    },
     {
       "youtube_id": "ryUaeZHvOJQ",
       "youtube_url": "https://www.youtube.com/shorts/ryUaeZHvOJQ",
