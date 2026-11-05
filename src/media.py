@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Aquisição de mídia com prova de relevância por jogo e QA semântico."""
-import hashlib,html,json,os,re,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
+import hashlib,html,json,os,re,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request,zipfile
 from pathlib import Path
 
 try:
@@ -666,6 +666,65 @@ def main(path):
             movie_key=(source,label) if item.get("steam_app_id") and label else None
             if movie_key and movie_key in seen_movie_sources:continue
             low=u.lower();clean=low.split('?')[0];isimg=clean.endswith(IMAGE_EXTS) or bool(item.get('force_image',False) and wanted=='image');isstream=clean.endswith(STREAM_EXTS);isdrive='drive.google.com/file/d/' in low
+            is_rockstar_zip = (
+                wanted == 'video'
+                and clean.endswith('.zip')
+                and urllib.parse.urlparse(u).netloc.lower() == 'media-rockstargames-com.akamaized.net'
+                and '/vi/downloads/videos/' in clean
+            )
+            if is_rockstar_zip:
+                archive = out / f'rockstar_archive_{seq+1}.zip'
+                try:
+                    with urllib.request.urlopen(req(u, 'https://www.rockstargames.com/VI/media/videos'), timeout=180) as response, open(archive, 'wb') as target:
+                        shutil.copyfileobj(response, target)
+                    with zipfile.ZipFile(archive) as bundle:
+                        members = [
+                            member for member in bundle.infolist()
+                            if not member.is_dir()
+                            and member.filename.lower().endswith(VIDEO_EXTS)
+                            and not blocked_candidate(member.filename, item)
+                        ]
+                        print('Rockstar official video archive members:', len(members), flush=True)
+                        for member in members:
+                            if got >= max_assets:
+                                break
+                            seq += 1
+                            dest = out / f'asset_{seq:02d}.mp4'
+                            with bundle.open(member) as source_file, open(dest, 'wb') as target:
+                                shutil.copyfileobj(source_file, target)
+                            info = probe_info(dest)
+                            if not info:
+                                dest.unlink(missing_ok=True)
+                                continue
+                            min_d = float(item.get('min_duration', 8))
+                            min_width = int(item.get('min_width', 640))
+                            min_height = int(item.get('min_height', 360))
+                            width, height = int(info.get('width', 0)), int(info.get('height', 0))
+                            if float(info.get('duration', 0)) < min_d or width < min_width or height < min_height:
+                                print('Rockstar archive clip rejected', member.filename, info, flush=True)
+                                dest.unlink(missing_ok=True)
+                                continue
+                            digest = sha256_file(dest)
+                            if digest in seen_content:
+                                dest.unlink(missing_ok=True)
+                                continue
+                            seen_content.add(digest)
+                            assets.append({
+                                'index': seq, 'path': str(dest), 'type': 'video', 'role': role,
+                                'url': u + '#' + member.filename, 'source': source,
+                                'relevance_evidence': 'rockstar_official_video_archive_member',
+                                'source_label': member.filename, 'approved': True,
+                                'duration': float(info.get('duration', 0)),
+                                'width': width, 'height': height
+                            })
+                            got += 1
+                    archive.unlink(missing_ok=True)
+                    if got:
+                        seen.add(u)
+                except Exception as exc:
+                    print('Rockstar official video archive download failed', type(exc).__name__, str(exc)[:240], flush=True)
+                    archive.unlink(missing_ok=True)
+                continue
             if wanted=='video' and isimg:continue
             if wanted=='image' and not isimg:continue
             blocked=blocked_candidate(u,item)

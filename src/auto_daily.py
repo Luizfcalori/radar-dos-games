@@ -763,6 +763,7 @@ def fetch_manual_media(brief):
             or "open.video/" in low
             or social_post_url(url)
             or low.endswith((".mp4", ".mov", ".webm", ".m4v", ".m3u8", ".mpd"))
+            or (urlparse(url).netloc.lower() == "media-rockstargames-com.akamaized.net" and low.endswith("/vi/downloads/videos/gtavi_videos.zip"))
         ):
             curated.append(("video", url))
 
@@ -1221,7 +1222,7 @@ def main():
                 "url": candidate_url,
                 "role": roles.get(candidate_url, f"official_curated_fallback_{j:02d}"),
                 "source_label": labels.get(candidate_url, "Publisher-curated official video"),
-                "max_assets": 1,
+                "max_assets": int((manual.get("video_max_assets") or {}).get(candidate_url, 1)),
                 "min_duration": 5,
                 "source_proof": candidate_url,
                 "relevance_evidence": "manual_brief_curated_official_video_fallback",

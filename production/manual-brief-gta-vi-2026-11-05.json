@@ -17,10 +17,7 @@
     "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=rz1B4B2yBZY",
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c",
-    "https://www.youtube.com/watch?v=QdBZY2fkU-0"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
   ],
   "short_hooks": [
     "GTA VI: O PRÉ-CARREGAMENTO COMEÇA EM 10 DE NOVEMBRO!",
@@ -39,7 +36,8 @@
     "Master 16:9 Full HD, narração natural PT-BR com Thalita Multilingual PT-BR V3, exatamente três Shorts 9:16 com capas próprias.",
     "Shorts com gancho imediato, legendas grandes, cortes dinâmicos e CTA curto. Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes.",
     "Manter intro oficial integral antes do gameplay. Evitar repetição de cenas, loops, travamentos, imagens estáticas longas e falas sobre processo de produção.",
-    "YouTube: enviar Master e os três Shorts como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados."
+    "YouTube: enviar Master e os três Shorts como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados.",
+    "Se o YouTube bloquear a transferência, usar o pacote oficial de nove vídeos curtos disponibilizado pela Rockstar na página de mídia: https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip. Extrair apenas arquivos de vídeo do pacote oficial; não usar reuploads nem material de outros jogos."
   ],
   "script_blocks": [
     "A espera por Grand Theft Auto VI está entrando em sua reta final. Depois de anos de expectativa, a Rockstar concentra os últimos anúncios antes da chegada de um dos jogos mais aguardados da geração. A data está marcada: 19 de novembro de 2026, para PlayStation 5 e Xbox Series X|S. E a semana trouxe uma informação prática para quem já está se preparando: o pré-carregamento começa em 10 de novembro. Hoje, no Radar dos Games, vamos reunir o que realmente foi confirmado antes da estreia.",
@@ -59,5 +57,8 @@
     3,
     4
   ],
-  "narration_revision": "2026-11-05: pauta atualizada com pré-carregamento de 10/11, trilha de Justice e trailer de lançamento; separar fatos oficiais de rumores."
+  "narration_revision": "2026-11-05: pauta atualizada com pré-carregamento de 10/11, trilha de Justice e trailer de lançamento; separar fatos oficiais de rumores.",
+  "video_max_assets": {
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9
+  }
 }
