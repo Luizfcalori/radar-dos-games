@@ -6,7 +6,8 @@
   "primary_source": "https://www.gamespress.com/en-US/Aspyr-Reveals-DreamWorks-Shrek-2-Remastered-Launching-on-PC-Consoles-N",
   "media_source_urls": [
     "https://store.steampowered.com/app/2523740/DreamWorks_Shrek_2_Remastered/",
-    "https://www.gamespress.com/en-US/Aspyr-Reveals-DreamWorks-Shrek-2-Remastered-Launching-on-PC-Consoles-N"
+    "https://www.gamespress.com/en-US/Aspyr-Reveals-DreamWorks-Shrek-2-Remastered-Launching-on-PC-Consoles-N",
+    "https://www.youtube.com/watch?v=CL36wpvgeis"
   ],
   "source_urls": [
     "https://www.gamespress.com/en-US/Aspyr-Reveals-DreamWorks-Shrek-2-Remastered-Launching-on-PC-Consoles-N",
@@ -18,7 +19,8 @@
     "MODO FOTO, CHEATS E VISUAL RENOVADO: O QUE MUDOU?"
   ],
   "video_urls": [
-    "https://store.steampowered.com/app/2523740/DreamWorks_Shrek_2_Remastered/"
+    "https://store.steampowered.com/app/2523740/DreamWorks_Shrek_2_Remastered/",
+    "https://www.youtube.com/watch?v=CL36wpvgeis"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
@@ -46,5 +48,5 @@
     "E fica a pergunta: será que esse retorno vai conquistar tanto quem jogou em 2004 quanto quem vai conhecer a aventura agora? O cooperativo para quatro pessoas, a troca de heróis e os recursos extras podem dar um novo motivo para revisitar esse clássico. DreamWorks Shrek 2 Remastered chega em 10 de novembro. Conta pra gente: você jogaria sozinho ou chamaria mais três amigos para atravessar Tão Tão Distante? Este é o Radar dos Games. Inscreva-se e acompanhe as próximas novidades."
   ],
   "steam_app_id": 2523740,
-  "production_note": "QA repair retry 2026-11-05: narration expanded to 793 words and meta-language removed."
+  "production_note": "QA repair retry 2026-11-05: add separate IGN official gameplay trailer (ID@Xbox Fall 2026) to increase distinct authorized moving footage; never count Steam codec variants as independent footage; retain 793-word narration and all editorial constraints."
 }
