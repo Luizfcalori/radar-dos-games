@@ -1384,3 +1384,5 @@ if __name__ == "__main__":
 # Media fallback fix 2026-10-16: enqueue every unique publisher-curated video URL before media QA.
 
 # Controlled rerun after Master render timeout increased to 60 minutes.
+
+# [run-production] TOPIC=World of Warcraft: Forever — use IGN-hosted launch overview after YouTube anti-bot block.
