@@ -7,7 +7,7 @@
   "media_source_urls": [
     "https://store.steampowered.com/app/2523740/DreamWorks_Shrek_2_Remastered/",
     "https://www.gamespress.com/en-US/Aspyr-Reveals-DreamWorks-Shrek-2-Remastered-Launching-on-PC-Consoles-N",
-    "https://www.youtube.com/watch?v=CL36wpvgeis"
+    "https://open.video/@ign/v/shrek-2-remastered-official-gameplay-trailer-idxbox-fall-2026"
   ],
   "source_urls": [
     "https://www.gamespress.com/en-US/Aspyr-Reveals-DreamWorks-Shrek-2-Remastered-Launching-on-PC-Consoles-N",
@@ -19,14 +19,13 @@
     "MODO FOTO, CHEATS E VISUAL RENOVADO: O QUE MUDOU?"
   ],
   "video_urls": [
-    "https://store.steampowered.com/app/2523740/DreamWorks_Shrek_2_Remastered/",
-    "https://www.youtube.com/watch?v=CL36wpvgeis"
+    "https://open.video/@ign/v/shrek-2-remastered-official-gameplay-trailer-idxbox-fall-2026"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
+    "Priorizar o gameplay trailer oficial da IGN hospedado no Open.Video: https://open.video/@ign/v/shrek-2-remastered-official-gameplay-trailer-idxbox-fall-2026. O trailer de anúncio da Steam é apenas material complementar; nunca contar DASH/HLS/AV1/H264 como vídeos distintos. Rejeitar qualquer asset cujo frame não mostre material visual identificável de Shrek 2 Remastered; não usar imagens de outro jogo.",
     "Tema bloqueado: DreamWorks Shrek 2 Remastered. Não trocar por outro jogo.",
     "Cobertura de pré-lançamento: lançamento oficial em 10 de novembro de 2026. Não afirmar que o jogo já está disponível.",
-    "Usar material visual oficial do próprio Shrek 2 Remastered, priorizando trailer de anúncio e capturas da página Steam/Aspyr. Não usar gameplay do Shrek 2 original como se fosse a versão remasterizada; se material de gameplay remasterizado ainda for limitado, identificar visualmente apenas cenas realmente presentes no trailer.",
     "Informações confirmadas pela Aspyr: gráficos e texturas aprimorados, interface e cutscenes melhoradas, Photo Mode, Cheats Menu, troca de personagens a qualquer momento e coop de até quatro jogadores local, online ou misto.",
     "A resolução 4K está confirmada para PC, PS5, Xbox Series X|S e Nintendo Switch 2 no modo dock. Não atribuir 4K ao Nintendo Switch original.",
     "Plataformas confirmadas: PS5, Xbox Series X|S, Nintendo Switch 2, Nintendo Switch e PC via Steam e Epic Games Store.",
@@ -48,5 +47,5 @@
     "E fica a pergunta: será que esse retorno vai conquistar tanto quem jogou em 2004 quanto quem vai conhecer a aventura agora? O cooperativo para quatro pessoas, a troca de heróis e os recursos extras podem dar um novo motivo para revisitar esse clássico. DreamWorks Shrek 2 Remastered chega em 10 de novembro. Conta pra gente: você jogaria sozinho ou chamaria mais três amigos para atravessar Tão Tão Distante? Este é o Radar dos Games. Inscreva-se e acompanhe as próximas novidades."
   ],
   "steam_app_id": 2523740,
-  "production_note": "Shrek 2 Remastered — retry after run #590 was cancelled before jobs started; retain distinct official gameplay trailer source; deduplicate stream variants of same trailer; do not relax repetition/quality gates. Retry timestamp: 2026-11-05T17:53:00Z."
+  "production_note": "Correção após diagnóstico #591: YouTube bloqueou yt-dlp e a Steam entregou três encodes do mesmo trailer de anúncio (frames iniciais THE WAIT). Usar a página Open.Video da IGN como fonte de gameplay independente; deduplicar encodes por conteúdo/hash e rejeitar material sem evidência visual do jogo. Não relaxar gates. Reprocessar somente após validar asset de gameplay."
 }
