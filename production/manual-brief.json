@@ -45,5 +45,6 @@
     "Na escolha da plataforma, vale comparar também a forma de jogar. Quem pretende usar o Nintendo Switch original terá a versão confirmada para esse console, mas a informação de 4K não deve ser associada a ele. Já no Switch 2, a resolução 4K foi indicada quando o aparelho estiver conectado à base. No PC e nos consoles PlayStation 5 e Xbox Series X e S, a Aspyr também confirmou suporte a 4K. Esses detalhes ajudam a alinhar a expectativa com o equipamento disponível, sem prometer uma qualidade idêntica em todas as versões.",
     "E fica a pergunta: será que esse retorno vai conquistar tanto quem jogou em 2004 quanto quem vai conhecer a aventura agora? O cooperativo para quatro pessoas, a troca de heróis e os recursos extras podem dar um novo motivo para revisitar esse clássico. DreamWorks Shrek 2 Remastered chega em 10 de novembro. Conta pra gente: você jogaria sozinho ou chamaria mais três amigos para atravessar Tão Tão Distante? Este é o Radar dos Games. Inscreva-se e acompanhe as próximas novidades."
   ],
-  "steam_app_id": 2523740
+  "steam_app_id": 2523740,
+  "production_note": "QA repair retry 2026-11-05: narration expanded to 793 words and meta-language removed."
 }
