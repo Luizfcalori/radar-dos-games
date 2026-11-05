@@ -27,22 +27,22 @@ jobs:
       - name: Download approved GTA VI production artifact
         uses: actions/download-artifact@v4
         with:
-          name: radar-daily-auto-37661810722
+          name: radar-daily-auto-42050286427
           path: gta6-final
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: Luizfcalori/radar-dos-games
-          run-id: 37661810722
+          run-id: 42050286427
 
       - name: Prepare approved Shorts
         run: |
           set -euo pipefail
           mkdir -p helper-assets
-          cp gta6-final/shorts/short_1.mp4 helper-assets/gta6-2026-10-07-short-1.mp4
-          cp gta6-final/shorts/short_2.mp4 helper-assets/gta6-2026-10-07-short-2.mp4
-          cp gta6-final/shorts/short_3.mp4 helper-assets/gta6-2026-10-07-short-3.mp4
-          cp gta6-final/shorts/short_1_cover.jpg helper-assets/gta6-2026-10-07-short-1.jpg
-          cp gta6-final/shorts/short_2_cover.jpg helper-assets/gta6-2026-10-07-short-2.jpg
-          cp gta6-final/shorts/short_3_cover.jpg helper-assets/gta6-2026-10-07-short-3.jpg
+          cp gta6-final/shorts/short_1.mp4 helper-assets/gta6-2026-11-05-short-1.mp4
+          cp gta6-final/shorts/short_2.mp4 helper-assets/gta6-2026-11-05-short-2.mp4
+          cp gta6-final/shorts/short_3.mp4 helper-assets/gta6-2026-11-05-short-3.mp4
+          cp gta6-final/shorts/short_1_cover.jpg helper-assets/gta6-2026-11-05-short-1.jpg
+          cp gta6-final/shorts/short_2_cover.jpg helper-assets/gta6-2026-11-05-short-2.jpg
+          cp gta6-final/shorts/short_3_cover.jpg helper-assets/gta6-2026-11-05-short-3.jpg
 
           for f in helper-assets/*; do test -s "$f"; done
 
@@ -69,28 +69,28 @@ jobs:
           now=datetime.now(timezone.utc).isoformat()
           base='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets'
 
-          order=['_6tSnifRzIw','AXvICN8q8Vo','HRLzhVvxdRY']
+          order=['ukpi1M0hgGE','8yfSGvJWqAs','z7o8RuXLiKY']
           configs={
-            '_6tSnifRzIw':{
-              'title':'GTA VI NO XBOX CLOUD? O QUE FOI CONFIRMADO',
+            'ukpi1M0hgGE':{
+              'title':'GTA VI: O PRÉ-CARREGAMENTO COMEÇA EM 10 DE NOVEMBRO!',
               'short_number':1,
-              'mp4':'gta6-2026-10-07-short-1.mp4',
-              'jpg':'gta6-2026-10-07-short-1.jpg',
-              'post_text':'GTA VI no Xbox Cloud? O que foi confirmado — e o que ainda é rumor.\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GTAVI #GTA6 #XboxCloud #RockstarGames #RadarDosGames #Games #Gaming #TikTokGames'
+              'mp4':'gta6-2026-11-05-short-1.mp4',
+              'jpg':'gta6-2026-11-05-short-1.jpg',
+              'post_text':'Pré-carregamento de GTA VI: a contagem regressiva está chegando!\n\n🎮 Siga para mais novidades de games.\n\n#GTAVI #GTA6 #RockstarGames #PlayStation5 #XboxSeries'
             },
-            'AXvICN8q8Vo':{
-              'title':'GTA VI: DATA, PRÉ-CARGA E PLATAFORMAS',
+            '8yfSGvJWqAs':{
+              'title':'JUSTICE ASSINA A TRILHA SONORA ORIGINAL DE GTA VI!',
               'short_number':2,
-              'mp4':'gta6-2026-10-07-short-2.mp4',
-              'jpg':'gta6-2026-10-07-short-2.jpg',
-              'post_text':'GTA VI: data, pré-carga e plataformas confirmadas até agora.\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GTAVI #GTA6 #PlayStation5 #XboxSeries #RockstarGames #RadarDosGames #Games #TikTokGames'
+              'mp4':'gta6-2026-11-05-short-2.mp4',
+              'jpg':'gta6-2026-11-05-short-2.jpg',
+              'post_text':'Justice assina a trilha sonora original de GTA VI. Uma novidade que promete marcar a experiência!\n\n🎮 Siga para mais novidades de games.\n\n#GTAVI #GTA6 #Justice #RockstarGames #GameSoundtrack'
             },
-            'HRLzhVvxdRY':{
-              'title':'JASON, LUCIA E LEONIDA: O QUE JÁ SABEMOS',
+            'z7o8RuXLiKY':{
+              'title':'GTA VI CHEGA EM 19 DE NOVEMBRO — E O TRAILER JÁ ESTÁ NO AR!',
               'short_number':3,
-              'mp4':'gta6-2026-10-07-short-3.mp4',
-              'jpg':'gta6-2026-10-07-short-3.jpg',
-              'post_text':'Jason, Lucia e Leonida: o que já sabemos sobre GTA VI.\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GTAVI #GTA6 #Jason #Lucia #Leonida #RockstarGames #RadarDosGames #TikTokGames'
+              'mp4':'gta6-2026-11-05-short-3.mp4',
+              'jpg':'gta6-2026-11-05-short-3.jpg',
+              'post_text':'GTA VI chega em 19 de novembro — e o trailer já está no ar!\n\n🎮 Siga para mais novidades de games.\n\n#GTAVI #GTA6 #RockstarGames #GamingNews #PlayStation5'
             },
           }
 
@@ -107,7 +107,7 @@ jobs:
                 'thumbnail_url':f"{base}/{cfg['jpg']}",
                 'post_text':cfg['post_text'],
                 'status':'approved',
-                'source_run_id':37661810722,
+                'source_run_id':42050286427,
                 'short_number':cfg['short_number'],
                 'approved_at':now,
                 'source':'approved_production_artifact',
@@ -138,7 +138,7 @@ jobs:
         run: |
           set -euo pipefail
           base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
-          for f in gta6-2026-10-07-short-1.mp4 gta6-2026-10-07-short-2.mp4 gta6-2026-10-07-short-3.mp4; do
+          for f in gta6-2026-11-05-short-1.mp4 gta6-2026-11-05-short-2.mp4 gta6-2026-11-05-short-3.mp4; do
             curl -L --fail --retry 3 --range 0-1023 "$base/$f" -o /dev/null
             echo "PUBLIC_OK $f"
           done
