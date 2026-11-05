@@ -53,5 +53,6 @@
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 75
+  "minimum_unique_video_seconds": 75,
+  "narration_revision": "2026-11-05: removida frase de bastidor; manter narração centrada na experiência do jogo."
 }
