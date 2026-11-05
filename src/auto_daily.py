@@ -848,6 +848,9 @@ def main():
         manual = load_manual_brief("production/manual-brief-football-manager-27-2026-11-01.json")
     elif forced_topic_slug == ascii_slug("Animal Hospital"):
         manual = load_manual_brief("production/manual-brief-animal-hospital-roblox-2026-10-25.json")
+    elif forced_topic_slug == ascii_slug("World of Warcraft: Forever"):
+        # Explicit production must load the dedicated Blizzard launch brief even when generic briefs are enabled.
+        manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
