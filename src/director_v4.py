@@ -430,6 +430,13 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     d=min(remaining,3.5)
                     window=None
                     evidence="official_image_subject_label"
+                # At 30 fps, sub-frame residuals cannot produce a valid video stream.
+                # Voice timings may leave a few milliseconds after phrase splitting;
+                # skip that inaudible tail instead of passing a duration that ffmpeg
+                # rounds to 0.000 seconds and then fails the video-stream QA.
+                if d < 0.08:
+                    remaining = 0.0
+                    break
                 idx=int(picked["index"])
                 beat={"phrase":int(phrase.get("sentence") or 1),"text":phrase_text,
                       "start":round(float(phrase["start"])+consumed,6),
