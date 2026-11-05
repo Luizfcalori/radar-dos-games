@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-04T16:36:43.391352+00:00",
-  "total_discovered": 164,
-  "ready_for_tiktok": 157,
+  "updated_at": "2026-11-05T09:43:50.450434+00:00",
+  "total_discovered": 167,
+  "ready_for_tiktok": 160,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "_h0E2nxlLac",
+      "youtube_url": "https://www.youtube.com/shorts/_h0E2nxlLac",
+      "title": "STELLAR BLADE CHEGA AO SWITCH 2 EM 5 DE NOVEMBRO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "cNtEnUC4aNU",
+      "youtube_url": "https://www.youtube.com/shorts/cNtEnUC4aNU",
+      "title": "NIKKE, NIER E BAYONETTA: O PACOTE COMPLETO DE EVE!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "tUr-ruJa7G4",
+      "youtube_url": "https://www.youtube.com/shorts/tUr-ruJa7G4",
+      "title": "CARTUCHO COMPLETO: SEM DOWNLOAD EXTRA PARA JOGAR!",
+      "status": "approved"
+    },
     {
       "youtube_id": "p7VBaeZldH8",
       "youtube_url": "https://www.youtube.com/shorts/p7VBaeZldH8",
