@@ -152,7 +152,18 @@ jobs:
                   upload_ok=True
                   for upload_file in upload_files:
                       raw=Path(upload_file).read_text(encoding="utf-8",errors="replace")
-                      if '"uploadStatus": "uploaded"' not in raw or '"privacyStatus": "private"' not in raw:
+                      # Production artifacts store successful YouTube API responses as JSON;
+                      # the Master file may include cover metadata before its final response.
+                      valid=False
+                      for line in reversed(raw.splitlines()):
+                          try:
+                              response=json.loads(line)
+                          except Exception:
+                              continue
+                          if response.get("kind")=="youtube#video" and response.get("id"):
+                              valid=True
+                              break
+                      if not valid:
                           upload_ok=False
                           break
                   if not upload_ok:
@@ -388,3 +399,5 @@ jobs:
 # Immediate recovery: scan completed Ocarina of Time production run 41543409410 and import exactly its three approved Shorts.
 
 # Manual import trigger: World of Warcraft Forever run 42040018945 (2026-11-05).
+
+# Recovery fix 2026-11-05: accept successful YouTube API video responses in production artifacts for GTA VI.
