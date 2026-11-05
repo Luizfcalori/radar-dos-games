@@ -1159,7 +1159,7 @@ def main():
             "url": url,
             "role": ((manual.get("video_roles") or {}).get(url, role) if manual and typ == "video" else role),
             "source_label": ((manual.get("video_labels") or {}).get(url, "") if manual else ""),
-            "max_assets": 1,
+            "max_assets": int((manual.get("video_max_assets") or {}).get(url, 1)) if manual and typ == "video" else 1,
             "source_proof": media_sources.get(url, selected["url"]),
             "relevance_evidence": "official_source_page_discovered_asset",
         }

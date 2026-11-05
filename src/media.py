@@ -648,7 +648,18 @@ def main(path):
             url=item['url'];source=item.get('source_proof') or url;low=url.lower().split('?')[0]
             if wanted=='video' and social_profile_url(url):
                 candidates=discover_social_posts(url)
-            elif low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS) or bool(item.get('force_image',False)) or 'drive.google.com/file/d/' in url.lower() or 'youtube.com' in url or 'youtu.be' in url or social_post_url(url) or (wanted=='video' and is_instagram_video_url(url)):
+            elif (
+                low.endswith(VIDEO_EXTS+STREAM_EXTS+IMAGE_EXTS)
+                or bool(item.get('force_image',False))
+                or 'drive.google.com/file/d/' in url.lower()
+                or 'youtube.com' in url
+                or 'youtu.be' in url
+                or social_post_url(url)
+                or (wanted=='video' and is_instagram_video_url(url))
+                or (wanted=='video' and low.endswith('.zip')
+                    and urllib.parse.urlparse(url).netloc.lower() == 'media-rockstargames-com.akamaized.net'
+                    and '/vi/downloads/videos/' in low)
+            ):
                 candidates=[(url,item.get('relevance_evidence','direct_source'),item.get('source_label',''))]
             else:
                 allow_images=bool(item.get('allow_images_from_page',False) and wanted=='image')
