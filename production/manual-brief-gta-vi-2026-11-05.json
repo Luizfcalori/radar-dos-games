@@ -14,9 +14,13 @@
     "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/VI/launch-trailer",
     "https://www.rockstargames.com/VI/an-extended-look",
-    "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer"
+    "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer",
+    "https://www.instagram.com/p/DcmuKhJAe3I/",
+    "https://www.instagram.com/p/DehBEbwgV1d/"
   ],
   "video_urls": [
+    "https://www.instagram.com/p/DcmuKhJAe3I/",
+    "https://www.instagram.com/p/DehBEbwgV1d/",
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
   ],
   "short_hooks": [
@@ -37,7 +41,8 @@
     "Shorts com gancho imediato, legendas grandes, cortes dinâmicos e CTA curto. Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes.",
     "Manter intro oficial integral antes do gameplay. Evitar repetição de cenas, loops, travamentos, imagens estáticas longas e falas sobre processo de produção.",
     "YouTube: enviar Master e os três Shorts como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados.",
-    "Se o YouTube bloquear a transferência, usar o pacote oficial de nove vídeos curtos disponibilizado pela Rockstar na página de mídia: https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip. Extrair apenas arquivos de vídeo do pacote oficial; não usar reuploads nem material de outros jogos."
+    "Se o YouTube bloquear a transferência, usar o pacote oficial de nove vídeos curtos disponibilizado pela Rockstar na página de mídia: https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip. Extrair apenas arquivos de vídeo do pacote oficial; não usar reuploads nem material de outros jogos.",
+    "Mídia oficial alternativa: usar os posts públicos do Instagram verificado @rockstargames (An Extended Look e Launch Trailer) e, como complemento, o arquivo oficial de vídeos da Rockstar. Não recorrer a reposts de fãs."
   ],
   "script_blocks": [
     "A espera por Grand Theft Auto VI está entrando em sua reta final. Depois de anos de expectativa, a Rockstar concentra os últimos anúncios antes da chegada de um dos jogos mais aguardados da geração. A data está marcada: 19 de novembro de 2026, para PlayStation 5 e Xbox Series X|S. E a semana trouxe uma informação prática para quem já está se preparando: o pré-carregamento começa em 10 de novembro. Hoje, no Radar dos Games, vamos reunir o que realmente foi confirmado antes da estreia.",
@@ -51,7 +56,7 @@
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 75,
+  "minimum_unique_video_seconds": 120,
   "short_scene_numbers": [
     2,
     3,
@@ -59,6 +64,13 @@
   ],
   "narration_revision": "2026-11-05: pauta atualizada com pré-carregamento de 10/11, trilha de Justice e trailer de lançamento; separar fatos oficiais de rumores.",
   "video_max_assets": {
+    "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
+    "https://www.instagram.com/p/DehBEbwgV1d/": 1,
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9
+  },
+  "video_labels": {
+    "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — An Extended Look",
+    "https://www.instagram.com/p/DehBEbwgV1d/": "Rockstar Games official Instagram — Launch Trailer",
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official media video archive"
   }
 }

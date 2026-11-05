@@ -30,8 +30,9 @@ def download_public_instagram(url,dest,probe_info):
     dest.unlink(missing_ok=True)
     cmd=["yt-dlp","--ignore-config","--no-playlist","--no-progress",
          "--no-warnings","--retries","2","--fragment-retries","2",
-         "--extractor-retries","2","--socket-timeout","20",
-         "--max-filesize","180M","--merge-output-format","mp4",
+         "--extractor-retries","2","--socket-timeout","30",
+         "--max-filesize","700M","--merge-output-format","mp4",
+         "-f","best[height<=1080][filesize<700M]/best[height<=720]/best",
          "-o",str(dest),url]
     try:
         result=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,

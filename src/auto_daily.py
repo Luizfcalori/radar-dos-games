@@ -1216,6 +1216,7 @@ def main():
                     curated_video_urls.append(candidate_url)
         labels = manual.get("video_labels") or {}
         roles = manual.get("video_roles") or {}
+        # Exact public Instagram posts from the official publisher account are valid media sources.
         for j, candidate_url in enumerate(curated_video_urls, 1):
             media_items.append({
                 "type": "video",
