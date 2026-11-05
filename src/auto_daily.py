@@ -1,3 +1,4 @@
+# WoW Forever narration QA fix: the locked manual brief now uses audience-facing copy.
 # Castlevania retry: use the explicit production trigger so the manual brief is honored.
 # QSSR PS5 brief is explicitly mapped above and uses approved official gameplay URLs.
 # [run-production] TOPIC=Deadlock — validate embedded video extraction in the locked-topic pipeline.
