@@ -916,6 +916,9 @@ def main():
             # Pin this private run to the verified Complete Edition launch brief.
             # Official Nintendo trailers provide game-matched source footage for this run.
             manual = load_manual_brief("production/manual-brief-stellar-blade-complete-edition-2026-11-03.json")
+        elif forced_topic_slug == ascii_slug("World of Warcraft: Forever"):
+            # Pin the requested run to Blizzard's verified global launch brief and official WoW footage.
+            manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
         else:
             manual = None
     if not candidates and not manual:
@@ -975,6 +978,7 @@ def main():
                 "manual-football-manager-27-launch-preview-shuffle-draft-2026-11-01": "production/manual-brief-football-manager-27-2026-11-01.json",
                 "manual-solo-leveling-arise-overdrive-console-launch-2026-11-03": "production/manual-brief-solo-leveling-arise-overdrive-2026-11-02.json",
                 "manual-ocarina-of-time-switch-2-remake-launch-2026-11-05": "production/manual-brief-ocarina-of-time-switch-2-2026-11-02.json",
+                "manual-world-of-warcraft-forever-global-launch-2026-11-04": "production/manual-brief-world-of-warcraft-forever-2026-11-05.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
