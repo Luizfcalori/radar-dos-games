@@ -106,7 +106,7 @@ jobs:
       - run: python -m pytest -q tests
 
   produce:
-    # Private one-off run: commit message [run-private] TOPIC=<game> uploads all four videos privately, without public scheduling.
+    # Private one-off run: [run-production] TOPIC=<game> or [run-private] TOPIC=<game> uses the manual brief and uploads all four videos privately.
     if: github.event_name != 'push' || startsWith(github.event.head_commit.message, '[run-production]') || startsWith(github.event.head_commit.message, '[run-only]') || startsWith(github.event.head_commit.message, '[run-private]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
