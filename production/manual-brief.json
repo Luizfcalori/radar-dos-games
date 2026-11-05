@@ -48,5 +48,5 @@
     "E fica a pergunta: será que esse retorno vai conquistar tanto quem jogou em 2004 quanto quem vai conhecer a aventura agora? O cooperativo para quatro pessoas, a troca de heróis e os recursos extras podem dar um novo motivo para revisitar esse clássico. DreamWorks Shrek 2 Remastered chega em 10 de novembro. Conta pra gente: você jogaria sozinho ou chamaria mais três amigos para atravessar Tão Tão Distante? Este é o Radar dos Games. Inscreva-se e acompanhe as próximas novidades."
   ],
   "steam_app_id": 2523740,
-  "production_note": "Production retry 2026-11-05: use the separate IGN official gameplay trailer (ID@Xbox Fall 2026) alongside the Aspyr announcement trailer. Keep only unique source intervals; never treat Steam codec variants as distinct footage. Preserve exact 1 Master + 3 Shorts and all prior editorial rules."
+  "production_note": "Shrek 2 Remastered — retry after run #590 was cancelled before jobs started; retain distinct official gameplay trailer source; deduplicate stream variants of same trailer; do not relax repetition/quality gates. Retry timestamp: 2026-11-05T17:53:00Z."
 }
