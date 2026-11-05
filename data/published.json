@@ -233,6 +233,13 @@
       "url": "https://www.nintendo.com/pt-br/store/products/stellar-blade-complete-edition-switch-2/",
       "published_at": "2026-11-03T23:51:00.889222+00:00",
       "scheduled": false
+    },
+    {
+      "content_id": "manual-world-of-warcraft-forever-global-launch-2026-11-04",
+      "title": "World of Warcraft: Forever — lançamento mundial e a nova Azeroth",
+      "url": "https://worldofwarcraft.blizzard.com/en-us/news/24315820/world-of-warcraft-forever-goes-live-globally-4-november",
+      "published_at": "2026-11-06T13:00:00Z",
+      "scheduled": true
     }
   ]
 }
