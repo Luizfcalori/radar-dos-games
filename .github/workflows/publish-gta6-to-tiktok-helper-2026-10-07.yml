@@ -37,12 +37,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p helper-assets
-          cp gta6-final/shorts/short_1.mp4 helper-assets/gta6-2026-11-05-short-1.mp4
-          cp gta6-final/shorts/short_2.mp4 helper-assets/gta6-2026-11-05-short-2.mp4
-          cp gta6-final/shorts/short_3.mp4 helper-assets/gta6-2026-11-05-short-3.mp4
-          cp gta6-final/shorts/short_1_cover.jpg helper-assets/gta6-2026-11-05-short-1.jpg
-          cp gta6-final/shorts/short_2_cover.jpg helper-assets/gta6-2026-11-05-short-2.jpg
-          cp gta6-final/shorts/short_3_cover.jpg helper-assets/gta6-2026-11-05-short-3.jpg
+          cp gta6-final/shorts/short_1.mp4 helper-assets/gta6-2026-11-05-run42050286427-short-1.mp4
+          cp gta6-final/shorts/short_2.mp4 helper-assets/gta6-2026-11-05-run42050286427-short-2.mp4
+          cp gta6-final/shorts/short_3.mp4 helper-assets/gta6-2026-11-05-run42050286427-short-3.mp4
+          cp gta6-final/shorts/short_1_cover.jpg helper-assets/gta6-2026-11-05-run42050286427-short-1.jpg
+          cp gta6-final/shorts/short_2_cover.jpg helper-assets/gta6-2026-11-05-run42050286427-short-2.jpg
+          cp gta6-final/shorts/short_3_cover.jpg helper-assets/gta6-2026-11-05-run42050286427-short-3.jpg
 
           for f in helper-assets/*; do test -s "$f"; done
 
@@ -74,22 +74,22 @@ jobs:
             'ukpi1M0hgGE':{
               'title':'GTA VI: O PRÉ-CARREGAMENTO COMEÇA EM 10 DE NOVEMBRO!',
               'short_number':1,
-              'mp4':'gta6-2026-11-05-short-1.mp4',
-              'jpg':'gta6-2026-11-05-short-1.jpg',
+              'mp4':'gta6-2026-11-05-run42050286427-short-1.mp4',
+              'jpg':'gta6-2026-11-05-run42050286427-short-1.jpg',
               'post_text':'Pré-carregamento de GTA VI: a contagem regressiva está chegando!\n\n🎮 Siga para mais novidades de games.\n\n#GTAVI #GTA6 #RockstarGames #PlayStation5 #XboxSeries'
             },
             '8yfSGvJWqAs':{
               'title':'JUSTICE ASSINA A TRILHA SONORA ORIGINAL DE GTA VI!',
               'short_number':2,
-              'mp4':'gta6-2026-11-05-short-2.mp4',
-              'jpg':'gta6-2026-11-05-short-2.jpg',
+              'mp4':'gta6-2026-11-05-run42050286427-short-2.mp4',
+              'jpg':'gta6-2026-11-05-run42050286427-short-2.jpg',
               'post_text':'Justice assina a trilha sonora original de GTA VI. Uma novidade que promete marcar a experiência!\n\n🎮 Siga para mais novidades de games.\n\n#GTAVI #GTA6 #Justice #RockstarGames #GameSoundtrack'
             },
             'z7o8RuXLiKY':{
               'title':'GTA VI CHEGA EM 19 DE NOVEMBRO — E O TRAILER JÁ ESTÁ NO AR!',
               'short_number':3,
-              'mp4':'gta6-2026-11-05-short-3.mp4',
-              'jpg':'gta6-2026-11-05-short-3.jpg',
+              'mp4':'gta6-2026-11-05-run42050286427-short-3.mp4',
+              'jpg':'gta6-2026-11-05-run42050286427-short-3.jpg',
               'post_text':'GTA VI chega em 19 de novembro — e o trailer já está no ar!\n\n🎮 Siga para mais novidades de games.\n\n#GTAVI #GTA6 #RockstarGames #GamingNews #PlayStation5'
             },
           }
@@ -138,7 +138,7 @@ jobs:
         run: |
           set -euo pipefail
           base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
-          for f in gta6-2026-11-05-short-1.mp4 gta6-2026-11-05-short-2.mp4 gta6-2026-11-05-short-3.mp4; do
+          for f in gta6-2026-11-05-run42050286427-short-1.mp4 gta6-2026-11-05-run42050286427-short-2.mp4 gta6-2026-11-05-run42050286427-short-3.mp4; do
             curl -L --fail --retry 3 --range 0-1023 "$base/$f" -o /dev/null
             echo "PUBLIC_OK $f"
           done
