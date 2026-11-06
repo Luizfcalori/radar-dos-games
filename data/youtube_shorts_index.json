@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-05T09:43:50.450434+00:00",
-  "total_discovered": 167,
-  "ready_for_tiktok": 160,
+  "updated_at": "2026-11-06T10:32:10.624378+00:00",
+  "total_discovered": 170,
+  "ready_for_tiktok": 163,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "XMk9wFL47rA",
+      "youtube_url": "https://www.youtube.com/shorts/XMk9wFL47rA",
+      "title": "WORLD OF WARCRAFT: FOREVER JÁ ESTÁ NO AR — E AZEROTH MUDOU!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "yanMQah_Ra4",
+      "youtube_url": "https://www.youtube.com/shorts/yanMQah_Ra4",
+      "title": "MAIS DE MIL MISSÕES E QUATRO NOVAS REGIÕES: OLHA O TAMANHO DISSO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "IivpYo4Nmrc",
+      "youtube_url": "https://www.youtube.com/shorts/IivpYo4Nmrc",
+      "title": "SKYBORNE: A NOVA RAÇA JOGÁVEL QUE CHEGA A AZEROTH!",
+      "status": "approved"
+    },
     {
       "youtube_id": "_h0E2nxlLac",
       "youtube_url": "https://www.youtube.com/shorts/_h0E2nxlLac",
