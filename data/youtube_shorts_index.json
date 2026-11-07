@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-06T10:32:10.624378+00:00",
-  "total_discovered": 170,
-  "ready_for_tiktok": 163,
+  "updated_at": "2026-11-07T15:10:13.164148+00:00",
+  "total_discovered": 173,
+  "ready_for_tiktok": 166,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "ukpi1M0hgGE",
+      "youtube_url": "https://www.youtube.com/shorts/ukpi1M0hgGE",
+      "title": "GTA VI: O PRÉ-CARREGAMENTO COMEÇA EM 10 DE NOVEMBRO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "8yfSGvJWqAs",
+      "youtube_url": "https://www.youtube.com/shorts/8yfSGvJWqAs",
+      "title": "JUSTICE ASSINA A TRILHA SONORA ORIGINAL DE GTA VI!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "z7o8RuXLiKY",
+      "youtube_url": "https://www.youtube.com/shorts/z7o8RuXLiKY",
+      "title": "GTA VI CHEGA EM 19 DE NOVEMBRO — E O TRAILER JÁ ESTÁ NO AR!",
+      "status": "approved"
+    },
     {
       "youtube_id": "XMk9wFL47rA",
       "youtube_url": "https://www.youtube.com/shorts/XMk9wFL47rA",
