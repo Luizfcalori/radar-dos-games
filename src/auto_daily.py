@@ -862,6 +862,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-lords-of-the-fallen-ii-2026-11-08.json")
     elif forced_topic_slug == ascii_slug("Metaphor: ReFantazio"):
         manual = load_manual_brief("production/manual-brief-metaphor-refantazio-2026-11-08.json")
+    elif forced_topic_slug == ascii_slug("DREADMOOR"):
+        manual = load_manual_brief("production/manual-brief-dreadmoor-2026-11-08.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
