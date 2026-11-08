@@ -52,5 +52,6 @@
   "minimum_unique_video_seconds": 75,
   "minimum_image_assets": 0,
   "steam_app_id": "2679460",
-  "narration_revision": "2026-11-08: brief manual criado com notícias oficiais ATLUS de 6 e 13 de outubro/6 de novembro, Nintendo Brasil e mídia Steam oficial do app 2679460."
+  "narration_revision": "2026-11-08: brief manual criado com notícias oficiais ATLUS de 6 e 13 de outubro/6 de novembro, Nintendo Brasil e mídia Steam oficial do app 2679460.",
+  "editorial_note": "Master narration is allowed to vary with verified editorial scope; workflow QA minimum is 450 words, with no artificial duration target."
 }
