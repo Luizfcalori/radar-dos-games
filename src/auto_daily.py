@@ -1396,3 +1396,5 @@ if __name__ == "__main__":
 # Controlled rerun after Master render timeout increased to 60 minutes.
 
 # [run-production] TOPIC=World of Warcraft: Forever — use IGN-hosted launch overview after YouTube anti-bot block.
+
+# Poppy Playtime dedicated brief recovery trigger 2026-11-08.
