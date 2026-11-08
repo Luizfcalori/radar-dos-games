@@ -171,9 +171,9 @@ class VideoTimeline:
                     for free_lo,free_hi in self.free(idx,lo,end):
                         room=free_hi-free_lo
                         if room>=0.25-EPS:
-                            length=min(3.5,remaining,room)
+                            length=math.floor((min(3.5,remaining,room)+1e-8)*30)/30
                             fresh_fallback.append(((length, bool(expected & categories),-idx,-free_lo),asset,free_lo,length,w))
-                    length=min(3.5,remaining,end-lo)
+                    length=math.floor((min(3.5,remaining,end-lo)+1e-8)*30)/30
                     if length>0:
                         prior=sum(max(0,min(end,b)-max(lo,a)) for a,b in self.used[key])
                         fallback.append(((prior,-len(categories & expected),-idx,lo),asset,lo,length,w))
