@@ -75,8 +75,10 @@ jobs:
               with urllib.request.urlopen(req,timeout=30) as r:
                   return json.load(r)
 
-          runs=api(f"/repos/{repo}/actions/runs?per_page=40").get("workflow_runs",[])
           cutoff=datetime.now(timezone.utc)-timedelta(hours=72)
+# Search the production workflow directly; repository-wide per_page=40 was
+# crowded out by frequent unrelated schedules, hiding valid recent packages.
+runs=api(f"/repos/{repo}/actions/workflows/daily-video.yml/runs?per_page=100&created=%3E%3D{cutoff.date().isoformat()}").get("workflow_runs",[])
           selected=[]
           Path("candidates").mkdir(exist_ok=True)
 
