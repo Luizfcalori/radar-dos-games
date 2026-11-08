@@ -404,3 +404,5 @@ jobs:
 # Recovery fix 2026-11-05: accept successful YouTube API video responses in production artifacts for GTA VI.
 
 # Immediate import check requested after Shrek 2 Remastered production run 42080959955 (2026-11-05).
+
+# Recovery trigger: re-scan completed Lords of the Fallen II production artifact 42485466485.
