@@ -77,7 +77,7 @@ jobs:
 
           cutoff=datetime.now(timezone.utc)-timedelta(hours=72)
           # Search production runs directly; unrelated schedules must not crowd them out.
-          runs=api(f"/repos/{repo}/actions/workflows/daily-video.yml/runs?per_page=100&created=%3E%3D{cutoff.date().isoformat()}").get("workflow_runs",[])
+          runs=api(f"/repos/{repo}/actions/workflows/373069184/runs?per_page=100&created=%3E%3D{cutoff.date().isoformat()}").get("workflow_runs",[])
           selected=[]
           Path("candidates").mkdir(exist_ok=True)
 
