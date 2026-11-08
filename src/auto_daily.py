@@ -931,6 +931,9 @@ def main():
             manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
         elif forced_topic_slug == ascii_slug("Grand Theft Auto VI"):
             manual = load_manual_brief("production/manual-brief-gta-vi-2026-11-05.json")
+        elif forced_topic_slug == ascii_slug("Poppy Playtime"):
+            # Keep the explicit Poppy Playtime request pinned to its approved Escape From Playtime brief.
+            manual = load_manual_brief("production/manual-brief-poppy-playtime-2026-11-08.json")
         else:
             manual = None
     if not candidates and not manual:
