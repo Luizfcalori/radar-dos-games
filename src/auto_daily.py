@@ -856,6 +856,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
     elif forced_topic_slug == ascii_slug("Grand Theft Auto VI"):
         manual = load_manual_brief("production/manual-brief-gta-vi-2026-11-05.json")
+    elif forced_topic_slug == ascii_slug("Poppy Playtime"):
+        manual = load_manual_brief("production/manual-brief-poppy-playtime-2026-11-08.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
