@@ -860,6 +860,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-poppy-playtime-2026-11-08.json")
     elif forced_topic_slug == ascii_slug("Lords of the Fallen II"):
         manual = load_manual_brief("production/manual-brief-lords-of-the-fallen-ii-2026-11-08.json")
+    elif forced_topic_slug == ascii_slug("Metaphor: ReFantazio"):
+        manual = load_manual_brief("production/manual-brief-metaphor-refantazio-2026-11-08.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
@@ -1000,6 +1002,7 @@ def main():
                 "manual-world-of-warcraft-forever-global-launch-2026-11-04": "production/manual-brief-world-of-warcraft-forever-2026-11-05.json",
                 "manual-grand-theft-auto-vi-countdown-preload-score-2026-11-05": "production/manual-brief-gta-vi-2026-11-05.json",
                 "manual-lords-of-the-fallen-ii-steel-and-sorcery-gameplay-2026-11-08": "production/manual-brief-lords-of-the-fallen-ii-2026-11-08.json",
+                "manual-metaphor-refantazio-switch2-demo-price-update-2026-11-08": "production/manual-brief-metaphor-refantazio-2026-11-08.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
