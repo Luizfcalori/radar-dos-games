@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-07T15:10:13.164148+00:00",
-  "total_discovered": 173,
-  "ready_for_tiktok": 166,
+  "updated_at": "2026-11-08T15:35:03.917334+00:00",
+  "total_discovered": 176,
+  "ready_for_tiktok": 169,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "p6MEcYLuAs4",
+      "youtube_url": "https://www.youtube.com/shorts/p6MEcYLuAs4",
+      "title": "SHREK 2 VOLTA COM COOP PARA ATÉ 4 JOGADORES!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "tbhkO-0O1vI",
+      "youtube_url": "https://www.youtube.com/shorts/tbhkO-0O1vI",
+      "title": "AGORA DÁ PARA TROCAR DE HERÓI A QUALQUER MOMENTO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "kPj3BrB7-q4",
+      "youtube_url": "https://www.youtube.com/shorts/kPj3BrB7-q4",
+      "title": "MODO FOTO, CHEATS E VISUAL RENOVADO: O QUE MUDOU?",
+      "status": "approved"
+    },
     {
       "youtube_id": "ukpi1M0hgGE",
       "youtube_url": "https://www.youtube.com/shorts/ukpi1M0hgGE",
