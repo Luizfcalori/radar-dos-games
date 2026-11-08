@@ -488,43 +488,86 @@ public class MainActivity extends Activity {
     }
 
     private Uri downloadItem(QueueItem item) throws Exception {
-        if (downloaded.containsKey(item.id)) return downloaded.get(item.id);
-        HttpURLConnection c = (HttpURLConnection) new URL(item.mediaUrl).openConnection();
-        c.setConnectTimeout(20000);
-        c.setReadTimeout(60000);
-        c.setRequestProperty("User-Agent", "RadarTikTokHelper/1.0");
-        c.setInstanceFollowRedirects(true);
-        c.connect();
-        if (c.getResponseCode() < 200 || c.getResponseCode() >= 300) {
-            throw new IllegalStateException("HTTP " + c.getResponseCode());
-        }
+        Uri cached = downloaded.get(item.id);
+        if (cached != null) return cached;
 
-        String fileName = sanitize(item.id + "_" + item.title) + ".mp4";
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Video.Media.DISPLAY_NAME, fileName);
-        values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-        values.put(MediaStore.Video.Media.RELATIVE_PATH, PUBLIC_FOLDER);
-        values.put(MediaStore.Video.Media.IS_PENDING, 1);
+        Exception lastError = null;
+        final int maxAttempts = 4;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            HttpURLConnection c = null;
+            Uri uri = null;
+            try {
+                // Cache-busting + retry: GitHub Releases/CDN can transiently return HTTP 502/503/504.
+                String separator = item.mediaUrl.contains("?") ? "&" : "?";
+                String requestUrl = item.mediaUrl + separator + "radar_retry=" +
+                        System.currentTimeMillis() + "_" + attempt;
+                c = (HttpURLConnection) new URL(requestUrl).openConnection();
+                c.setConnectTimeout(30000);
+                c.setReadTimeout(90000);
+                c.setRequestProperty("User-Agent", "RadarTikTokHelper/1.3");
+                c.setRequestProperty("Accept", "video/mp4, application/octet-stream, */*");
+                c.setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0");
+                c.setRequestProperty("Pragma", "no-cache");
+                c.setInstanceFollowRedirects(true);
+                c.setUseCaches(false);
+                c.connect();
 
-        Uri uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
-        if (uri == null) throw new IllegalStateException("Não foi possível criar o arquivo");
-        try (InputStream in = new BufferedInputStream(c.getInputStream());
-             OutputStream out = getContentResolver().openOutputStream(uri)) {
-            if (out == null) throw new IllegalStateException("Sem acesso ao arquivo");
-            byte[] buffer = new byte[1024 * 128];
-            int n;
-            while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
-            out.flush();
-        } catch (Exception e) {
-            getContentResolver().delete(uri, null, null);
-            throw e;
-        } finally {
-            c.disconnect();
+                int code = c.getResponseCode();
+                if (code < 200 || code >= 300) {
+                    String message = "HTTP " + code;
+                    if (code == 408 || code == 425 || code == 429 ||
+                            code == 500 || code == 502 || code == 503 || code == 504) {
+                        throw new RetryableDownloadException(message);
+                    }
+                    throw new IllegalStateException(message);
+                }
+
+                String fileName = sanitize(item.id + "_" + item.title) + ".mp4";
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Video.Media.DISPLAY_NAME, fileName);
+                values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                values.put(MediaStore.Video.Media.RELATIVE_PATH, PUBLIC_FOLDER);
+                values.put(MediaStore.Video.Media.IS_PENDING, 1);
+
+                uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+                if (uri == null) throw new IllegalStateException("Não foi possível criar o arquivo");
+
+                try (InputStream in = new BufferedInputStream(c.getInputStream());
+                     OutputStream out = getContentResolver().openOutputStream(uri)) {
+                    if (out == null) throw new IllegalStateException("Sem acesso ao arquivo");
+                    byte[] buffer = new byte[1024 * 128];
+                    int n;
+                    while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
+                    out.flush();
+                }
+
+                ContentValues ready = new ContentValues();
+                ready.put(MediaStore.Video.Media.IS_PENDING, 0);
+                getContentResolver().update(uri, ready, null, null);
+                return uri;
+            } catch (Exception e) {
+                lastError = e;
+                if (uri != null) {
+                    try { getContentResolver().delete(uri, null, null); } catch (Exception ignored) {}
+                }
+                boolean retryable = e instanceof RetryableDownloadException ||
+                        e instanceof java.io.IOException;
+                if (!retryable || attempt == maxAttempts) throw e;
+                try {
+                    Thread.sleep(1500L * attempt);
+                } catch (InterruptedException interrupted) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException("Download interrompido", interrupted);
+                }
+            } finally {
+                if (c != null) c.disconnect();
+            }
         }
-        ContentValues ready = new ContentValues();
-        ready.put(MediaStore.Video.Media.IS_PENDING, 0);
-        getContentResolver().update(uri, ready, null, null);
-        return uri;
+        throw lastError != null ? lastError : new IllegalStateException("Falha ao baixar vídeo");
+    }
+
+    private static class RetryableDownloadException extends Exception {
+        RetryableDownloadException(String message) { super(message); }
     }
 
     private void shareCurrent() {
