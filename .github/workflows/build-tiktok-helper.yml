@@ -27,10 +27,8 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
+      - name: Use Gradle preinstalled on runner
+        run: gradle --version
 
       - name: Restore stable signing key
         id: signing-cache
