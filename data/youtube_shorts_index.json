@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-08T15:35:03.917334+00:00",
-  "total_discovered": 176,
-  "ready_for_tiktok": 169,
+  "updated_at": "2026-11-09T10:40:49.055578+00:00",
+  "total_discovered": 179,
+  "ready_for_tiktok": 172,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "lkUNkc6i_qw",
+      "youtube_url": "https://www.youtube.com/shorts/lkUNkc6i_qw",
+      "title": "QUASE 30 MOVIMENTOS DE ARMAS: O COMBATE MUDOU!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "lnKBVWRQ7Eg",
+      "youtube_url": "https://www.youtube.com/shorts/lnKBVWRQ7Eg",
+      "title": "TROCA DE ARMAS NO MEIO DO COMBO: COMO FUNCIONA?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "i1l3XRkjduA",
+      "youtube_url": "https://www.youtube.com/shorts/i1l3XRkjduA",
+      "title": "SETE ESCOLAS DE MAGIA E MUNIÇÃO INFINITA!",
+      "status": "approved"
+    },
     {
       "youtube_id": "p6MEcYLuAs4",
       "youtube_url": "https://www.youtube.com/shorts/p6MEcYLuAs4",
