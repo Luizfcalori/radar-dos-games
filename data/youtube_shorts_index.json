@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-09T10:40:49.055578+00:00",
-  "total_discovered": 179,
-  "ready_for_tiktok": 172,
+  "updated_at": "2026-11-10T11:46:05.131650+00:00",
+  "total_discovered": 182,
+  "ready_for_tiktok": 175,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "6N9AfQdCzjY",
+      "youtube_url": "https://www.youtube.com/shorts/6N9AfQdCzjY",
+      "title": "A DEMO DE METAPHOR NO SWITCH 2 TEM 4 MASMORRAS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "LNuYVYS_4jM",
+      "youtube_url": "https://www.youtube.com/shorts/LNuYVYS_4jM",
+      "title": "40+ ARQUÉTIPOS: COMO FUNCIONA O COMBATE DE METAPHOR?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "wRqvMHcrAA0",
+      "youtube_url": "https://www.youtube.com/shorts/wRqvMHcrAA0",
+      "title": "METAPHOR FICA MAIS BARATO EM 12 DE NOVEMBRO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "lkUNkc6i_qw",
       "youtube_url": "https://www.youtube.com/shorts/lkUNkc6i_qw",
