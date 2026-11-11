@@ -55,5 +55,6 @@
   "minimum_image_assets": 0,
   "steam_app_id": "2679460",
   "narration_revision": "2026-11-11: nova pauta editorial, distinta da publicação de 08/11; foco nos modos gráficos do Switch 2 e no trailer de Heismay.",
-  "editorial_note": "Master narration is allowed to vary with verified editorial scope; workflow QA minimum is 450 words, with no artificial duration target."
+  "editorial_note": "Master narration is allowed to vary with verified editorial scope; workflow QA minimum is 450 words, with no artificial duration target.",
+  "workflow_topic": "Metaphor: ReFantazio"
 }
