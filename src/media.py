@@ -631,7 +631,30 @@ def steam_candidates(app_id,wanted):
     for row in out:
         if row[0] in seen:continue
         seen.add(row[0]);dedup.append(row)
-    return dedup
+
+    # Steam publishes several CDN encodings of the SAME trailer (HLS, DASH,
+    # AV1/H.264). They are transport variants, not independent gameplay assets.
+    # Collapse by canonical store_trailers movie identity before acquisition so
+    # duplicate encodings cannot satisfy minimum_assets/seconds and suppress the
+    # official gameplay fallbacks declared later in the media plan.
+    unique=[];by_movie={}
+    for row in dedup:
+        url=row[0]
+        path=urllib.parse.urlparse(url).path
+        match=re.search(r'/store_trailers/(\\d+)/(\\d+)/([^/]+)/(\\d+)/',path)
+        if not match:
+            unique.append(row)
+            continue
+        key=tuple(match.groups())
+        filename=path.rsplit('/',1)[-1].lower()
+        rank=(0 if 'hls_264_master' in filename else
+              1 if 'dash_h264' in filename else
+              2 if 'dash_av1' in filename else 3)
+        previous=by_movie.get(key)
+        if previous is None or rank<previous[0]:
+            by_movie[key]=(rank,row)
+    unique.extend(value[1] for value in by_movie.values())
+    return unique
 
 def blocked_candidate(url,item):
     low=url.lower();blocked=list(LOW_VALUE_TOKENS)+[str(x).lower() for x in item.get('blocked_tokens',[])]
