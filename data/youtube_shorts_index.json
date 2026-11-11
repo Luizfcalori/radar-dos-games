@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-11T14:12:17.668606+00:00",
-  "total_discovered": 185,
-  "ready_for_tiktok": 178,
+  "updated_at": "2026-11-11T21:24:52.504952+00:00",
+  "total_discovered": 184,
+  "ready_for_tiktok": 177,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -1144,12 +1144,6 @@
       "youtube_id": "DFMjasmIOSw",
       "youtube_url": "https://www.youtube.com/shorts/DFMjasmIOSw",
       "title": "GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "ChImgyX8YVk",
-      "youtube_url": "https://www.youtube.com/shorts/ChImgyX8YVk",
-      "title": "O QUE O TRAILER DE YEAT MOSTRA?",
       "status": "approved"
     }
   ]
