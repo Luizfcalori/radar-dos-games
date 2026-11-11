@@ -1306,6 +1306,7 @@ def main():
         "short_hooks": short_hooks,
         "short_hook_policy": "exact_approved_hook; semantic_scene_match; qa_block_on_mismatch",
         "allow_official_subject_fallback": bool(manual and str(manual.get("content_id","")).startswith("manual-castlevania-")),
+        "allow_same_source_role_fallback": bool(manual and manual.get("allow_same_source_role_fallback", False)),
         "media": media_items,
         "scenes": planned_scenes,
     }
