@@ -109,14 +109,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Instalar FFmpeg completo com drawtext
-        timeout-minutes: 8
+      - name: Instalar FFmpeg GPL completo com drawtext
+        timeout-minutes: 6
         run: |
-          sudo apt-get update -o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30
-          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
-          echo "/usr/bin" >> "$GITHUB_PATH"
-          /usr/bin/ffmpeg -hide_banner -filters | grep -E '[[:space:]]drawtext[[:space:]]'
-          /usr/bin/ffprobe -version | head -n 1
+          set -euo pipefail
+          archive=/tmp/ffmpeg-full.tar.xz
+          curl -fL --retry 3 --retry-all-errors --connect-timeout 20 \
+            https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz \
+            -o "$archive"
+          mkdir -p /tmp/ffmpeg-full
+          tar -xJf "$archive" -C /tmp/ffmpeg-full
+          bin="$(find /tmp/ffmpeg-full -type f -path '*/bin/ffmpeg' -print -quit)"
+          probe="$(find /tmp/ffmpeg-full -type f -path '*/bin/ffprobe' -print -quit)"
+          test -n "$bin" && test -n "$probe"
+          sudo install -m 0755 "$bin" /usr/local/bin/ffmpeg
+          sudo install -m 0755 "$probe" /usr/local/bin/ffprobe
+          echo "/usr/local/bin" >> "$GITHUB_PATH"
+          ffmpeg -hide_banner -filters | grep -E '[[:space:]]drawtext[[:space:]]'
+          ffmpeg -hide_banner -demuxers | grep -E '[[:space:]]hls[[:space:]]'
+          ffprobe -version | head -n 1
       - run: pip install -r requirements.txt pytest
       - run: python -m pytest -q tests
 
@@ -138,17 +149,25 @@ jobs:
           cache: pip
           cache-dependency-path: requirements.txt
 
-      - name: Instalar FFmpeg completo com drawtext
-        timeout-minutes: 8
+      - name: Instalar FFmpeg GPL completo com drawtext
+        timeout-minutes: 6
         run: |
-          # Use Ubuntu's shared FFmpeg build: the static johnvansickle build lacks drawtext
-          # and crashed while reading Steam HLS manifests in the last production attempt.
-          sudo apt-get update -o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30
-          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
-          echo "/usr/bin" >> "$GITHUB_PATH"
-          /usr/bin/ffmpeg -hide_banner -filters | grep -E '[[:space:]]drawtext[[:space:]]'
-          /usr/bin/ffprobe -version | head -n 1
-
+          set -euo pipefail
+          archive=/tmp/ffmpeg-full.tar.xz
+          curl -fL --retry 3 --retry-all-errors --connect-timeout 20 \
+            https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz \
+            -o "$archive"
+          mkdir -p /tmp/ffmpeg-full
+          tar -xJf "$archive" -C /tmp/ffmpeg-full
+          bin="$(find /tmp/ffmpeg-full -type f -path '*/bin/ffmpeg' -print -quit)"
+          probe="$(find /tmp/ffmpeg-full -type f -path '*/bin/ffprobe' -print -quit)"
+          test -n "$bin" && test -n "$probe"
+          sudo install -m 0755 "$bin" /usr/local/bin/ffmpeg
+          sudo install -m 0755 "$probe" /usr/local/bin/ffprobe
+          echo "/usr/local/bin" >> "$GITHUB_PATH"
+          ffmpeg -hide_banner -filters | grep -E '[[:space:]]drawtext[[:space:]]'
+          ffmpeg -hide_banner -demuxers | grep -E '[[:space:]]hls[[:space:]]'
+          ffprobe -version | head -n 1
       - name: Instalar dependências Python básicas
         timeout-minutes: 10
         run: |
