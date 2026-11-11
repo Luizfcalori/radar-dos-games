@@ -62,5 +62,6 @@
   "allow_same_source_role_fallback": true,
   "retry_after_full_ffmpeg_fix": "df502aa1fd2e21ca69ff74ef9817df4cdc3fa88c",
   "retry_after_scoped_director_fallback_fix": "7f1d89b9e4b736dce361a825d8e41237284eeebe",
-  "retry_after_scoped_fallback_and_ffmpeg_build": "3d5eeb0f957f942aa58ea8a43a3b5b04dd6f10aa"
+  "retry_after_scoped_fallback_and_ffmpeg_build": "3d5eeb0f957f942aa58ea8a43a3b5b04dd6f10aa",
+  "retry_after_btbN_ffmpeg_full_build": "93b31258419ebf05892bffad4136e84b20ca1318"
 }
