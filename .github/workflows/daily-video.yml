@@ -57,6 +57,7 @@ on:
       - "production/manual-brief-qssr-ps5-2026-10-19.json"
       - "production/manual-brief-solo-leveling-arise-overdrive-2026-11-02.json"
       - "production/manual-brief-gta-vi-2026-11-05.json"
+      - "production/manual-brief-metaphor-refantazio-2026-11-08.json"
       - "src/thumbnail.py"
       - "src/short_cover.py"
       - "src/premium_covers.py"
