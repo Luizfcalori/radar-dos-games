@@ -469,6 +469,9 @@ def ytdlp(url,dest):
             args += ['--js-runtimes','deno']
         if client:
             args += ['--extractor-args',f'youtube:player_client={client}']
+        # ZoloTube uses Cloudflare; impersonate a real Chrome TLS/client fingerprint.
+        if host == 'zolotube.com':
+            args += ['--impersonate', 'chrome']
         args += ['-f',f'bv*[height<={height}]+ba/b[height<={height}]/best','--merge-output-format','mp4','-o',str(dest),url]
         try:
             subprocess.run(args,check=True,timeout=timeout)
@@ -641,7 +644,7 @@ def steam_candidates(app_id,wanted):
     for row in dedup:
         url=row[0]
         path=urllib.parse.urlparse(url).path
-        match=re.search(r'/store_trailers/(\\d+)/(\\d+)/([^/]+)/(\\d+)/',path)
+        match=re.search(r'/store_trailers/(\d+)/(\d+)/([^/]+)/(\d+)/',path)
         if not match:
             unique.append(row)
             continue
