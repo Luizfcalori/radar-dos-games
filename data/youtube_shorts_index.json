@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-10T11:46:05.131650+00:00",
-  "total_discovered": 182,
-  "ready_for_tiktok": 175,
+  "updated_at": "2026-11-11T14:12:17.668606+00:00",
+  "total_discovered": 185,
+  "ready_for_tiktok": 178,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "8m8xa_7xFyY",
+      "youtube_url": "https://www.youtube.com/shorts/8m8xa_7xFyY",
+      "title": "DREADMOOR CHEGA AMANHÃ: VOCÊ SOBREVIVERIA NESSE MAR?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "6hHRa5iypVQ",
+      "youtube_url": "https://www.youtube.com/shorts/6hHRa5iypVQ",
+      "title": "MAIS DE 100 CRIATURAS: A PESCA VIROU UM PESADELO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "eajOUS8EU9A",
+      "youtube_url": "https://www.youtube.com/shorts/eajOUS8EU9A",
+      "title": "SAIR À NOITE EM DREADMOOR É UM RISCO MORTAL!",
+      "status": "approved"
+    },
     {
       "youtube_id": "6N9AfQdCzjY",
       "youtube_url": "https://www.youtube.com/shorts/6N9AfQdCzjY",
