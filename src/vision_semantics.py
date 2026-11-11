@@ -29,6 +29,8 @@ CATEGORIES = {
     "driving": "driving a car or motorcycle on a street in a video game",
     "cyberware": "cybernetic body implants and a cyberware upgrade menu in a video game",
     "title_card": "a promotional title card with large text and a logo",
+    "platformer": "2D pixel art platform video game with colorful small characters jumping across platforms",
+    "cooperative_puzzle": "cooperative multiplayer puzzle platform game with several small characters working together to reach a goal",
 }
 SCENE_WORDS = {
     "hacking": ("hacking", "hack", "netrunner", "invasao digital"),
@@ -43,6 +45,8 @@ SCENE_WORDS = {
     "weapons": ("arma", "revolver", "fuzil", "bantam", "stiletto", "arsenal"),
     "equipment": ("gancho", "grappling", "corda", "tether", "granada"),
     "interface": ("habilidade", "inventario", "recompens", "skill", "passe", "pass"),
+    "platformer": ("plataforma", "plataformas", "pular", "pulo", "salto", "fase", "personagem"),
+    "cooperative_puzzle": ("cooper", "equipe", "jogadores", "obstac", "coorden", "saida", "objetivo"),
 }
 
 
