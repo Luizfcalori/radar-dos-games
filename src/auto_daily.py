@@ -862,6 +862,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-lords-of-the-fallen-ii-2026-11-08.json")
     elif forced_topic_slug == ascii_slug("Metaphor: ReFantazio"):
         manual = load_manual_brief("production/manual-brief-metaphor-refantazio-2026-11-08.json")
+    elif forced_topic_slug == ascii_slug("Marvel Rivals"):
+        manual = load_manual_brief("production/manual-brief-marvel-rivals-2026-11-11.json")
     elif forced_topic_slug == ascii_slug("DREADMOOR"):
         manual = load_manual_brief("production/manual-brief-dreadmoor-2026-11-08.json")
     elif forced_topic_slug == ascii_slug("Sonic Pico Park"):
@@ -1009,6 +1011,7 @@ def main():
                 "manual-grand-theft-auto-vi-countdown-preload-score-2026-11-05": "production/manual-brief-gta-vi-2026-11-05.json",
                 "manual-lords-of-the-fallen-ii-steel-and-sorcery-gameplay-2026-11-08": "production/manual-brief-lords-of-the-fallen-ii-2026-11-08.json",
                 "manual-metaphor-refantazio-switch2-demo-price-update-2026-11-08": "production/manual-brief-metaphor-refantazio-2026-11-08.json",
+                "manual-marvel-rivals-season-11-doomsday-2026-11-11": "production/manual-brief-marvel-rivals-2026-11-11.json",
                 "sonic-pico-park-launch-2026-11-12": "production/manual-brief-sonic-pico-park-2026-11-12.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
