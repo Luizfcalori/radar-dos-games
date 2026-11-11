@@ -111,28 +111,27 @@ def role_allowed(scene, asset):
     return role in roles or any(role.startswith(p) for p in prefixes)
 
 def eligible(scene, assets):
-    # Restrict MEDIA_FIRST_V1 scenes to the exact clip IDs approved during
-    # decupagem. Different Steam clips may share a role and must not become
-    # interchangeable merely because their source/type labels match.
+    # MEDIA_FIRST_V1 normally binds each scene to the exact approved clip IDs.
+    # A narrowly scoped exception may be enabled by an explicitly approved
+    # manual brief when the same official game's reviewed footage is needed
+    # to cover a scene whose local shortlist is too small.
     planned=scene.get("media_first_assets")
     if planned is not None:
         approved_ids={int(v) for v in planned}
-        # Keep every storyboard-approved asset as the preferred set, but permit
-        # additional reviewed videos only when they come from the exact same
-        # official game source and role. This prevents a scene from exhausting
-        # its small local clip subset while same-game footage remains unused.
-        planned_assets=[assets[idx] for idx in approved_ids if idx in assets]
-        source_keys={str(a.get("source") or "") for a in planned_assets
-                     if a.get("type")=="video" and a.get("source")}
-        video_roles={str(a.get("role") or "") for a in planned_assets
-                     if a.get("type")=="video"}
-        vals=[a for a in assets.values()
-              if a.get("approved",True) and role_allowed(scene,a)
-              and (int(a["index"]) in approved_ids or (
-                  a.get("type")=="video"
-                  and str(a.get("source") or "") in source_keys
-                  and str(a.get("role") or "") in video_roles
-              ))]
+        vals=[assets[idx] for idx in approved_ids if idx in assets
+              and assets[idx].get("approved",True) and role_allowed(scene,assets[idx])]
+        if scene.get("allow_same_source_role_fallback"):
+            planned_assets=list(vals)
+            source_keys={str(a.get("source") or "") for a in planned_assets
+                         if a.get("type")=="video" and a.get("source")}
+            video_roles={str(a.get("role") or "") for a in planned_assets
+                         if a.get("type")=="video"}
+            vals.extend(a for a in assets.values()
+                        if a.get("approved",True) and role_allowed(scene,a)
+                        and int(a["index"]) not in approved_ids
+                        and a.get("type")=="video"
+                        and str(a.get("source") or "") in source_keys
+                        and str(a.get("role") or "") in video_roles)
         if not vals or any(idx not in assets for idx in approved_ids):
             raise RuntimeError(f"QUALITY_BLOCK: cena {scene.get('title')} sem mídia da decupagem; fallback proibido")
         return vals
@@ -370,7 +369,8 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         for idx, windows in global_reviewed_windows.items():
             candidate=assets.get(idx,{})
             same_verified_game_source=(
-                candidate.get("type")=="video"
+                scene.get("allow_same_source_role_fallback")
+                and candidate.get("type")=="video"
                 and str(candidate.get("source") or "") in source_keys
                 and str(candidate.get("role") or "") in video_roles
                 and candidate.get("approved",True)
