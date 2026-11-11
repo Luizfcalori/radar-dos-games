@@ -109,13 +109,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Instalar FFmpeg estático
-        uses: FedericoCarboni/setup-ffmpeg@v3
-      - name: Verificar ferramentas pré-instaladas no runner
+      - name: Instalar FFmpeg completo com drawtext
+        timeout-minutes: 8
         run: |
-          command -v ffmpeg
-          ffmpeg -version | head -n 1
-          command -v ffprobe
+          sudo apt-get update -o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
+          echo "/usr/bin" >> "$GITHUB_PATH"
+          /usr/bin/ffmpeg -hide_banner -filters | grep -E '[[:space:]]drawtext[[:space:]]'
+          /usr/bin/ffprobe -version | head -n 1
       - run: pip install -r requirements.txt pytest
       - run: python -m pytest -q tests
 
@@ -137,16 +138,16 @@ jobs:
           cache: pip
           cache-dependency-path: requirements.txt
 
-      - name: Instalar FFmpeg estático
-        uses: FedericoCarboni/setup-ffmpeg@v3
-
-      - name: Verificar ferramentas gratuitas pré-instaladas
-        timeout-minutes: 2
+      - name: Instalar FFmpeg completo com drawtext
+        timeout-minutes: 8
         run: |
-          # FFmpeg is installed by a pinned-purpose setup action, without apt.
-          command -v ffmpeg
-          ffmpeg -version | head -n 1
-          command -v ffprobe
+          # Use Ubuntu's shared FFmpeg build: the static johnvansickle build lacks drawtext
+          # and crashed while reading Steam HLS manifests in the last production attempt.
+          sudo apt-get update -o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
+          echo "/usr/bin" >> "$GITHUB_PATH"
+          /usr/bin/ffmpeg -hide_banner -filters | grep -E '[[:space:]]drawtext[[:space:]]'
+          /usr/bin/ffprobe -version | head -n 1
 
       - name: Instalar dependências Python básicas
         timeout-minutes: 10
