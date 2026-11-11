@@ -678,6 +678,7 @@ def main(path):
                 or 'youtube.com' in url
                 or 'youtu.be' in url
                 or social_post_url(url)
+                or (wanted=='video' and supported_video_page_url(url))
                 or (wanted=='video' and is_instagram_video_url(url))
                 or (wanted=='video' and low.endswith('.zip')
                     and urllib.parse.urlparse(url).netloc.lower() == 'media-rockstargames-com.akamaized.net'
