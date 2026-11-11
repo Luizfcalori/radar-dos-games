@@ -117,10 +117,22 @@ def eligible(scene, assets):
     planned=scene.get("media_first_assets")
     if planned is not None:
         approved_ids={int(v) for v in planned}
+        # Keep every storyboard-approved asset as the preferred set, but permit
+        # additional reviewed videos only when they come from the exact same
+        # official game source and role. This prevents a scene from exhausting
+        # its small local clip subset while same-game footage remains unused.
+        planned_assets=[assets[idx] for idx in approved_ids if idx in assets]
+        source_keys={str(a.get("source") or "") for a in planned_assets
+                     if a.get("type")=="video" and a.get("source")}
+        video_roles={str(a.get("role") or "") for a in planned_assets
+                     if a.get("type")=="video"}
         vals=[a for a in assets.values()
-              if a.get("approved",True)
-              and int(a["index"]) in approved_ids
-              and role_allowed(scene,a)]
+              if a.get("approved",True) and role_allowed(scene,a)
+              and (int(a["index"]) in approved_ids or (
+                  a.get("type")=="video"
+                  and str(a.get("source") or "") in source_keys
+                  and str(a.get("role") or "") in video_roles
+              ))]
         if not vals or any(idx not in assets for idx in approved_ids):
             raise RuntimeError(f"QUALITY_BLOCK: cena {scene.get('title')} sem mídia da decupagem; fallback proibido")
         return vals
@@ -350,8 +362,20 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         local = scene.setdefault("visual_windows", {})
         strict_ids = scene.get("media_first_assets")
         allowed_ids = {int(v) for v in strict_ids} if strict_ids is not None else set(assets)
+        planned_assets=[assets[idx] for idx in allowed_ids if idx in assets]
+        source_keys={str(a.get("source") or "") for a in planned_assets
+                     if a.get("type")=="video" and a.get("source")}
+        video_roles={str(a.get("role") or "") for a in planned_assets
+                     if a.get("type")=="video"}
         for idx, windows in global_reviewed_windows.items():
-            if idx in allowed_ids and str(idx) not in local:
+            candidate=assets.get(idx,{})
+            same_verified_game_source=(
+                candidate.get("type")=="video"
+                and str(candidate.get("source") or "") in source_keys
+                and str(candidate.get("role") or "") in video_roles
+                and candidate.get("approved",True)
+            )
+            if (idx in allowed_ids or same_verified_game_source) and str(idx) not in local:
                 local[str(idx)] = windows
 
     try:
