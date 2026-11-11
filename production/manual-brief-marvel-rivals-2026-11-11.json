@@ -56,5 +56,6 @@
   "steam_app_id": "2767030",
   "narration_revision": "2026-11-11: pauta especial da Temporada 11 Doomsday com anúncios oficiais de 10/11 e 11/11.",
   "editorial_note": "Master narration exceeds the workflow's 450-word minimum. Do not add an artificial duration target.",
-  "retry_after_director_fix": "729403954fa0dc4451513c08acd247dd73c34fca"
+  "retry_after_director_fix": "729403954fa0dc4451513c08acd247dd73c34fca",
+  "retry_after_runner_network_fix": "0932e7f2b58c3852933e16d2eb964a780ec024cc"
 }
