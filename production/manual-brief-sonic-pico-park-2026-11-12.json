@@ -11,7 +11,9 @@
     "https://www.youtube.com/watch?v=RFg-S2seDqU",
     "https://www.youtube.com/watch?v=ogDR_Y-IO1Q",
     "https://www.sonicstadium.org/articles/sonic/footage-of-sonic-pico-park-starts-coming-out-of-summer-game-fest-updated-june-10-r3466/",
-    "https://zolotube.com/watch?v=AwoxQ2jnpfA"
+    "https://zolotube.com/watch?v=AwoxQ2jnpfA",
+    "https://www.youtube.com/watch?v=6A15Hi0SubU",
+    "https://www.youtube.com/watch?v=3ELFuqS6S9M"
   ],
   "source_urls": [
     "https://picoparkgame.com/en/spp/",
@@ -23,7 +25,9 @@
     "https://www.youtube.com/watch?v=RFg-S2seDqU",
     "https://www.youtube.com/watch?v=ogDR_Y-IO1Q",
     "https://www.sonicstadium.org/articles/sonic/footage-of-sonic-pico-park-starts-coming-out-of-summer-game-fest-updated-june-10-r3466/",
-    "https://zolotube.com/watch?v=AwoxQ2jnpfA"
+    "https://zolotube.com/watch?v=AwoxQ2jnpfA",
+    "https://www.youtube.com/watch?v=6A15Hi0SubU",
+    "https://www.youtube.com/watch?v=3ELFuqS6S9M"
   ],
   "short_hooks": [
     "SONIC PICO PARK: ATÉ 8 JOGADORES NO CAOS COOPERATIVO!",
@@ -34,7 +38,9 @@
     "https://www.youtube.com/watch?v=RpGLkhOt0bk",
     "https://www.youtube.com/watch?v=RFg-S2seDqU",
     "https://www.youtube.com/watch?v=ogDR_Y-IO1Q",
-    "https://zolotube.com/watch?v=AwoxQ2jnpfA"
+    "https://zolotube.com/watch?v=AwoxQ2jnpfA",
+    "https://www.youtube.com/watch?v=6A15Hi0SubU",
+    "https://www.youtube.com/watch?v=3ELFuqS6S9M"
   ],
   "steam_app_id": 4304060,
   "approved_for_publish": true,
@@ -52,7 +58,9 @@
     "Cards legíveis, ritmo dinâmico, cenas coerentes com a narração e sem loops, imagens estáticas prolongadas ou repetição de tomadas.",
     "Atualização oficial de 09/11/2026: Metal Sonic e Dr. Eggman foram revelados; tratá-los como antagonistas/chefes, nunca como personagens jogáveis. A quarta edição do programa oficial PICO MART está anunciada para 12/11/2026 às 17h, horário do Japão; não converter esse horário em horário brasileiro sem confirmar o fuso.",
     "Fonte alternativa localizada em 11/11/2026: PSX Brasil publicou em 05/11/2026 uma captura de 10min49s de SONIC PICO PARK no PS5, disponível em https://zolotube.com/watch?v=AwoxQ2jnpfA. Tratar como gameplay independente do PSX Brasil, nunca como material oficial da SEGA; atribuir claramente a fonte. Usar apenas trechos pertinentes à análise e manter o bloqueio se a integridade, identidade do jogo ou permissão/uso editorial não puderem ser validados.",
-    "RETRY 11/11/2026: antes de qualquer render, validar download e ffprobe de https://zolotube.com/watch?v=AwoxQ2jnpfA (captura PSX Brasil, 10min49s) e https://www.youtube.com/watch?v=RpGLkhOt0bk (gameplay completa Summer Game Fest). Remover fontes indisponíveis/duplicadas; exigir ao menos 2 fontes independentes ou segmentos suficientes sem repetição; se não atingir variedade/identidade/qualidade, interromper antes do render e registrar diagnóstico. Não usar trecho repetido artificialmente."
+    "RETRY 11/11/2026: antes de qualquer render, validar download e ffprobe de https://zolotube.com/watch?v=AwoxQ2jnpfA (captura PSX Brasil, 10min49s) e https://www.youtube.com/watch?v=RpGLkhOt0bk (gameplay completa Summer Game Fest). Remover fontes indisponíveis/duplicadas; exigir ao menos 2 fontes independentes ou segmentos suficientes sem repetição; se não atingir variedade/identidade/qualidade, interromper antes do render e registrar diagnóstico. Não usar trecho repetido artificialmente.",
+    "RETRY 11/11/2026 CORRECTION: a captura PSX Brasil em Zolotube retornou HTTP 403 no runner e deve ser descartada como fonte de download. Priorizar fontes YouTube adicionais descobertas: https://www.youtube.com/watch?v=6A15Hi0SubU (Sonic Pico Park - Full Demo | gamescom 2026, DanielGamerDX; demonstração jogável com Trial 1 e Trial 2) e https://www.youtube.com/watch?v=3ELFuqS6S9M (SONIC PICO PARK - All Characters, Idle Animations & Spindash, DrewGaming; usar apenas trechos de animação/Spin Dash para cenas de elenco/mecânica, não fingir gameplay de fases). O vídeo https://www.youtube.com/watch?v=RpGLkhOt0bk continua como fonte prioritária de gameplay de todas as fases, mas o runner anterior não conseguiu baixar mídia aprovada; tentar novamente com clientes yt-dlp alternativos e verificar duração/frames. O trailer Steam de 56s e o asset duplicado não contam como duas fontes independentes nem como base suficiente para Master de 6min.",
+    "Direção editorial: frases que apenas enumeram plataformas, data, preço ou disponibilidade devem usar card/encarte gráfico legível sobre gameplay neutra do próprio jogo; não exigir que a imagem de gameplay contenha logos de Nintendo/PlayStation/Xbox. Não inventar capturas de hardware/plataformas."
   ],
   "script_blocks": [
     "Prepare a equipe, porque Sonic está entrando em um tipo de aventura em que velocidade sozinha não resolve tudo. SONIC PICO PARK chega em 12 de novembro misturando o universo do ouriço azul com os quebra-cabeças cooperativos de PICO PARK. A proposta é simples de entender, mas promete render muita confusão entre amigos: todo mundo precisa trabalhar junto para alcançar a saída de cada fase. O desafio está em coordenar cada movimento para que o grupo inteiro consiga alcançar a saída. Nesta edição, você vai descobrir o que já está confirmado para esse lançamento.",
