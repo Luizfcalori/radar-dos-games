@@ -322,6 +322,38 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         assets[idx]=merged
     if not assets: raise RuntimeError("QUALITY_BLOCK: V4 sem assets aprovados")
 
+    # MEDIA-FIRST SAFE FALLBACK:
+    # A cena mantém sua própria lista de planos como prioridade. Se os intervalos
+    # exclusivos dessa cena acabarem, libera somente janelas já inspecionadas de
+    # outros vídeos aprovados do MESMO manifesto oficial do jogo. Isso evita
+    # bloquear uma fala apenas porque o shotlist local ficou curto, sem recorrer
+    # a gameplay genérica, imagens externas ou material de outro título.
+    global_reviewed_windows = {}
+    for source_scene in scenes:
+        for raw_idx, windows in (source_scene.get("visual_windows") or {}).items():
+            try:
+                idx = int(raw_idx)
+            except (TypeError, ValueError):
+                continue
+            asset = assets.get(idx)
+            if not asset or asset.get("type") != "video" or not asset.get("approved", True):
+                continue
+            valid = [
+                w for w in (windows or [])
+                if w.get("reviewed") is True and w.get("evidence")
+                and float(w.get("end", 0)) > float(w.get("start", 0))
+            ]
+            if valid and idx not in global_reviewed_windows:
+                global_reviewed_windows[idx] = valid
+
+    for scene in scenes:
+        local = scene.setdefault("visual_windows", {})
+        strict_ids = scene.get("media_first_assets")
+        allowed_ids = {int(v) for v in strict_ids} if strict_ids is not None else set(assets)
+        for idx, windows in global_reviewed_windows.items():
+            if idx in allowed_ids and str(idx) not in local:
+                local[str(idx)] = windows
+
     try:
         from repetition_policy import StaticTracker, match_score, validate_master
     except ModuleNotFoundError:
