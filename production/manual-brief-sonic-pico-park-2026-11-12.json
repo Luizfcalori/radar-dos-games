@@ -6,14 +6,22 @@
   "primary_source": "https://picoparkgame.com/en/spp/",
   "media_source_urls": [
     "https://picoparkgame.com/en/spp/",
-    "https://store.steampowered.com/app/4304060/SONIC_PICO_PARK/"
+    "https://store.steampowered.com/app/4304060/SONIC_PICO_PARK/",
+    "https://www.youtube.com/watch?v=RpGLkhOt0bk",
+    "https://www.youtube.com/watch?v=RFg-S2seDqU",
+    "https://www.youtube.com/watch?v=ogDR_Y-IO1Q",
+    "https://www.sonicstadium.org/articles/sonic/footage-of-sonic-pico-park-starts-coming-out-of-summer-game-fest-updated-june-10-r3466/"
   ],
   "source_urls": [
     "https://picoparkgame.com/en/spp/",
     "https://www.sega.jp/topics/detail/261026_5/",
     "https://store.steampowered.com/app/4304060/SONIC_PICO_PARK/",
     "https://www.sega.jp/topics/detail/261102_5/",
-    "https://www.sega.jp/topics/detail/261109_3/"
+    "https://www.sega.jp/topics/detail/261109_3/",
+    "https://www.youtube.com/watch?v=RpGLkhOt0bk",
+    "https://www.youtube.com/watch?v=RFg-S2seDqU",
+    "https://www.youtube.com/watch?v=ogDR_Y-IO1Q",
+    "https://www.sonicstadium.org/articles/sonic/footage-of-sonic-pico-park-starts-coming-out-of-summer-game-fest-updated-june-10-r3466/"
   ],
   "short_hooks": [
     "SONIC PICO PARK: ATÉ 8 JOGADORES NO CAOS COOPERATIVO!",
@@ -21,6 +29,8 @@
     "SPIN DASH, ANÉIS E CROSS-PLAY: COMO FUNCIONA SONIC PICO PARK?"
   ],
   "video_urls": [
+    "https://www.youtube.com/watch?v=RpGLkhOt0bk",
+    "https://www.youtube.com/watch?v=RFg-S2seDqU",
     "https://www.youtube.com/watch?v=ogDR_Y-IO1Q"
   ],
   "steam_app_id": 4304060,
@@ -35,7 +45,7 @@
     "Plataformas confirmadas: Nintendo Switch, Nintendo Switch 2, PlayStation 5, Xbox Series X|S, Xbox One e Windows/Steam. A página Steam informa interface em Português do Brasil.",
     "Não inventar preço no Brasil, horário de liberação, duração de campanha, quantidade de fases, modos não anunciados ou avaliação crítica.",
     "Master cinematográfico 16:9; exatamente 3 Shorts Premium V4 independentes em 9:16, cada um com capa própria. Voz Thalita Multilingual PT-BR V3.",
-    "Usar gameplay e trailer oficiais do próprio SONIC PICO PARK. Não usar gameplay genérico de Sonic ou PICO PARK anterior como se fosse do novo jogo. Se a captura do trailer oficial não estiver disponível, bloquear produção em vez de relaxar os gates.",
+    "Priorizar gameplay oficial do próprio SONIC PICO PARK. Como alternativa de gameplay, é permitido usar a gravação de demonstração real do Summer Game Fest publicada pelo criador verificado Jeremy Klinger (https://www.youtube.com/watch?v=RpGLkhOt0bk), identificando-a como captura de preview/imprensa, sem apresentá-la como trailer oficial. Não usar gameplay genérico de Sonic ou PICO PARK anterior como se fosse do novo jogo. Validar download, duração, integridade, identidade visual e direitos/atribuição antes do uso; se não houver mídia suficiente e validada, bloquear produção.",
     "Cards legíveis, ritmo dinâmico, cenas coerentes com a narração e sem loops, imagens estáticas prolongadas ou repetição de tomadas.",
     "Atualização oficial de 09/11/2026: Metal Sonic e Dr. Eggman foram revelados; tratá-los como antagonistas/chefes, nunca como personagens jogáveis. A quarta edição do programa oficial PICO MART está anunciada para 12/11/2026 às 17h, horário do Japão; não converter esse horário em horário brasileiro sem confirmar o fuso."
   ],
