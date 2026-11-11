@@ -109,12 +109,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Instalar FFmpeg estático
+        uses: FedericoCarboni/setup-ffmpeg@v3
       - name: Verificar ferramentas pré-instaladas no runner
         run: |
           command -v ffmpeg
           ffmpeg -version | head -n 1
           command -v ffprobe
-          fc-match DejaVuSans | head -n 1
       - run: pip install -r requirements.txt pytest
       - run: python -m pytest -q tests
 
@@ -136,15 +137,16 @@ jobs:
           cache: pip
           cache-dependency-path: requirements.txt
 
+      - name: Instalar FFmpeg estático
+        uses: FedericoCarboni/setup-ffmpeg@v3
+
       - name: Verificar ferramentas gratuitas pré-instaladas
         timeout-minutes: 2
         run: |
-          # GitHub-hosted Ubuntu runners include FFmpeg and DejaVu fonts.
-          # Avoid apt network dependency and transient Ubuntu DNS failures.
+          # FFmpeg is installed by a pinned-purpose setup action, without apt.
           command -v ffmpeg
           ffmpeg -version | head -n 1
           command -v ffprobe
-          fc-match DejaVuSans | head -n 1
 
       - name: Instalar dependências Python básicas
         timeout-minutes: 10
