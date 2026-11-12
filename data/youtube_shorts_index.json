@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-11T21:24:52.504952+00:00",
-  "total_discovered": 184,
-  "ready_for_tiktok": 177,
+  "updated_at": "2026-11-12T09:59:55.030349+00:00",
+  "total_discovered": 187,
+  "ready_for_tiktok": 180,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "7NpaeY7WroY",
+      "youtube_url": "https://www.youtube.com/shorts/7NpaeY7WroY",
+      "title": "METAPHOR NO SWITCH 2: DESEMPENHO OU GRÁFICOS?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "21tRcry0ikA",
+      "youtube_url": "https://www.youtube.com/shorts/21tRcry0ikA",
+      "title": "A DEMO DE METAPHOR TRANSFERE O PROGRESSO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "lkKl0EQnqUw",
+      "youtube_url": "https://www.youtube.com/shorts/lkKl0EQnqUw",
+      "title": "HEISMAY GANHA NOVO TRAILER ANTES DO LANÇAMENTO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "8m8xa_7xFyY",
       "youtube_url": "https://www.youtube.com/shorts/8m8xa_7xFyY",
