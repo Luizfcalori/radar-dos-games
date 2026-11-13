@@ -261,7 +261,7 @@ jobs:
           remaining = [x for x in old if str(x.get('id')) in old_by_id]
           queue['version'] = 1
           queue['updated_at'] = datetime.now(timezone.utc).isoformat()
-          queue['items'] = (new_items + remaining)[:120]
+          queue['items'] = new_items + remaining
           queue_path.parent.mkdir(parents=True, exist_ok=True)
           queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
           print(json.dumps({'queue_items': len(queue['items']), 'added_or_refreshed': len(new_items)}, ensure_ascii=False))
