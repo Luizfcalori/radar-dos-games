@@ -251,7 +251,7 @@ def main():
         tmp=out/f"v4_{short_no}"; tmp.mkdir(exist_ok=True)
         voice_list=tmp/"voice_segments.txt"
         voice_list.write_text("".join(
-            "file '"+str(Path(seg["file"]).resolve()).replace("'","'\\''")+"'\\n"
+            "file '"+str(Path(seg["file"]).resolve()).replace("'","'\\''")+"'\n"
             for seg in voice_segments
         ),encoding="utf-8")
         voice=tmp/"voice.mp3"
