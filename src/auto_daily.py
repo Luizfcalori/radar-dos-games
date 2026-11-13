@@ -1017,6 +1017,7 @@ def main():
                 "manual-metaphor-refantazio-switch2-demo-price-update-2026-11-08": "production/manual-brief-metaphor-refantazio-2026-11-08.json",
                 "manual-marvel-rivals-season-11-doomsday-2026-11-11": "production/manual-brief-marvel-rivals-2026-11-11.json",
                 "sonic-pico-park-launch-2026-11-12": "production/manual-brief-sonic-pico-park-2026-11-12.json",
+                "derelikt-launch-retro-ps1-sci-fi-horror-2026-11-13": "production/manual-brief-derelikt-2026-11-13.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
