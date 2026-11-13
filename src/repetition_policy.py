@@ -300,8 +300,8 @@ def validate_short(beats,assets):
     return {"status":"APPROVED","images_used":len(seen),"video":video_qa}
 
 
-def replace_short_repeats(scene,assets):
-    """Replace duplicate stills with reviewed gameplay using the same identity rules as final QA."""
+def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
+    """Replace duplicate stills and overlapping gameplay across all scenes in one Short."""
     from copy import deepcopy
     try:
         from continuity import merge_reviewed_windows, VideoTimeline
@@ -313,12 +313,12 @@ def replace_short_repeats(scene,assets):
     videos=[a for a in assets.values() if a.get("type")=="video"
             and int(a["index"]) in selected]
     windows=scene.get("visual_windows") or {}
-    timeline=VideoTimeline(assets)
-    used_stills=set()
+    timeline=timeline or VideoTimeline(assets)
+    used_stills=used_stills if used_stills is not None else set()
 
-    # Seed only video beats that are not already flagged as reused. Reused
-    # master footage must be replaced in a Short, where we can select fresh
-    # reviewed intervals from the same approved source.
+    # Reserve fresh intervals from this scene in the shared per-Short timeline.
+    # If a later scene collides with an earlier scene, flag it for replacement
+    # instead of silently allowing cross-scene overlap.
     for beat in beats:
         idx=int(beat["media_index"])
         asset=assets[idx]
@@ -327,7 +327,12 @@ def replace_short_repeats(scene,assets):
         w=beat.get("source_window")
         if w:
             lo=float(w["start"]); hi=lo+float(beat["duration"])
-            timeline.used[timeline.identity(idx)].append((lo,hi))
+            key=timeline.identity(idx)
+            overlaps=any(min(hi,b)-max(lo,a)>0.001 for a,b in timeline.used[key])
+            if overlaps:
+                beat["approved_reuse"]=True
+            else:
+                timeline.used[key].append((lo,hi))
 
     for beat in beats:
         asset=assets[int(beat["media_index"])]
