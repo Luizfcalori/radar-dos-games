@@ -1,0 +1,63 @@
+{
+  "valid_until": "2026-11-16T23:59:00Z",
+  "content_id": "derelikt-launch-retro-ps1-sci-fi-horror-2026-11-13",
+  "title": "DERELIKT — lançamento do terror sci-fi retrô na estação Von Neumann",
+  "headline": "DERELIKT: O TERROR ESPACIAL COM VISUAL DE PLAYSTATION 1 CHEGOU!",
+  "primary_source": "https://blog.playstation.com/2026/11/02/90s-style-sci-fi-horror-derelikt-launches-nov-13-on-ps5/",
+  "media_source_urls": [
+    "https://store.steampowered.com/app/3810510/DERELIKT/",
+    "https://blog.playstation.com/2026/11/02/90s-style-sci-fi-horror-derelikt-launches-nov-13-on-ps5/",
+    "https://steamcommunity.com/app/3810510/"
+  ],
+  "source_urls": [
+    "https://store.steampowered.com/app/3810510/DERELIKT/",
+    "https://store.steampowered.com/app/5242870/DERELIKT_Demo/",
+    "https://blog.playstation.com/2026/11/02/90s-style-sci-fi-horror-derelikt-launches-nov-13-on-ps5/",
+    "https://steamcommunity.com/app/3810510/",
+    "https://bloody-disgusting.com/video-games/3972656/claustrophobic-ps1-inspired-fps-derelikt-launches-november-13-trailer/",
+    "https://www.well-played.com.au/derelikt-ps5-release-date-november-13/"
+  ],
+  "video_urls": [],
+  "video_fallback_urls": [],
+  "short_hooks": [
+    "DERELIKT: O TERROR ESPACIAL COM VISUAL DE PS1!",
+    "UMA ESTAÇÃO EM ÓRBITA DE SATURNO ESCONDE UM PESADELO!",
+    "EM DERELIKT, CADA BALA E CADA ESPAÇO NO INVENTÁRIO IMPORTAM!"
+  ],
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Tema travado: DERELIKT. Não substituir por outro jogo ou franquia.",
+    "Cobertura do lançamento de 13 de novembro de 2026. O jogo chega ao PC via Steam, GOG e Epic; o PlayStation Blog oficial também anuncia a versão PS5 para 13 de novembro. Não afirmar data de Xbox; o anúncio do desenvolvedor de outubro dizia que as datas de console ainda seriam reveladas.",
+    "DERELIKT é um FPS narrativo de terror sci-fi retrô. A história se passa na Von Neumann Outpost, uma instalação de pesquisa construída em um asteroide abandonado em órbita de Saturno. O jogador é um contratado externo enviado para investigar o destino da equipe de escavação Delta, desaparecida.",
+    "Elementos confirmados: corredores, laboratórios e alojamentos; sistemas da estação falhando; sobreviventes com versões diferentes dos acontecimentos; exploração, coleta de suprimentos, puzzles ambientais, desbloqueio de rotas, diálogos com mais de uma dúzia de NPCs, armas tradicionais e alienígenas, gerenciamento de munição, saúde e espaço de inventário.",
+    "A estética é uma homenagem deliberada à era PS1: texturas pintadas à mão, iluminação por vertex color, affine texture warping, geometria subdividida dinamicamente e cutscenes CGI retrô. O desenvolvedor informa que alguns efeitos visuais podem ser ativados ou desativados.",
+    "Não chamar o jogo de remake, remaster ou exclusivo de PS5. É um jogo original de Visuwyg, publicado por Hyperstrange; Philipp Jensen é o desenvolvedor solo e diretor de arte.",
+    "O jogo é inspirado no clima/estrutura de System Shock 2, Alien Resurrection e DOOM 3. Apresentar isso como referência declarada, não como colaboração ou vínculo oficial.",
+    "A demo pública lançada em 8 de outubro contém três capítulos da história em ordem não sequencial, segundo a publicação do desenvolvedor na comunidade Steam. Não dizer que é o jogo completo.",
+    "Não inventar avaliações do jogo completo, preço brasileiro, duração da campanha, número de fases, desempenho técnico, data de Xbox ou dublagem/legendas em português.",
+    "Usar somente mídia oficial e identificada do DERELIKT. A página Steam do app 3810510 é a rota prioritária para vídeos e screenshots oficiais; a página da demo app 5242870 pode ser usada apenas se o pipeline conseguir validar sua identidade e origem. Não usar gameplay de outros jogos retrô.",
+    "Se não houver gameplay/mídia em movimento suficiente para sustentar o Master e os três Shorts, interromper no QA e registrar o motivo. Não completar com gameplay genérico, stills prolongados ou loops.",
+    "Master 16:9 Full HD, narração natural PT-BR com Thalita Multilingual PT-BR V3; exatamente três Shorts 9:16 independentes, cada um com capa própria e duração final mínima de 60 segundos.",
+    "Shorts com ganchos distintos, seleção visual sem repetição artificial e capa nos primeiros segundos. A meta interna de duração é 65 segundos para manter margem acima do mínimo de 60.",
+    "TikTok Helper: máximo de cinco hashtags fortes e relevantes por descrição; não usar #RadarDosGames nem #Shorts.",
+    "Enviar Master e exatamente três Shorts ao YouTube como privados, sem agendamento público, se todos os gates forem aprovados.",
+    "Antes de aprovar, validar áudio completo, sincronização narração/imagem, identidade do jogo, gameplay pertinente, ausência de loops, capas e duração efetiva de cada Short."
+  ],
+  "script_blocks": [
+    "Hoje é dia de entrar em uma estação espacial onde alguma coisa saiu completamente do controle. DERELIKT chega em 13 de novembro trazendo terror de ficção científica em primeira pessoa, com uma apresentação que parece ter sido resgatada de um disco perdido da era PlayStation 1. O jogo coloca o jogador na Von Neumann Outpost, uma instalação de pesquisa construída em um asteroide abandonado na órbita de Saturno. Você não chega como um herói preparado para tudo: é um contratado enviado para descobrir o que aconteceu com a equipe de escavação Delta, que desapareceu. E quanto mais fundo você avança, mais perigoso fica entender o que realmente aconteceu.",
+    "A estação não está simplesmente vazia. Os corredores estão escuros, os sistemas apresentam falhas e os poucos sobreviventes que ainda aparecem não contam a mesma versão dos acontecimentos. A investigação passa por laboratórios, alojamentos e áreas de serviço, enquanto o jogador tenta reconstruir os últimos acontecimentos. Mais de uma dúzia de personagens podem ser encontrados, e cada um tem seus próprios interesses, segredos e interpretações. Alguns podem ajudar, outros podem representar perigo, e nem sempre será fácil saber em quem confiar. Essa camada de narrativa dá ao cenário uma sensação de lugar habitado, mesmo quando tudo ao redor parece abandonado.",
+    "A exploração é parte central da experiência. Não basta avançar atirando em tudo que aparece: é preciso procurar suprimentos, observar o ambiente, resolver puzzles e encontrar caminhos que estavam bloqueados. A estação guarda informações em diferentes espaços, e cada nova área pode revelar uma pista sobre a equipe desaparecida ou sobre a ameaça que está crescendo nas sombras. O ritmo alterna momentos de tensão e investigação com encontros mais agressivos. Essa combinação é importante porque DERELIKT quer que o jogador sinta que está explorando um local hostil, não atravessando apenas uma sequência de arenas de combate.",
+    "Quando o confronto começa, administrar recursos passa a ser tão importante quanto mirar. O arsenal reúne armas tradicionais e equipamentos de origem alienígena, mas munição, saúde e espaço no inventário são limitados. Cada disparo tem um custo, então gastar tudo em um inimigo pode deixar você em uma situação complicada alguns minutos depois. O jogo aposta nessa sensação de vulnerabilidade: você está longe de qualquer ajuda, não conhece completamente o ambiente e não tem garantia de que a próxima sala será segura. É uma proposta de survival horror em primeira pessoa, com tiroteios intensos, mas sem transformar o personagem em uma máquina de guerra invencível.",
+    "O visual é um dos elementos mais curiosos do projeto. DERELIKT não usa apenas um filtro para parecer antigo. O desenvolvedor Philipp Jensen, que trabalha no jogo sob o nome Visuwyg, recriou técnicas associadas aos gráficos da quinta geração de consoles. As texturas são pintadas à mão, a iluminação utiliza vertex color e o projeto incorpora distorções de textura características daquela época, além de cutscenes em CGI com aparência retrô. A geometria recebe subdivisões dinâmicas para equilibrar o efeito visual e a apresentação. O objetivo é lembrar um jogo de terror de ficção científica encontrado em um CD-ROM do fim dos anos noventa, mas com controles e ajustes modernos. Alguns desses efeitos também podem ser ligados ou desligados pelo jogador.",
+    "As referências ajudam a entender a direção. O próprio material de divulgação cita o clima e a estrutura de System Shock 2, Alien Resurrection e DOOM 3. Isso não significa que DERELIKT seja uma continuação ou tenha ligação oficial com essas franquias; são influências para a atmosfera, a exploração e o combate. O projeto é desenvolvido por Visuwyg e publicado pela Hyperstrange. Antes do lançamento, uma demo pública chegou ao Steam em outubro, oferecendo três capítulos da história fora de ordem, como uma amostra de diferentes partes da estação. A demonstração não representa a campanha completa, mas permite conhecer parte da proposta e do estilo do jogo.",
+    "DERELIKT chega ao PC em 13 de novembro, com lançamento anunciado para Steam, GOG e Epic Games Store. O PlayStation Blog também confirmou a chegada ao PS5 na mesma data. Não vamos antecipar uma data para Xbox, porque o anúncio do desenvolvedor disponível anteriormente dizia apenas que versões para consoles estavam previstas, sem confirmar aquele calendário. O que já está claro é a identidade do projeto: terror espacial, exploração, recursos limitados e uma estética que tenta recuperar a atmosfera dos jogos de ficção científica do fim dos anos noventa. Se você sente falta daquele terror em primeira pessoa mais claustrofóbico, este é um lançamento para ficar de olho.",
+    "E aí, você encararia uma estação abandonada na órbita de Saturno sabendo que cada bala pode fazer falta? DERELIKT mistura visual inspirado no PlayStation original, investigação, puzzles, personagens suspeitos e combate de sobrevivência. O lançamento para PC e PS5 está marcado para 13 de novembro de 2026. Conta nos comentários se esse estilo retrô te conquista ou se você prefere terror com gráficos modernos. Inscreva-se no Radar dos Games para acompanhar lançamentos, novidades e gameplays. A próxima transmissão começa quando as luzes da estação se apagarem."
+  ],
+  "minimum_assets": 3,
+  "minimum_video_assets": 1,
+  "minimum_unique_video_seconds": 75,
+  "minimum_image_assets": 2,
+  "steam_app_id": "3810510",
+  "narration_revision": "2026-11-13: pauta de lançamento DERELIKT, baseada em Steam, PlayStation Blog e comunicados do desenvolvedor.",
+  "editorial_note": "Strict media gate: official Steam CDN footage must be validated; no generic gameplay or artificial duration padding."
+}
