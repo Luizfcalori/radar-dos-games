@@ -222,6 +222,12 @@ def main():
     report=[]
 
     for short_no,scene_index in enumerate(indexes,1):
+        try:
+            from continuity import VideoTimeline
+        except ModuleNotFoundError:
+            from src.continuity import VideoTimeline
+        short_timeline=VideoTimeline(assets)
+        short_used_stills=set()
         scene=scenes[scene_index]
         hook=expected_hooks[short_no-1]
         # Build a complete editorial short from the selected hook scene plus
@@ -233,7 +239,9 @@ def main():
         for offset in range(len(scenes)):
             candidate_index=(scene_index+offset)%len(scenes)
             candidate=scenes[candidate_index]
-            candidate_beats=replace_short_repeats(candidate,assets)
+            candidate_beats=replace_short_repeats(
+                candidate,assets,timeline=short_timeline,used_stills=short_used_stills
+            )
             if not candidate_beats:
                 continue
             validate_short(candidate_beats,assets)
