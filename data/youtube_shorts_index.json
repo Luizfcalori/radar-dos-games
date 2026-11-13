@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-12T09:59:55.030349+00:00",
-  "total_discovered": 187,
-  "ready_for_tiktok": 180,
+  "updated_at": "2026-11-13T11:25:04.959989+00:00",
+  "total_discovered": 190,
+  "ready_for_tiktok": 183,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "Wb36I430aZY",
+      "youtube_url": "https://www.youtube.com/shorts/Wb36I430aZY",
+      "title": "NOTURNO CHEGA AO MARVEL RIVALS EM 13 DE NOVEMBRO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "eRf4SopDLpk",
+      "youtube_url": "https://www.youtube.com/shorts/eRf4SopDLpk",
+      "title": "DRÁCULA TAMBÉM VAI ENTRAR NO ELENCO DE MARVEL RIVALS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "BHs2-SPq29U",
+      "youtube_url": "https://www.youtube.com/shorts/BHs2-SPq29U",
+      "title": "MARVEL RIVALS VAI TER BATALHAS 18 CONTRA 18!",
+      "status": "approved"
+    },
     {
       "youtube_id": "7NpaeY7WroY",
       "youtube_url": "https://www.youtube.com/shorts/7NpaeY7WroY",
