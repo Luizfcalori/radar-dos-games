@@ -111,7 +111,7 @@ def main():
             raise RuntimeError(f"QUALITY_BLOCK: CTA multiplataforma aprovado ausente no Short {i}")
         assert row.get("render_policy")=="rebuilt_from_source_assets_not_master_crop",row
         assert row.get("boundary_policy")=="independent_scene_voice_complete",row
-        assert float(row.get("duration") or 0)>=8,row
+        assert float(row.get("duration") or 0)>=60,row
         if norm_short_title(row.get("title")) != norm_short_title(hook):
             raise RuntimeError(f"QUALITY_BLOCK: Short {i} saiu com título diferente do hook aprovado: {row.get('title')} != {hook}")
         if norm_short_title(row.get("approved_hook")) != norm_short_title(hook):
