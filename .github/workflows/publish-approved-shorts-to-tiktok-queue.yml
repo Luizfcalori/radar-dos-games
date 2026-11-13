@@ -274,11 +274,12 @@ jobs:
           set -euo pipefail
           git config user.name "radar-tiktok-bot"
           git config user.email "actions@users.noreply.github.com"
-          git pull --rebase origin main
           git add data/tiktok_queue.json
           if git diff --cached --quiet; then
             echo "TikTok queue already up to date."
             exit 0
           fi
           git commit -m "bot: add approved Shorts to TikTok queue"
+          # Commit generated queue before rebasing it on the latest main.
+          git pull --rebase origin main
           git push origin main
