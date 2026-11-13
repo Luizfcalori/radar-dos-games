@@ -222,12 +222,41 @@ def main():
     report=[]
 
     for short_no,scene_index in enumerate(indexes,1):
-        scene=scenes[scene_index]; seg=segments[scene_index]
-        beats=replace_short_repeats(scene,assets)
+        scene=scenes[scene_index]
         hook=expected_hooks[short_no-1]
-        if not beats:raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} sem beats V4")
-        validate_short(beats,assets)
+        # Build a complete editorial short from the selected hook scene plus
+        # subsequent narrated scenes. Never loop footage or stretch a still.
+        # 65s target leaves a safety margin over TikTok's 60s threshold.
+        target_seconds=65.0
+        contributing=[]
+        combined_duration=0.0
+        for offset in range(len(scenes)):
+            candidate_index=(scene_index+offset)%len(scenes)
+            candidate=scenes[candidate_index]
+            candidate_beats=replace_short_repeats(candidate,assets)
+            if not candidate_beats:
+                continue
+            validate_short(candidate_beats,assets)
+            contributing.append((candidate_index,candidate_beats,segments[candidate_index]))
+            combined_duration+=sum(float(b.get("duration") or 0) for b in candidate_beats)
+            if combined_duration>=target_seconds:
+                break
+        if combined_duration<60.0:
+            raise RuntimeError(
+                f"QUALITY_BLOCK: Short {short_no} tem apenas {combined_duration:.1f}s de narração/mídia; "
+                "mínimo real de 60s. Amplie o roteiro com conteúdo relevante, sem loops."
+            )
+        beats=[beat for _,rows,_ in contributing for beat in rows]
+        voice_segments=[seg for _,_,seg in contributing]
         tmp=out/f"v4_{short_no}"; tmp.mkdir(exist_ok=True)
+        voice_list=tmp/"voice_segments.txt"
+        voice_list.write_text("".join(
+            "file '"+str(Path(seg["file"]).resolve()).replace("'","'\\''")+"'\\n"
+            for seg in voice_segments
+        ),encoding="utf-8")
+        voice=tmp/"voice.mp3"
+        sh(["ffmpeg","-y","-v","error","-f","concat","-safe","0","-i",str(voice_list),
+            "-vn","-c:a","libmp3lame","-q:a","2",str(voice)])
         pieces=[]; events=[]; cursor=0.0; accents=[]
         for n,beat in enumerate(beats,1):
             idx=int(beat["media_index"]); asset=assets[idx]; d=float(beat["duration"])
@@ -244,9 +273,11 @@ def main():
 
         visuals=tmp/"visuals.mp4"; concat_visuals(pieces,visuals,tmp)
         sfx=tmp/"sfx.wav"; sfx_track(cursor,events,sfx)
-        voice=Path(seg["file"])
-        if not voice.exists():raise RuntimeError(f"QUALITY_BLOCK: áudio da cena {scene_index+1} ausente")
+        if not voice.exists():raise RuntimeError(f"QUALITY_BLOCK: áudio combinado do Short {short_no} ausente")
         dest=out/f"short_{short_no}.mp4"; music_policy=mix_audio(visuals,voice,sfx,dest)
+        actual_duration=probe_duration(dest)
+        if actual_duration<60.0:
+            raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} renderizado com {actual_duration:.2f}s; mínimo 60s")
         report.append({
             "index":short_no,"path":str(dest),"scene_index":scene_index,
             "duration":round(probe_duration(dest),3),
