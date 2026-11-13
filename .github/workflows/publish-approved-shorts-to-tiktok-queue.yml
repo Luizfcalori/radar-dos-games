@@ -1,6 +1,9 @@
 name: Radar TikTok - Queue Approved Shorts
 
 on:
+  push:
+    paths:
+      - ".github/workflows/publish-approved-shorts-to-tiktok-queue.yml"
   workflow_run:
     workflows:
       - "Radar dos Games - Daily Auto Master + 3 Shorts"
@@ -18,7 +21,8 @@ concurrency:
 jobs:
   queue:
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
+      (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[tiktok-helper] DERELIKT RUN=')) ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' &&
       (github.event.workflow_run.event == 'schedule' || github.event.workflow_run.event == 'workflow_dispatch' || ((github.event.workflow_run.event == 'push' && startsWith(github.event.workflow_run.head_commit.message, '[run-production] TOPIC=')) || (github.event.workflow_run.event == 'push' && startsWith(github.event.workflow_run.head_commit.message, '[run-private] TOPIC='))))
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -30,13 +34,30 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Resolve source production run
+        id: source
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            RUN_ID="$(printf '%s' "$COMMIT_MESSAGE" | sed -n 's/^\[tiktok-helper\] DERELIKT RUN=\([0-9][0-9]*\).*/\1/p')"
+          else
+            RUN_ID="$WORKFLOW_RUN_ID"
+          fi
+          test -n "$RUN_ID"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
       - name: Download final production artifact
         uses: actions/download-artifact@v4
         with:
-          name: radar-daily-auto-${{ github.event.workflow_run.id }}
+          name: radar-daily-auto-${{ steps.source.outputs.run_id }}
           path: bundle
           repository: ${{ github.repository }}
-          run-id: ${{ github.event.workflow_run.id }}
+          run-id: ${{ steps.source.outputs.run_id }}
           github-token: ${{ github.token }}
 
       - name: Confirm that the 3 Shorts were actually approved for publishing
@@ -69,7 +90,7 @@ jobs:
         if: steps.approved.outputs.publishable == 'true'
         env:
           BASE: ${{ steps.approved.outputs.base }}
-          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
         shell: bash
         run: |
           set -euo pipefail
