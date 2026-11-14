@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-13T11:25:04.959989+00:00",
-  "total_discovered": 190,
-  "ready_for_tiktok": 183,
+  "updated_at": "2026-11-14T17:15:41.689329+00:00",
+  "total_discovered": 193,
+  "ready_for_tiktok": 186,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "j0bRT2QIgg4",
+      "youtube_url": "https://www.youtube.com/shorts/j0bRT2QIgg4",
+      "title": "SONIC PICO PARK: ATÉ 8 JOGADORES NO CAOS COOPERATIVO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "R9LQGkiMJ_E",
+      "youtube_url": "https://www.youtube.com/shorts/R9LQGkiMJ_E",
+      "title": "ROUGE É JOGÁVEL, OMEGA E VECTOR SÃO GRANDES: ENTENDA O ELENCO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "-p_X_dyQqoU",
+      "youtube_url": "https://www.youtube.com/shorts/-p_X_dyQqoU",
+      "title": "SPIN DASH, ANÉIS E CROSS-PLAY: COMO FUNCIONA SONIC PICO PARK?",
+      "status": "approved"
+    },
     {
       "youtube_id": "Wb36I430aZY",
       "youtube_url": "https://www.youtube.com/shorts/Wb36I430aZY",
