@@ -6,6 +6,7 @@ from pathlib import Path
 from src.repetition_policy import (
     MAX_STATIC_BEAT_SECONDS, StaticTracker, asset_identity, match_score,
     qa_report, replace_short_repeats, subject_ok, validate_master, validate_short,
+    _apex_curated_still, static_limit, static_total_limit,
 )
 
 
@@ -57,6 +58,23 @@ class RepetitionPolicyTests(unittest.TestCase):
         self.assertTrue(subject_ok("Conta nos comentários e acompanha o Radar dos Games para mais novidades",cta_image))
         unrelated_role={**cta_image,"role":"official_context_01"}
         self.assertFalse(subject_ok("Conta nos comentários e acompanha o Radar dos Games para mais novidades",unrelated_role))
+
+    def test_apex_official_steam_still_is_narrowly_curated_bridge(self):
+        apex={
+            "index":30,"type":"image","approved":True,
+            "role":"official_steam_game_screenshot",
+            "source":"steam_app:1172470",
+            "source_label":"Apex Legends: Godzilla Event",
+            "url":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/ss_test.jpg",
+        }
+        wrong_app={**apex,"source":"steam_app:999","url":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/999/ss_test.jpg"}
+        wrong_role={**apex,"role":"official_context_01"}
+        self.assertTrue(_apex_curated_still(apex))
+        self.assertFalse(_apex_curated_still(wrong_app))
+        self.assertFalse(_apex_curated_still(wrong_role))
+        self.assertTrue(subject_ok("A disputa pela área chama atenção e pode atrair outros esquadrões",apex))
+        self.assertEqual(static_limit(apex),8)
+        self.assertEqual(static_total_limit(apex),14.0)
 
     def test_unrelated_picture_cannot_fill_other_topic(self):
         self.assertFalse(subject_ok("O novo mapa Pendola Pass é coberto de neve",self.reward))
