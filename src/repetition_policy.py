@@ -81,6 +81,21 @@ def _mw4_curated_still(asset):
     )
 
 
+def _apex_curated_still(asset):
+    """Allow only official Steam screenshots belonging to the exact Apex Legends app."""
+    role=str(asset.get("role") or "")
+    url=str(asset.get("url") or "").casefold()
+    source=str(asset.get("source") or "").casefold()
+    label=str(asset.get("source_label") or "").casefold()
+    return (
+        asset.get("type") == "image"
+        and role == "official_steam_game_screenshot"
+        and source == "steam_app:1172470"
+        and "/steam/apps/1172470/" in url
+        and "apex legends" in label
+    )
+
+
 def _enshrouded_curated_still(asset):
     """Allow topic-specific official Enshrouded stills as a last-resort bridge."""
     role=str(asset.get("role") or "")
@@ -155,7 +170,7 @@ def subject_ok(phrase,asset):
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not (_mw4_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)):
+    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -165,7 +180,7 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset):
+    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -176,7 +191,7 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if (_mw4_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
@@ -211,7 +226,7 @@ class StaticTracker:
         # official MW4 stills after all fresh stills and unique gameplay are exhausted.
         # Usage/seconds caps, subject matching, and the no-immediate-repeat guard
         # remain mandatory.
-        relaxed_official_bridge=relax_cooldown and _mw4_curated_still(asset)
+        relaxed_official_bridge=relax_cooldown and (_mw4_curated_still(asset) or _apex_curated_still(asset))
         if not relaxed_official_bridge:
             if row["scene"] is not None and scene_no-row["scene"]<STATIC_COOLDOWN_SCENES:
                 return False
@@ -252,7 +267,7 @@ def validate_master(scenes,assets):
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
                     beat.get("visual_evidence") == "official_image_subject_label"
-                    and (_mw4_curated_still(asset) or _fight_night_curated_still(asset))
+                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _fight_night_curated_still(asset))
                 )
                 if not tracker.can_use(
                     asset, beat.get("text",""), scene_no, cursor, d,
