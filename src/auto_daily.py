@@ -1021,6 +1021,7 @@ def main():
                 "sonic-pico-park-launch-2026-11-12": "production/manual-brief-sonic-pico-park-2026-11-12.json",
                 "derelikt-launch-retro-ps1-sci-fi-horror-2026-11-13": "production/manual-brief-derelikt-2026-11-13.json",
                 "roblox-rivals-season-4-standard-2026-11-15": "production/manual-brief-roblox-rivals-season-4-2026-11-15.json",
+                "apex-legends-cipher-godzilla-2026-11-15": "production/manual-brief-apex-legends-cipher-godzilla-2026-11-15.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
