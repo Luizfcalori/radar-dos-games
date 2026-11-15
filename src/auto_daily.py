@@ -868,6 +868,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-dreadmoor-2026-11-08.json")
     elif forced_topic_slug == ascii_slug("Sonic Pico Park"):
         manual = load_manual_brief("production/manual-brief-sonic-pico-park-2026-11-12.json")
+    elif forced_topic_slug == ascii_slug("Roblox Rivals"):
+        manual = load_manual_brief("production/manual-brief-roblox-rivals-season-4-2026-11-15.json")
     elif forced_topic_slug == ascii_slug("DERELIKT"):
         manual = load_manual_brief("production/manual-brief-derelikt-2026-11-13.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
@@ -1018,6 +1020,7 @@ def main():
                 "manual-marvel-rivals-season-11-doomsday-2026-11-11": "production/manual-brief-marvel-rivals-2026-11-11.json",
                 "sonic-pico-park-launch-2026-11-12": "production/manual-brief-sonic-pico-park-2026-11-12.json",
                 "derelikt-launch-retro-ps1-sci-fi-horror-2026-11-13": "production/manual-brief-derelikt-2026-11-13.json",
+                "roblox-rivals-season-4-standard-2026-11-15": "production/manual-brief-roblox-rivals-season-4-2026-11-15.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
