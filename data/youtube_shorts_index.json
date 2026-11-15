@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-14T17:15:41.689329+00:00",
-  "total_discovered": 193,
-  "ready_for_tiktok": 186,
+  "updated_at": "2026-11-15T15:37:36.341521+00:00",
+  "total_discovered": 196,
+  "ready_for_tiktok": 189,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "GJCa4gOMW7w",
+      "youtube_url": "https://www.youtube.com/shorts/GJCa4gOMW7w",
+      "title": "DERELIKT: O TERROR ESPACIAL COM VISUAL DE PS1!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "f2PCDYLDbiY",
+      "youtube_url": "https://www.youtube.com/shorts/f2PCDYLDbiY",
+      "title": "UMA ESTAÇÃO EM ÓRBITA DE SATURNO ESCONDE UM PESADELO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "TmPjTPfo2-8",
+      "youtube_url": "https://www.youtube.com/shorts/TmPjTPfo2-8",
+      "title": "EM DERELIKT, CADA BALA E CADA ESPAÇO NO INVENTÁRIO IMPORTAM!",
+      "status": "approved"
+    },
     {
       "youtube_id": "j0bRT2QIgg4",
       "youtube_url": "https://www.youtube.com/shorts/j0bRT2QIgg4",
