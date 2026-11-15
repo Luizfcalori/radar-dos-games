@@ -428,6 +428,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         "acabou a gameplay inédita aprovada para a fala",
                         "vídeo acabaria antes da fala",
                         "intervalo de gameplay repetido",
+                        "sem gameplay aprovada utilizável para a fala",
                     ))
                     if not exhausted:
                         raise

@@ -1289,6 +1289,7 @@ def main():
             "steam_app_id": steam_id,
             "role": "official_steam_game_screenshot",
             "max_assets": 4,
+            "source_label": manual.get("headline") or manual.get("title") or selected.get("title", ""),
             "source_proof": steam_source,
             "relevance_evidence": "steam_exact_app_screenshot",
         })

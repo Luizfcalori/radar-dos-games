@@ -814,7 +814,7 @@ def main(path):
             if video_id:seen_video_ids.add(video_id)
             if movie_key:seen_movie_sources.add(movie_key)
             assets.append({'index':seq,'path':str(dest),'type':'image' if isimg else 'video','role':role,'url':u,'source':source,
-                           'relevance_evidence':evidence,'source_label':label,'approved':True,'duration':float(info.get('duration',0)),
+                           'relevance_evidence':evidence,'source_label':item.get('source_label') or label,'approved':True,'duration':float(info.get('duration',0)),
                            'width':int(info.get('width',0)),'height':int(info.get('height',0))})
             got+=1
             if got>=max_assets:break

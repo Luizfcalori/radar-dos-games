@@ -52,10 +52,11 @@
     "No competitivo, Cipher introduziu o banimento de Lendas em partidas Diamond e acima. Antes de cada partida, os jogadores podem votar para impedir a escolha de personagens específicos, e os resultados influenciam quais Lendas ficam disponíveis. A EA também implementou ajustes de pontuação para partidas com grandes diferenças de habilidade entre os jogadores, alterando o custo de entrada quando a classificação de alguém está muito distante da média do lobby. Isso pode mexer com a preparação das equipes e com a escolha de personagens, principalmente em níveis mais altos. A recomendação é conferir as notas oficiais e acompanhar como essas regras se comportam nas partidas reais, em vez de tirar conclusões precipitadas.",
     "No fim, Apex está combinando um evento visualmente enorme com mudanças que afetam diretamente a estratégia. Godzilla transforma Storm Point em uma área de risco e recompensa; a Devotion especial pode mudar uma luta; a Wingman Akimbo abre novas possibilidades de combate; as Strongholds criam objetivos disputados; e o banimento de Lendas adiciona uma camada de decisão ao Ranqueado. É bastante coisa para uma única janela de atualização. Agora queremos saber: você vai correr atrás da Devotion de Godzilla ou prefere jogar seguro e deixar outra equipe encarar o perigo? Comenta sua estratégia, compartilha com o squad e se inscreve no Radar dos Games para acompanhar as próximas novidades."
   ],
-  "minimum_assets": 1,
-  "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 75,
-  "minimum_image_assets": 0,
+  "steam_app_id": "1172470",
+  "minimum_assets": 6,
+  "minimum_video_assets": 2,
+  "minimum_unique_video_seconds": 180,
+  "minimum_image_assets": 4,
   "narration_revision": "2026-11-15: roteiro atualizado com fontes oficiais EA sobre evento Godzilla e patch Cipher.",
   "editorial_note": "Pauta Apex Legends travada. Fontes oficiais EA/GamesPress e trailers oficiais de gameplay. Não substituir por Roblox ou outro jogo."
 }
