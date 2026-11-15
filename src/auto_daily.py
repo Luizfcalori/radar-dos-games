@@ -873,7 +873,7 @@ def main():
     elif forced_topic_slug == ascii_slug("DERELIKT"):
         manual = load_manual_brief("production/manual-brief-derelikt-2026-11-13.json")
     elif forced_topic_slug == ascii_slug("Apex Legends"):
-        # Pin the requested production to the dedicated Cipher + Godzilla brief.
+        # Pin the requested production to the dedicated Cipher + Godzilla brief; never fall back to AUTO.
         manual = load_manual_brief("production/manual-brief-apex-legends-cipher-godzilla-2026-11-15.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
