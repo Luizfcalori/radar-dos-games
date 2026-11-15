@@ -57,5 +57,5 @@
   "minimum_unique_video_seconds": 120,
   "minimum_image_assets": 4,
   "narration_revision": "2026-11-15: roteiro alinhado ao lançamento oficial de Hutuo em 13/11 e à data futura de Dual Spears em 26/11.",
-  "editorial_note": "Pauta Where Winds Meet travada em Hutuo e aniversário global. Fontes de gameplay oficiais indicadas; não trocar o tema."
+  "editorial_note": "Pauta Where Winds Meet travada em Hutuo e aniversário global. Fontes de gameplay oficiais indicadas; não trocar o tema. Reexecução disparada com TOPIC explícito no commit para evitar bloqueio de execução por evento push."
 }
