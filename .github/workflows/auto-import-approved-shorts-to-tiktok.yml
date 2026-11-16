@@ -53,6 +53,13 @@ jobs:
 
           repo=os.environ["REPO"]
           token=os.environ["GH_TOKEN"]
+          # A recovery commit may request exactly one production run. This avoids
+          # importing unrelated approved packages when manually repairing a queue.
+          event=json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
+          commit_message=str((event.get("head_commit") or {}).get("message") or "")
+          import re
+          match=re.search(r"IMPORT_TIKTOK_RUN=(\\d+)",commit_message)
+          requested_run_id=match.group(1) if match else ""
           qpath=Path("data/tiktok_queue.json")
           queue_raw=qpath.read_text(encoding="utf-8") if qpath.exists() else ""
           # Recover from a legacy literal \\n suffix that made valid queue JSON fail to parse.
@@ -83,6 +90,8 @@ jobs:
 
           for run in runs:
               rid=str(run.get("id") or "")
+              if requested_run_id and rid != requested_run_id:
+                  continue
               if not rid or rid in imported_runs:
                   continue
               created=run.get("created_at") or ""
