@@ -140,7 +140,7 @@ jobs:
           old=[x for x in old if x.get("id") not in keys and x.get("youtube_id") not in ytids]
           q["version"]=2
           q["updated_at"]=now
-          q["items"]=(new+old)[:200]
+          q["items"]=(new+old)
           p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           print(json.dumps({"added":3,"preserved":len(old),"total":len(q["items"]),"titles":titles},ensure_ascii=False))
           PY
