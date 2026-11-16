@@ -146,11 +146,19 @@ jobs:
           ]
           ready=sum(1 for x in discovered if x.get('source')=='youtube_channel' and x.get('status')=='approved')
 
+          # Never truncate the queue: production-approved Shorts may not yet be indexed on YouTube.
+          # The preservation pass above appends every old media-backed item not found in the channel scan.
+          preserved_media_ids={str(x.get('id')) for x in old if x.get('id') and x.get('media_url')}
+          final_media_ids={str(x.get('id')) for x in discovered if x.get('id') and x.get('media_url')}
+          missing_media_ids=preserved_media_ids-final_media_ids
+          if missing_media_ids:
+              raise SystemExit('Queue safety check: existing media-backed items would be lost: '+', '.join(sorted(missing_media_ids)))
+
           queue_new={
               'version':2,
               'source_channel':'https://www.youtube.com/@Radardosgamesbr/shorts',
               'updated_at':queue.get('updated_at'),
-              'items':discovered[:200],
+              'items':discovered,
           }
           comparable_old={k:queue.get(k) for k in ('version','source_channel','items')}
           comparable_new={k:queue_new.get(k) for k in ('version','source_channel','items')}
