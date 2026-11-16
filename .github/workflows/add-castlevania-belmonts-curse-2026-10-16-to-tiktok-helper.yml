@@ -134,7 +134,7 @@ jobs:
           merged=[x for x in new if x["id"] not in old_ids and (str(x["source_run_id"]),str(x["short_number"])) not in old_keys]
           q["version"]=2
           q["updated_at"]=now
-          q["items"]=(merged+[x for x in old if x.get("id") not in {y["id"] for y in merged}])[:200]
+          q["items"]=(merged+[x for x in old if x.get("id") not in {y["id"] for y in merged}])
           qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           print(json.dumps({"added":len(merged),"total":len(q["items"]),"shorts":[x["title"] for x in new]},ensure_ascii=False))
           PY
