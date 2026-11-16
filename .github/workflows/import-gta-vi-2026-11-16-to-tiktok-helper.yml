@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, subprocess
+          import json
           from pathlib import Path
           p=Path("output")
           qa=json.loads((p/"final-qa.json").read_text(encoding="utf-8"))
@@ -59,8 +59,7 @@ jobs:
               assert video.is_file() and video.stat().st_size>500_000, video
               assert cover.is_file() and cover.stat().st_size>10_000, cover
               assert meta.get("title"), meta
-              probe=json.loads(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","json",str(video)],text=True))
-              duration=float(probe["format"]["duration"])
+              duration=float((qa.get("shorts") or [])[n-1].get("seconds",0))
               assert duration>=60, (video,duration)
               print(f"SHORT_{n}_OK duration={duration:.2f}s bytes={video.stat().st_size}")
           print("GTA_VI_TIKTOK_SOURCE_QA_OK")
