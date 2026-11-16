@@ -875,6 +875,8 @@ def main():
     elif forced_topic_slug == ascii_slug("Apex Legends"):
         # Pin the requested production to the dedicated Cipher + Godzilla brief; never fall back to AUTO.
         manual = load_manual_brief("production/manual-brief-apex-legends-cipher-godzilla-2026-11-15.json")
+    elif forced_topic_slug == ascii_slug("Resident Evil Requiem"):
+        manual = load_manual_brief("production/manual-brief-resident-evil-requiem-2026-11-16.json")
     elif forced_topic_slug == ascii_slug("Where Winds Meet"):
         # Keep this requested production pinned to the official Hutuo anniversary update.
         manual = load_manual_brief("production/manual-brief-where-winds-meet-hutuo-anniversary-2026-11-15.json")
