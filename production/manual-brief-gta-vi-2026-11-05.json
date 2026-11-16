@@ -51,21 +51,21 @@
     "A novidade oficial mais recente chegou em 10 de novembro. A Rockstar publicou Pre-Load Now e confirmou que o pré-carregamento digital já está disponível para quem reservou o jogo. Quem comprou uma edição física com código também poderá ativar esse código e iniciar o download assim que recebê-lo. A ideia é deixar tudo preparado para começar a jogar quando o lançamento for liberado no dia 19.",
     "O vídeo Pre-Load Now tem cerca de trinta segundos e traz uma montagem rápida de cenas de Leonida. A prévia passa por momentos de festa, carros, uma equipe tática e atividades em diferentes ambientes. A trilha é Blood in Your Eyes, de Tove Lo, música que faz parte do álbum oficial de Grand Theft Auto VI. É um vídeo curto, mas funciona como a última chamada da Rockstar antes da estreia.",
     "Um mês antes, em 15 de outubro, a Rockstar publicou o Launch Trailer. O vídeo foi capturado inteiramente dentro do jogo em um PlayStation 5 e apresenta Jason e Lucia em uma sequência de cenas que mistura ação, perseguições, encontros e momentos da vida dos dois. A música principal é Flower in a Hurricane, do duo Justice, com participação de Tame Impala, SZA e King Gizzard and the Lizard Wizard.",
-    "A descrição oficial resume o ponto de partida da história: Jason e Lucia já sabem que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os dois acabam no meio de uma conspiração criminosa que atravessa todo o estado de Leonida. A partir daí, precisam confiar um no outro para tentar sair dessa situação. A relação entre os protagonistas é o centro da aventura, não apenas um detalhe da campanha.",
+    "A descrição oficial resume o ponto de partida da história: Jason e Lucia já sabem que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os dois acabam no meio de uma conspiração criminosa que atravessa todo o estado de Leonida. Nos trailers, os dois aparecem juntos em cenas de direção, encontros e ação, reforçando que a parceria deles é o eixo da aventura.",
     "Os vídeos oficiais também mostram que a aventura vai muito além de uma única rua de Vice City. A Rockstar apresenta áreas costeiras, estradas, regiões rurais e diferentes pontos de Leonida. Entre os materiais publicados aparecem veículos, passeios de barco, encontros, perseguições e cenas de ação. Essa variedade ajuda a mostrar a escala do mundo sem transformar cada cena de trailer em uma promessa sobre uma mecânica que ainda não foi explicada.",
     "A Rockstar também disponibilizou uma galeria de lançamento com novas capturas de tela em seu site oficial. É mais uma oportunidade de observar Jason, Lucia, os veículos e os cenários antes da estreia. Somando a galeria aos vídeos oficiais, já existe bastante material para entender o clima da história e a identidade visual do jogo, sem depender de vazamentos ou de imagens de versões antigas.",
     "A data anunciada continua sendo 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar recomenda que quem fez a pré-venda digital aproveite o pré-carregamento para deixar o jogo pronto. O que ainda não foi detalhado oficialmente deve continuar sendo tratado como desconhecido até que a empresa publique novas informações.",
     "Você está pronto para explorar Leonida no dia 19? Conta nos comentários se vai começar a jogar no lançamento. Acompanha o Radar dos Games e inscreva-se no canal para receber as próximas novidades e nossa cobertura da estreia."
   ],
   "minimum_assets": 1,
-  "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 120,
+  "minimum_video_assets": 3,
+  "minimum_unique_video_seconds": 180,
   "short_scene_numbers": [
     2,
     3,
     4
   ],
-  "narration_revision": "2026-11-16 quarta tentativa: manter CTA falado e acrescentar arte oficial da Rockstar como referência estática de encerramento, para que a chamada de inscrição tenha correspondência visual.",
+  "narration_revision": "2026-11-16 quinta tentativa: exigir três vídeos oficiais completos (limite anterior permitia apenas dois), exigir 180 segundos únicos e substituir imagem com logo por captura oficial sem logo para o CTA.",
   "video_max_assets": {
     "https://www.youtube.com/watch?v=_yl5ELcmugI": 1,
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": 1,
@@ -76,13 +76,16 @@
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": "Rockstar Games official YouTube — Grand Theft Auto VI Launch Trailer",
     "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games official YouTube — Grand Theft Auto VI Trailer 2"
   },
-  "production_note": "Brief corrigido após Director V4 bloquear apenas a fala de inscrição sem visual correspondente; adicionada arte oficial da Rockstar como referência de encerramento, sem alterar os gates de gameplay.",
+  "production_note": "Brief corrigido após auditoria: limite global de vídeos era 2, apesar de três URLs. Agora exige três vídeos e 180s únicos; referência de CTA usa captura oficial sem logo embutido.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
-      "url": "https://www.rockstargames.com/VI/_next/static/media/Jason_and_Lucia_01_With_Logos_landscape.04a3h9o2l4tmn.jpg?akim=1&imdensity=1&imwidth=3840",
+      "url": "https://www.rockstargames.com/VI/_next/static/media/Jason_and_Lucia_01_landscape.12x2gvspcm_3m.jpg?akim=1&imdensity=1&imwidth=3840",
       "source_url": "https://www.rockstargames.com/VI/media/artwork-wallpapers?pubDate=20260806",
-      "source_label": "Grand Theft Auto VI official Rockstar artwork — Jason and Lucia 01 with logos"
+      "source_label": "Grand Theft Auto VI official Rockstar screenshot — Jason and Lucia 01"
     }
-  ]
+  ],
+  "max_video_assets": 3,
+  "max_image_assets": 1,
+  "minimum_image_assets": 1
 }
