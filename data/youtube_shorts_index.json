@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-15T15:37:36.341521+00:00",
-  "total_discovered": 196,
-  "ready_for_tiktok": 189,
+  "updated_at": "2026-11-16T16:42:48.509297+00:00",
+  "total_discovered": 199,
+  "ready_for_tiktok": 192,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "9t7tCAvMzjw",
+      "youtube_url": "https://www.youtube.com/shorts/9t7tCAvMzjw",
+      "title": "GODZILLA INVADIU STORM POINT: VOCÊ CONSEGUE SOBREVIVER?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "MKQJz11qg5E",
+      "youtube_url": "https://www.youtube.com/shorts/MKQJz11qg5E",
+      "title": "WINGMAN AKIMBO: DUAS PISTOLAS, UM NOVO META EM APEX!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "-7mAI40eivg",
+      "youtube_url": "https://www.youtube.com/shorts/-7mAI40eivg",
+      "title": "CIPHER MUDOU O RANQUEADO: AGORA TEM BANIMENTO DE LENDAS!",
+      "status": "approved"
+    },
     {
       "youtube_id": "GJCa4gOMW7w",
       "youtube_url": "https://www.youtube.com/shorts/GJCa4gOMW7w",
