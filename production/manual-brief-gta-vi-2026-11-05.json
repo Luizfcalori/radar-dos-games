@@ -55,7 +55,7 @@
     "Os vídeos oficiais também mostram que a aventura vai muito além de uma única rua de Vice City. A Rockstar apresenta áreas costeiras, estradas, regiões rurais e diferentes pontos de Leonida. Entre os materiais publicados aparecem veículos, passeios de barco, encontros, perseguições e cenas de ação. Essa variedade ajuda a mostrar a escala do mundo sem transformar cada cena de trailer em uma promessa sobre uma mecânica que ainda não foi explicada.",
     "A Rockstar também disponibilizou uma galeria de lançamento com novas capturas de tela em seu site oficial. É mais uma oportunidade de observar Jason, Lucia, os veículos e os cenários antes da estreia. Somando a galeria aos vídeos oficiais, já existe bastante material para entender o clima da história e a identidade visual do jogo, sem depender de vazamentos ou de imagens de versões antigas.",
     "A data anunciada continua sendo 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar recomenda que quem fez a pré-venda digital aproveite o pré-carregamento para deixar o jogo pronto. O que ainda não foi detalhado oficialmente deve continuar sendo tratado como desconhecido até que a empresa publique novas informações.",
-    "Agora queremos saber: você vai começar a jogar assim que Leonida for liberada? Qual parte mais chama sua atenção: Jason e Lucia, as ruas de Vice City ou a variedade de ambientes que a Rockstar está mostrando? Conta nos comentários e acompanha o Radar dos Games. Inscreva-se no canal para receber as próximas novidades e a cobertura do lançamento."
+    "Você está pronto para explorar Leonida no dia 19? Conta nos comentários se vai começar a jogar no lançamento. Acompanha o Radar dos Games e inscreva-se no canal para receber as próximas novidades e nossa cobertura da estreia."
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 1,
@@ -65,7 +65,7 @@
     3,
     4
   ],
-  "narration_revision": "2026-11-16 segunda tentativa: roteiro refeito para corresponder exclusivamente aos vídeos oficiais disponíveis; removidos detalhes de gameplay que não apareciam no material visual.",
+  "narration_revision": "2026-11-16 terceira tentativa: CTA final reescrito para manter a pergunta ligada ao universo visual de Leonida e evitar frase genérica sem correspondência de gameplay.",
   "video_max_assets": {
     "https://www.youtube.com/watch?v=_yl5ELcmugI": 1,
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": 1,
@@ -76,6 +76,6 @@
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": "Rockstar Games official YouTube — Grand Theft Auto VI Launch Trailer",
     "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games official YouTube — Grand Theft Auto VI Trailer 2"
   },
-  "production_note": "Brief corrigido após Director V4 bloquear uma fala sem correspondência visual; roteiro alinhado aos três vídeos oficiais da Rockstar.",
+  "production_note": "Brief corrigido após Director V4 bloquear apenas a pergunta genérica do CTA; roteiro e fontes oficiais permanecem aprovados.",
   "video_fallback_urls": []
 }
