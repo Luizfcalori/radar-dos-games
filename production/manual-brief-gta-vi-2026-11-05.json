@@ -10,7 +10,9 @@
     "https://www.rockstargames.com/VI/launch-gallery",
     "https://www.instagram.com/p/DehBEbwgV1d/",
     "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip",
+    "https://www.youtube.com/watch?v=VQRLujxTm3c",
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
   ],
   "source_urls": [
     "https://www.rockstargames.com/VI",
@@ -22,12 +24,15 @@
     "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/newswire?tag=vi",
     "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://www.instagram.com/p/DcmuKhJAe3I/"
+    "https://www.instagram.com/p/DcmuKhJAe3I/",
+    "https://www.youtube.com/watch?v=VQRLujxTm3c",
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
   ],
   "video_urls": [
     "https://www.instagram.com/p/DehBEbwgV1d/",
     "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
+    "https://www.youtube.com/watch?v=VQRLujxTm3c",
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
   ],
   "short_hooks": [
     "O NOVO VÍDEO OFICIAL DE GTA 6 JÁ ESTÁ NO AR!",
@@ -74,14 +79,18 @@
   "video_max_assets": {
     "https://www.instagram.com/p/DehBEbwgV1d/": 1,
     "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 3
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 3,
+    "https://www.youtube.com/watch?v=VQRLujxTm3c": 1,
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k": 1
   },
   "video_labels": {
     "https://www.instagram.com/p/DehBEbwgV1d/": "Rockstar Games official Instagram — Grand Theft Auto VI Launch Trailer",
     "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — Grand Theft Auto VI airboat gameplay clip",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar official media archive — gameplay and trailer footage (cover artwork excluded)"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar official media archive — gameplay and trailer footage (cover artwork excluded)",
+    "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games verified YouTube — Grand Theft Auto VI Trailer 2 (official in-game footage)",
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k": "Rockstar Games verified YouTube — Grand Theft Auto VI: An Extended Look (official PS5 gameplay)"
   },
-  "production_note": "Brief refinado após Director V4: as duas frases concretas foram aceitas; removida apenas a transição abstrata que não correspondia a um plano específico.",
+  "production_note": "Mídia revisada em 16/11/2026: substituir o ZIP de clipes de personagem (arquivos de 1–1,5s) por Trailer 2 e An Extended Look oficiais da Rockstar para completar gameplay em movimento; manter o clipe oficial do airboat como correspondência da fala sobre barco.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {

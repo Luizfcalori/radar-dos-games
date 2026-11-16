@@ -149,6 +149,10 @@ def phrase_asset_match(phrase, asset):
     filename=unquote(urlparse(str(asset.get("url") or "")).path).rsplit("/",1)[-1]
     label_words=set(norm(source+" "+filename.replace("_"," ").replace("-"," ")).split())
     phrase_words=set(norm(phrase).split())
+    # Portuguese scene wording may describe a source-labeled airboat as a boat.
+    # This is a narrow editorial synonym, not an automated claim about pixels.
+    if phrase_words & {"barco", "barcos", "embarcacao", "embarcacoes", "lancha", "lanchas"}:
+        phrase_words.add("airboat")
     stop={"arc", "raiders", "games", "gameplay", "official", "screen",
           "screenshot", "media", "image", "trailer", "frozen", "trail"}
     return len({w for w in label_words if len(w)>=4 and w not in stop} & phrase_words)

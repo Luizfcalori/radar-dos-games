@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from src.media_first import compile_storyboard, relevance
-from src.director_v4 import eligible
+from src.director_v4 import eligible, phrase_asset_match
 
 class MediaFirstTests(unittest.TestCase):
     def setUp(self):
@@ -106,6 +106,12 @@ class MediaFirstTests(unittest.TestCase):
         self.assertEqual([int(a["index"]) for a in results],[7,19])
         strict={**scene,"allow_same_source_role_fallback":False}
         self.assertEqual([int(a["index"]) for a in eligible(strict,{7:self.assets[0],19:alternate})],[7])
+
+    def test_boat_phrase_matches_official_airboat_clip_label(self):
+        boat=dict(self.assets[0],source_label="Rockstar Games official Instagram — GTA VI airboat gameplay clip")
+        trailer=dict(self.assets[0],index=19,source_label="Rockstar Games official GTA VI Launch Trailer")
+        self.assertGreater(phrase_asset_match("Um barco atravessando canais e áreas alagadas",boat),
+                           phrase_asset_match("Um barco atravessando canais e áreas alagadas",trailer))
 
     def test_url_hints_not_automated_visual_truth(self):
         self.assertGreater(relevance("O ambiente é Vegas",self.assets[1],"Battlefield 6"),0)
