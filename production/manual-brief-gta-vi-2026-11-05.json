@@ -35,9 +35,9 @@
     "https://www.youtube.com/watch?v=tJbzMqJGH4k"
   ],
   "short_hooks": [
-    "O NOVO VÍDEO OFICIAL DE GTA 6 JÁ ESTÁ NO AR!",
+    "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
     "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
-    "FALTAM TRÊS DIAS PARA GTA 6 CHEGAR!"
+    "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
@@ -57,7 +57,7 @@
     "Não usar data de PC, preço, performance ou recursos não confirmados como fatos."
   ],
   "script_blocks": [
-    "Faltam apenas três dias para a chegada de Grand Theft Auto VI. No dia 19 de novembro, a Rockstar abre as portas de Vice City e do estado de Leonida para uma nova geração de jogadores. A reta final já está cheia de material oficial: um vídeo de pré-carregamento, o trailer de lançamento e uma coleção de imagens que mostram melhor os protagonistas e os lugares que vamos explorar.",
+    "Faltam apenas três dias para a chegada de Grand Theft Auto VI. No dia 19 de novembro, a Rockstar abre as portas de Vice City e do estado de Leonida para uma nova geração de jogadores. A reta final já está cheia de material oficial: o trailer de lançamento e uma coleção de imagens que mostram melhor os protagonistas e os lugares que vamos explorar.",
     "A novidade oficial mais recente chegou em 10 de novembro. A Rockstar publicou Pre-Load Now e confirmou que o pré-carregamento digital já está disponível para quem reservou o jogo. Quem comprou uma edição física com código também poderá ativar esse código e iniciar o download assim que recebê-lo. A ideia é deixar tudo preparado para começar a jogar quando o lançamento for liberado no dia 19.",
     "O vídeo Pre-Load Now tem cerca de trinta segundos e traz uma montagem rápida de cenas de Leonida. A prévia passa por momentos de festa, carros, uma equipe tática e atividades em diferentes ambientes. É um vídeo curto, mas funciona como a última chamada da Rockstar antes da estreia.",
     "Um mês antes, em 15 de outubro, a Rockstar publicou o Launch Trailer. O vídeo foi capturado inteiramente dentro do jogo em um PlayStation 5 e apresenta Jason e Lucia em uma sequência de cenas que mistura ação, perseguições, encontros e momentos da vida dos dois. A montagem destaca a dupla em cenas de ação e deslocamento por Leonida.",
@@ -72,10 +72,10 @@
   "minimum_unique_video_seconds": 120,
   "short_scene_numbers": [
     2,
-    3,
-    4
+    4,
+    8
   ],
-  "narration_revision": "2026-11-16 décima terceira tentativa: manter somente as duas frases concretas aprovadas sobre barco/canais e carros/direção noturna; retirar a frase abstrata de transição.",
+  "narration_revision": "2026-11-16 correção definitiva do mapeamento dos três Shorts: cada hook deve corresponder a uma cena exclusiva e concreta do roteiro; abertura sem antecipar o pré-carregamento, hook 1 no parágrafo 2, hook 2 em Jason/Lucia no parágrafo 4, hook 3 na confirmação de lançamento no parágrafo 8.",
   "video_max_assets": {
     "https://www.instagram.com/p/DehBEbwgV1d/": 1,
     "https://www.instagram.com/p/DcmuKhJAe3I/": 1,

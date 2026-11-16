@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from src.media_first import compile_storyboard, relevance
-from src.director_v4 import eligible, phrase_asset_match
+from src.director_v4 import eligible, phrase_asset_match, pick_shorts_for_hooks
 
 class MediaFirstTests(unittest.TestCase):
     def setUp(self):
@@ -112,6 +112,30 @@ class MediaFirstTests(unittest.TestCase):
         trailer=dict(self.assets[0],index=19,source_label="Rockstar Games official GTA VI Launch Trailer")
         self.assertGreater(phrase_asset_match("Um barco atravessando canais e áreas alagadas",boat),
                            phrase_asset_match("Um barco atravessando canais e áreas alagadas",trailer))
+
+    def test_three_short_hooks_map_to_three_distinct_narration_scenes(self):
+        scenes = [
+            {"title":"ABERTURA","subtitle":"GRAND THEFT AUTO VI","beats":[
+                {"text":"Faltam apenas três dias para a chegada de Grand Theft Auto VI. A Rockstar abre as portas de Vice City e Leonida.", "duration":20}
+            ]},
+            {"title":"PRÉ-CARREGAMENTO DIGITAL","subtitle":"INFORMAÇÃO OFICIAL DA ROCKSTAR","beats":[
+                {"text":"A Rockstar confirmou que o pré-carregamento digital de GTA 6 já está disponível para quem reservou o jogo.", "duration":20}
+            ]},
+            {"title":"JASON E LUCIA","subtitle":"GRAND THEFT AUTO VI","beats":[
+                {"text":"Jason e Lucia estão prestes a entrar em ação em uma sequência de perseguições e encontros.", "duration":20}
+            ]},
+            {"title":"DATA DE LANÇAMENTO","subtitle":"INFORMAÇÃO OFICIAL DA ROCKSTAR","beats":[
+                {"text":"A data está confirmada: GTA 6 chega em 19 de novembro de 2026.", "duration":20}
+            ]},
+        ]
+        hooks = [
+            "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
+            "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
+            "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!",
+        ]
+        picks, matches = pick_shorts_for_hooks(scenes, hooks)
+        self.assertEqual(picks, [1, 2, 3])
+        self.assertTrue(all(m["semantic_score"] > 0 for m in matches))
 
     def test_url_hints_not_automated_visual_truth(self):
         self.assertGreater(relevance("O ambiente é Vegas",self.assets[1],"Battlefield 6"),0)
