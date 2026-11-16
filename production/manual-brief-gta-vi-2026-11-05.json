@@ -7,7 +7,10 @@
   "media_source_urls": [
     "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/VI/launch-trailer",
-    "https://www.rockstargames.com/VI/launch-gallery"
+    "https://www.rockstargames.com/VI/launch-gallery",
+    "https://www.instagram.com/p/DehBEbwgV1d/",
+    "https://www.instagram.com/p/DcmuKhJAe3I/",
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
   ],
   "source_urls": [
     "https://www.rockstargames.com/VI",
@@ -17,11 +20,13 @@
     "https://www.rockstargames.com/VI/launch-gallery",
     "https://www.rockstargames.com/newswire/article/4k138k8okkk483/grand-theft-auto-vi-an-extended-look-now-playing",
     "https://www.rockstargames.com/VI/media/videos",
-    "https://www.rockstargames.com/newswire?tag=vi"
+    "https://www.rockstargames.com/newswire?tag=vi",
+    "https://www.instagram.com/p/DehBEbwgV1d/",
+    "https://www.instagram.com/p/DcmuKhJAe3I/"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=_yl5ELcmugI",
-    "https://www.youtube.com/watch?v=rz1B4B2yBZY",
+    "https://www.instagram.com/p/DehBEbwgV1d/",
+    "https://www.instagram.com/p/DcmuKhJAe3I/",
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
   ],
   "short_hooks": [
@@ -59,24 +64,24 @@
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 3,
-  "minimum_unique_video_seconds": 180,
+  "minimum_unique_video_seconds": 120,
   "short_scene_numbers": [
     2,
     3,
     4
   ],
-  "narration_revision": "2026-11-16 sexta tentativa: substituir Trailer 2 do YouTube bloqueado por pacote oficial Rockstar com nove clipes; configurar extração de até nove arquivos do ZIP e campos corretos label/source_proof para arte oficial sem logo.",
+  "narration_revision": "2026-11-16 sétima tentativa: remover fontes YouTube bloqueadas; usar dois vídeos oficiais Rockstar Instagram já baixados com sucesso no primeiro run e um clipe longo do arquivo oficial Rockstar. Exigir 3 assets e 120s únicos.",
   "video_max_assets": {
-    "https://www.youtube.com/watch?v=_yl5ELcmugI": 1,
-    "https://www.youtube.com/watch?v=rz1B4B2yBZY": 1,
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9
+    "https://www.instagram.com/p/DehBEbwgV1d/": 1,
+    "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 1
   },
   "video_labels": {
-    "https://www.youtube.com/watch?v=_yl5ELcmugI": "Rockstar Games official YouTube — Grand Theft Auto VI: Pre-Load Now",
-    "https://www.youtube.com/watch?v=rz1B4B2yBZY": "Rockstar Games official YouTube — Grand Theft Auto VI Launch Trailer",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official media archive — nine Grand Theft Auto VI character video clips"
+    "https://www.instagram.com/p/DehBEbwgV1d/": "Rockstar Games official Instagram — Grand Theft Auto VI Launch Trailer",
+    "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — Grand Theft Auto VI airboat gameplay clip",
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official media archive — Official Cover Art Animation"
   },
-  "production_note": "Brief corrigido após YouTube bloquear a terceira fonte. Usa dois vídeos oficiais já baixáveis e o pacote oficial Rockstar de nove clipes, com extração de até nove assets; referência estática oficial sem logo para o CTA.",
+  "production_note": "Brief corrigido após bloqueio antibot do YouTube e auditoria do ZIP oficial: oito arquivos são clipes de 1s, apenas a animação de capa é longa. Usa dois vídeos oficiais Instagram previamente validados mais a animação oficial.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
@@ -85,7 +90,7 @@
       "source_proof": "https://www.rockstargames.com/VI/media/artwork-wallpapers?pubDate=20260806"
     }
   ],
-  "max_video_assets": 11,
+  "max_video_assets": 3,
   "max_image_assets": 1,
   "minimum_image_assets": 1
 }
