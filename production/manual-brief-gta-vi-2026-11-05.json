@@ -22,7 +22,7 @@
   "video_urls": [
     "https://www.youtube.com/watch?v=_yl5ELcmugI",
     "https://www.youtube.com/watch?v=rz1B4B2yBZY",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
   ],
   "short_hooks": [
     "O NOVO VÍDEO OFICIAL DE GTA 6 JÁ ESTÁ NO AR!",
@@ -65,27 +65,27 @@
     3,
     4
   ],
-  "narration_revision": "2026-11-16 quinta tentativa: exigir três vídeos oficiais completos (limite anterior permitia apenas dois), exigir 180 segundos únicos e substituir imagem com logo por captura oficial sem logo para o CTA.",
+  "narration_revision": "2026-11-16 sexta tentativa: substituir Trailer 2 do YouTube bloqueado por pacote oficial Rockstar com nove clipes; configurar extração de até nove arquivos do ZIP e campos corretos label/source_proof para arte oficial sem logo.",
   "video_max_assets": {
     "https://www.youtube.com/watch?v=_yl5ELcmugI": 1,
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": 1,
-    "https://www.youtube.com/watch?v=VQRLujxTm3c": 1
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9
   },
   "video_labels": {
     "https://www.youtube.com/watch?v=_yl5ELcmugI": "Rockstar Games official YouTube — Grand Theft Auto VI: Pre-Load Now",
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": "Rockstar Games official YouTube — Grand Theft Auto VI Launch Trailer",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games official YouTube — Grand Theft Auto VI Trailer 2"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official media archive — nine Grand Theft Auto VI character video clips"
   },
-  "production_note": "Brief corrigido após auditoria: limite global de vídeos era 2, apesar de três URLs. Agora exige três vídeos e 180s únicos; referência de CTA usa captura oficial sem logo embutido.",
+  "production_note": "Brief corrigido após YouTube bloquear a terceira fonte. Usa dois vídeos oficiais já baixáveis e o pacote oficial Rockstar de nove clipes, com extração de até nove assets; referência estática oficial sem logo para o CTA.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
       "url": "https://www.rockstargames.com/VI/_next/static/media/Jason_and_Lucia_01_landscape.12x2gvspcm_3m.jpg?akim=1&imdensity=1&imwidth=3840",
-      "source_url": "https://www.rockstargames.com/VI/media/artwork-wallpapers?pubDate=20260806",
-      "source_label": "Grand Theft Auto VI official Rockstar screenshot — Jason and Lucia 01"
+      "label": "Grand Theft Auto VI official screenshot — Jason and Lucia 01",
+      "source_proof": "https://www.rockstargames.com/VI/media/artwork-wallpapers?pubDate=20260806"
     }
   ],
-  "max_video_assets": 3,
+  "max_video_assets": 11,
   "max_image_assets": 1,
   "minimum_image_assets": 1
 }
