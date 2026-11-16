@@ -65,7 +65,7 @@
     3,
     4
   ],
-  "narration_revision": "2026-11-16 terceira tentativa: CTA final reescrito para manter a pergunta ligada ao universo visual de Leonida e evitar frase genérica sem correspondência de gameplay.",
+  "narration_revision": "2026-11-16 quarta tentativa: manter CTA falado e acrescentar arte oficial da Rockstar como referência estática de encerramento, para que a chamada de inscrição tenha correspondência visual.",
   "video_max_assets": {
     "https://www.youtube.com/watch?v=_yl5ELcmugI": 1,
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": 1,
@@ -76,6 +76,13 @@
     "https://www.youtube.com/watch?v=rz1B4B2yBZY": "Rockstar Games official YouTube — Grand Theft Auto VI Launch Trailer",
     "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games official YouTube — Grand Theft Auto VI Trailer 2"
   },
-  "production_note": "Brief corrigido após Director V4 bloquear apenas a pergunta genérica do CTA; roteiro e fontes oficiais permanecem aprovados.",
-  "video_fallback_urls": []
+  "production_note": "Brief corrigido após Director V4 bloquear apenas a fala de inscrição sem visual correspondente; adicionada arte oficial da Rockstar como referência de encerramento, sem alterar os gates de gameplay.",
+  "video_fallback_urls": [],
+  "visual_reference_images": [
+    {
+      "url": "https://www.rockstargames.com/VI/_next/static/media/Jason_and_Lucia_01_With_Logos_landscape.04a3h9o2l4tmn.jpg?akim=1&imdensity=1&imwidth=3840",
+      "source_url": "https://www.rockstargames.com/VI/media/artwork-wallpapers?pubDate=20260806",
+      "source_label": "Grand Theft Auto VI official Rockstar artwork — Jason and Lucia 01 with logos"
+    }
+  ]
 }
