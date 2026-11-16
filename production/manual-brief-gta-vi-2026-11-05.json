@@ -1,8 +1,8 @@
 {
-  "valid_until": "2026-11-12T23:59:00Z",
-  "content_id": "manual-grand-theft-auto-vi-countdown-preload-score-2026-11-05",
-  "title": "Grand Theft Auto VI — contagem regressiva, pré-carregamento e trilha sonora",
-  "headline": "GTA VI: A CONTAGEM REGRESSIVA ENTROU NA RETA FINAL!",
+  "valid_until": "2026-11-19T23:59:00Z",
+  "content_id": "manual-grand-theft-auto-vi-last-72h-gameplay-update-2026-11-16",
+  "title": "Grand Theft Auto VI — últimas novidades antes do lançamento",
+  "headline": "GTA VI: AS ÚLTIMAS NOVIDADES A TRÊS DIAS DA ESTREIA!",
   "primary_source": "https://www.rockstargames.com/VI",
   "media_source_urls": [
     "https://www.rockstargames.com/VI/media/videos",
@@ -11,12 +11,10 @@
   ],
   "source_urls": [
     "https://www.rockstargames.com/VI",
-    "https://www.rockstargames.com/VI/media/videos",
-    "https://www.rockstargames.com/VI/launch-trailer",
-    "https://www.rockstargames.com/VI/an-extended-look",
     "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer",
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://www.instagram.com/p/DehBEbwgV1d/"
+    "https://www.vice.com/en/article/gta-6-gameplay-details-guardian-interview/",
+    "https://comicbook.com/gaming/news/gta-6-grand-theft-auto-vi-rockstar-games-update-1-002-today-ps5-xbox/",
+    "https://www.rockstargames.com/newswire?tag=vi"
   ],
   "video_urls": [
     "https://www.instagram.com/p/DcmuKhJAe3I/",
@@ -24,35 +22,36 @@
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
   ],
   "short_hooks": [
-    "GTA VI: O PRÉ-CARREGAMENTO COMEÇA EM 10 DE NOVEMBRO!",
-    "JUSTICE ASSINA A TRILHA SONORA ORIGINAL DE GTA VI!",
-    "GTA VI CHEGA EM 19 DE NOVEMBRO — E O TRAILER JÁ ESTÁ NO AR!"
+    "GTA 6 RECEBE SUA SEGUNDA ATUALIZAÇÃO ANTES DA ESTREIA!",
+    "ASSALTOS EM GTA 6 TERÃO PLANEJAMENTO E ESTRATÉGIA!",
+    "JASON E LUCIA: A PRÉVIA REVELOU DETALHES INÉDITOS!"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
-    "Tema bloqueado: Grand Theft Auto VI. Não substituir por GTA Online, GTA V ou outro jogo.",
-    "Usar somente vídeos e imagens oficiais da Rockstar Games. Não usar vazamentos, reuploads de terceiros, vídeos de criadores ou gameplay de GTA V.",
-    "Lançamento confirmado para 19 de novembro de 2026 no PlayStation 5 e Xbox Series X|S. Não afirmar data de PC; não há anúncio oficial de versão para PC.",
-    "A Rockstar anunciou em 3 de novembro que o pré-carregamento começa em 10 de novembro. Não inventar tamanho de download ou horário de liberação.",
-    "A trilha sonora original é composta por Justice. O trailer de lançamento de 15 de outubro apresenta Flower in a Hurricane, de Justice com Tame Impala, SZA e King Gizzard & The Lizard Wizard.",
-    "An Extended Look foi publicado em 27 de agosto com imagens capturadas inteiramente dentro do jogo no PS5. Não chamá-lo de Trailer 3.",
-    "Não apresentar rumores sobre PC, GTA Online, tamanho do mapa, preço ou mecânicas como fatos confirmados.",
+    "Tema bloqueado: Grand Theft Auto VI. Não substituir por GTA Online, GTA V ou qualquer outro jogo.",
+    "A Rockstar mantém 19 de novembro de 2026 como data de lançamento para PlayStation 5 e Xbox Series X|S.",
+    "Uma segunda atualização de GTA VI, identificada como 01.002.001 nos sistemas de PS5 e Xbox, foi reportada em 16/11. A Rockstar não publicou notas oficiais; não afirmar o que ela altera nem especular sobre conteúdo.",
+    "A prévia de gameplay publicada após visita da imprensa à Rockstar North descreve assaltos com reconhecimento prévio do local, busca de entradas alternativas e atenção a câmeras de segurança. Atribuir esses detalhes à prévia jornalística, não apresentar como demonstração de todas as mecânicas finais.",
+    "A mesma prévia descreve Jason e Lucia começando com crimes menores, como furtos de carros e arrombamento de fechaduras, antes de trabalhos maiores.",
+    "A Rockstar North também falou sobre oferecer oportunidades para o jogador demonstrar empatia. Não inventar sistema moral, finais ou consequências específicas.",
+    "Usar somente vídeos e imagens oficiais da Rockstar Games para o material visual. Não usar vazamentos, reuploads de terceiros, gameplay de GTA V ou imagens de outros jogos.",
+    "Plataformas confirmadas: PS5 e Xbox Series X|S. Não anunciar data de PC, pois não há data oficial divulgada.",
     "Master 16:9 Full HD, narração natural PT-BR com Thalita Multilingual PT-BR V3, exatamente três Shorts 9:16 com capas próprias.",
     "Shorts com gancho imediato, legendas grandes, cortes dinâmicos e CTA curto. Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes.",
     "Manter intro oficial integral antes do gameplay. Evitar repetição de cenas, loops, travamentos, imagens estáticas longas e falas sobre processo de produção.",
     "YouTube: enviar Master e os três Shorts como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados.",
-    "Se o YouTube bloquear a transferência, usar o pacote oficial de nove vídeos curtos disponibilizado pela Rockstar na página de mídia: https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip. Extrair apenas arquivos de vídeo do pacote oficial; não usar reuploads nem material de outros jogos.",
-    "Mídia oficial alternativa: usar os posts públicos do Instagram verificado @rockstargames (An Extended Look e Launch Trailer) e, como complemento, o arquivo oficial de vídeos da Rockstar. Não recorrer a reposts de fãs."
+    "Não usar o tamanho de download, preço, GTA Online, desempenho ou recursos não confirmados como fatos."
   ],
   "script_blocks": [
-    "A espera por Grand Theft Auto VI está entrando em sua reta final. Depois de anos de expectativa, a Rockstar concentra os últimos anúncios antes da chegada de um dos jogos mais aguardados da geração. A data está marcada: 19 de novembro de 2026, para PlayStation 5 e Xbox Series X|S. E a semana trouxe uma informação prática para quem já está se preparando: o pré-carregamento começa em 10 de novembro. Hoje, no Radar dos Games, vamos reunir o que realmente foi confirmado antes da estreia.",
-    "Em 3 de novembro, a Rockstar atualizou a página oficial de GTA VI e informou que o pré-carregamento começa no dia 10. Isso permitirá preparar o download antes do lançamento, mas a empresa ainda não detalhou publicamente todos os horários e tamanhos específicos por console. Por isso, é melhor não transformar números que circulam na internet em informação oficial. O que está confirmado é a data de início do pré-carregamento e a chegada do jogo nove dias depois.",
-    "A trilha sonora também ganhou destaque. Em 29 de outubro, a Rockstar apresentou novidades sobre a trilha original de Grand Theft Auto VI, assinada pelo duo eletrônico Justice. O grupo já tinha chamado atenção no trailer de lançamento com Flower in a Hurricane, faixa que conta com Tame Impala, SZA e King Gizzard & The Lizard Wizard. A música ajuda a estabelecer o clima do novo capítulo e mostra como a identidade sonora faz parte da apresentação de Vice City e de todo o estado de Leonida.",
-    "O trailer de lançamento, publicado em 15 de outubro, trouxe uma montagem concentrada na história de Jason e Lucia. A Rockstar descreve a dupla como duas pessoas que já sabem que o mundo está contra elas. Depois que um golpe aparentemente simples dá errado, os protagonistas acabam envolvidos em uma conspiração criminosa que atravessa Leonida. O material reforça a importância da relação entre os dois e apresenta momentos de ação, tensão e intimidade, sem revelar toda a estrutura da campanha.",
-    "Para observar mais do jogo, existe Grand Theft Auto VI: An Extended Look. A apresentação foi publicada em 27 de agosto e tem quase 27 minutos de imagens capturadas inteiramente dentro do jogo no PlayStation 5, segundo a própria Rockstar. É diferente dos trailers tradicionais: permite acompanhar trechos mais longos e perceber como Jason, Lucia, Vice City e outras áreas de Leonida aparecem em movimento. A Rockstar chama o vídeo de Extended Look; não é necessário inventar um número de trailer para descrevê-lo.",
-    "O cenário continua sendo uma das grandes atrações. Vice City retorna como parte de Leonida, um estado fictício inspirado na Flórida. A apresentação oficial mostra ambientes urbanos, estradas, áreas naturais, praias e diferentes comunidades. Mas é importante separar aquilo que aparece nas imagens das informações que a empresa realmente confirmou. Um enquadramento de trailer pode sugerir possibilidades, mas não comprova sozinho um sistema de jogo, uma missão completa ou uma mecânica específica. O melhor caminho é observar o material oficial e evitar transformar especulação em promessa.",
-    "Também vale esclarecer as plataformas. A Rockstar lista PlayStation 5 e Xbox Series X|S para o lançamento de 19 de novembro de 2026. Até o momento, não há uma data oficial de lançamento para PC divulgada pela empresa. O mesmo cuidado vale para informações sobre GTA Online, tamanho total do mapa, desempenho e recursos ainda não detalhados. A comunidade tem muitas teorias, mas o Radar dos Games vai separar o que é anúncio oficial daquilo que ainda depende de confirmação.",
-    "Com o pré-carregamento previsto para 10 de novembro, a trilha de Justice em evidência e o trailer de lançamento já disponível, a contagem regressiva ganhou novos marcos. Agora falta pouco para descobrir como a Rockstar vai transformar todas essas imagens em uma aventura completa. Qual é sua maior expectativa: a história de Jason e Lucia, a exploração de Leonida ou a liberdade que a série sempre ofereceu? Conta nos comentários e inscreva-se no Radar dos Games para acompanhar a reta final até GTA VI."
+    "Faltam apenas três dias para a chegada de Grand Theft Auto VI. Depois de uma espera que atravessou mais de uma geração de consoles, a Rockstar está na reta final para colocar os jogadores de volta em Vice City e no estado de Leonida. Mas a semana de lançamento já começou movimentada: uma nova atualização foi identificada nos consoles e uma prévia recente revelou detalhes interessantes sobre a forma como Jason e Lucia vão encarar seus primeiros trabalhos. Hoje, o Radar dos Games separa o que foi divulgado do que ainda não tem confirmação.",
+    "A primeira novidade é uma segunda atualização de GTA VI identificada nos sistemas de PlayStation 5 e Xbox. O pacote aparece com a identificação 01.002.001 e foi reportado em 16 de novembro, poucos dias depois de uma atualização anterior. Existe, porém, um detalhe importante: a Rockstar não publicou notas explicando o conteúdo desse pacote. Portanto, não dá para afirmar que ele adiciona missões, muda gráficos ou corrige um problema específico. O fato confirmado pela reportagem é a existência da atualização; o que ela faz continua sem explicação pública.",
+    "Outra informação que chamou atenção veio de uma prévia de gameplay baseada em uma visita da imprensa à Rockstar North. Segundo os detalhes publicados após a visita, Jason e Lucia não começam a história realizando grandes assaltos cinematográficos. A dupla parte de trabalhos menores, como furtar carros mais simples e arrombar fechaduras. A progressão leva a serviços maiores, criando uma escalada que acompanha a situação dos protagonistas e o caminho que eles percorrem dentro do mundo do jogo.",
+    "A preparação dos assaltos também pode ter um papel importante. A prévia descreve a possibilidade de observar um local antes de entrar, procurando uma entrada pelos fundos, pistas sobre o código de um cofre e a posição de câmeras de segurança. Em determinadas situações, o jogador poderá desativar câmeras ou até levar as gravações. Isso aponta para uma abordagem em que observar o ambiente e escolher como agir pode fazer diferença, em vez de simplesmente entrar atirando em tudo.",
+    "A mesma reportagem destaca uma intenção interessante para a narrativa: a Rockstar quer oferecer momentos em que o jogador possa demonstrar empatia. O estúdio descreveu essa possibilidade como uma novidade importante para a série. Isso não significa que já conhecemos um sistema moral completo, finais alternativos ou todas as consequências das escolhas. O que foi relatado é a intenção de criar espaço para que o jogador se importe com as pessoas e situações que encontra durante a jornada.",
+    "Jason e Lucia continuam no centro dessa história. A descrição oficial da Rockstar apresenta os dois como um casal que já sabe que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os protagonistas acabam envolvidos em uma conspiração criminosa que atravessa Leonida. A relação entre os dois é parte fundamental da aventura, e os materiais oficiais mostram que confiança, parceria e sobrevivência estarão conectadas ao caminho que eles precisam enfrentar.",
+    "Visualmente, a Rockstar vem apresentando Vice City e outras regiões de Leonida em seus trailers, imagens e na apresentação estendida de gameplay. Para acompanhar essa reta final, vale observar os vídeos oficiais e separar o que aparece nas cenas daquilo que ainda não foi anunciado. Um trailer pode mostrar uma perseguição ou um ambiente, mas isso não confirma sozinho todos os sistemas, atividades ou possibilidades que existirão na versão final. O Radar vai manter essa diferença clara para não transformar teoria em notícia.",
+    "A data segue marcada para 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. Até o momento, a Rockstar não divulgou uma data oficial para PC. Também não devemos tratar como confirmadas informações sobre o futuro de GTA Online, tamanho total do mapa ou recursos que ainda não foram detalhados pela empresa. Com a estreia tão próxima, novas informações podem aparecer, mas o compromisso aqui é trabalhar com o que já tem fonte e contexto.",
+    "Agora queremos saber: o que mais chama sua atenção em GTA VI? A evolução dos assaltos, a parceria entre Jason e Lucia ou a liberdade para explorar Vice City e Leonida? Conta nos comentários e acompanha o Radar dos Games para não perder as últimas novidades antes da estreia. Inscreva-se no canal, porque a contagem regressiva está chegando ao fim e a próxima grande conversa dos games está prestes a começar."
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 1,
@@ -62,7 +61,7 @@
     3,
     4
   ],
-  "narration_revision": "2026-11-05: pauta atualizada com pré-carregamento de 10/11, trilha de Justice e trailer de lançamento; separar fatos oficiais de rumores.",
+  "narration_revision": "2026-11-16: brief renovado com a segunda atualização identificada nos consoles e detalhes da prévia de gameplay; fatos sem notas oficiais permanecem explicitamente não confirmados.",
   "video_max_assets": {
     "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
     "https://www.instagram.com/p/DehBEbwgV1d/": 1,
