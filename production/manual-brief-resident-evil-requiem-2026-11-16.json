@@ -70,10 +70,13 @@
     "https://www.youtube.com/watch?v=9lrThxCoznw": "Resident Evil verified YouTube — Resident Evil Requiem Launch Trailer",
     "https://www.youtube.com/watch?v=SQODLCylKbM": "Resident Evil verified YouTube — Resident Evil: Road to Requiem"
   },
-  "production_note": "Brief editorial preparado em 16/11/2026 com foco nas notícias da semana. Priorizar footage oficial Requiem em movimento, sem confundir expectativas da atriz com anúncios oficiais da Capcom.",
-  "video_fallback_urls": [],
+  "production_note": "Brief editorial preparado em 16/11/2026 com foco nas notícias da semana. Priorizar footage oficial Requiem em movimento, sem confundir expectativas da atriz com anúncios oficiais da Capcom. Retry 16/11: adicionar aquisição independente dos trailers em MP4/HLS/DASH no CDN oficial Steam do app 3764200 antes de depender de embeds YouTube sujeitos a restrição etária/anti-bot.",
+  "video_fallback_urls": [
+    "https://store.steampowered.com/app/3764200/"
+  ],
   "max_video_assets": 4,
   "max_image_assets": 0,
   "minimum_image_assets": 0,
-  "allow_same_source_role_fallback": true
+  "allow_same_source_role_fallback": true,
+  "steam_app_id": 3764200
 }
