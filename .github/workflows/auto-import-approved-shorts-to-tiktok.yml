@@ -361,7 +361,7 @@ jobs:
               old=[x for x in existing if x.get("id") not in ids]
               q["version"]=2
               q["updated_at"]=datetime.now(timezone.utc).isoformat()
-              q["items"]=(merged+old)[:200]
+              q["items"]=(merged+old)
               qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
           print(json.dumps({"added":len(merged),"total":len(q.get("items") or [])},ensure_ascii=False))
