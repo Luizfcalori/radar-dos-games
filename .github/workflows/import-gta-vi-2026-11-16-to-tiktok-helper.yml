@@ -1,0 +1,171 @@
+name: Import GTA VI Shorts to Radar TikTok Helper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-gta-vi-2026-11-16-to-tiktok-helper.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-gta-vi-2026-11-16-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved GTA VI production package
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-43917769024
+          path: output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 43917769024
+
+      - name: Validate exactly three approved Shorts and covers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          p=Path("output")
+          qa=json.loads((p/"final-qa.json").read_text(encoding="utf-8"))
+          pro=json.loads((p/"pro-score.json").read_text(encoding="utf-8"))
+          selected=json.loads((p/"selected.json").read_text(encoding="utf-8"))
+          assert qa.get("status")=="APPROVED", qa
+          assert pro.get("status")=="APPROVED" and int(pro.get("pro_score",0))>=85, pro
+          assert "grand theft auto vi" in selected.get("title","").lower(), selected.get("title")
+          assert len(qa.get("shorts") or [])==3, qa
+          assert len(qa.get("approved_short_hooks") or [])==3, qa
+          assert qa.get("short_hooks_exact")=="APPROVED"
+          assert qa.get("short_semantic_selection")=="APPROVED"
+          for n in (1,2,3):
+              video=p/"shorts"/f"short_{n}.mp4"
+              cover=p/"shorts"/f"short_{n}_cover.jpg"
+              meta=json.loads((p/f"short-{n}-youtube.json").read_text(encoding="utf-8"))
+              assert video.is_file() and video.stat().st_size>500_000, video
+              assert cover.is_file() and cover.stat().st_size>10_000, cover
+              assert meta.get("title"), meta
+              probe=json.loads(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","json",str(video)],text=True))
+              duration=float(probe["format"]["duration"])
+              assert duration>=60, (video,duration)
+              print(f"SHORT_{n}_OK duration={duration:.2f}s bytes={video.stat().st_size}")
+          print("GTA_VI_TIKTOK_SOURCE_QA_OK")
+          PY
+
+      - name: Upload three MP4s and covers to TikTok Helper assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p gta-vi-assets
+          for n in 1 2 3; do
+            cp "output/shorts/short_${n}.mp4" "gta-vi-assets/gta-vi-2026-11-16-short-${n}.mp4"
+            cp "output/shorts/short_${n}_cover.jpg" "gta-vi-assets/gta-vi-2026-11-16-short-${n}.jpg"
+          done
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" gta-vi-assets/* --clobber
+
+      - name: Verify all six remote media URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 3 --max-time 120 --range 0-1023 "$BASE/gta-vi-2026-11-16-short-$n.$ext" -o /dev/null
+              echo "REMOTE_OK short-$n.$ext"
+            done
+          done
+
+      - name: Add exactly three GTA VI Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime,timezone
+          p=Path("data/tiktok_queue.json")
+          q=json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          titles=[
+            "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
+            "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
+            "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!"
+          ]
+          captions=[
+            "O pré-carregamento digital de GTA 6 já está disponível para quem reservou o jogo. A Rockstar publicou o aviso oficial e mostrou novas cenas de Leonida.\n\n🎮 Siga o Radar dos Games para mais novidades!\n\n#GTA6 #GTAVI #RockstarGames #GamingNews #TikTokGames",
+            "Jason e Lucia estão no centro da nova história de GTA 6. O trailer de lançamento aumenta a expectativa para conhecer essa dupla em ação por Leonida.\n\n🎮 Siga o Radar dos Games para mais novidades!\n\n#GTA6 #GTAVI #JasonAndLucia #RockstarGames #TikTokGames",
+            "A data está confirmada: GTA 6 chega em 19 de novembro de 2026. A contagem regressiva entrou na reta final para a nova aventura da Rockstar.\n\n🎮 Siga o Radar dos Games para mais novidades!\n\n#GTA6 #GTAVI #RockstarGames #Games #TikTokGames"
+          ]
+          youtube_ids=["q9ckmU_k8Vc","uGx8CakS6DA","PplU6uEkNOM"]
+          prefix="gta-vi-2026-11-16-short-"
+          new=[]
+          for n in (1,2,3):
+            key=f"{prefix}{n}"
+            new.append({
+              "id":key,
+              "title":titles[n-1],
+              "media_url":f"{base}/{key}.mp4",
+              "thumbnail_url":f"{base}/{key}.jpg",
+              "post_text":captions[n-1],
+              "status":"approved",
+              "youtube_id":youtube_ids[n-1],
+              "youtube_url":f"https://www.youtube.com/shorts/{youtube_ids[n-1]}",
+              "source":"gta_vi_2026_11_16_completed_qa",
+              "source_run_id":43917769024,
+              "short_number":n,
+              "approved_at":now,
+              "synced_at":now
+            })
+          keys={x["id"] for x in new}
+          ytids={x["youtube_id"] for x in new}
+          preserved=[x for x in old if x.get("id") not in keys and x.get("youtube_id") not in ytids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=(new+preserved)[:200]
+          p.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":3,"preserved":len(preserved),"total":len(q["items"]),"titles":titles},ensure_ascii=False))
+          PY
+
+      - name: Commit queue and verify remote helper records
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: add three GTA VI Shorts to TikTok Helper"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-remote.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-remote.json",encoding="utf-8"))
+          ids={f"gta-vi-2026-11-16-short-{n}" for n in (1,2,3)}
+          found=[x for x in q.get("items",[]) if x.get("id") in ids]
+          assert len(found)==3, (len(found),ids)
+          assert all(x.get("status")=="approved" and x.get("media_url","").endswith(".mp4") and x.get("post_text") for x in found)
+          print("TIKTOK_HELPER_GTA_VI_OK",len(found),"QUEUE_TOTAL",len(q.get("items",[])))
+          PY
