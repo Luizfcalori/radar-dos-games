@@ -57,7 +57,7 @@
     "O vídeo Pre-Load Now tem cerca de trinta segundos e traz uma montagem rápida de cenas de Leonida. A prévia passa por momentos de festa, carros, uma equipe tática e atividades em diferentes ambientes. É um vídeo curto, mas funciona como a última chamada da Rockstar antes da estreia.",
     "Um mês antes, em 15 de outubro, a Rockstar publicou o Launch Trailer. O vídeo foi capturado inteiramente dentro do jogo em um PlayStation 5 e apresenta Jason e Lucia em uma sequência de cenas que mistura ação, perseguições, encontros e momentos da vida dos dois. A montagem destaca a dupla em cenas de ação e deslocamento por Leonida.",
     "A descrição oficial resume o ponto de partida da história: Jason e Lucia já sabem que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os dois acabam no meio de uma conspiração criminosa que atravessa todo o estado de Leonida. Nos trailers, os dois aparecem lado a lado em diferentes situações, reforçando a parceria que conduz a história.",
-    "Um dos clipes acompanha um barco atravessando canais e áreas alagadas. Em outros cortes, carros circulam por vias urbanas e aparecem cenas noturnas com veículos em movimento. A montagem alterna entre água, marina e cidade, cenários que aparecem nos vídeos oficiais.",
+    "Um dos clipes acompanha um barco atravessando canais e áreas alagadas. Em outros cortes, carros circulam por vias urbanas e aparecem cenas noturnas com veículos em movimento.",
     "A Rockstar também disponibilizou uma galeria de lançamento com novas capturas de tela em seu site oficial. É mais uma oportunidade de observar Jason, Lucia, os veículos e os cenários antes da estreia. A galeria amplia o material oficial disponível para observar Jason, Lucia, veículos e cenários de Leonida.",
     "A data anunciada continua sendo 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar recomenda que quem fez a pré-venda digital aproveite o pré-carregamento para deixar o jogo pronto.",
     "Você está pronto para explorar Leonida no dia 19? Conta nos comentários se vai começar a jogar no lançamento. Acompanha o Radar dos Games e inscreva-se no canal para receber as próximas novidades e nossa cobertura da estreia."
@@ -70,7 +70,7 @@
     3,
     4
   ],
-  "narration_revision": "2026-11-16 décima segunda tentativa: conferência dos quadros reais; retirar 'perseguições' e descrever barco/canais, marina, carros em movimento e direção noturna que aparecem nos vídeos.",
+  "narration_revision": "2026-11-16 décima terceira tentativa: manter somente as duas frases concretas aprovadas sobre barco/canais e carros/direção noturna; retirar a frase abstrata de transição.",
   "video_max_assets": {
     "https://www.instagram.com/p/DehBEbwgV1d/": 1,
     "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
@@ -81,7 +81,7 @@
     "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — Grand Theft Auto VI airboat gameplay clip",
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official media archive — Official Cover Art Animation"
   },
-  "production_note": "Brief refinado após inspeção manual dos frames do trailer e do clipe de airboat. Narração agora se limita aos elementos visuais confirmados.",
+  "production_note": "Brief refinado após Director V4: as duas frases concretas foram aceitas; removida apenas a transição abstrata que não correspondia a um plano específico.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
