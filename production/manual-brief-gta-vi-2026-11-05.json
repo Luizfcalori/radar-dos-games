@@ -1,57 +1,61 @@
 {
   "valid_until": "2026-11-19T23:59:00Z",
   "content_id": "manual-grand-theft-auto-vi-last-72h-gameplay-update-2026-11-16",
-  "title": "Grand Theft Auto VI — últimas novidades antes do lançamento",
-  "headline": "GTA VI: AS ÚLTIMAS NOVIDADES A TRÊS DIAS DA ESTREIA!",
+  "title": "Grand Theft Auto VI — últimos vídeos oficiais antes da estreia",
+  "headline": "GTA VI: OS ÚLTIMOS VÍDEOS OFICIAIS ANTES DA ESTREIA!",
   "primary_source": "https://www.rockstargames.com/VI",
   "media_source_urls": [
     "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/VI/launch-trailer",
-    "https://www.rockstargames.com/VI/an-extended-look"
+    "https://www.rockstargames.com/VI/launch-gallery"
   ],
   "source_urls": [
     "https://www.rockstargames.com/VI",
+    "https://www.rockstargames.com/br/videos/55kss26g",
+    "https://www.rockstargames.com/br/videos/76orsa95",
     "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer",
-    "https://www.vice.com/en/article/gta-6-gameplay-details-guardian-interview/",
-    "https://comicbook.com/gaming/news/gta-6-grand-theft-auto-vi-rockstar-games-update-1-002-today-ps5-xbox/",
+    "https://www.rockstargames.com/VI/launch-gallery",
+    "https://www.rockstargames.com/newswire/article/4k138k8okkk483/grand-theft-auto-vi-an-extended-look-now-playing",
+    "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/newswire?tag=vi"
   ],
   "video_urls": [
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
+    "https://www.youtube.com/watch?v=_yl5ELcmugI",
+    "https://www.youtube.com/watch?v=rz1B4B2yBZY",
+    "https://www.youtube.com/watch?v=VQRLujxTm3c"
   ],
   "short_hooks": [
-    "GTA 6 RECEBE SUA SEGUNDA ATUALIZAÇÃO ANTES DA ESTREIA!",
-    "ASSALTOS EM GTA 6 TERÃO PLANEJAMENTO E ESTRATÉGIA!",
-    "JASON E LUCIA: A PRÉVIA REVELOU DETALHES INÉDITOS!"
+    "O NOVO VÍDEO OFICIAL DE GTA 6 JÁ ESTÁ NO AR!",
+    "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
+    "FALTAM TRÊS DIAS PARA GTA 6 CHEGAR!"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
     "Tema bloqueado: Grand Theft Auto VI. Não substituir por GTA Online, GTA V ou qualquer outro jogo.",
-    "A Rockstar mantém 19 de novembro de 2026 como data de lançamento para PlayStation 5 e Xbox Series X|S.",
-    "Uma segunda atualização de GTA VI, identificada como 01.002.001 nos sistemas de PS5 e Xbox, foi reportada em 16/11. A Rockstar não publicou notas oficiais; não afirmar o que ela altera nem especular sobre conteúdo.",
-    "A prévia de gameplay publicada após visita da imprensa à Rockstar North descreve assaltos com reconhecimento prévio do local, busca de entradas alternativas e atenção a câmeras de segurança. Atribuir esses detalhes à prévia jornalística, não apresentar como demonstração de todas as mecânicas finais.",
-    "A mesma prévia descreve Jason e Lucia começando com crimes menores, como furtos de carros e arrombamento de fechaduras, antes de trabalhos maiores.",
-    "A Rockstar North também falou sobre oferecer oportunidades para o jogador demonstrar empatia. Não inventar sistema moral, finais ou consequências específicas.",
-    "Usar somente vídeos e imagens oficiais da Rockstar Games para o material visual. Não usar vazamentos, reuploads de terceiros, gameplay de GTA V ou imagens de outros jogos.",
-    "Plataformas confirmadas: PS5 e Xbox Series X|S. Não anunciar data de PC, pois não há data oficial divulgada.",
+    "Data oficial: 19 de novembro de 2026. Plataformas confirmadas: PlayStation 5 e Xbox Series X|S.",
+    "A pauta deve se apoiar em anúncios e vídeos oficiais da Rockstar: Pre-Load Now (10/11), Launch Trailer (15/10), Trailer 2 e materiais oficiais da galeria de lançamento.",
+    "O pré-carregamento digital está disponível para quem fez a pré-venda; compradores de edição física com código podem iniciar o download após receber e ativar o código.",
+    "Pre-Load Now é um vídeo curto de aproximadamente 30 segundos. Não chamá-lo de novo trailer completo nem inventar cenas ou recursos que não aparecem nele.",
+    "O Launch Trailer foi capturado inteiramente dentro do jogo em PlayStation 5, segundo a Rockstar. A música é Flower in a Hurricane, de Justice, com Tame Impala, SZA e King Gizzard & The Lizard Wizard.",
+    "A descrição oficial da história diz que um golpe aparentemente fácil dá errado e coloca Jason e Lucia no meio de uma conspiração criminosa que atravessa Leonida.",
+    "Não incluir detalhes não demonstrados sobre arrombamento de fechaduras, câmeras, códigos de cofres, sistema moral, missões, GTA Online ou recursos ainda não confirmados. Não usar a reportagem de update 01.002.001 nesta versão.",
+    "Usar exclusivamente vídeos oficiais da Rockstar Games listados em video_urls. Não usar vídeos de IGN, reuploads, vazamentos, GTA V ou imagens de outros jogos.",
     "Master 16:9 Full HD, narração natural PT-BR com Thalita Multilingual PT-BR V3, exatamente três Shorts 9:16 com capas próprias.",
-    "Shorts com gancho imediato, legendas grandes, cortes dinâmicos e CTA curto. Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes.",
+    "Shorts com gancho imediato, legendas grandes, cortes dinâmicos e duração mínima de 60 segundos. Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes.",
     "Manter intro oficial integral antes do gameplay. Evitar repetição de cenas, loops, travamentos, imagens estáticas longas e falas sobre processo de produção.",
     "YouTube: enviar Master e os três Shorts como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados.",
-    "Não usar o tamanho de download, preço, GTA Online, desempenho ou recursos não confirmados como fatos."
+    "Não usar data de PC, preço, performance ou recursos não confirmados como fatos."
   ],
   "script_blocks": [
-    "Faltam apenas três dias para a chegada de Grand Theft Auto VI. Depois de uma espera que atravessou mais de uma geração de consoles, a Rockstar está na reta final para colocar os jogadores de volta em Vice City e no estado de Leonida. Mas a semana de lançamento já começou movimentada: uma nova atualização foi identificada nos consoles e uma prévia recente revelou detalhes interessantes sobre a forma como Jason e Lucia vão encarar seus primeiros trabalhos. Hoje, o Radar dos Games separa o que foi divulgado do que ainda não tem confirmação.",
-    "A primeira novidade é uma segunda atualização de GTA VI identificada nos sistemas de PlayStation 5 e Xbox. O pacote aparece com a identificação 01.002.001 e foi reportado em 16 de novembro, poucos dias depois de uma atualização anterior. Existe, porém, um detalhe importante: a Rockstar não publicou notas explicando o conteúdo desse pacote. Portanto, não dá para afirmar que ele adiciona missões, muda gráficos ou corrige um problema específico. O fato confirmado pela reportagem é a existência da atualização; o que ela faz continua sem explicação pública.",
-    "Outra informação que chamou atenção veio de uma prévia de gameplay baseada em uma visita da imprensa à Rockstar North. Segundo os detalhes publicados após a visita, Jason e Lucia não começam a história realizando grandes assaltos cinematográficos. A dupla parte de trabalhos menores, como furtar carros mais simples e arrombar fechaduras. A progressão leva a serviços maiores, criando uma escalada que acompanha a situação dos protagonistas e o caminho que eles percorrem dentro do mundo do jogo.",
-    "A preparação dos assaltos também pode ter um papel importante. A prévia descreve a possibilidade de observar um local antes de entrar, procurando uma entrada pelos fundos, pistas sobre o código de um cofre e a posição de câmeras de segurança. Em determinadas situações, o jogador poderá desativar câmeras ou até levar as gravações. Isso aponta para uma abordagem em que observar o ambiente e escolher como agir pode fazer diferença, em vez de simplesmente entrar atirando em tudo.",
-    "A mesma reportagem destaca uma intenção interessante para a narrativa: a Rockstar quer oferecer momentos em que o jogador possa demonstrar empatia. O estúdio descreveu essa possibilidade como uma novidade importante para a série. Isso não significa que já conhecemos um sistema moral completo, finais alternativos ou todas as consequências das escolhas. O que foi relatado é a intenção de criar espaço para que o jogador se importe com as pessoas e situações que encontra durante a jornada.",
-    "Jason e Lucia continuam no centro dessa história. A descrição oficial da Rockstar apresenta os dois como um casal que já sabe que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os protagonistas acabam envolvidos em uma conspiração criminosa que atravessa Leonida. A relação entre os dois é parte fundamental da aventura, e os materiais oficiais mostram que confiança, parceria e sobrevivência estarão conectadas ao caminho que eles precisam enfrentar.",
-    "Visualmente, a Rockstar vem apresentando Vice City e outras regiões de Leonida em seus trailers, imagens e na apresentação estendida de gameplay. Para acompanhar essa reta final, vale observar os vídeos oficiais e separar o que aparece nas cenas daquilo que ainda não foi anunciado. Um trailer pode mostrar uma perseguição ou um ambiente, mas isso não confirma sozinho todos os sistemas, atividades ou possibilidades que existirão na versão final. O Radar vai manter essa diferença clara para não transformar teoria em notícia.",
-    "A data segue marcada para 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. Até o momento, a Rockstar não divulgou uma data oficial para PC. Também não devemos tratar como confirmadas informações sobre o futuro de GTA Online, tamanho total do mapa ou recursos que ainda não foram detalhados pela empresa. Com a estreia tão próxima, novas informações podem aparecer, mas o compromisso aqui é trabalhar com o que já tem fonte e contexto.",
-    "Agora queremos saber: o que mais chama sua atenção em GTA VI? A evolução dos assaltos, a parceria entre Jason e Lucia ou a liberdade para explorar Vice City e Leonida? Conta nos comentários e acompanha o Radar dos Games para não perder as últimas novidades antes da estreia. Inscreva-se no canal, porque a contagem regressiva está chegando ao fim e a próxima grande conversa dos games está prestes a começar."
+    "Faltam apenas três dias para a chegada de Grand Theft Auto VI. No dia 19 de novembro, a Rockstar abre as portas de Vice City e do estado de Leonida para uma nova geração de jogadores. A reta final já está cheia de material oficial: um vídeo de pré-carregamento, o trailer de lançamento e uma coleção de imagens que mostram melhor os protagonistas e os lugares que vamos explorar.",
+    "A novidade oficial mais recente chegou em 10 de novembro. A Rockstar publicou Pre-Load Now e confirmou que o pré-carregamento digital já está disponível para quem reservou o jogo. Quem comprou uma edição física com código também poderá ativar esse código e iniciar o download assim que recebê-lo. A ideia é deixar tudo preparado para começar a jogar quando o lançamento for liberado no dia 19.",
+    "O vídeo Pre-Load Now tem cerca de trinta segundos e traz uma montagem rápida de cenas de Leonida. A prévia passa por momentos de festa, carros, uma equipe tática e atividades em diferentes ambientes. A trilha é Blood in Your Eyes, de Tove Lo, música que faz parte do álbum oficial de Grand Theft Auto VI. É um vídeo curto, mas funciona como a última chamada da Rockstar antes da estreia.",
+    "Um mês antes, em 15 de outubro, a Rockstar publicou o Launch Trailer. O vídeo foi capturado inteiramente dentro do jogo em um PlayStation 5 e apresenta Jason e Lucia em uma sequência de cenas que mistura ação, perseguições, encontros e momentos da vida dos dois. A música principal é Flower in a Hurricane, do duo Justice, com participação de Tame Impala, SZA e King Gizzard and the Lizard Wizard.",
+    "A descrição oficial resume o ponto de partida da história: Jason e Lucia já sabem que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os dois acabam no meio de uma conspiração criminosa que atravessa todo o estado de Leonida. A partir daí, precisam confiar um no outro para tentar sair dessa situação. A relação entre os protagonistas é o centro da aventura, não apenas um detalhe da campanha.",
+    "Os vídeos oficiais também mostram que a aventura vai muito além de uma única rua de Vice City. A Rockstar apresenta áreas costeiras, estradas, regiões rurais e diferentes pontos de Leonida. Entre os materiais publicados aparecem veículos, passeios de barco, encontros, perseguições e cenas de ação. Essa variedade ajuda a mostrar a escala do mundo sem transformar cada cena de trailer em uma promessa sobre uma mecânica que ainda não foi explicada.",
+    "A Rockstar também disponibilizou uma galeria de lançamento com novas capturas de tela em seu site oficial. É mais uma oportunidade de observar Jason, Lucia, os veículos e os cenários antes da estreia. Somando a galeria aos vídeos oficiais, já existe bastante material para entender o clima da história e a identidade visual do jogo, sem depender de vazamentos ou de imagens de versões antigas.",
+    "A data anunciada continua sendo 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar recomenda que quem fez a pré-venda digital aproveite o pré-carregamento para deixar o jogo pronto. O que ainda não foi detalhado oficialmente deve continuar sendo tratado como desconhecido até que a empresa publique novas informações.",
+    "Agora queremos saber: você vai começar a jogar assim que Leonida for liberada? Qual parte mais chama sua atenção: Jason e Lucia, as ruas de Vice City ou a variedade de ambientes que a Rockstar está mostrando? Conta nos comentários e acompanha o Radar dos Games. Inscreva-se no canal para receber as próximas novidades e a cobertura do lançamento."
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 1,
@@ -61,16 +65,17 @@
     3,
     4
   ],
-  "narration_revision": "2026-11-16: brief renovado com a segunda atualização identificada nos consoles e detalhes da prévia de gameplay; fatos sem notas oficiais permanecem explicitamente não confirmados.",
+  "narration_revision": "2026-11-16 segunda tentativa: roteiro refeito para corresponder exclusivamente aos vídeos oficiais disponíveis; removidos detalhes de gameplay que não apareciam no material visual.",
   "video_max_assets": {
-    "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
-    "https://www.instagram.com/p/DehBEbwgV1d/": 1,
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9
+    "https://www.youtube.com/watch?v=_yl5ELcmugI": 1,
+    "https://www.youtube.com/watch?v=rz1B4B2yBZY": 1,
+    "https://www.youtube.com/watch?v=VQRLujxTm3c": 1
   },
   "video_labels": {
-    "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — An Extended Look",
-    "https://www.instagram.com/p/DehBEbwgV1d/": "Rockstar Games official Instagram — Launch Trailer",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official media video archive"
+    "https://www.youtube.com/watch?v=_yl5ELcmugI": "Rockstar Games official YouTube — Grand Theft Auto VI: Pre-Load Now",
+    "https://www.youtube.com/watch?v=rz1B4B2yBZY": "Rockstar Games official YouTube — Grand Theft Auto VI Launch Trailer",
+    "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games official YouTube — Grand Theft Auto VI Trailer 2"
   },
-  "production_note": "Brief renovado para a pauta de 16/11/2026; produção privada Master + exatamente 3 Shorts."
+  "production_note": "Brief corrigido após Director V4 bloquear uma fala sem correspondência visual; roteiro alinhado aos três vídeos oficiais da Rockstar.",
+  "video_fallback_urls": []
 }
