@@ -145,7 +145,7 @@ jobs:
           merged=[x for x in new if x["id"] not in old_ids and x["youtube_id"] not in old_ytids]
           q["version"]=2
           q["updated_at"]=now
-          q["items"]=(merged+old)[:200]
+          q["items"]=(merged+old)
           qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           print(json.dumps({"added":len(merged),"preserved":len(old),"total":len(q["items"]),"items":[x["id"] for x in new]},ensure_ascii=False))
           PY
