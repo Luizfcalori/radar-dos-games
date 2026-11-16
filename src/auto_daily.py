@@ -885,7 +885,6 @@ def main():
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
         if forced_topic_slug == ascii_slug("Resident Evil Requiem"):
             manual = load_manual_brief("production/manual-brief-resident-evil-requiem-2026-11-16.json")
-        elif forced_topic_slug == ascii_slug("Saros Zenith"):
         if forced_topic_slug == ascii_slug("Saros Zenith"):
             manual = load_manual_brief("production/manual-brief-saros-zenith-2026-10-21.json")
         elif forced_topic_slug == ascii_slug("League of Legends"):
