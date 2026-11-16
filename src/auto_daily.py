@@ -877,6 +877,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-apex-legends-cipher-godzilla-2026-11-15.json")
     elif forced_topic_slug == ascii_slug("Resident Evil Requiem"):
         manual = load_manual_brief("production/manual-brief-resident-evil-requiem-2026-11-16.json")
+    elif forced_topic_slug == ascii_slug("Slotbound"):
+        manual = load_manual_brief("production/manual-brief-slotbound-2026-11-16.json")
     elif forced_topic_slug == ascii_slug("Where Winds Meet"):
         # Keep this requested production pinned to the official Hutuo anniversary update.
         manual = load_manual_brief("production/manual-brief-where-winds-meet-hutuo-anniversary-2026-11-15.json")
@@ -885,6 +887,8 @@ def main():
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
         if forced_topic_slug == ascii_slug("Resident Evil Requiem"):
             manual = load_manual_brief("production/manual-brief-resident-evil-requiem-2026-11-16.json")
+        elif forced_topic_slug == ascii_slug("Slotbound"):
+            manual = load_manual_brief("production/manual-brief-slotbound-2026-11-16.json")
         elif forced_topic_slug == ascii_slug("Saros Zenith"):
             manual = load_manual_brief("production/manual-brief-saros-zenith-2026-10-21.json")
         elif forced_topic_slug == ascii_slug("League of Legends"):

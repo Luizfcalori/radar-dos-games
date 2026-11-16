@@ -1,0 +1,73 @@
+{
+  "valid_until": "2026-11-23T23:59:00Z",
+  "content_id": "manual-slotbound-version-1-0-launch-and-november-16-hotfix-2026-11-16",
+  "title": "Slotbound",
+  "headline": "SLOTBOUND CHEGA À VERSÃO 1.0 E RECEBE NOVO PACOTE DE AJUSTES",
+  "primary_source": "https://store.steampowered.com/app/4459590/Slotbound/",
+  "media_source_urls": [
+    "https://store.steampowered.com/app/4459590/Slotbound/",
+    "https://steamcommunity.com/app/4459590/allnews/"
+  ],
+  "source_urls": [
+    "https://store.steampowered.com/app/4459590/Slotbound/",
+    "https://steamdb.info/patchnotes/26633340/",
+    "https://steamdb.info/patchnotes/26705604/",
+    "https://steamdb.info/patchnotes/26684163/",
+    "https://steamdb.info/app/4459590/history/"
+  ],
+  "video_urls": [],
+  "video_fallback_urls": [
+    "https://video.akamai.steamstatic.com/store_trailers/4459590/61881972/3d4feef8b4ba165d676f76197190b1cd3af96120/1793117327/microtrailer.mp4"
+  ],
+  "short_hooks": [
+    "SLOTBOUND LANÇOU A VERSÃO 1.0 — E JÁ RECEBEU VÁRIOS HOTFIXES!",
+    "O QUE MUDOU NO SLOTBOUND COM AS NOVAS MISSÕES FATE STONE?",
+    "O JACKPOT DO SLOTBOUND PODE MUDAR UMA RUN INTEIRA!"
+  ],
+  "approved_for_publish": true,
+  "editorial_rules": [
+    "Pauta exclusiva sobre Slotbound. Não trocar de jogo nem incluir anúncios não confirmados.",
+    "O jogo foi lançado em 13 de novembro de 2026 como versão 1.0; não chamar de Early Access sem evidência atual.",
+    "O hotfix de 16 de novembro adicionou oito missões Fate Stone, revisou condições de quests, antecipou desbloqueios de unidades raras e Core Rate-Up, concedeu moeda de melhoria em derrotas e corrigiu o jackpot e bugs.",
+    "O update de 15 de novembro melhorou acesso à Collection durante runs, acelerou batalhas regulares após a queda de todas as unidades, alterou a quest Gauntlet para Four Lines at Once e corrigiu problemas de interface e log.",
+    "O lançamento recebeu hotfixes adicionais de dificuldade, incluindo redução da dificuldade de chefes iniciais e ajustes de estágios. Não afirmar que todos os bugs foram eliminados.",
+    "Explicar a mecânica central: máquina de caça-níqueis 3x3 invoca unidades, linhas e jackpots, absorção evolui unidades, classes, itens, Imprints e Cores formam sinergias; o jogo é roguelite de defesa/autobattler single-player.",
+    "Não confundir aleatoriedade com jogo de apostas por dinheiro real. Slotbound é um videogame de estratégia/defesa.",
+    "Usar somente gameplay do próprio Slotbound capturado do trailer/CDN oficial do Steam e mídia do app exato. Não usar gameplay genérico nem imagens de outros jogos.",
+    "Master Full HD 16:9 com voz Thalita Multilingual PT-BR V3; exatamente três Shorts 9:16, cada um com pelo menos 60 segundos e capa própria.",
+    "Manter intro oficial integral, evitar loops, travamentos, repetição de cenas e narração sobre processo de produção.",
+    "YouTube: enviar Master e os três Shorts como privados. TikTok Helper: importar exatamente os três Shorts aprovados, sem sobrescrever ou limpar fila existente.",
+    "Se a mídia oficial não sustentar cenas variadas e movimento suficiente para os quatro vídeos, interromper no gate de qualidade; não preencher com footage genérico."
+  ],
+  "script_blocks": [
+    "Slotbound finalmente chegou à versão 1.0 e já está recebendo uma sequência de ajustes importantes. O jogo mistura defesa em ondas, estratégia de autobattler e uma máquina de caça-níqueis 3 por 3 que define quais unidades entram no campo. A proposta chama atenção porque transforma cada giro em uma decisão tática: uma combinação pode reforçar o exército, abrir espaço para uma sinergia ou mudar completamente o rumo de uma partida.",
+    "O lançamento oficial aconteceu em 13 de novembro de 2026. O desenvolvedor independente Optima Arch apresentou a versão 1.0 como o começo de uma nova etapa, e não como o encerramento do desenvolvimento. A mensagem foi clara: continuar ouvindo a comunidade, corrigir problemas que apareçam e melhorar os pontos que possam deixar a experiência frustrante. E os primeiros dias confirmaram esse compromisso, com atualizações sucessivas para ajustar dificuldade, estabilidade e funcionamento de sistemas.",
+    "A novidade mais recente, publicada em 16 de novembro, mexeu principalmente nas missões Fate Stone. O pacote adicionou oito novas missões, revisou objetivos que obrigavam o jogador a seguir estilos muito específicos e impediu que desafios praticamente impossíveis apareçam em determinadas situações do modo Endless. Também antecipou o desbloqueio de unidades raras e reduziu o custo para liberar o sistema Core Rate-Up. Isso significa que parte da progressão ficou mais acessível, sem retirar a necessidade de planejar cada rodada.",
+    "Outra mudança importante é a recompensa para quem perde uma partida. Agora, runs encerradas em derrota ainda concedem uma quantidade de moeda de melhoria proporcional às ondas vencidas. É uma alteração pequena no papel, mas que pode tornar a progressão menos frustrante, principalmente para quem está aprendendo as combinações e ainda não consegue chegar às fases mais avançadas. O update também corrigiu um problema que impedia o jackpot de ativar em algumas situações envolvendo Witch's Torch ou Nudge.",
+    "No dia anterior, 15 de novembro, Slotbound recebeu outro conjunto de ajustes. A Collection passou a poder ser aberta diretamente durante uma run, inclusive enquanto o jogador escolhe uma promoção de classe. Nas ondas normais, quando todas as unidades caem, o restante da batalha passa a avançar automaticamente mais rápido. A missão Gauntlet da Fate Stone foi substituída por Four Lines at Once, que exige quatro linhas vencedoras em uma onda. Também houve melhorias na leitura dos ícones de atributos e correções de interface.",
+    "Mas o coração de Slotbound continua sendo a máquina 3 por 3. O jogador gira os símbolos e as combinações de linhas invocam guerreiros, arqueiros, magos e outras unidades para defender o campo. Um jackpot pode provocar uma sequência poderosa e trazer unidades raras, mas depender apenas da sorte não costuma ser suficiente. É preciso decidir quais unidades manter, quais absorver e como organizar o exército para enfrentar ondas cada vez mais difíceis.",
+    "A evolução das unidades é outro ponto central. Unidades mais fracas podem ser absorvidas para fortalecer outras, aumentando atributos e abrindo caminhos de classe. Itens, Imprints e Cores acrescentam modificadores e criam sinergias que mudam o comportamento do time. A mesma composição pode funcionar de maneira diferente dependendo dos atributos aleatórios recebidos e das escolhas feitas ao longo da run. É aí que o jogo tenta equilibrar sorte e estratégia.",
+    "Os primeiros hotfixes da versão 1.0 também reduziram a dificuldade de chefes iniciais e de estágios, corrigiram habilidades que não eram ativadas corretamente e melhoraram a compatibilidade com diferentes instalações do Steam. Isso mostra que o desenvolvedor está reagindo rapidamente aos relatos dos jogadores. Ainda assim, é cedo para dizer que o balanceamento está fechado: a própria equipe reconheceu que novas questões podem aparecer conforme mais pessoas avançam pelo conteúdo.",
+    "Slotbound é um projeto independente de estratégia para um jogador, e sua mistura de roguelite, defesa em ondas e mecânicas de caça-níqueis cria uma identidade bem diferente dentro do gênero. A versão 1.0 já está disponível, e os ajustes de 15 e 16 de novembro mostram que o jogo continua evoluindo depois do lançamento. Agora queremos saber: você confiaria na sorte para montar seu exército ou tentaria controlar cada combinação com itens, classes e sinergias? Conta nos comentários, acompanha o Radar dos Games e inscreva-se no canal para mais novidades."
+  ],
+  "minimum_assets": 2,
+  "minimum_video_assets": 1,
+  "minimum_unique_video_seconds": 15,
+  "minimum_image_assets": 1,
+  "short_scene_numbers": [
+    2,
+    4,
+    6
+  ],
+  "video_max_assets": {
+    "https://video.akamai.steamstatic.com/store_trailers/4459590/61881972/3d4feef8b4ba165d676f76197190b1cd3af96120/1793117327/microtrailer.mp4": 1
+  },
+  "video_labels": {
+    "https://video.akamai.steamstatic.com/store_trailers/4459590/61881972/3d4feef8b4ba165d676f76197190b1cd3af96120/1793117327/microtrailer.mp4": "Slotbound — official Steam gameplay trailer"
+  },
+  "max_video_assets": 2,
+  "max_image_assets": 8,
+  "allow_same_source_role_fallback": false,
+  "steam_app_id": 4459590,
+  "production_note": "Brief editorial atualizado em 16/11/2026 com o lançamento 1.0 de 13/11 e hotfix de 16/11. A aquisição deve usar somente mídia do app Steam 4459590 e trailer oficial. Gate editorial deve bloquear se não houver gameplay em movimento e variedade suficiente."
+}
