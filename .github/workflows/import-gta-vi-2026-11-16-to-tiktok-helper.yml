@@ -169,3 +169,5 @@ jobs:
           assert all(x.get("status")=="approved" and x.get("media_url","").endswith(".mp4") and x.get("post_text") for x in found)
           print("TIKTOK_HELPER_GTA_VI_OK",len(found),"QUEUE_TOTAL",len(q.get("items",[])))
           PY
+
+# Keep this import workflow available for an idempotent GTA VI queue sync.
