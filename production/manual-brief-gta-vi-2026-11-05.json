@@ -74,12 +74,12 @@
   "video_max_assets": {
     "https://www.instagram.com/p/DehBEbwgV1d/": 1,
     "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 1
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 3
   },
   "video_labels": {
     "https://www.instagram.com/p/DehBEbwgV1d/": "Rockstar Games official Instagram — Grand Theft Auto VI Launch Trailer",
     "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — Grand Theft Auto VI airboat gameplay clip",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official media archive — Official Cover Art Animation"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar official media archive — gameplay and trailer footage (cover artwork excluded)"
   },
   "production_note": "Brief refinado após Director V4: as duas frases concretas foram aceitas; removida apenas a transição abstrata que não correspondia a um plano específico.",
   "video_fallback_urls": [],
@@ -92,5 +92,6 @@
   ],
   "max_video_assets": 3,
   "max_image_assets": 1,
-  "minimum_image_assets": 1
+  "minimum_image_assets": 1,
+  "allow_same_source_role_fallback": true
 }

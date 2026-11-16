@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from src.media import sha256_file, youtube_video_id
+from src.media import blocked_candidate, sha256_file, youtube_video_id
 
 
 class MediaDeduplicationTests(unittest.TestCase):
@@ -33,6 +33,12 @@ class MediaDeduplicationTests(unittest.TestCase):
             first.write_bytes(b"video A")
             second.write_bytes(b"video B")
             self.assertNotEqual(sha256_file(first), sha256_file(second))
+
+    def test_cover_art_animation_is_rejected_as_gameplay(self):
+        self.assertEqual(
+            blocked_candidate("GTAVI_Official_Cover_Art_Landscape.mp4", {}),
+            "cover_art",
+        )
 
     def test_hashing_works_with_small_chunks(self):
         with tempfile.TemporaryDirectory() as tmp:

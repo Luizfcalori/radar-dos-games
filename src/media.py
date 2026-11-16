@@ -13,7 +13,9 @@ STREAM_EXTS=('.m3u8','.mpd')
 IMAGE_EXTS=('.jpg','.jpeg','.png','.webp')
 LOW_VALUE_TOKENS=(
     'logo','favicon','icon','ogp_','store_banner','store-banner','header','footer','nav_','social',
-    'share-button','/share/','/intro.mp4','/intro-sp.mp4','/ptcl.mp4','splash','loading','background-loop'
+    'share-button','/share/','/intro.mp4','/intro-sp.mp4','/ptcl.mp4','splash','loading','background-loop',
+    # Artwork animations are not gameplay and must never satisfy moving-footage gates.
+    'cover_art','cover-art','coverart','key_art','key-art','keyart','wallpaper'
 )
 STEAM_VIDEO_HOST='https://video.fastly.steamstatic.com/'
 NEWISTY_BASE='https://newisty.com/api/video-downloader'

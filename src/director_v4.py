@@ -126,12 +126,14 @@ def eligible(scene, assets):
                          if a.get("type")=="video" and a.get("source")}
             video_roles={str(a.get("role") or "") for a in planned_assets
                          if a.get("type")=="video"}
+            curated_fallback_ids={int(v) for v in scene.get("fallback_media_indices") or []}
             vals.extend(a for a in assets.values()
                         if a.get("approved",True) and role_allowed(scene,a)
                         and int(a["index"]) not in approved_ids
                         and a.get("type")=="video"
-                        and str(a.get("source") or "") in source_keys
-                        and str(a.get("role") or "") in video_roles)
+                        and (int(a["index"]) in curated_fallback_ids
+                             or (str(a.get("source") or "") in source_keys
+                                 and str(a.get("role") or "") in video_roles)))
         if not vals or any(idx not in assets for idx in approved_ids):
             raise RuntimeError(f"QUALITY_BLOCK: cena {scene.get('title')} sem mídia da decupagem; fallback proibido")
         return vals
@@ -366,14 +368,17 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                      if a.get("type")=="video" and a.get("source")}
         video_roles={str(a.get("role") or "") for a in planned_assets
                      if a.get("type")=="video"}
+        fallback_ids={int(v) for v in scene.get("fallback_media_indices") or []}
         for idx, windows in global_reviewed_windows.items():
             candidate=assets.get(idx,{})
             same_verified_game_source=(
                 scene.get("allow_same_source_role_fallback")
                 and candidate.get("type")=="video"
-                and str(candidate.get("source") or "") in source_keys
-                and str(candidate.get("role") or "") in video_roles
                 and candidate.get("approved",True)
+                and (idx in fallback_ids or (
+                    str(candidate.get("source") or "") in source_keys
+                    and str(candidate.get("role") or "") in video_roles
+                ))
             )
             if (idx in allowed_ids or same_verified_game_source) and str(idx) not in local:
                 local[str(idx)] = windows

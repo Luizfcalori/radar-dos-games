@@ -97,6 +97,16 @@ class MediaFirstTests(unittest.TestCase):
             eligible({**scene,"media_first_assets":[123]},
                      {7:self.assets[0],19:alternate})
 
+    def test_curated_same_game_fallback_is_available_but_not_implicit(self):
+        alternate=dict(self.assets[0],index=19,source_label="official airboat clip")
+        scene={"title":"Barco","allowed_roles":["official_gameplay_01"],
+               "media_first_assets":[7],"fallback_media_indices":[19],
+               "allow_same_source_role_fallback":True}
+        results=eligible(scene,{7:self.assets[0],19:alternate})
+        self.assertEqual([int(a["index"]) for a in results],[7,19])
+        strict={**scene,"allow_same_source_role_fallback":False}
+        self.assertEqual([int(a["index"]) for a in eligible(strict,{7:self.assets[0],19:alternate})],[7])
+
     def test_url_hints_not_automated_visual_truth(self):
         self.assertGreater(relevance("O ambiente é Vegas",self.assets[1],"Battlefield 6"),0)
         self.assertEqual(relevance("armas e monstros",self.assets[0],"Battlefield 6"),0)

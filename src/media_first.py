@@ -160,8 +160,13 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         roles=list(dict.fromkeys(str(a["role"]) for a in picks))
         for idx in indices:usage[idx]+=1
         scene.update({
+            # Keep every approved, visually inspected video window available as a
+            # scene-local fallback. The director still prioritizes the scene's
+            # exact picks; fallback IDs come only from this game's curated manifest.
             "visual_windows": {str(a["index"]): inspected.get(int(a["index"]), {}).get("usable_windows", [])
-                               for a in picks if a["type"]=="video"} if visual_inventory else {},
+                               for a in videos} if visual_inventory else {},
+            "fallback_media_indices": [int(a["index"]) for a in videos
+                                       if int(a["index"]) not in indices],
             "vision_categories": expected,
             "preferred_media_indices": [int(a["index"]) for a in picks
                                         if a["type"]=="image" and relevance(text,a,topic)>0],
