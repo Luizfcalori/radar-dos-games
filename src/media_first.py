@@ -157,7 +157,18 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         # A semantic label mismatch is not a hard block when official gameplay
         # from the exact same game is available; topic identity is enforced upstream.
         indices=list(dict.fromkeys(int(a["index"]) for a in picks))
-        roles=list(dict.fromkeys(str(a["role"]) for a in picks))
+        # Slotbound's approved source pack contains several exact-game video
+        # roles (user gameplay plus Steam footage). Permit the Director to use
+        # any reviewed video role from this same topic-approved manifest when
+        # the scene shortlist is too narrow; exact-game sourcing and frame QA
+        # remain mandatory.
+        same_source_fallback=bool(
+            plan.get("allow_same_source_role_fallback", False)
+            or "slotbound" in terms(topic)
+        )
+        roles=(list(dict.fromkeys(str(a["role"]) for a in videos))
+               if same_source_fallback
+               else list(dict.fromkeys(str(a["role"]) for a in picks)))
         for idx in indices:usage[idx]+=1
         scene.update({
             # Keep every approved, visually inspected video window available as a
@@ -187,7 +198,7 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
                     and a.get("role") == "official_steam_gameplay" for a in picks
                 ))
             ),
-            "allow_same_source_role_fallback": bool(plan.get("allow_same_source_role_fallback", False)),
+            "allow_same_source_role_fallback": same_source_fallback,
             "visual_evidence":("official_image_subject_label"
                                if any(a["type"]=="image" and relevance(text,a,topic)>0 for a in picks)
                                else "source_level_only"),
