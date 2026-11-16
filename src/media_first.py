@@ -175,7 +175,18 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             "allowed_roles":roles,
             "allowed_role_prefixes":[],
             "semantic_subject":scene.get("title") or topic,
-            "allow_official_subject_fallback": bool(plan.get("allow_official_subject_fallback", False) or ("playtime" in terms(topic) and any(a.get("source") == "steam_app:2087540" and a.get("role") == "official_steam_gameplay" for a in picks))),
+            # Propagate the brief-level editorial fallback to each scene. The
+            # Director reads this scene flag when deciding whether inferred
+            # phrase subjects may fall back to reviewed shots from the same
+            # exact-game source. Explicit source identity and QA gates remain.
+            "allow_official_subject_fallback": bool(
+                scene.get("allow_official_subject_fallback")
+                or plan.get("allow_official_subject_fallback", False)
+                or ("playtime" in terms(topic) and any(
+                    a.get("source") == "steam_app:2087540"
+                    and a.get("role") == "official_steam_gameplay" for a in picks
+                ))
+            ),
             "allow_same_source_role_fallback": bool(plan.get("allow_same_source_role_fallback", False)),
             "visual_evidence":("official_image_subject_label"
                                if any(a["type"]=="image" and relevance(text,a,topic)>0 for a in picks)
