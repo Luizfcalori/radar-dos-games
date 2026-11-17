@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-16T16:42:48.509297+00:00",
-  "total_discovered": 199,
-  "ready_for_tiktok": 192,
+  "updated_at": "2026-11-17T08:21:04.207787+00:00",
+  "total_discovered": 202,
+  "ready_for_tiktok": 195,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "q9ckmU_k8Vc",
+      "youtube_url": "https://www.youtube.com/shorts/q9ckmU_k8Vc",
+      "title": "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "uGx8CakS6DA",
+      "youtube_url": "https://www.youtube.com/shorts/uGx8CakS6DA",
+      "title": "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "PplU6uEkNOM",
+      "youtube_url": "https://www.youtube.com/shorts/PplU6uEkNOM",
+      "title": "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "9t7tCAvMzjw",
       "youtube_url": "https://www.youtube.com/shorts/9t7tCAvMzjw",
