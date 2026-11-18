@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-17T08:21:04.207787+00:00",
-  "total_discovered": 202,
-  "ready_for_tiktok": 195,
+  "updated_at": "2026-11-18T15:24:39.842221+00:00",
+  "total_discovered": 205,
+  "ready_for_tiktok": 198,
   "waiting_media": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -42,6 +42,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "FbJ9SbHHeWQ",
+      "youtube_url": "https://www.youtube.com/shorts/FbJ9SbHHeWQ",
+      "title": "HUTUO CHEGOU: A REGIÃO MAIS GUERREIRA DE WHERE WINDS MEET!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "mhpL-wQrdSM",
+      "youtube_url": "https://www.youtube.com/shorts/mhpL-wQrdSM",
+      "title": "DOIS CHEFES MUNDIAIS E UMA CAMPANHA NO MEIO DA GUERRA!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "Hi_vn3PPKjQ",
+      "youtube_url": "https://www.youtube.com/shorts/Hi_vn3PPKjQ",
+      "title": "AS LANÇAS DUPLAS DE YUEN WOO-PING CHEGAM EM 26 DE NOVEMBRO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "q9ckmU_k8Vc",
       "youtube_url": "https://www.youtube.com/shorts/q9ckmU_k8Vc",
