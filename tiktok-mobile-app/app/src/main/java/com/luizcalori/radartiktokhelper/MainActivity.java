@@ -69,6 +69,7 @@ public class MainActivity extends Activity {
     private Button copyButton;
     private Button shareButton;
     private Button previewButton;
+    private Button sourceButton;
     private Button downloadButton;
     private Button batchButton;
     private Button postedButton;
@@ -164,6 +165,10 @@ public class MainActivity extends Activity {
         previewButton = button("▶ Assistir prévia do vídeo");
         previewButton.setOnClickListener(v -> openPreview());
         box.addView(previewButton);
+
+        sourceButton = button("↗ Abrir original no YouTube");
+        sourceButton.setOnClickListener(v -> openSource());
+        box.addView(sourceButton);
 
         titleLabel = new TextView(this);
         titleLabel.setText("Nenhum Short carregado");
@@ -286,7 +291,7 @@ public class MainActivity extends Activity {
                         if (o == null) continue;
                         QueueItem item = QueueItem.from(o);
                         if (item == null) continue;
-                        if (!"approved".equalsIgnoreCase(item.status) && !"ready_for_tiktok".equalsIgnoreCase(item.status)) continue;
+                        if (!"approved".equalsIgnoreCase(item.status) && !"ready_for_tiktok".equalsIgnoreCase(item.status) && !"waiting_media".equalsIgnoreCase(item.status)) continue;
                         loaded.add(item);
                     }
                 }
@@ -355,9 +360,10 @@ public class MainActivity extends Activity {
         titleLabel.setText(current.title);
         caption.setText(current.postText);
         boolean isPosted = getPostedIds().contains(current.id);
-        statusChip.setText(isPosted ? "PUBLICADO" : "APROVADO • PENDENTE");
-        statusChip.setBackgroundColor(isPosted ? Color.rgb(222, 245, 228) : Color.rgb(235, 235, 235));
-        postedButton.setEnabled(!isPosted);
+        boolean hasMedia = !current.mediaUrl.isEmpty();
+        statusChip.setText(isPosted ? "PUBLICADO" : (hasMedia ? "APROVADO • PENDENTE" : "MÍDIA PENDENTE • RECUPERAÇÃO"));
+        statusChip.setBackgroundColor(isPosted ? Color.rgb(222, 245, 228) : (hasMedia ? Color.rgb(235, 235, 235) : Color.rgb(255, 239, 204)));
+        postedButton.setEnabled(!isPosted && hasMedia);
         setControlsEnabled(true);
         loadThumbnail(current);
     }
@@ -372,20 +378,22 @@ public class MainActivity extends Activity {
     }
 
     private void setControlsEnabled(boolean enabled) {
+        boolean hasMedia = enabled && current != null && !current.mediaUrl.isEmpty();
         copyButton.setEnabled(enabled);
-        shareButton.setEnabled(enabled);
-        previewButton.setEnabled(enabled);
-        downloadButton.setEnabled(enabled);
-        batchButton.setEnabled(enabled);
-        postedButton.setEnabled(enabled && current != null && !getPostedIds().contains(current.id));
+        shareButton.setEnabled(hasMedia);
+        previewButton.setEnabled(hasMedia);
+        downloadButton.setEnabled(hasMedia);
+        batchButton.setEnabled(enabled && hasDownloadableItems());
+        sourceButton.setEnabled(enabled && current != null && !current.youtubeUrl.isEmpty());
+        postedButton.setEnabled(hasMedia && !getPostedIds().contains(current.id));
         skipButton.setEnabled(enabled && visibleItems.size() > 1);
     }
 
     private void loadThumbnail(QueueItem item) {
         thumbnail.setImageDrawable(null);
-        thumbnailHint.setText("Carregando prévia...");
+        thumbnailHint.setText(item.mediaUrl.isEmpty() ? "Mídia original pendente; carregando capa do YouTube..." : "Carregando prévia...");
         if (item.thumbnailUrl.isEmpty()) {
-            thumbnailHint.setText("Sem miniatura; toque em Assistir prévia");
+            thumbnailHint.setText(item.mediaUrl.isEmpty() ? "Mídia pendente; abra o original no YouTube." : "Sem miniatura; toque em Assistir prévia");
             return;
         }
         imageExecutor.execute(() -> {
@@ -400,7 +408,7 @@ public class MainActivity extends Activity {
                     if (current != null && current.id.equals(item.id)) {
                         runOnUiThread(() -> {
                             thumbnail.setImageBitmap(bmp);
-                            thumbnailHint.setText("Prévia rápida — o vídeo só abre quando você pedir");
+                            thumbnailHint.setText(item.mediaUrl.isEmpty() ? "O vídeo não sumiu: a mídia está pendente de recuperação. Toque em Abrir original no YouTube." : "Prévia rápida — o vídeo só abre quando você pedir");
                         });
                     }
                 }
@@ -412,6 +420,21 @@ public class MainActivity extends Activity {
                 if (c != null) c.disconnect();
             }
         });
+    }
+
+    private void openSource() {
+        if (current == null || current.youtubeUrl.isEmpty()) return;
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(current.youtubeUrl));
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Não foi possível abrir o original no YouTube.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean hasDownloadableItems() {
+        for (QueueItem item : visibleItems) if (!item.mediaUrl.isEmpty()) return true;
+        return false;
     }
 
     private void openPreview() {
@@ -462,9 +485,13 @@ public class MainActivity extends Activity {
     private void downloadNextThree() {
         if (current == null || visibleItems.isEmpty()) return;
         List<QueueItem> batch = new ArrayList<>();
-        int count = Math.min(3, visibleItems.size());
-        for (int i = 0; i < count; i++) {
-            batch.add(visibleItems.get((cursor + i) % visibleItems.size()));
+        for (int offset = 0; offset < visibleItems.size() && batch.size() < 3; offset++) {
+            QueueItem candidate = visibleItems.get((cursor + offset) % visibleItems.size());
+            if (!candidate.mediaUrl.isEmpty()) batch.add(candidate);
+        }
+        if (batch.isEmpty()) {
+            status.setText("Não há MP4s disponíveis neste filtro.");
+            return;
         }
         status.setText("Baixando " + batch.size() + " Shorts...");
         batchButton.setEnabled(false);
@@ -707,14 +734,16 @@ public class MainActivity extends Activity {
         final String title;
         final String mediaUrl;
         final String thumbnailUrl;
+        final String youtubeUrl;
         final String postText;
         final String status;
 
-        QueueItem(String id, String title, String mediaUrl, String thumbnailUrl, String postText, String status) {
+        QueueItem(String id, String title, String mediaUrl, String thumbnailUrl, String youtubeUrl, String postText, String status) {
             this.id = id;
             this.title = title;
             this.mediaUrl = mediaUrl;
             this.thumbnailUrl = thumbnailUrl;
+            this.youtubeUrl = youtubeUrl;
             this.postText = postText;
             this.status = status;
         }
@@ -724,10 +753,11 @@ public class MainActivity extends Activity {
             String title = o.optString("title", "Short Radar dos Games").trim();
             String media = o.optString("media_url", "").trim();
             String thumb = o.optString("thumbnail_url", "").trim();
+            String youtube = o.optString("youtube_url", "").trim();
             String post = o.optString("post_text", "").trim();
             String status = o.optString("status", "approved").trim().toLowerCase(Locale.ROOT);
-            if (id.isEmpty() || media.isEmpty()) return null;
-            return new QueueItem(id, title.isEmpty() ? "Short Radar dos Games" : title, media, thumb, post, status);
+            if (id.isEmpty()) return null;
+            return new QueueItem(id, title.isEmpty() ? "Short Radar dos Games" : title, media, thumb, youtube, post, status);
         }
     }
 }
