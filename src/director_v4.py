@@ -191,6 +191,7 @@ def is_editorial_bridge_phrase(text, requirements=()):
         "a questao que fica", "o que fica e",
         "a pergunta final",
         # Generic editorial closing lines: use the already reviewed gameplay
+    # from the same production instead of blocking on a scene-local media shortlist.
         # pool from this exact title instead of a narrow scene-only shortlist.
         "leonida acabou de abrir as portas",
         "a exploracao esta so comecando",
