@@ -382,6 +382,7 @@ jobs:
           assert premium.get("version") == "PREMIUM_V4_MASTER_CUTS", premium
           assert premium.get("short_hooks_exact") == "APPROVED", premium
           assert premium.get("short_scene_mapping") == "APPROVED", premium
+          assert premium.get("short_semantic_selection") == "APPROVED", premium
           assert len(premium.get("approved_short_hooks") or []) == 3, premium
           assert premium.get("real_headlines") == "APPROVED", premium
           assert premium.get("gameplay_moving_footage") == "APPROVED", premium
