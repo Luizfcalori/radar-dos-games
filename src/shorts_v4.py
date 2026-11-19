@@ -5,6 +5,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+SHORTS_LAYOUT_ID = "RADAR_PREMIUM_MASTER_CROP_V1"
+SOURCE_POLICY = "master_timeline_crops_preserve_original_audio"
+RENDER_POLICY = "direct_master_timeline_crop_with_original_narration"
+AUDIO_POLICY = "mandatory_original_master_audio; no_an; no_silent_rebuild"
+
 def probe(path):
     raw=subprocess.check_output([
         "ffprobe","-v","error","-show_streams","-show_format","-of","json",str(path)
@@ -57,9 +62,10 @@ def main():
     manifest.update({
         "standard":"radar-dos-games-shorts-premium-v4-master-cuts",
         "premium_version":"PREMIUM_V4_MASTER_CUTS",
-        "source_policy":"master_timeline_crops_preserve_original_audio",
+        "layout_profile":SHORTS_LAYOUT_ID,
+        "source_policy":SOURCE_POLICY,
         "render_policy":"vertical_reframe_of_master_with_original_narration_music_and_sfx",
-        "audio_policy":"mandatory_original_master_audio; no_an; no_silent_rebuild",
+        "audio_policy":AUDIO_POLICY,
         "shorts":shorts,
     })
     manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
