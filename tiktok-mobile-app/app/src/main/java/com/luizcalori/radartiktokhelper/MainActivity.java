@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 
     private QueueItem current;
     private int cursor = 0;
-    private String filterMode = "pending";
+    private String filterMode = "all";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
