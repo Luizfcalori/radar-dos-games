@@ -77,18 +77,21 @@
     "https://www.youtube.com/watch?v=VQRLujxTm3c": 1,
     "https://www.youtube.com/watch?v=tJbzMqJGH4k": 1,
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4": 1,
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9,
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Launch_Trailer/GTAVI_Launch_Trailer.mp4": 1
   },
   "video_labels": {
     "https://www.youtube.com/watch?v=QdBZY2fkU-0": "Rockstar Games verified YouTube — Grand Theft Auto VI Trailer 1 (official in-game footage)",
     "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games verified YouTube — Grand Theft Auto VI Trailer 2 (official in-game footage)",
     "https://www.youtube.com/watch?v=tJbzMqJGH4k": "Rockstar Games verified YouTube — Grand Theft Auto VI: An Extended Look (official PS5 gameplay)",
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4": "Rockstar Games official CDN — Grand Theft Auto VI: An Extended Look (direct MP4)",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official CDN — official GTA VI character video clips archive"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official CDN — official GTA VI character video clips archive",
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Launch_Trailer/GTAVI_Launch_Trailer.mp4": "Rockstar Games official CDN — Grand Theft Auto VI Launch Trailer (direct MP4, official gameplay footage)"
   },
-  "production_note": "Pauta nova e independente do pacote GTA VI de 16/11. Usar fontes oficiais para capturar imagens em movimento; usar textos de imprensa somente para contextualizar achados de fãs. Não reutilizar o roteiro antigo sobre pré-carregamento/lançamento. Recuperação de mídia 2026-11-19: priorizar download direto do MP4 oficial Rockstar CDN do An Extended Look; fallback para o ZIP oficial GTAVI_Videos.zip (9 clipes Rockstar), evitando depender de YouTube age-gated.",
+  "production_note": "Pauta nova e independente do pacote GTA VI de 16/11. Usar fontes oficiais para capturar imagens em movimento; usar textos de imprensa somente para contextualizar achados de fãs. Não reutilizar o roteiro antigo sobre pré-carregamento/lançamento. Recuperação de mídia 2026-11-19: priorizar download direto do MP4 oficial Rockstar CDN do An Extended Look; fallback para o ZIP oficial GTAVI_Videos.zip (9 clipes Rockstar), evitando depender de YouTube age-gated. Correção de recuperação 2026-11-19: acrescentado o MP4 oficial do Launch Trailer diretamente do CDN da Rockstar. O ZIP de personagens contém clipes de 1–1,5s (cartões animados), não deve ser contado como gameplay; fica apenas como último fallback de apoio e nunca satisfaz o gate de vídeos.",
   "video_fallback_urls": [
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4",
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Launch_Trailer/GTAVI_Launch_Trailer.mp4",
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip"
   ],
   "visual_reference_images": [
