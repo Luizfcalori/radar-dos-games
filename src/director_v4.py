@@ -190,6 +190,14 @@ def is_editorial_bridge_phrase(text, requirements=()):
         "agora a pergunta", "qual e a pergunta",
         "a questao que fica", "o que fica e",
         "a pergunta final",
+        # Generic editorial closing lines: use the already reviewed gameplay
+        # pool from this exact title instead of a narrow scene-only shortlist.
+        "leonida acabou de abrir as portas",
+        "a exploracao esta so comecando",
+        "a exploracao esta apenas comecando",
+        "nos proximos dias o radar dos games vai acompanhar",
+        "acompanhar as descobertas mais interessantes",
+        "separando o que foi mostrado dos jogadores",
     )
     return any(pattern in low for pattern in patterns)
 
