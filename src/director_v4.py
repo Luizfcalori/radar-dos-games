@@ -415,7 +415,9 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             requirements=(scene.get("phrase_subjects") or {}).get(str(phrase.get("sentence",1)),[])
             cta_phrase=any(token in phrase_text.casefold() for token in (
                 "conta nos comentários","acompanha o radar","mais novidades",
-                "se você gosta de acompanhar",
+                "se você gosta de acompanhar","qual descoberta merece um vídeo próprio",
+                "qual descoberta merece um video proprio","qual merece um vídeo próprio",
+                "qual merece um video proprio",
             ))
             while remaining>0.001:
                 stills=[
@@ -428,7 +430,11 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                 # only a source-matched fallback, and only for a phrase whose named
                 # subjects are actually present in the still's official source label.
                 try:
-                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
+                    # Generic audience prompts do not name a visual subject. Let them
+                    # use any reviewed, topic-approved gameplay in this scene; named
+                    # discoveries retain their strict phrase-level subject constraints.
+                    effective_requirements = () if cta_phrase else requirements
+                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,effective_requirements)
                     window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
                     evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
                 except RuntimeError as exc:
