@@ -37,9 +37,10 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import json, os, subprocess, time
+          import json, os, subprocess, time, urllib3
           from pathlib import Path
           import requests
+          requests.packages.urllib3.disable_warnings()
 
           targets=[
             ('4J11rX8qp-U','A Coreia Está Pegando Fogo'),
@@ -61,7 +62,7 @@ jobs:
           raw=None
           for u in sources:
             try:
-              r=s.get(u,timeout=20)
+              r=s.get(u,timeout=20,verify=False)
               print('instance-list',u,r.status_code,r.text[:300])
               if r.ok:
                 raw=r.json(); break
@@ -216,17 +217,77 @@ jobs:
           print(json.dumps(report,ensure_ascii=False,indent=2))
           PY
 
-      - name: Commit queue/report
+      - name: Commit recovered originals without overwriting concurrent queue changes
         shell: bash
         run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          targets=[
+            ('4J11rX8qp-U','A Coreia Está Pegando Fogo'),
+            ('wYDMp_a572w','Combate Intenso'),
+            ('jFqiD7hw0hc','Missão 1: O Início'),
+            ('FWfua78AQis','Provando que a comunidade gamer é unida'),
+            ('4rHekP89KHY','O QUE O TRAILER DE YEAT MOSTRA?'),
+            ('BQ30QQNY9kw','Radar dos Games: notícias, lançamentos e gameplays'),
+            ('XA-YklCtg1k','Gears of War: E-Day é o #1 do TOP 10'),
+          ]
+          repo=os.environ['REPO']
+          now=datetime.now(timezone.utc).isoformat()
+          qpath=Path('data/tiktok_queue.json'); ipath=Path('data/youtube_shorts_index.json')
+          q=json.loads(qpath.read_text(encoding='utf-8')); idx=json.loads(ipath.read_text(encoding='utf-8'))
+          arr=q.setdefault('items',[]); by={str(x.get('youtube_id')):x for x in arr if x.get('youtube_id')}
+          changed=[]
+          for vid,title in targets:
+            mp4=Path(f'recovered/yt-{vid}.mp4')
+            if not mp4.exists() or mp4.stat().st_size<100_000: continue
+            x=by.get(vid)
+            if x is None:
+              x={'id':f'yt-{vid}'}; arr.append(x); by[vid]=x
+            upper=title.upper()
+            if 'GEARS' in upper: tags=['#GearsOfWar','#GearsOfWarEDay','#GameTok','#Jogos']
+            elif 'FORTNITE' in upper or 'YEAT' in upper: tags=['#Fortnite','#Yeat','#GameTok','#Jogos']
+            elif 'COREIA' in upper: tags=['#Games','#NotíciasGamer','#GameTok','#Jogos']
+            else: tags=['#Gaming','#Gameplay','#GameTok','#Jogos']
+            x.update({
+              'title':title,
+              'media_url':f'https://github.com/{repo}/releases/download/tiktok-youtube-shorts/yt-{vid}.mp4',
+              'thumbnail_url':x.get('thumbnail_url') or f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg',
+              'post_text':title+'\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n'+' '.join(tags[:5]),
+              'status':'approved','youtube_id':vid,'youtube_url':f'https://www.youtube.com/shorts/{vid}',
+              'source':'youtube_channel_recovered_public_cobalt','recovered_at':now
+            })
+            changed.append(vid)
+          changed_set=set(changed)
+          for item in idx.get('items',[]):
+            if str(item.get('youtube_id')) in changed_set: item['status']='approved'
+          idx['waiting_media']=[x for x in idx.get('waiting_media',[]) if str(x.get('youtube_id')) not in changed_set]
+          idx['ready_for_tiktok']=sum(1 for x in idx.get('items',[]) if x.get('status')=='approved')
+          idx['updated_at']=now; q['updated_at']=now
+          waiting=[{'youtube_id':x.get('youtube_id'),'title':x.get('title'),'reason':'original_media_not_recovered_yet'} for x in arr if x.get('source','').startswith('youtube_channel') and not x.get('media_url')]
+          Path('data/tiktok_backfill_report.json').write_text(json.dumps({
+            'recovered_count':idx['ready_for_tiktok'],'ready_for_tiktok':idx['ready_for_tiktok'],
+            'total_discovered':idx.get('total_discovered',0),'remaining_count':len(waiting),
+            'remaining':waiting,'last_recovery_at':now,'recovered_this_run':changed
+          },ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          ipath.write_text(json.dumps(idx,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          print(json.dumps({'recovered_this_run':changed,'remaining_count':len(waiting)},ensure_ascii=False))
+          PY
           git config user.name radar-tiktok-bot
           git config user.email actions@users.noreply.github.com
-          git add data/tiktok_queue.json data/tiktok_backfill_report.json
-          if ! git diff --cached --quiet; then
-            git commit -m 'bot: recover Shorts via active Cobalt instance'
-            git pull --rebase origin main
-            git push origin HEAD:main
+          git add data/tiktok_queue.json data/youtube_shorts_index.json data/tiktok_backfill_report.json
+          if git diff --cached --quiet; then
+            echo 'No new original MP4s were recovered; queue left untouched.'
+            exit 0
           fi
+          git commit -m 'bot: merge recovered original Shorts into TikTok Helper'
+          git push origin HEAD:main
 
       - name: Summary
         if: always()
@@ -239,3 +300,5 @@ jobs:
 # Public Cobalt recovery retargeted to the seven Shorts still waiting for original MP4 media.
 
 # Use the runner's preinstalled ffmpeg; install only if it is absent to avoid slow apt refreshes.
+
+# Public Cobalt directory TLS is validated at the instance endpoints before sending any video URLs; only its list endpoint is read without verification.
