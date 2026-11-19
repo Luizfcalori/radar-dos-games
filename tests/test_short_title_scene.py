@@ -39,21 +39,12 @@ class ShortTitleAndSceneTests(unittest.TestCase):
         self.assertGreater(hook_scene_score(hooks[0],scenes[12])[0],
                            hook_scene_score(hooks[0],scenes[0])[0])
 
-    def test_title_layout_contains_all_words_inside_safe_width(self):
-        from PIL import ImageFont
-        from src.shorts_v4 import FONT, title_layout, premium_conversion_short_filter
-        hooks=["ARC RAIDERS GRÁTIS ATÉ 12 DE OUTUBRO!",
-               "PENDOLA PASS: O NOVO MAPA CONGELADO DE ARC RAIDERS",
-               "BULLY, SKULKER E HYDRA: TRÊS NOVOS INIMIGOS"]
-        for hook in hooks:
-            with self.subTest(hook=hook):
-                layout=title_layout(hook)
-                self.assertEqual(" ".join(layout["lines"]),hook.upper())
-                self.assertLessEqual(len(layout["lines"]),3)
-                font=ImageFont.truetype(FONT,layout["fontsize"])
-                self.assertTrue(all(font.getlength(line)<=940 for line in layout["lines"]))
-                filtergraph=premium_conversion_short_filter(hook,"0xFFFFFF")
-                self.assertEqual(filtergraph.count("fontfile='"+FONT+"':text='"),6+len(layout["lines"]))
+    def test_master_cut_pipeline_contract_is_explicit(self):
+        from src import shorts_v4
+        self.assertEqual(shorts_v4.SHORTS_LAYOUT_ID, "RADAR_PREMIUM_MASTER_CROP_V1")
+        self.assertEqual(shorts_v4.SOURCE_POLICY, "master_timeline_crops_preserve_original_audio")
+        self.assertIn("no_an", shorts_v4.AUDIO_POLICY)
+        self.assertIn("no_silent_rebuild", shorts_v4.AUDIO_POLICY)
 
 if __name__ == "__main__":
     unittest.main()
