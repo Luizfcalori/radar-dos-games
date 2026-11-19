@@ -1,8 +1,8 @@
 {
   "valid_until": "2026-11-22T23:59:00Z",
   "content_id": "manual-grand-theft-auto-vi-living-world-2026-11-19",
-  "title": "Grand Theft Auto VI — O mundo mais vivo da história dos games",
-  "headline": "GTA 6: O MUNDO MAIS VIVO DA HISTÓRIA DOS GAMES",
+  "title": "Grand Theft Auto VI — GTA 6 chegou: o mundo mais vivo da história dos games",
+  "headline": "GTA 6 CHEGOU: O MUNDO MAIS VIVO DA HISTÓRIA DOS GAMES",
   "primary_source": "https://www.rockstargames.com/newswire/article/39akk424a9oo53/grand-theft-auto-vi-now-available",
   "media_source_urls": [
     "https://www.rockstargames.com/VI/media/videos",
@@ -40,7 +40,7 @@
     "Rota de mídia de recuperação: não baixar o vídeo YouTube tJbzMqJGH4k, que exige autenticação por idade. Usar o ZIP oficial GTAVI_Videos.zip e a biblioteca oficial Rockstar; só aceitar clipes aprovados por resolução, duração e aderência visual."
   ],
   "script_blocks": [
-    "Grand Theft Auto VI chegou, e a primeira coisa que chama atenção em Leonida não é apenas o tamanho do mapa. É a sensação de que existe alguma coisa acontecendo em praticamente todo lugar. A Rockstar construiu uma cidade e um estado que não parecem existir só para levar Jason e Lucia de uma missão até outra. O trânsito, os moradores, os animais, o clima e as pequenas situações do cotidiano ajudam a criar um mundo que continua funcionando mesmo quando o jogador decide simplesmente parar e observar.",
+    "Grand Theft Auto VI finalmente chegou. Lançado mundialmente em 19 de novembro de 2026 para PlayStation 5 e Xbox Series X|S, o jogo coloca Jason e Lucia no centro de uma conspiração que atravessa o estado de Leonida. E a primeira coisa que chama atenção não é apenas o tamanho do mapa: é a sensação de que existe alguma coisa acontecendo em praticamente todo lugar. A Rockstar construiu uma cidade e um estado que não parecem existir só para levar os protagonistas de uma missão até outra. O trânsito, os moradores, os animais, o clima e as pequenas situações do cotidiano ajudam a criar um mundo que continua funcionando mesmo quando o jogador decide simplesmente parar e observar.",
     "Um dos detalhes mais impressionantes está nos personagens que ocupam as ruas. Em uma prévia de gameplay apresentada à imprensa, a Rockstar mostrou NPCs com comportamentos e reações mais variados. Segundo a cobertura da GamesRadar, foram criadas cerca de seiscentas mil animações para o jogo. Esse número vem de uma reportagem de prévia, não de uma ficha técnica oficial publicada pela Rockstar, mas ajuda a dimensionar o trabalho colocado nas movimentações e nas situações cotidianas. A ideia é que os moradores não pareçam cópias repetindo a mesma reação.",
     "E não é só a quantidade de animações. Os NPCs podem reagir ao comportamento do jogador, perceber quando alguém está ouvindo uma conversa ou demonstrar atitudes diferentes dependendo da situação. Em vez de todos responderem da mesma forma, os personagens podem ter características próprias e reagir de maneira menos previsível. Isso muda a exploração: atravessar uma rua, entrar em uma loja ou ficar observando uma praça pode render pequenas situações que não estavam marcadas como missão no mapa.",
     "Leonida também não é uma cidade gigante cercada por paisagens repetidas. A região é dividida em seis áreas: Vice City, Leonida Keys, Grassrivers, Port Gellhorn, Ambrosia e Mount Kalaga. Cada uma tem identidade visual, ritmo e atividades próprias. Vice City concentra praias, hotéis, comércio e movimento urbano. As Keys levam a exploração para um arquipélago tropical. Grassrivers apresenta manguezais e áreas alagadas, enquanto Mount Kalaga oferece trilhas, florestas e ambientes mais afastados. A variedade faz o deslocamento entre regiões parecer uma mudança real de ambiente.",
@@ -58,7 +58,7 @@
     4,
     6
   ],
-  "narration_revision": "2026-11-19T15:40Z: recuperação mídia: pacote ZIP e biblioteca oficial Rockstar substituem URL YouTube bloqueada por idade.",
+  "narration_revision": "2026-11-19T17:27Z: atualização de lançamento: GTA VI já está disponível mundialmente em PS5 e Xbox Series X|S; pauta atualizada com comunicado oficial da Rockstar.",
   "video_max_assets": {
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9,
     "https://www.rockstargames.com/VI/media/videos": 9
@@ -67,7 +67,7 @@
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official downloadable archive — nine GTA VI video clips",
     "https://www.rockstargames.com/VI/media/videos": "Rockstar Games official GTA VI media video library"
   },
-  "production_note": "Recuperação após bloqueio etário do vídeo YouTube. Usar primeiro o ZIP oficial da Rockstar (nove vídeos) e a biblioteca oficial de vídeos. Nenhum vídeo de outro jogo, gameplay de GTA V, fan edit ou Easter Eggs.",
+  "production_note": "Pauta de lançamento em 19/11/2026: GTA VI já disponível mundialmente para PS5 e Xbox Series X|S. Manter foco no mundo vivo, gameplay oficial de GTA VI e fatos claramente separados entre confirmação Rockstar e informações de previews. Usar pacote ZIP oficial Rockstar e biblioteca oficial de vídeos; nenhum material de outros jogos.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
