@@ -855,7 +855,7 @@ def main():
         # Explicit production must load the dedicated Blizzard launch brief even when generic briefs are enabled; keep this route independent of AUTO discovery.
         manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
     elif forced_topic_slug == ascii_slug("Grand Theft Auto VI"):
-        manual = load_manual_brief("production/manual-brief-gta-vi-2026-11-05.json")
+        manual = load_manual_brief("production/manual-brief-gta-vi-living-world-2026-11-19.json")
     elif forced_topic_slug == ascii_slug("Poppy Playtime"):
         manual = load_manual_brief("production/manual-brief-poppy-playtime-2026-11-08.json")
     elif forced_topic_slug == ascii_slug("Lords of the Fallen II"):
@@ -958,7 +958,7 @@ def main():
             # Pin the requested run to Blizzard's verified global launch brief and official WoW footage.
             manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
         elif forced_topic_slug == ascii_slug("Grand Theft Auto VI"):
-            manual = load_manual_brief("production/manual-brief-gta-vi-2026-11-05.json")
+            manual = load_manual_brief("production/manual-brief-gta-vi-living-world-2026-11-19.json")
         elif forced_topic_slug == ascii_slug("Poppy Playtime"):
             # Keep the explicit Poppy Playtime request pinned to its approved Escape From Playtime brief.
             manual = load_manual_brief("production/manual-brief-poppy-playtime-2026-11-08.json")
@@ -1029,6 +1029,7 @@ def main():
                 "manual-ocarina-of-time-switch-2-remake-launch-2026-11-05": "production/manual-brief-ocarina-of-time-switch-2-2026-11-02.json",
                 "manual-world-of-warcraft-forever-global-launch-2026-11-04": "production/manual-brief-world-of-warcraft-forever-2026-11-05.json",
                 "manual-grand-theft-auto-vi-countdown-preload-score-2026-11-05": "production/manual-brief-gta-vi-2026-11-05.json",
+                "manual-grand-theft-auto-vi-living-world-2026-11-19": "production/manual-brief-gta-vi-living-world-2026-11-19.json",
                 "manual-grand-theft-auto-vi-last-72h-gameplay-update-2026-11-16": "production/manual-brief-gta-vi-2026-11-05.json",
                 "manual-lords-of-the-fallen-ii-steel-and-sorcery-gameplay-2026-11-08": "production/manual-brief-lords-of-the-fallen-ii-2026-11-08.json",
                 "manual-metaphor-refantazio-switch2-demo-price-update-2026-11-08": "production/manual-brief-metaphor-refantazio-2026-11-08.json",
