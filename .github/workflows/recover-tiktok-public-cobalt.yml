@@ -54,6 +54,9 @@ jobs:
           # Current community instances listed by cobalt.directory (updated frequently).
           # Only endpoints with valid TLS and a healthy Cobalt API response are used.
           urls=[
+            # No-Turnstile public APIs first, then the best-scoring community instances.
+            'https://rue-cobalt.xenon.zone/',
+            'https://cobaltapi.cjs.nz/',
             'https://bergung-api.hoffnungfuerdiezukunft.net/',
             'https://cobalt-omega.wolfy.love/',
             'https://grapefruit.clxxped.lol/',
@@ -61,21 +64,6 @@ jobs:
             'https://yuuri-c.meowing.de/',
             'https://nuko-c.meowing.de/',
             'https://eulogy-c.meowing.de/',
-            'https://cobalt-api.lamps-dev.dev/',
-            'https://api.cobalt.rpkiinval.id/',
-            'https://cobalt-alpha.wolfy.love/',
-            'https://melon.clxxped.lol/',
-            'https://lime.clxxped.lol/',
-            'https://dog.kittycat.boo/',
-            'https://fox.kittycat.boo/',
-            'https://cobaltapi.kittycat.boo/',
-            'https://cobaltapi.squair.xyz/',
-            'https://rue-cobalt.xenon.zone/',
-            'https://capi.3kh0.net/',
-            'https://kitty.tame.gg/',
-            'https://api.qwkuns.me/',
-            'https://cobaltapi.cjs.nz/',
-            'https://api-cobalt.eversiege.network/',
           ]
           # preserve order, normalize
           seen=set(); instances=[]
@@ -96,12 +84,12 @@ jobs:
               if r.ok and ('cobalt' in r.text.lower() or 'services' in r.text.lower()):
                 healthy.append(base)
                 print('healthy',base)
-                if len(healthy)>=15: break
+                if len(healthy)>=8: break
             except: pass
           print('healthy count:',len(healthy))
 
           def download(url,path):
-            with requests.get(url,stream=True,timeout=150,allow_redirects=True,headers={'User-Agent':'Mozilla/5.0'}) as r:
+            with requests.get(url,stream=True,timeout=60,allow_redirects=True,headers={'User-Agent':'Mozilla/5.0'}) as r:
               r.raise_for_status()
               with open(path,'wb') as f:
                 for c in r.iter_content(1024*1024):
@@ -122,7 +110,7 @@ jobs:
                   'filenameStyle':'basic',
                   'disableMetadata':False
                 }
-                rr=requests.post(base,json=payload,timeout=45,headers={'Accept':'application/json','Content-Type':'application/json','User-Agent':'Mozilla/5.0'})
+                rr=requests.post(base,json=payload,timeout=20,headers={'Accept':'application/json','Content-Type':'application/json','User-Agent':'Mozilla/5.0'})
                 body=rr.text[:1200]
                 print('try',vid,base,rr.status_code,body)
                 if not rr.ok:
@@ -309,3 +297,5 @@ jobs:
 # Use MP4 container signature and size checks; no apt/ffprobe install is needed on hosted runners.
 
 # Use live community API hostnames from cobalt.directory; the old instances.cobalt.best JSON endpoint now serves a JS challenge page.
+
+# Prefer no-Turnstile public APIs first and bound retries to keep recovery runs finite.
