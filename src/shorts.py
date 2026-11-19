@@ -157,9 +157,14 @@ def pick_cards(cards):
         try:
             data = json.loads(picks_file.read_text(encoding="utf-8"))
             picks = [int(x) for x in data.get("scene_indexes", [])]
+            hooks = [" ".join(str(x or "").split()).strip() for x in (data.get("expected_hooks") or [])]
             if len(picks) == 3 and all(0 <= i < len(cards) for i in picks):
                 print("SHORT_SEMANTIC_PICKS", picks, flush=True)
-                return [cards[i] for i in picks]
+                selected = [dict(cards[i]) for i in picks]
+                if len(hooks) == 3 and all(hooks):
+                    for card, hook in zip(selected, hooks):
+                        card["title"] = hook
+                return selected
         except Exception as exc:
             print(f"Aviso: short-picks.json inválido ({exc}); usando seleção automática.", file=sys.stderr)
     if len(cards) >= 3:
