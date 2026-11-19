@@ -499,12 +499,35 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     # only reached after unique reviewed gameplay is exhausted;
                     # it does not authorize repeated video intervals.
                     candidates_for_still = stills or fallback_stills
-                    if not candidates_for_still:
+                    if not candidates_for_still and cta_phrase:
+                        # Final subscriber sign-off: if the scene's local shotlist and
+                        # the single official still are exhausted, use already-reviewed
+                        # footage from this same approved game manifest. VideoTimeline
+                        # consumes every fresh interval first and only permits its
+                        # bounded last-resort reuse after that; no unrelated media,
+                        # unreviewed frames, title cards, or new downloads are admitted.
+                        cta_scene = dict(scene)
+                        cta_scene["visual_windows"] = {
+                            **(scene.get("visual_windows") or {}),
+                            **global_reviewed_windows,
+                        }
+                        cta_videos = [
+                            a for a in assets.values()
+                            if a.get("approved", True) and a.get("type") == "video"
+                        ]
+                        if cta_videos:
+                            picked,source_start,d,proof=timeline.choose(
+                                cta_scene,phrase_text,remaining,cta_videos,()
+                            )
+                            window={"start":round(source_start,6),"end":round(proof["reserved_end"],6)}
+                            evidence="reviewed_shot_cta_continuity"
+                    if not candidates_for_still and window is None:
                         raise
-                    picked=candidates_for_still[0]
-                    d=min(remaining,3.5)
-                    window=None
-                    evidence="official_image_subject_label"
+                    if candidates_for_still:
+                        picked=candidates_for_still[0]
+                        d=min(remaining,3.5)
+                        window=None
+                        evidence="official_image_subject_label"
                 # At 30 fps, sub-frame residuals cannot produce a valid video stream.
                 # Voice timings may leave a few milliseconds after phrase splitting;
                 # skip that inaudible tail instead of passing a duration that ffmpeg
