@@ -240,9 +240,17 @@ def main():
         for offset in range(len(scenes)):
             candidate_index=(scene_index+offset)%len(scenes)
             candidate=scenes[candidate_index]
-            candidate_beats=replace_short_repeats(
-                candidate,assets,timeline=short_timeline,used_stills=short_used_stills
-            )
+            try:
+                candidate_beats=replace_short_repeats(
+                    candidate,assets,timeline=short_timeline,used_stills=short_used_stills
+                )
+            except RuntimeError as exc:
+                # A scene with no fresh, approved interval is not fatal to the
+                # entire Short. Skip that scene and continue collecting other
+                # non-overlapping scenes; the 60s minimum below remains strict.
+                if "sem intervalo inédito" in str(exc):
+                    continue
+                raise
             if not candidate_beats:
                 continue
             validate_short(candidate_beats,assets)
