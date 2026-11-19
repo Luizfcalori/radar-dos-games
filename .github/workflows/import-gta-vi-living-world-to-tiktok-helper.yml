@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   import:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_commit.message, '[run-private] TOPIC=Grand Theft Auto VI')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
