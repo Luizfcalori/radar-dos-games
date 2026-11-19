@@ -34,12 +34,13 @@ jobs:
           import requests
 
           targets=[
-            ('hjCBW6wopN8','THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK'),
-            ('S-Kw8W24bzM','O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT'),
-            ('Lc3BXMSZanU','MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT'),
-            ('dvu_iLOeRds','Vice City é só o COMEÇO em GTA 6! Conheça Leonida'),
-            ('t-KVaCwbrbA','Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6'),
-            ('DFMjasmIOSw','GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀'),
+            ('4J11rX8qp-U','A Coreia Está Pegando Fogo'),
+            ('wYDMp_a572w','Combate Intenso'),
+            ('jFqiD7hw0hc','Missão 1: O Início'),
+            ('FWfua78AQis','Provando que a comunidade gamer é unida'),
+            ('4rHekP89KHY','O QUE O TRAILER DE YEAT MOSTRA?'),
+            ('BQ30QQNY9kw','Radar dos Games: notícias, lançamentos e gameplays'),
+            ('XA-YklCtg1k','Gears of War: E-Day é o #1 do TOP 10'),
           ]
           out=Path('recovered'); out.mkdir(exist_ok=True)
           s=requests.Session()
@@ -161,12 +162,13 @@ jobs:
           from pathlib import Path
           from datetime import datetime,timezone
           targets=[
-            ('hjCBW6wopN8','THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK'),
-            ('S-Kw8W24bzM','O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT'),
-            ('Lc3BXMSZanU','MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT'),
-            ('dvu_iLOeRds','Vice City é só o COMEÇO em GTA 6! Conheça Leonida'),
-            ('t-KVaCwbrbA','Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6'),
-            ('DFMjasmIOSw','GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀'),
+            ('4J11rX8qp-U','A Coreia Está Pegando Fogo'),
+            ('wYDMp_a572w','Combate Intenso'),
+            ('jFqiD7hw0hc','Missão 1: O Início'),
+            ('FWfua78AQis','Provando que a comunidade gamer é unida'),
+            ('4rHekP89KHY','O QUE O TRAILER DE YEAT MOSTRA?'),
+            ('BQ30QQNY9kw','Radar dos Games: notícias, lançamentos e gameplays'),
+            ('XA-YklCtg1k','Gears of War: E-Day é o #1 do TOP 10'),
           ]
           qpath=Path('data/tiktok_queue.json'); q=json.loads(qpath.read_text()); arr=q.setdefault('items',[])
           by={x.get('youtube_id'):x for x in arr if x.get('youtube_id')}; now=datetime.now(timezone.utc).isoformat(); changed=[]
@@ -176,8 +178,17 @@ jobs:
             x=by.get(vid)
             if x is None:
               x={'id':f'yt-{vid}'}; arr.append(x); by[vid]=x
-            tags=['#Minecraft','#TheSift'] if ('MINECRAFT' in title.upper() or 'SIFT' in title.upper()) else ['#GTA6','#RockstarGames']
-            tags += ['#RadarDosGames','#Games','#Gaming','#TikTokGames']
+            upper=title.upper()
+            if 'GEARS' in upper:
+              tags=['#GearsOfWar','#GearsOfWarEDay']
+            elif 'FORTNITE' in upper or 'YEAT' in upper:
+              tags=['#Fortnite','#Yeat']
+            elif 'COREIA' in upper:
+              tags=['#Games','#NotíciasGamer']
+            else:
+              tags=['#Gaming','#Gameplay']
+            tags += ['#GameTok','#Jogos']
+            tags=tags[:5]
             x.update({
               'title':title,
               'media_url':f'https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-youtube-shorts/yt-{vid}.mp4',
@@ -192,7 +203,7 @@ jobs:
             x=by.get(vid)
             if not x or not x.get('media_url'): missing.append({'youtube_id':vid,'title':title,'reason':'original_media_not_recovered_yet'})
           ready=sum(1 for x in arr if x.get('youtube_id') and x.get('media_url') and x.get('status') in ('approved','ready_for_tiktok'))
-          report={'recovered_count':ready,'ready_for_tiktok':ready,'total_discovered':28,'remaining_count':len(missing),'remaining':missing,'last_recovery_at':now,'recovered_this_run':changed}
+          report={'recovered_count':ready,'ready_for_tiktok':ready,'total_discovered':int(json.loads(Path('data/youtube_shorts_index.json').read_text()).get('total_discovered',0)),'remaining_count':len(missing),'remaining':missing,'last_recovery_at':now,'recovered_this_run':changed}
           Path('data/tiktok_backfill_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
           print(json.dumps(report,ensure_ascii=False,indent=2))
           PY
@@ -216,3 +227,5 @@ jobs:
           cat recovered/public-cobalt-report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
           echo '' >> "$GITHUB_STEP_SUMMARY"
           cat data/tiktok_backfill_report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+
+# Public Cobalt recovery retargeted to the seven Shorts still waiting for original MP4 media.
