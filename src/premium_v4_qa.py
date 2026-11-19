@@ -13,8 +13,8 @@ def load(path):
     return json.loads(p.read_text(encoding="utf-8"))
 
 def norm(value):
-    value=re.sub(r"(?i)\\s*#shorts?\\b","",str(value or ""))
-    return re.sub(r"\\s+"," ",value).strip().casefold()
+    value=re.sub(r"(?i)\s*#shorts?\b","",str(value or ""))
+    return re.sub(r"\s+"," ",value).strip().casefold()
 
 def probe(path):
     data=json.loads(subprocess.check_output([
@@ -75,7 +75,7 @@ def main():
     video_scene_count=0
     for i,scene in enumerate(plan_scenes,1):
         title=str(scene.get("title") or "").strip()
-        if not title or re.fullmatch(r"(DESTAQUE\\s*\\d*|CENA\\s*\\d+.*)",title,re.I):
+        if not title or re.fullmatch(r"(DESTAQUE\s*\d*|CENA\s*\d+.*)",title,re.I):
             raise RuntimeError(f"QUALITY_BLOCK: headline genérica/ausente na cena {i}: {title}")
         has_video=False
         for beat in scene.get("beats") or []:
@@ -169,7 +169,7 @@ def main():
         "moving_footage_ratio":round(moving_ratio,4),
         "video_scene_count":video_scene_count,
     }
-    Path("output/premium-v4-qa.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    Path("output/premium-v4-qa.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(result,ensure_ascii=False,indent=2))
 
 if __name__=="__main__":
