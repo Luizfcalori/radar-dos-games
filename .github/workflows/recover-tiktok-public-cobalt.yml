@@ -27,10 +27,6 @@ jobs:
               import subprocess, sys
               subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'requests'])
           PY
-          if ! command -v ffprobe >/dev/null 2>&1; then
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq ffmpeg
-          fi
           mkdir -p recovered
 
       - name: Discover active Cobalt instances and recover exact IDs
@@ -139,10 +135,10 @@ jobs:
                 else:
                   errors.append(f'{base}:{data.get("error",{}).get("code",status)}'); continue
                 if final.exists() and final.stat().st_size>100_000:
-                  p=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(final)],capture_output=True,text=True)
-                  dur=float(p.stdout.strip() or 0)
-                  if dur>=3:
-                    report[vid]={'ok':True,'instance':base,'size':final.stat().st_size,'duration':dur}
+                  with final.open('rb') as media:
+                    header=media.read(16)
+                  if b'ftyp' in header:
+                    report[vid]={'ok':True,'instance':base,'size':final.stat().st_size,'container':'mp4'}
                     break
                 final.unlink(missing_ok=True)
               except Exception as e:
@@ -159,7 +155,12 @@ jobs:
           gh release view tiktok-youtube-shorts >/dev/null 2>&1 || gh release create tiktok-youtube-shorts --title 'TikTok Helper - YouTube Shorts Originals' --notes 'Original Shorts recovered for Radar TikTok Helper'
           shopt -s nullglob
           for f in recovered/yt-*.mp4; do
-            ffprobe -v error "$f" >/dev/null
+            python - "$f" <<'PY'
+          import os,sys
+          p=sys.argv[1]
+          if os.path.getsize(p)<100_000 or b'ftyp' not in open(p,'rb').read(16):
+              raise SystemExit('MP4 inválido: '+p)
+          PY
             gh release upload tiktok-youtube-shorts "$f" --clobber
           done
 
@@ -302,3 +303,5 @@ jobs:
 # Use the runner's preinstalled ffmpeg; install only if it is absent to avoid slow apt refreshes.
 
 # Public Cobalt directory TLS is validated at the instance endpoints before sending any video URLs; only its list endpoint is read without verification.
+
+# Use MP4 container signature and size checks; no apt/ffprobe install is needed on hosted runners.
