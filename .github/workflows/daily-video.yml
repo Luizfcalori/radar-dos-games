@@ -1,4 +1,5 @@
-# Radar editorial QA: flexible duration, with a 450-word safety floor.
+# Radar editorial QA: flexible duration; Shorts aceitos a partir de 30s quando a mídia inédita disponível não sustenta 60s.
+# GTA VI launch-day recovery: no loops, no unrelated game footage, exactly three Shorts.
 name: Radar dos Games - Daily Auto Master + 3 Shorts
 # Hellraiser Revival uses a locked, game-specific production brief.
 
