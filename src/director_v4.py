@@ -516,11 +516,50 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                             if a.get("approved", True) and a.get("type") == "video"
                         ]
                         if cta_videos:
-                            picked,source_start,d,proof=timeline.choose(
-                                cta_scene,phrase_text,remaining,cta_videos,()
-                            )
-                            window={"start":round(source_start,6),"end":round(proof["reserved_end"],6)}
+                            # Do not route the channel sign-off through the normal
+                            # semantic matcher: the CTA is not a gameplay subject.
+                            # Select directly from the inspected same-game windows,
+                            # preferring unused source ranges and allowing a bounded
+                            # last-resort reuse only after every fresh range is spent.
+                            from continuity import merge_reviewed_windows
+                            cta_fresh=[]
+                            cta_reuse=[]
+                            for cta_asset in cta_videos:
+                                cta_idx=int(cta_asset["index"])
+                                cta_duration=float(cta_asset.get("duration") or 0)
+                                cta_windows=(cta_scene.get("visual_windows") or {}).get(str(cta_idx),[])
+                                for cta_w in merge_reviewed_windows(cta_windows,cta_duration):
+                                    cta_lo=float(cta_w["start"])
+                                    cta_hi=min(float(cta_w["end"]),cta_duration-0.002 if cta_duration>0 else float(cta_w["end"]))
+                                    if cta_hi<=cta_lo+0.002:
+                                        continue
+                                    cta_key=timeline.identity(cta_idx)
+                                    for free_lo,free_hi in timeline.free(cta_idx,cta_lo,cta_hi):
+                                        if free_hi-free_lo>=0.25:
+                                            cta_len=min(3.5,remaining,free_hi-free_lo)
+                                            if cta_len>0:
+                                                cta_fresh.append((cta_len,-cta_idx,-free_lo,cta_asset,free_lo,cta_w))
+                                    cta_len=min(3.5,remaining,cta_hi-cta_lo)
+                                    if cta_len>0:
+                                        prior=sum(max(0,min(cta_hi,b)-max(cta_lo,a)) for a,b in timeline.used[cta_key])
+                                        cta_reuse.append((prior,cta_len,-cta_idx,cta_asset,cta_lo,cta_w))
+                            cta_reused=False
+                            if cta_fresh:
+                                _,d,_,picked,source_start,proof=max(cta_fresh,key=lambda x:(x[0],x[1],x[2]))
+                            elif cta_reuse:
+                                _,d,_,picked,source_start,proof=min(cta_reuse,key=lambda x:(x[0],-x[1],-x[2]))
+                                cta_reused=True
+                            else:
+                                raise RuntimeError(
+                                    "QUALITY_BLOCK: CTA sem janela oficial revisada; "
+                                    "inventário visual não forneceu intervalos utilizáveis"
+                                )
+                            reserved=math.ceil((d-1e-8)*30)/30
+                            timeline.reserve(int(picked["index"]),source_start,reserved,allow_reuse=cta_reused)
+                            window={"start":round(source_start,6),"end":round(source_start+reserved,6)}
                             evidence="reviewed_shot_cta_continuity"
+                            if cta_reused:
+                                proof={**proof,"reused_source":True}
                     if not candidates_for_still and window is None:
                         raise
                     if candidates_for_still:
