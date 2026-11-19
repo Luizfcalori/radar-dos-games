@@ -1,40 +1,94 @@
 {
-  "version": 1,
+  "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-19T20:47:35.105279+00:00",
+  "updated_at": "2026-11-19T20:51:44.095629+00:00",
   "items": [
     {
-      "id": "44603154365-short-1",
-      "title": "A MANSÃO DE TOMMY VERCETTI ESTÁ LIGADA A GTA 6 — E A ROCKSTAR DEIXOU UMA PISTA OFICIAL!",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-1.jpg",
-      "post_text": "A MANSÃO DE TOMMY VERCETTI ESTÁ LIGADA A GTA 6 — E A ROCKSTAR DEIXOU UMA PISTA OFICIAL!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GrandTheftAutoVI #ESCONDE #SEGREDOS",
+      "id": "yt-xDCHua1DjJg",
+      "title": "RESIDENT EVIL REQUIEM LEVOU O PRÊMIO MAIS IMPORTANTE DE 2026!",
+      "media_url": "",
+      "thumbnail_url": "https://i.ytimg.com/vi/xDCHua1DjJg/hqdefault.jpg",
+      "post_text": "RESIDENT EVIL REQUIEM LEVOU O PRÊMIO MAIS IMPORTANTE DE 2026!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#RESIDENT #EVIL #REQUIEM #LEVOU #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "waiting_media",
+      "youtube_id": "xDCHua1DjJg",
+      "youtube_url": "https://www.youtube.com/shorts/xDCHua1DjJg",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-11-19T20:51:44.095629+00:00"
+    },
+    {
+      "id": "yt-wFuquyQt9-w",
+      "title": "GRACE ASHCROFT AINDA TEM MUITO A EVOLUIR — DIZ SUA ATRIZ!",
+      "media_url": "",
+      "thumbnail_url": "https://i.ytimg.com/vi/wFuquyQt9-w/hqdefault.jpg",
+      "post_text": "GRACE ASHCROFT AINDA TEM MUITO A EVOLUIR — DIZ SUA ATRIZ!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GRACE #ASHCROFT #AINDA #MUITO #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "waiting_media",
+      "youtube_id": "wFuquyQt9-w",
+      "youtube_url": "https://www.youtube.com/shorts/wFuquyQt9-w",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-11-19T20:51:44.095629+00:00"
+    },
+    {
+      "id": "yt-GS36QlnZiFw",
+      "title": "LEON E GRACE: A PARCERIA PODE TER FUTURO NA SÉRIE?",
+      "media_url": "",
+      "thumbnail_url": "https://i.ytimg.com/vi/GS36QlnZiFw/hqdefault.jpg",
+      "post_text": "LEON E GRACE: A PARCERIA PODE TER FUTURO NA SÉRIE?\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#LEON #GRACE #PARCERIA #PODE #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "waiting_media",
+      "youtube_id": "GS36QlnZiFw",
+      "youtube_url": "https://www.youtube.com/shorts/GS36QlnZiFw",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-11-19T20:51:44.095629+00:00"
+    },
+    {
+      "id": "hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-approved-43738003668-short-1",
+      "title": "HUTUO CHEGOU: A REGIÃO MAIS GUERREIRA DE WHERE WINDS MEET!",
+      "post_text": "HUTUO CHEGOU: A REGIÃO MAIS GUERREIRA DE WHERE WINDS MEET!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WhereWindsMeet #WHERE #Lançamento #NovidadesGamer #Gaming",
       "status": "approved",
-      "source_run_id": 44603154365,
+      "source_run_id": 43738003668,
       "short_number": 1,
-      "approved_at": "2026-11-19T20:47:35.105224+00:00"
+      "approved_at": "2026-11-15T17:52:06.438970+00:00",
+      "source": "youtube_channel",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-1.jpg",
+      "youtube_id": "FbJ9SbHHeWQ",
+      "youtube_url": "https://www.youtube.com/shorts/FbJ9SbHHeWQ",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-19T20:51:44.095629+00:00"
     },
     {
-      "id": "44603154365-short-2",
-      "title": "GTA 6 PODE TER UMA CONEXÃO COM RED DEAD REDEMPTION — OLHA ESSE DETALHE NAS NOTAS!",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-2.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-2.jpg",
-      "post_text": "GTA 6 PODE TER UMA CONEXÃO COM RED DEAD REDEMPTION — OLHA ESSE DETALHE NAS NOTAS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GrandTheftAutoVI #ESCONDE #SEGREDOS",
+      "id": "hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-approved-43738003668-short-2",
+      "title": "DOIS CHEFES MUNDIAIS E UMA CAMPANHA NO MEIO DA GUERRA!",
+      "post_text": "DOIS CHEFES MUNDIAIS E UMA CAMPANHA NO MEIO DA GUERRA!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WhereWindsMeet #WHERE #Gameplay #RPG #Gaming",
       "status": "approved",
-      "source_run_id": 44603154365,
+      "source_run_id": 43738003668,
       "short_number": 2,
-      "approved_at": "2026-11-19T20:47:35.105250+00:00"
+      "approved_at": "2026-11-15T17:52:06.438970+00:00",
+      "source": "youtube_channel",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-2.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-2.jpg",
+      "youtube_id": "mhpL-wQrdSM",
+      "youtube_url": "https://www.youtube.com/shorts/mhpL-wQrdSM",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-19T20:51:44.095629+00:00"
     },
     {
-      "id": "44603154365-short-3",
-      "title": "PHIL CASSIDY PODE ESTAR DE VOLTA? A PISTA ESTÁ EM UMA LOJA DE ARMAS!",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-3.jpg",
-      "post_text": "PHIL CASSIDY PODE ESTAR DE VOLTA? A PISTA ESTÁ EM UMA LOJA DE ARMAS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GrandTheftAutoVI #ESCONDE #SEGREDOS",
+      "id": "hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-approved-43738003668-short-3",
+      "title": "AS LANÇAS DUPLAS DE YUEN WOO-PING CHEGAM EM 26 DE NOVEMBRO!",
+      "post_text": "AS LANÇAS DUPLAS DE YUEN WOO-PING CHEGAM EM 26 DE NOVEMBRO!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WhereWindsMeet #WHERE #Gaming #GameTok #Jogos",
       "status": "approved",
-      "source_run_id": 44603154365,
+      "source_run_id": 43738003668,
       "short_number": 3,
-      "approved_at": "2026-11-19T20:47:35.105254+00:00"
+      "approved_at": "2026-11-15T17:52:06.438970+00:00",
+      "source": "youtube_channel",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-3.jpg",
+      "youtube_id": "Hi_vn3PPKjQ",
+      "youtube_url": "https://www.youtube.com/shorts/Hi_vn3PPKjQ",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-19T20:51:44.095629+00:00"
     },
     {
       "id": "gta-vi-2026-11-16-short-1",
@@ -45,11 +99,12 @@
       "status": "approved",
       "youtube_id": "q9ckmU_k8Vc",
       "youtube_url": "https://www.youtube.com/shorts/q9ckmU_k8Vc",
-      "source": "gta_vi_2026_11_16_completed_qa",
+      "source": "youtube_channel",
       "source_run_id": 43917769024,
       "short_number": 1,
       "approved_at": "2026-11-16T18:05:23.589186+00:00",
-      "synced_at": "2026-11-16T18:05:23.589186+00:00"
+      "synced_at": "2026-11-16T18:05:23.589186+00:00",
+      "youtube_published_at": null
     },
     {
       "id": "gta-vi-2026-11-16-short-2",
@@ -60,11 +115,12 @@
       "status": "approved",
       "youtube_id": "uGx8CakS6DA",
       "youtube_url": "https://www.youtube.com/shorts/uGx8CakS6DA",
-      "source": "gta_vi_2026_11_16_completed_qa",
+      "source": "youtube_channel",
       "source_run_id": 43917769024,
       "short_number": 2,
       "approved_at": "2026-11-16T18:05:23.589186+00:00",
-      "synced_at": "2026-11-16T18:05:23.589186+00:00"
+      "synced_at": "2026-11-16T18:05:23.589186+00:00",
+      "youtube_published_at": null
     },
     {
       "id": "gta-vi-2026-11-16-short-3",
@@ -75,11 +131,12 @@
       "status": "approved",
       "youtube_id": "PplU6uEkNOM",
       "youtube_url": "https://www.youtube.com/shorts/PplU6uEkNOM",
-      "source": "gta_vi_2026_11_16_completed_qa",
+      "source": "youtube_channel",
       "source_run_id": 43917769024,
       "short_number": 3,
       "approved_at": "2026-11-16T18:05:23.589186+00:00",
-      "synced_at": "2026-11-16T18:05:23.589186+00:00"
+      "synced_at": "2026-11-16T18:05:23.589186+00:00",
+      "youtube_published_at": null
     },
     {
       "id": "godzilla-invadiu-storm-point-voce-consegue-sobreviver-approved-43726179583-short-1",
@@ -3218,40 +3275,37 @@
       "recovered_at": "2026-10-04T23:18:14.291380+00:00"
     },
     {
-      "id": "hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-approved-43738003668-short-1",
-      "title": "HUTUO CHEGOU: A REGIÃO MAIS GUERREIRA DE WHERE WINDS MEET!",
-      "post_text": "HUTUO CHEGOU: A REGIÃO MAIS GUERREIRA DE WHERE WINDS MEET!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WhereWindsMeet #WHERE #Lançamento #NovidadesGamer #Gaming",
+      "id": "44603154365-short-1",
+      "title": "A MANSÃO DE TOMMY VERCETTI ESTÁ LIGADA A GTA 6 — E A ROCKSTAR DEIXOU UMA PISTA OFICIAL!",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-1.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-1.jpg",
+      "post_text": "A MANSÃO DE TOMMY VERCETTI ESTÁ LIGADA A GTA 6 — E A ROCKSTAR DEIXOU UMA PISTA OFICIAL!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GrandTheftAutoVI #ESCONDE #SEGREDOS",
       "status": "approved",
-      "source_run_id": 43738003668,
+      "source_run_id": 44603154365,
       "short_number": 1,
-      "approved_at": "2026-11-15T17:52:06.438970+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-1.jpg"
+      "approved_at": "2026-11-19T20:47:35.105224+00:00"
     },
     {
-      "id": "hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-approved-43738003668-short-2",
-      "title": "DOIS CHEFES MUNDIAIS E UMA CAMPANHA NO MEIO DA GUERRA!",
-      "post_text": "DOIS CHEFES MUNDIAIS E UMA CAMPANHA NO MEIO DA GUERRA!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WhereWindsMeet #WHERE #Gameplay #RPG #Gaming",
+      "id": "44603154365-short-2",
+      "title": "GTA 6 PODE TER UMA CONEXÃO COM RED DEAD REDEMPTION — OLHA ESSE DETALHE NAS NOTAS!",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-2.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-2.jpg",
+      "post_text": "GTA 6 PODE TER UMA CONEXÃO COM RED DEAD REDEMPTION — OLHA ESSE DETALHE NAS NOTAS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GrandTheftAutoVI #ESCONDE #SEGREDOS",
       "status": "approved",
-      "source_run_id": 43738003668,
+      "source_run_id": 44603154365,
       "short_number": 2,
-      "approved_at": "2026-11-15T17:52:06.438970+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-2.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-2.jpg"
+      "approved_at": "2026-11-19T20:47:35.105250+00:00"
     },
     {
-      "id": "hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-approved-43738003668-short-3",
-      "title": "AS LANÇAS DUPLAS DE YUEN WOO-PING CHEGAM EM 26 DE NOVEMBRO!",
-      "post_text": "AS LANÇAS DUPLAS DE YUEN WOO-PING CHEGAM EM 26 DE NOVEMBRO!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#WhereWindsMeet #WHERE #Gaming #GameTok #Jogos",
+      "id": "44603154365-short-3",
+      "title": "PHIL CASSIDY PODE ESTAR DE VOLTA? A PISTA ESTÁ EM UMA LOJA DE ARMAS!",
+      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-3.mp4",
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/44603154365-short-3.jpg",
+      "post_text": "PHIL CASSIDY PODE ESTAR DE VOLTA? A PISTA ESTÁ EM UMA LOJA DE ARMAS!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GrandTheftAutoVI #ESCONDE #SEGREDOS",
       "status": "approved",
-      "source_run_id": 43738003668,
+      "source_run_id": 44603154365,
       "short_number": 3,
-      "approved_at": "2026-11-15T17:52:06.438970+00:00",
-      "source": "approved_production_artifact_auto",
-      "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/hutuo-chegou-a-regiao-mais-guerreira-de-where-winds-mee-43738003668-short-3.jpg"
+      "approved_at": "2026-11-19T20:47:35.105254+00:00"
     }
   ]
 }
