@@ -430,11 +430,22 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                 # only a source-matched fallback, and only for a phrase whose named
                 # subjects are actually present in the still's official source label.
                 try:
-                    # Generic audience prompts do not name a visual subject. Let them
-                    # use any reviewed, topic-approved gameplay in this scene; named
-                    # discoveries retain their strict phrase-level subject constraints.
+                    # Generic audience prompts do not name a visual subject. Their
+                    # shot pool must include every approved, inspected GTA VI gameplay
+                    # window in this manifest, not only this paragraph's local shortlist.
+                    # Named discoveries keep their strict scene and subject constraints.
                     effective_requirements = () if cta_phrase else requirements
-                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,effective_requirements)
+                    phrase_assets = allowed
+                    if cta_phrase:
+                        phrase_assets = [
+                            a for a in assets.values()
+                            if a.get("approved", True)
+                            and a.get("type") == "video"
+                            and int(a["index"]) in global_reviewed_windows
+                        ]
+                        for a in phrase_assets:
+                            scene.setdefault("visual_windows", {})[str(int(a["index"]))] = global_reviewed_windows[int(a["index"])]
+                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,phrase_assets,effective_requirements)
                     window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
                     evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
                 except RuntimeError as exc:
