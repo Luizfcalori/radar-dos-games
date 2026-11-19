@@ -58,7 +58,7 @@
     "A estreia também recoloca Jason Duval e Lucia Caminos no centro da conversa. A descrição oficial da Rockstar apresenta os dois no meio de uma conspiração criminosa que atravessa Leonida depois que um golpe aparentemente simples dá errado. O trailer de lançamento mostra cenas capturadas dentro do jogo no PlayStation 5, com perseguições, encontros e momentos da dupla em ação. É essa combinação entre a história dos protagonistas e a exploração livre que deve alimentar novas descobertas nos próximos dias.",
     "O lançamento de 19 de novembro está confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar ainda não anunciou uma data para PC. Com o jogo já nas mãos dos jogadores, os próximos dias devem trazer mais vídeos, rotas e segredos encontrados em diferentes partes do mapa. O mais interessante agora é acompanhar o que pode ser reproduzido por outros jogadores e o que permanece apenas como uma hipótese isolada.",
     "E essa é só a primeira rodada. Bigfoot, a figura na mata e os ovos no alto da torre mostram como pequenas curiosidades podem virar assunto em um mapa desse tamanho. Se você encontrar outro segredo em GTA 6, conta pra gente nos comentários: qual descoberta merece um vídeo próprio? Acompanha o Radar dos Games e inscreva-se no canal para continuar explorando as novidades de Leonida com a gente.",
-    "A pergunta que fica é: qual será o próximo mistério que a comunidade vai encontrar? Por enquanto, aproveite os vídeos com cuidado, confira a origem de cada descoberta e fique ligado no Radar dos Games. Leonida acabou de abrir as portas, e a caça aos segredos está só começando."
+    "Leonida acabou de abrir as portas, e a exploração está só começando. Nos próximos dias, o Radar dos Games vai acompanhar as descobertas mais interessantes, sempre separando o que foi mostrado pelos jogadores daquilo que ainda é especulação. Inscreva-se no canal e acompanhe nossas próximas atualizações sobre GTA 6."
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 3,
@@ -68,7 +68,7 @@
     4,
     3
   ],
-  "narration_revision": "2026-11-19: lançamento já ocorreu; Master cobre launch-day e descobertas iniciais. Três hooks independentes: Bigfoot, ninho de ovos e sequência da efígie na mata. Ajuste de continuidade 2026-11-19: permitir gameplay de GTA VI já revisada como cobertura de frases genéricas de transição/CTA; manter bloqueio de outros jogos e semântica de descobertas específicas.",
+  "narration_revision": "2026-11-19: lançamento já ocorreu; Master cobre launch-day e descobertas iniciais. Três hooks independentes: Bigfoot, ninho de ovos e sequência da efígie na mata. Ajuste de continuidade 2026-11-19: permitir gameplay de GTA VI já revisada como cobertura de frases genéricas de transição/CTA; manter bloqueio de outros jogos e semântica de descobertas específicas. Removido integralmente o encerramento interrogativo 'A pergunta que fica é:' em 2026-11-19; novo fechamento afirmativo e direto para evitar a frase que bloqueava o Diretor V4.",
   "video_max_assets": {
     "https://www.youtube.com/watch?v=VQRLujxTm3c": 1,
     "https://www.youtube.com/watch?v=tJbzMqJGH4k": 2,
@@ -95,5 +95,5 @@
   "minimum_image_assets": 1,
   "allow_same_source_role_fallback": true,
   "allow_official_subject_fallback": true,
-  "editorial_continuity_policy": "Frases genéricas de interação com o público, incluindo 'qual descoberta merece um vídeo próprio?', podem usar qualquer trecho de gameplay de GTA VI aprovado e inspecionado dentro da cena; a exigência de assunto específico permanece obrigatória para falas sobre Bigfoot, ovos pintados e outras descobertas nomeadas."
+  "editorial_continuity_policy": "Frases genéricas de interação com o público podem usar qualquer trecho de gameplay de GTA VI aprovado e inspecionado dentro da cena; a exigência de assunto específico permanece obrigatória para falas sobre Bigfoot, ovos pintados e outras descobertas nomeadas. O roteiro não deve conter a frase 'A pergunta que fica é:'; usar o encerramento afirmativo definido no último bloco."
 }
