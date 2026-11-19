@@ -78,6 +78,11 @@ on:
       - "src/pronunciation.py"
       - "production/pronunciations.json"
       - "src/repetition_policy.py"
+      - "src/shorts_v4.py"
+      - "src/shorts.py"
+      - "src/premium_v4_qa.py"
+      - "src/pro_score.py"
+      - "tests/test_shorts_v4_layout.py"
       - "src/semantic_gate.py"
       - "src/cinematic.py"
       - "assets/audio/**"
@@ -374,9 +379,9 @@ jobs:
           assert semantic.get("status") == "APPROVED", semantic
           premium = json.loads(Path("output/premium-v4-qa.json").read_text(encoding="utf-8"))
           assert premium.get("status") == "APPROVED", premium
-          assert premium.get("version") == "PREMIUM_V4_DIRECTOR_CUT", premium
+          assert premium.get("version") == "PREMIUM_V4_MASTER_CUTS", premium
           assert premium.get("short_hooks_exact") == "APPROVED", premium
-          assert premium.get("short_semantic_selection") == "APPROVED", premium
+          assert premium.get("short_scene_mapping") == "APPROVED", premium
           assert len(premium.get("approved_short_hooks") or []) == 3, premium
           assert premium.get("real_headlines") == "APPROVED", premium
           assert premium.get("gameplay_moving_footage") == "APPROVED", premium
@@ -428,7 +433,7 @@ jobs:
               "phrase_level_direction": premium.get("phrase_level_direction"),
               "variable_pacing": premium.get("variable_pacing"),
               "sound_design": premium.get("sound_design"),
-              "independent_shorts": premium.get("independent_shorts"),
+              "master_derived_shorts": premium.get("master_derived_shorts"),
               "short_hooks_exact": premium.get("short_hooks_exact"),
               "short_semantic_selection": premium.get("short_semantic_selection"),
               "approved_short_hooks": premium.get("approved_short_hooks"),
