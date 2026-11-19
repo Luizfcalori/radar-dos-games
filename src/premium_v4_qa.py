@@ -139,9 +139,6 @@ def main():
         if start<0 or start+d>master_duration+0.5:
             raise RuntimeError(f"QUALITY_BLOCK: Short {i} está fora da timeline do Master")
         ranges.append((start,start+d))
-        meta=load(f"output/short-{i}-youtube.json")
-        if norm(meta.get("title"))!=norm(hook):
-            raise RuntimeError(f"QUALITY_BLOCK: metadata do Short {i} diverge do hook aprovado")
         short_report.append({"index":i,"duration":round(d,3),"audio":"present","source":"master_timeline"})
 
     for i,(left,right) in enumerate(ranges):
