@@ -506,3 +506,4 @@ def qa_report(scenes,clips,shorts=None):
         if not isinstance(b,list) or not b:
             raise RuntimeError(f"QUALITY_BLOCK: Short {i} sem mapa de mídias para anti-repetição")
         short_rows.append({"short":i,**validate_short(b,assets)})
+    return {"status":"APPROVED","master":master,"shorts":short_rows}
