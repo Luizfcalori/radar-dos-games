@@ -34,9 +34,7 @@ class MasterCutShortTests(unittest.TestCase):
 
     def test_renderer_maps_master_audio_and_never_disables_audio(self):
         source = Path("src/shorts.py").read_text(encoding="utf-8")
-        self.assertIn('" -map"', source) if False else None
         self.assertIn('"0:a?"', source)
-        self.assertIn('" -af"', source) if False else None
         self.assertNotIn('"-an"', source)
         wrapper = Path("src/shorts_v4.py").read_text(encoding="utf-8")
         self.assertIn('Path("output/master.mp4")', wrapper)
