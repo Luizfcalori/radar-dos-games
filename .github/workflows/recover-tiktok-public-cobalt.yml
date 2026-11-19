@@ -20,9 +20,17 @@ jobs:
 
       - name: Prepare
         run: |
-          python -m pip install --upgrade requests
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
+          python - <<'PY'
+          try:
+              import requests
+          except ImportError:
+              import subprocess, sys
+              subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'requests'])
+          PY
+          if ! command -v ffprobe >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
           mkdir -p recovered
 
       - name: Discover active Cobalt instances and recover exact IDs
@@ -229,3 +237,5 @@ jobs:
           cat data/tiktok_backfill_report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
 
 # Public Cobalt recovery retargeted to the seven Shorts still waiting for original MP4 media.
+
+# Use the runner's preinstalled ffmpeg; install only if it is absent to avoid slow apt refreshes.
