@@ -81,6 +81,20 @@ def _mw4_curated_still(asset):
     )
 
 
+def _gta6_curated_still(asset):
+    """Verified Rockstar GTA VI stills may bridge generic audience CTAs after gameplay runs out."""
+    role=str(asset.get("role") or "")
+    url=str(asset.get("url") or "").casefold()
+    source=str(asset.get("source") or "").casefold()
+    label=str(asset.get("source_label") or "").casefold()
+    return (
+        asset.get("type") == "image"
+        and role.startswith("official_subject_reference_")
+        and "rockstargames.com/vi/" in (url + " " + source)
+        and ("grand theft auto vi" in label or "gta vi" in label)
+    )
+
+
 def _apex_curated_still(asset):
     """Allow only official Steam screenshots belonging to the exact Apex Legends app."""
     role=str(asset.get("role") or "")
@@ -167,10 +181,14 @@ def subject_ok(phrase,asset):
     is_cta=any(token in text for token in (
         "conta nos comentários","acompanha o radar","mais novidades",
         "se você gosta de acompanhar",
+        "qual descoberta merece um vídeo próprio",
+        "qual descoberta merece um video proprio",
+        "qual merece um vídeo próprio",
+        "qual merece um video proprio",
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)):
+    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -180,7 +198,7 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset):
+    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -191,7 +209,7 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
@@ -267,7 +285,7 @@ def validate_master(scenes,assets):
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
                     beat.get("visual_evidence") == "official_image_subject_label"
-                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _fight_night_curated_still(asset))
+                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset))
                 )
                 if not tracker.can_use(
                     asset, beat.get("text",""), scene_no, cursor, d,
