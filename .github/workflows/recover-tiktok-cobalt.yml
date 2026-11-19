@@ -34,25 +34,62 @@ jobs:
           docker pull ghcr.io/imputnet/cobalt:11
           docker run -d --name yt-session-generator \
             --network cobalt-recovery \
+            -p 127.0.0.1:8080:8080 \
             --restart no \
             ghcr.io/imputnet/yt-session-generator:webserver
+
+          # Cobalt must not start before the session server has produced a real
+          # poToken + visitor_data pair; starting both containers together races
+          # and causes error.api.youtube.login for every video.
+          SESSION_READY=false
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 5 http://127.0.0.1:8080/token -o /tmp/youtube-session.json; then
+              if python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/youtube-session.json').read_text())
+          def has(keys):
+              return any(isinstance(d.get(k),str) and len(d[k])>10 for k in keys)
+          raise SystemExit(0 if has(('potoken','po_token','poToken')) and has(('visitor_data','visitorData')) else 1)
+          PY
+              then
+                SESSION_READY=true
+                echo "YouTube session token is ready."
+                break
+              fi
+            fi
+            if (( i % 10 == 0 )); then
+              curl -fsS --max-time 10 http://127.0.0.1:8080/update >/dev/null || true
+            fi
+            sleep 2
+          done
+          if [[ "$SESSION_READY" != true ]]; then
+            echo "yt-session-generator did not produce poToken/visitor_data within 120 seconds."
+            docker logs yt-session-generator || true
+            exit 1
+          fi
+
           docker run -d --name cobalt \
             --network cobalt-recovery \
             -p 9000:9000 \
             -e API_URL='http://127.0.0.1:9000/' \
             -e YOUTUBE_SESSION_SERVER='http://yt-session-generator:8080/' \
+            -e YOUTUBE_SESSION_INNERTUBE_CLIENT='WEB_EMBEDDED' \
             --restart no \
             ghcr.io/imputnet/cobalt:11
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:9000/ >/tmp/cobalt-info.json; then
               cat /tmp/cobalt-info.json
-              exit 0
+              break
             fi
             sleep 2
           done
-          docker logs cobalt || true
-          docker logs yt-session-generator || true
-          exit 1
+          if ! docker logs cobalt 2>&1 | grep -Fq 'poToken & visitor_data loaded successfully'; then
+            echo "Cobalt did not confirm a loaded YouTube session."
+            docker logs cobalt || true
+            docker logs yt-session-generator || true
+            exit 1
+          fi
 
       - name: Recover exact published Shorts
         shell: bash
@@ -303,3 +340,5 @@ jobs:
 # Recovery target refresh: restore the seven Shorts still marked waiting_media in the current channel index.
 
 # Additional fallback: yt-dlp EJS + alternate YouTube player clients after Cobalt login/rate errors.
+
+# Cobalt startup race fix: wait for a valid poToken/visitor_data before starting the API container.
