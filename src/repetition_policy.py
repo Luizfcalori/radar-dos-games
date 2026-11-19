@@ -410,7 +410,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                         and subject_ok(beat.get("text", ""), a)
                     ]
                 if not still_choices:
-                    raise RuntimeError("QUALITY_BLOCK: Short sem intervalo inédito nem quadro de arquivo Fight Night disponível")
+                    raise RuntimeError("QUALITY_BLOCK: Short sem intervalo inédito nem imagem aprovada compatível do jogo selecionado")
                 still = still_choices[0]
                 beat["media_index"] = int(still["index"])
                 beat.pop("source_window", None)
