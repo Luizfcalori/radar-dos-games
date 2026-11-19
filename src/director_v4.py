@@ -179,6 +179,21 @@ def choose(scene, assets, usage, previous, count, phrase_text=""):
             break
     return result
 
+def is_editorial_bridge_phrase(text, requirements=()):
+    """Recognize content-free transitions/prompts that do not name a visual subject."""
+    if requirements:
+        return False
+    low=norm(text)
+    patterns=(
+        "a pergunta que fica", "a pergunta que permanece",
+        "a pergunta e", "e a pergunta", "mas e a pergunta",
+        "agora a pergunta", "qual e a pergunta",
+        "a questao que fica", "o que fica e",
+        "a pergunta final",
+    )
+    return any(pattern in low for pattern in patterns)
+
+
 def phrase_target(text):
     level=intensity(text)
     if level>=2:
@@ -418,7 +433,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                 "se você gosta de acompanhar","qual descoberta merece um vídeo próprio",
                 "qual descoberta merece um video proprio","qual merece um vídeo próprio",
                 "qual merece um video proprio",
-            ))
+            )) or is_editorial_bridge_phrase(phrase_text, requirements)
             while remaining>0.001:
                 stills=[
                     a for a in allowed

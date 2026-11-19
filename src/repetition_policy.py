@@ -185,6 +185,10 @@ def subject_ok(phrase,asset):
         "qual descoberta merece um video proprio",
         "qual merece um vídeo próprio",
         "qual merece um video proprio",
+        "a pergunta que fica","a pergunta que permanece","a pergunta é",
+        "e a pergunta","mas é a pergunta","agora a pergunta",
+        "qual é a pergunta","a questão que fica","o que fica é",
+        "a pergunta final",
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
