@@ -166,7 +166,10 @@ def subject_ok(phrase,asset):
     text=str(phrase or "").casefold()
     is_cta=any(token in text for token in (
         "conta nos comentários","acompanha o radar","mais novidades",
-        "se você gosta de acompanhar",
+        "se você gosta de acompanhar","comenta sua descoberta",
+        "comente sua descoberta","conta sua descoberta",
+        "passou despercebido","qual dessas referências",
+        "qual foi a mais surpreendente",
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
