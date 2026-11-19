@@ -144,12 +144,12 @@ def _fight_night_curated_still(asset):
     return asset.get("type") == "image" and (official_ea_still or extracted_archival_frame)
 
 
-def _extract_fight_night_frame(video, timestamp, index):
-    """Create a unique still from already-approved archival Fight Night footage for fallback beats."""
+def _extract_approved_gameplay_frame(video, timestamp, index):
+    """Extract a source-traceable still from an already-approved gameplay video."""
     src=Path(str(video.get("path") or ""))
     if not src.is_file():
         return None
-    dest=src.parent / f"fight_night_short_frame_{index}_{int(timestamp*1000)}.jpg"
+    dest=src.parent / f"approved_gameplay_short_frame_{index}_{int(timestamp*1000)}.jpg"
     try:
         subprocess.run([
             "ffmpeg","-y","-v","error","-ss",f"{max(0.0,float(timestamp)):.3f}",
@@ -162,12 +162,13 @@ def _extract_fight_night_frame(video, timestamp, index):
     if not dest.is_file() or dest.stat().st_size < 1000:
         dest.unlink(missing_ok=True)
         return None
+    source=str(video.get("source") or video.get("url") or "")
+    url=str(video.get("url") or source)
     return {
         "index": int(index), "type":"image", "path":str(dest),
-        "url":str(video.get("url") or ""),
-        "source":str(video.get("source") or video.get("url") or ""),
-        "source_label":"Fight Night Champion archival gameplay frame",
-        "role":f"official_context_fight_night_frame_{index}",
+        "url":url, "source":source,
+        "source_label":"Approved gameplay frame from selected game's verified source",
+        "role":f"official_context_approved_gameplay_frame_{index}",
         "approved":True, "duration":0.0
     }
 
@@ -192,7 +193,14 @@ def subject_ok(phrase,asset):
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset)):
+    approved_same_game_frame = (
+        asset.get("type") == "image"
+        and role.startswith("official_context_approved_gameplay_frame_")
+        and bool(asset.get("source"))
+        and bool(asset.get("url"))
+        and "approved gameplay frame from selected game's verified source" in str(asset.get("source_label") or "").casefold()
+    )
+    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset) or (approved_same_game_frame and is_cta)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -202,7 +210,7 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset):
+    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset) or str(asset.get('role') or '').startswith('official_context_approved_gameplay_frame_'):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -410,7 +418,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                         # Use different points across the source; frames are stills,
                         # explicitly labeled archival, never represented as new-game footage.
                         for timestamp in [min(total-0.2, max(0.2, total*f)) for f in (0.12,0.24,0.36,0.48,0.60,0.72,0.84,0.93)]:
-                            frame=_extract_fight_night_frame(video,timestamp,next_index+frame_number)
+                            frame=_extract_approved_gameplay_frame(video,timestamp,next_index+frame_number)
                             if frame:
                                 assets[int(frame["index"])]=frame
                                 frame_number+=1
@@ -518,15 +526,3 @@ def qa_report(scenes,clips,shorts=None):
         if not isinstance(b,list) or not b:
             raise RuntimeError(f"QUALITY_BLOCK: Short {i} sem mapa de mídias para anti-repetição")
         short_rows.append({"short":i,**validate_short(b,assets)})
-    return {"status":"APPROVED","policy":"RADAR_ANTI_REPETITION_V1",
-            "master":master,"shorts":short_rows}
-
-
-if __name__=="__main__":
-    plan=json.loads(Path(sys.argv[1] if len(sys.argv)>1 else "output/auto-media-plan.json").read_text())
-    clips=json.loads(Path(sys.argv[2] if len(sys.argv)>2 else "output/clips.json").read_text())
-    result=qa_report(plan.get("scenes") or [],clips)
-    dest=Path("output/anti-repetition-qa.json")
-    dest.parent.mkdir(parents=True,exist_ok=True)
-    dest.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n")
-    print(json.dumps(result,ensure_ascii=False))
