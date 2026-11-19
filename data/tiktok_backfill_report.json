@@ -2,8 +2,23 @@
   "recovered_count": 198,
   "ready_for_tiktok": 198,
   "total_discovered": 208,
-  "remaining_count": 7,
+  "remaining_count": 10,
   "remaining": [
+    {
+      "youtube_id": "xDCHua1DjJg",
+      "title": "RESIDENT EVIL REQUIEM LEVOU O PRÊMIO MAIS IMPORTANTE DE 2026!",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "wFuquyQt9-w",
+      "title": "GRACE ASHCROFT AINDA TEM MUITO A EVOLUIR — DIZ SUA ATRIZ!",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "GS36QlnZiFw",
+      "title": "LEON E GRACE: A PARCERIA PODE TER FUTURO NA SÉRIE?",
+      "reason": "original_media_not_recovered_yet"
+    },
     {
       "youtube_id": "4J11rX8qp-U",
       "title": "A Coreia Está Pegando Fogo",
@@ -26,20 +41,20 @@
     },
     {
       "youtube_id": "4rHekP89KHY",
-      "title": "O QUE O TRAILER DE YEAT MOSTRA?",
+      "title": "O QUE O TRAILER DE YEAT MOSTRA? 👀🎮 Curtiu? Siga o Radar dos Games para #Fortnite #Yeat",
       "reason": "original_media_not_recovered_yet"
     },
     {
       "youtube_id": "BQ30QQNY9kw",
-      "title": "Radar dos Games: notícias, lançamentos e gameplays",
+      "title": "Radar dos Games: notícias, lançamentos e gameplays!💚 Curta e siga! #GTA6 #GearsOfWarEDay #ARCRaiders",
       "reason": "original_media_not_recovered_yet"
     },
     {
       "youtube_id": "XA-YklCtg1k",
-      "title": "Gears of War: E-Day é o #1 do TOP 10",
+      "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
       "reason": "original_media_not_recovered_yet"
     }
   ],
-  "last_recovery_at": "2026-11-19T20:54:52.348913+00:00",
+  "last_recovery_at": "2026-11-19T20:55:33.940293+00:00",
   "recovered_this_run": []
-}
+}\n
