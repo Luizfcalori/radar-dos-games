@@ -419,6 +419,9 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                 "comente sua descoberta","conta sua descoberta",
                 "passou despercebido","qual dessas referências",
                 "qual foi a mais surpreendente",
+                "inscreva-se no radar dos games","inscreva se no radar dos games",
+                "inscreva-se no radar","inscreva se no radar",
+                "acompanhar mais segredos","acompanhe mais segredos",
             ))
             while remaining>0.001:
                 stills=[
