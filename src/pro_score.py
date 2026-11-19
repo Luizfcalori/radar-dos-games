@@ -30,8 +30,12 @@ def main():
     components["audio"]=min(15,sound_score)
 
     rows=shorts.get("shorts") or []
-    independent=len(rows)==3 and all(r.get("render_policy")=="rebuilt_from_source_assets_not_master_crop" for r in rows)
-    components["shorts"]=15 if independent else (8 if len(rows)==3 else 0)
+    master_cuts=(shorts.get("source_policy")=="master_timeline_crops_preserve_original_audio"
+                 and len(rows)==3
+                 and all(r.get("render_policy")=="direct_master_timeline_crop_with_original_narration"
+                         and r.get("audio_validation")=="audio_stream_present_from_master"
+                         for r in rows))
+    components["shorts"]=15 if master_cuts else 0
 
     components["visual_frames"]=10 if frames.get("status")=="APPROVED" else 0
     cover_ok=covers.get("premium_cover_qa")=="APPROVED"
@@ -44,7 +48,7 @@ def main():
     if components["semantic"]<25:recommendations.append("refazer mapeamento fala-imagem")
     if components["direction_and_pacing"]<20:recommendations.append("refazer direção/cadência")
     if components["audio"]<13:recommendations.append("revisar sound design/masterização")
-    if components["shorts"]<15:recommendations.append("reconstruir Shorts independentes")
+    if components["shorts"]<15:recommendations.append("corrigir cortes do Master/áudio original dos Shorts")
     if components["visual_frames"]<10:recommendations.append("revisar frames sinalizados")
     if components["covers"]<10:recommendations.append("regenerar capas sem fallback")
 
