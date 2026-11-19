@@ -1,17 +1,45 @@
 {
-  "recovered_count": 28,
-  "ready_for_tiktok": 28,
-  "total_discovered": 28,
-  "remaining_count": 0,
-  "remaining": [],
-  "last_recovery_at": "2026-10-04T23:18:14.291380+00:00",
-  "recovered_this_run": [
-    "DFMjasmIOSw",
-    "t-KVaCwbrbA",
-    "dvu_iLOeRds",
-    "hjCBW6wopN8",
-    "Lc3BXMSZanU",
-    "S-Kw8W24bzM"
+  "recovered_count": 195,
+  "ready_for_tiktok": 195,
+  "total_discovered": 199,
+  "remaining_count": 7,
+  "remaining": [
+    {
+      "youtube_id": "4J11rX8qp-U",
+      "title": "A Coreia Está Pegando Fogo",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "wYDMp_a572w",
+      "title": "Combate Intenso",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "jFqiD7hw0hc",
+      "title": "Missão 1: O Início",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "FWfua78AQis",
+      "title": "Provando que a comunidade gamer é unida",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "4rHekP89KHY",
+      "title": "O QUE O TRAILER DE YEAT MOSTRA?",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "BQ30QQNY9kw",
+      "title": "Radar dos Games: notícias, lançamentos e gameplays",
+      "reason": "original_media_not_recovered_yet"
+    },
+    {
+      "youtube_id": "XA-YklCtg1k",
+      "title": "Gears of War: E-Day é o #1 do TOP 10",
+      "reason": "original_media_not_recovered_yet"
+    }
   ],
-  "note": "Two Minecraft items are recreated from the original approved master; the other four imported items are original recovered files."
+  "last_recovery_at": "2026-11-19T20:45:30.140586+00:00",
+  "recovered_this_run": []
 }
