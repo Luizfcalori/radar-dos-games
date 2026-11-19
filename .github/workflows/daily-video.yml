@@ -62,6 +62,7 @@ on:
       - "production/manual-brief-qssr-ps5-2026-10-19.json"
       - "production/manual-brief-solo-leveling-arise-overdrive-2026-11-02.json"
       - "production/manual-brief-gta-vi-2026-11-05.json"
+      - "production/manual-brief-gta-vi-living-world-2026-11-19.json"
       - "production/manual-brief-metaphor-refantazio-2026-11-08.json"
       - "production/manual-brief-marvel-rivals-2026-11-11.json"
       - "production/manual-brief-resident-evil-requiem-2026-11-16.json"
@@ -90,6 +91,7 @@ on:
       - "tests/**"
 
 permissions:
+  actions: write
   contents: write
 
 
@@ -144,6 +146,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
+      - name: Cancel obsolete GTA VI Easter Egg run before starting the new brief
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run cancel 44554316105 --repo Luizfcalori/radar-dos-games || true
+
       - uses: actions/checkout@v4
 
       - uses: denoland/setup-deno@v2
