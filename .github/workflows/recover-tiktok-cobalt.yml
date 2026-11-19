@@ -149,6 +149,35 @@ jobs:
           print(json.dumps(report,ensure_ascii=False,indent=2))
           PY
 
+      - name: Fallback - yt-dlp with alternate YouTube clients and JS challenge solver
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python -m pip install --upgrade "yt-dlp[default]"
+          mkdir -p recovered
+          IDS=(4J11rX8qp-U wYDMp_a572w jFqiD7hw0hc FWfua78AQis 4rHekP89KHY BQ30QQNY9kw XA-YklCtg1k)
+          for id in "${IDS[@]}"; do
+            [ -s "recovered/yt-${id}.mp4" ] && continue
+            echo "yt-dlp fallback: ${id}"
+            yt-dlp --no-warnings --no-playlist --retries 2 --fragment-retries 2 \
+              --remote-components ejs:github \
+              --extractor-args "youtube:player_client=android_vr,ios,web_safari,tv_embedded,web" \
+              -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
+              --merge-output-format mp4 \
+              -o "recovered/yt-${id}.%(ext)s" \
+              "https://www.youtube.com/shorts/${id}"
+            f=$(find recovered -maxdepth 1 -type f -name "yt-${id}.*" ! -name '*.json' | head -1)
+            if [ -n "$f" ] && [ "$f" != "recovered/yt-${id}.mp4" ]; then
+              ffmpeg -y -loglevel error -i "$f" -c:v libx264 -preset veryfast -crf 20 -c:a aac -movflags +faststart "recovered/yt-${id}.mp4" && rm -f "$f"
+            fi
+            if [ -s "recovered/yt-${id}.mp4" ]; then
+              dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "recovered/yt-${id}.mp4")
+              echo "YT_DLP_RECOVERED ${id} duration=${dur}"
+            fi
+          done
+          exit 0
+
       - name: Show Cobalt logs on partial failure
         if: always()
         run: |
@@ -268,3 +297,5 @@ jobs:
           cat data/tiktok_backfill_report.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
 
 # Recovery target refresh: restore the seven Shorts still marked waiting_media in the current channel index.
+
+# Additional fallback: yt-dlp EJS + alternate YouTube player clients after Cobalt login/rate errors.
