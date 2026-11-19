@@ -1,0 +1,23 @@
+name: Cancel stale GTA VI Easter Egg production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/cancel-stale-gta6-brief-run.yml"
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cancel-stale-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel the run pinned to the obsolete Easter Egg brief
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run cancel 44554316105 --repo Luizfcalori/radar-dos-games || true
+          gh run view 44554316105 --repo Luizfcalori/radar-dos-games --json status,conclusion
