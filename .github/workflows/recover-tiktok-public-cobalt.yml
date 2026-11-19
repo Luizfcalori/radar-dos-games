@@ -258,7 +258,7 @@ jobs:
               'title':title,
               'media_url':f'https://github.com/{repo}/releases/download/tiktok-youtube-shorts/yt-{vid}.mp4',
               'thumbnail_url':x.get('thumbnail_url') or f'https://i.ytimg.com/vi/{vid}/hqdefault.jpg',
-              'post_text':title+'\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n'+' '.join(tags[:5]),
+              'post_text':title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n'+' '.join(tags[:5]),
               'status':'approved','youtube_id':vid,'youtube_url':f'https://www.youtube.com/shorts/{vid}',
               'source':'youtube_channel_recovered_public_cobalt','recovered_at':now
             })
@@ -274,9 +274,9 @@ jobs:
             'recovered_count':idx['ready_for_tiktok'],'ready_for_tiktok':idx['ready_for_tiktok'],
             'total_discovered':idx.get('total_discovered',0),'remaining_count':len(waiting),
             'remaining':waiting,'last_recovery_at':now,'recovered_this_run':changed
-          },ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
-          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
-          ipath.write_text(json.dumps(idx,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          },ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          ipath.write_text(json.dumps(idx,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps({'recovered_this_run':changed,'remaining_count':len(waiting)},ensure_ascii=False))
           PY
           git config user.name radar-tiktok-bot
