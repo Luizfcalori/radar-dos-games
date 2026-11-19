@@ -94,5 +94,6 @@
   "max_image_assets": 1,
   "minimum_image_assets": 1,
   "allow_same_source_role_fallback": true,
-  "allow_official_subject_fallback": true
+  "allow_official_subject_fallback": true,
+  "editorial_continuity_policy": "Frases genéricas de interação com o público, incluindo 'qual descoberta merece um vídeo próprio?', podem usar qualquer trecho de gameplay de GTA VI aprovado e inspecionado dentro da cena; a exigência de assunto específico permanece obrigatória para falas sobre Bigfoot, ovos pintados e outras descobertas nomeadas."
 }
