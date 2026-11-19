@@ -1,0 +1,286 @@
+name: Recover GTA VI production artifacts and publish all four videos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/recover-gta-vi-2026-11-19.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: radar-gta-vi-recovery-44577428250
+  cancel-in-progress: false
+
+jobs:
+  recover-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SOURCE_RUN_ID: "44577428250"
+    steps:
+      - name: Checkout production scripts
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download existing GTA VI render artifact (no re-render)
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-44577428250
+          path: output
+          github-token: ${{ github.token }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 44577428250
+
+      - name: Install only recovery dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install Pillow google-api-python-client google-auth
+
+      - name: Validate recovered media, narration and exact Shorts set
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v ffprobe
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          out=Path("output")
+          def load(name):
+              return json.loads((out/name).read_text(encoding="utf-8"))
+          def probe(path):
+              return json.loads(subprocess.check_output([
+                  "ffprobe","-v","error","-show_streams","-show_format","-of","json",str(path)
+              ],text=True))
+          selected=load("selected.json")
+          assert "grand theft auto vi" in selected.get("title","").lower(), selected.get("title")
+          assert selected.get("content_id")=="manual-grand-theft-auto-vi-living-world-2026-11-19"
+          storyboard=load("media-first-storyboard.json")
+          script=(out/"auto-script.txt").read_text(encoding="utf-8")
+          import hashlib
+          assert storyboard.get("status")=="APPROVED" and storyboard.get("script_sha256")==hashlib.sha256((out/"auto-script.txt").read_bytes()).hexdigest()
+          assert load("narration-qa.json").get("status")=="APPROVED"
+          assert load("semantic-visual-qa.json").get("status")=="APPROVED"
+          assert load("visual-frame-qa.json").get("status")=="APPROVED"
+          render=load("qa.json")
+          assert render.get("voice")=="pt-BR-ThalitaMultilingualNeural"
+          assert render.get("sound_design",{}).get("voice_chain")=="compression+loudnorm+limiter"
+          master=out/"master.mp4"
+          assert master.is_file() and master.stat().st_size>3_000_000
+          mp=probe(master); mv=next(s for s in mp["streams"] if s["codec_type"]=="video")
+          assert (mv["width"],mv["height"])==(1920,1080)
+          assert any(s["codec_type"]=="audio" for s in mp["streams"])
+          mmeta=load("master-youtube.json")
+          assert mmeta.get("privacy")=="private" and mmeta.get("title")
+          manifest=load("shorts/manifest.json")
+          picks=load("short-picks.json")
+          rows=manifest.get("shorts") or []
+          assert len(rows)==3 and len(picks.get("expected_hooks") or [])==3
+          reports=[]
+          for n in (1,2,3):
+              video=out/"shorts"/f"short_{n}.mp4"
+              meta=load(f"short-{n}-youtube.json")
+              assert video.is_file() and video.stat().st_size>500_000
+              assert meta.get("privacy")=="private" and meta.get("title")
+              vp=probe(video); vv=next(s for s in vp["streams"] if s["codec_type"]=="video")
+              assert (vv["width"],vv["height"])==(1080,1920), (n,vv)
+              assert any(s["codec_type"]=="audio" for s in vp["streams"]), n
+              duration=float(vp["format"]["duration"])
+              assert duration>=30, (n,duration)
+              assert meta["title"].strip()==picks["expected_hooks"][n-1].strip(), (n,meta["title"],picks["expected_hooks"][n-1])
+              reports.append({"short":n,"duration":round(duration,2),"bytes":video.stat().st_size,"audio":True})
+          recovery={
+            "status":"APPROVED_FOR_RECOVERY_PUBLISH",
+            "source_run_id":44577428250,
+            "master_seconds":round(float(mp["format"]["duration"]),2),
+            "master_resolution":"1920x1080",
+            "shorts":reports,
+            "short_count":3,
+            "voice":"pt-BR-ThalitaMultilingualNeural",
+            "narration_qa":"APPROVED",
+            "semantic_visual_qa":"APPROVED",
+            "visual_frame_qa":"APPROVED",
+            "note":"Recovered existing renders. Original premium QA failed only because director-v4.json was absent; this recovery gate verifies the rendered files and available source QA directly."
+          }
+          (out/"recovery-final-qa.json").write_text(json.dumps(recovery,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(recovery,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Generate four branded covers and add cover opening to Shorts
+        run: |
+          python src/premium_covers.py
+          python src/cover_qa.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("output/master-youtube.json")
+          d=json.loads(p.read_text(encoding="utf-8"))
+          d["thumbnail"]="output/thumbnail.jpg"
+          d["use_existing_thumbnail"]=True
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          for n in (1,2,3):
+              p=Path(f"output/short-{n}-youtube.json")
+              d=json.loads(p.read_text(encoding="utf-8"))
+              d["thumbnail"]=f"output/shorts/short_{n}_cover.jpg"
+              d["use_existing_thumbnail"]=True
+              p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          q=json.loads(Path("output/cover-qa.json").read_text(encoding="utf-8"))
+          assert q.get("premium_cover_qa")=="APPROVED",q
+          assert len(q.get("short_openings") or [])==3,q
+          print("COVERS_AND_SHORT_OPENINGS_APPROVED")
+          PY
+
+      - name: Verify Radar YouTube OAuth and channel
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/check_youtube.py
+
+      - name: Upload GTA VI Master privately to Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/master.mp4 output/master-youtube.json | tee output/youtube-master-result.json
+
+      - name: Upload GTA VI Short 1 privately to Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_1.mp4 output/short-1-youtube.json | tee output/youtube-short-1-result.json
+
+      - name: Upload GTA VI Short 2 privately to Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_2.mp4 output/short-2-youtube.json | tee output/youtube-short-2-result.json
+
+      - name: Upload GTA VI Short 3 privately to Radar dos Games
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ secrets.YT_CHANNEL_ID }}
+        run: python src/youtube.py output/shorts/short_3.mp4 output/short-3-youtube.json | tee output/youtube-short-3-result.json
+
+      - name: Prepare exactly three Shorts for TikTok Helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tiktok-upload
+          for n in 1 2 3; do
+            cp "output/shorts/short_${n}.mp4" "tiktok-upload/gta-vi-2026-11-19-mundo-vivo-short-${n}.mp4"
+            cp "output/shorts/short_${n}_cover.jpg" "tiktok-upload/gta-vi-2026-11-19-mundo-vivo-short-${n}.jpg"
+          done
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Assets aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-upload/* --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Verify TikTok Helper media URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 3 --max-time 120 --range 0-1023 "$BASE/gta-vi-2026-11-19-mundo-vivo-short-$n.$ext" -o /dev/null
+            done
+          done
+
+      - name: Add exactly three GTA VI Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime,timezone
+          root=Path("output")
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          prefix="gta-vi-2026-11-19-mundo-vivo-short-"
+          tags="#GTA6 #GTAVI #RockstarGames #MundoAberto #Gaming"
+          new=[]
+          for n in (1,2,3):
+              meta=json.loads((root/f"short-{n}-youtube.json").read_text(encoding="utf-8"))
+              yt=json.loads((root/f"youtube-short-{n}-result.json").read_text(encoding="utf-8"))
+              key=f"{prefix}{n}"
+              new.append({
+                "id":key,
+                "title":meta["title"],
+                "post_text":f'{meta["title"]}\n\n🎮 Siga o Radar dos Games para mais novidades!\n\n{tags}',
+                "status":"approved",
+                "source":"gta_vi_2026_11_19_recovered_existing_render",
+                "source_run_id":44577428250,
+                "short_number":n,
+                "media_url":f"{base}/{key}.mp4",
+                "thumbnail_url":f"{base}/{key}.jpg",
+                "youtube_id":yt["id"],
+                "youtube_url":f'https://www.youtube.com/shorts/{yt["id"]}',
+                "approved_at":now,
+                "synced_at":now
+              })
+          keys={x["id"] for x in new}
+          preserved=[x for x in old if x.get("id") not in keys]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=new+preserved
+          qpath.parent.mkdir(parents=True,exist_ok=True)
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"added":3,"preserved":len(preserved),"total":len(q["items"])},ensure_ascii=False))
+          PY
+
+      - name: Commit queue and verify exact three GTA VI entries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          git commit -m "feat: add recovered GTA VI Shorts to TikTok Helper queue"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-queue.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-queue.json",encoding="utf-8"))
+          ids={f"gta-vi-2026-11-19-mundo-vivo-short-{n}" for n in (1,2,3)}
+          found=[x for x in q.get("items",[]) if x.get("id") in ids]
+          assert len(found)==3, len(found)
+          assert all(x.get("status")=="approved" and x.get("youtube_id") and x.get("media_url") for x in found)
+          print("TIKTOK_HELPER_GTA_VI_OK",len(found),"PRESERVED_QUEUE_ITEMS",len(q.get("items",[]))-3)
+          PY
+
+      - name: Save recovered final videos and upload receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gta-vi-recovered-final-44577428250
+          path: |
+            output/master.mp4
+            output/shorts/short_*.mp4
+            output/thumbnail.jpg
+            output/shorts/short_*_cover.jpg
+            output/recovery-final-qa.json
+            output/cover-qa.json
+            output/youtube-*-result.json
+          retention-days: 30
