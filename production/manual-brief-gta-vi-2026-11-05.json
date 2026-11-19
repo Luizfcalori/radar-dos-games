@@ -1,71 +1,64 @@
 {
-  "valid_until": "2026-11-19T23:59:00Z",
-  "content_id": "manual-grand-theft-auto-vi-last-72h-gameplay-update-2026-11-16",
-  "title": "Grand Theft Auto VI — últimos vídeos oficiais antes da estreia",
-  "headline": "GTA VI: OS ÚLTIMOS VÍDEOS OFICIAIS ANTES DA ESTREIA!",
+  "valid_until": "2026-11-21T23:59:00Z",
+  "content_id": "manual-grand-theft-auto-vi-launch-day-first-easter-eggs-2026-11-19",
+  "title": "Grand Theft Auto VI — lançamento e os primeiros segredos de Leonida",
+  "headline": "GTA 6 CHEGOU: BIGFOOT, OVOS LITERAIS E SEGREDOS EM LEONIDA!",
   "primary_source": "https://www.rockstargames.com/VI",
   "media_source_urls": [
     "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/VI/launch-trailer",
-    "https://www.rockstargames.com/VI/launch-gallery",
-    "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip",
     "https://www.youtube.com/watch?v=VQRLujxTm3c",
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k",
+    "https://twitter.com/cantworkitout/status/2123085708072239142",
+    "https://twitter.com/xGarbett/status/2123088685210202519",
+    "https://www.gamesradar.com/games/grand-theft-auto/gta-6-bigfoot-sightings-are-already-ramping-up-as-rockstar-honors-a-22-year-old-grand-theft-auto-legend/",
+    "https://www.ibtimes.co.uk/gta-6-player-discovers-literal-easter-egg-leonida-1833342"
   ],
   "source_urls": [
     "https://www.rockstargames.com/VI",
-    "https://www.rockstargames.com/br/videos/55kss26g",
-    "https://www.rockstargames.com/br/videos/76orsa95",
     "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer",
-    "https://www.rockstargames.com/VI/launch-gallery",
-    "https://www.rockstargames.com/newswire/article/4k138k8okkk483/grand-theft-auto-vi-an-extended-look-now-playing",
-    "https://www.rockstargames.com/VI/media/videos",
-    "https://www.rockstargames.com/newswire?tag=vi",
-    "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c",
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
+    "https://blog.playstation.com/2026/11/18/grand-theft-auto-vi-launches-tomorrow-november-19/",
+    "https://www.gamesradar.com/games/grand-theft-auto/gta-6-bigfoot-sightings-are-already-ramping-up-as-rockstar-honors-a-22-year-old-grand-theft-auto-legend/",
+    "https://www.ibtimes.co.uk/gta-6-player-discovers-literal-easter-egg-leonida-1833342",
+    "https://nerdism.com/gta-6-easter-eggs-secrets-live/"
   ],
   "video_urls": [
-    "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
     "https://www.youtube.com/watch?v=VQRLujxTm3c",
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k",
+    "https://twitter.com/cantworkitout/status/2123085708072239142",
+    "https://twitter.com/xGarbett/status/2123088685210202519"
   ],
   "short_hooks": [
-    "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
-    "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
-    "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!"
+    "BIGFOOT VOLTOU EM GTA 6 — E O ENCONTRO É BIZARRO!",
+    "O EASTER EGG MAIS LITERAL DE GTA 6 ESTÁ NO TOPO DE UMA TORRE!",
+    "O QUE ACONTECE QUANDO JASON SEGUE O RASTRO DE BIGFOOT?"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
     "Tema bloqueado: Grand Theft Auto VI. Não substituir por GTA Online, GTA V ou qualquer outro jogo.",
-    "Data oficial: 19 de novembro de 2026. Plataformas confirmadas: PlayStation 5 e Xbox Series X|S.",
-    "A pauta deve se apoiar em anúncios e vídeos oficiais da Rockstar: Pre-Load Now (10/11), Launch Trailer (15/10), Trailer 2 e materiais oficiais da galeria de lançamento.",
-    "O pré-carregamento digital está disponível para quem fez a pré-venda; compradores de edição física com código podem iniciar o download após receber e ativar o código.",
-    "Pre-Load Now é um vídeo curto de aproximadamente 30 segundos. Não chamá-lo de novo trailer completo nem inventar cenas ou recursos que não aparecem nele.",
-    "O Launch Trailer foi capturado inteiramente dentro do jogo em PlayStation 5, segundo a Rockstar. A música é Flower in a Hurricane, de Justice, com Tame Impala, SZA e King Gizzard & The Lizard Wizard.",
-    "A descrição oficial da história diz que um golpe aparentemente fácil dá errado e coloca Jason e Lucia no meio de uma conspiração criminosa que atravessa Leonida.",
-    "Não incluir detalhes não demonstrados sobre arrombamento de fechaduras, câmeras, códigos de cofres, sistema moral, missões, GTA Online ou recursos ainda não confirmados. Não usar a reportagem de update 01.002.001 nesta versão.",
-    "Usar exclusivamente vídeos oficiais da Rockstar Games listados em video_urls. Não usar vídeos de IGN, reuploads, vazamentos, GTA V ou imagens de outros jogos.",
+    "Contexto atualizado para o lançamento global de 19 de novembro de 2026. Plataformas confirmadas: PlayStation 5 e Xbox Series X|S; não anunciar versão PC.",
+    "O Master deve cobrir o lançamento e os primeiros segredos relatados pelos jogadores em Leonida, com distinção explícita entre achados em vídeo/reportagens e confirmações oficiais.",
+    "Bigfoot: GamesRadar reuniu múltiplos relatos e clipes de jogadores; descrever o encontro na mata e a sequência com a figura amarrada à árvore sem inventar localização exata ou passo a passo.",
+    "Ovos coloridos: jogador xGarbett publicou vídeo de Jason subindo uma torre de comunicação, encontrando um ninho e arremessando um ovo; a escalada teria levado cerca de sete minutos. Não inventar nome ou coordenada da torre.",
+    "A Rockstar não confirmou oficialmente uma lista de Easter eggs. Não afirmar que OVNIs, fantasmas, apartamento de Dexter ou outros rumores são segredos confirmados.",
+    "Usar apenas gameplay real de GTA 6. Não usar gameplay de GTA V, fan edits ou imagens de outros jogos. Os clipes de Bigfoot e dos ovos devem ser priorizados nos Shorts correspondentes se o download e a validação forem possíveis.",
+    "Se a mídia de jogador não puder ser baixada ou validada, não substituir por imagens genéricas e não afirmar que o clipe mostra a descoberta; bloquear a produção para revisão de mídia.",
     "Master 16:9 Full HD, narração natural PT-BR com Thalita Multilingual PT-BR V3, exatamente três Shorts 9:16 com capas próprias.",
     "Shorts com gancho imediato, legendas grandes, cortes dinâmicos e duração mínima de 60 segundos. Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes.",
     "Manter intro oficial integral antes do gameplay. Evitar repetição de cenas, loops, travamentos, imagens estáticas longas e falas sobre processo de produção.",
     "YouTube: enviar Master e os três Shorts como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados.",
-    "Não usar data de PC, preço, performance ou recursos não confirmados como fatos."
+    "Não usar placar, review score, preço, performance, cheat codes ou outros recursos não confirmados como fatos."
   ],
   "script_blocks": [
-    "Faltam apenas três dias para a chegada de Grand Theft Auto VI. No dia 19 de novembro, a Rockstar abre as portas de Vice City e do estado de Leonida para uma nova geração de jogadores. A reta final já está cheia de material oficial: o trailer de lançamento e uma coleção de imagens que mostram melhor os protagonistas e os lugares que vamos explorar.",
-    "A novidade oficial mais recente chegou em 10 de novembro. A Rockstar publicou Pre-Load Now e confirmou que o pré-carregamento digital já está disponível para quem reservou o jogo. Quem comprou uma edição física com código também poderá ativar esse código e iniciar o download assim que recebê-lo. A ideia é deixar tudo preparado para começar a jogar quando o lançamento for liberado no dia 19.",
-    "O vídeo Pre-Load Now tem cerca de trinta segundos e traz uma montagem rápida de cenas de Leonida. A prévia passa por momentos de festa, carros, uma equipe tática e atividades em diferentes ambientes. É um vídeo curto, mas funciona como a última chamada da Rockstar antes da estreia.",
-    "Um mês antes, em 15 de outubro, a Rockstar publicou o Launch Trailer. O vídeo foi capturado inteiramente dentro do jogo em um PlayStation 5 e apresenta Jason e Lucia em uma sequência de cenas que mistura ação, perseguições, encontros e momentos da vida dos dois. A montagem destaca a dupla em cenas de ação e deslocamento por Leonida.",
-    "A descrição oficial resume o ponto de partida da história: Jason e Lucia já sabem que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os dois acabam no meio de uma conspiração criminosa que atravessa todo o estado de Leonida. Nos trailers, os dois aparecem lado a lado em diferentes situações, reforçando a parceria que conduz a história.",
-    "Um dos clipes acompanha um barco atravessando canais e áreas alagadas. Em outros cortes, carros circulam por vias urbanas e aparecem cenas noturnas com veículos em movimento.",
-    "A Rockstar também disponibilizou uma galeria de lançamento com novas capturas de tela em seu site oficial. É mais uma oportunidade de observar Jason, Lucia, os veículos e os cenários antes da estreia. A galeria amplia o material oficial disponível para observar Jason, Lucia, veículos e cenários de Leonida.",
-    "A data anunciada continua sendo 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar recomenda que quem fez a pré-venda digital aproveite o pré-carregamento para deixar o jogo pronto.",
-    "Você está pronto para explorar Leonida no dia 19? Conta nos comentários se vai começar a jogar no lançamento. Acompanha o Radar dos Games e inscreva-se no canal para receber as próximas novidades e nossa cobertura da estreia."
+    "Grand Theft Auto VI finalmente chegou. Desde a virada para 19 de novembro, jogadores começaram a explorar Leonida, o novo mundo aberto da Rockstar que reúne Vice City e outras regiões inspiradas no sul da Flórida. E, como era de se esperar, a curiosidade não ficou só nas missões principais: os primeiros jogadores já estão encontrando segredos escondidos pelo mapa. Hoje, o Radar dos Games vai separar o que já apareceu em vídeos e reportagens daquilo que ainda é teoria.",
+    "Um dos primeiros assuntos que chamou atenção é o retorno de Bigfoot. Jogadores compartilharam clipes em que a criatura aparece em uma área de mata, próxima a uma carcaça de veado. Quando o personagem se aproxima, Bigfoot dispara em direção à floresta. A cobertura do GamesRadar reuniu relatos e vídeos de diferentes jogadores apontando para o mesmo encontro. Não é apenas uma silhueta distante: a sequência parece levar a uma interação escondida, e é justamente isso que está fazendo a comunidade investigar o local.",
+    "O encontro fica ainda mais estranho quando o jogador decide seguir a criatura. Os relatos descrevem um caminho pela mata até uma figura amarrada a uma árvore. Ao investigar esse elemento, Jason sofre um efeito repentino, perde a consciência e vê Bigfoot se aproximar antes de despertar novamente. É uma sequência curta, mas cheia de mistério. A localização exata e os passos necessários ainda estão sendo organizados pela comunidade, então não vamos inventar coordenadas nem tratar especulações como um guia definitivo.",
+    "E existe um segredo que brinca com o próprio nome Easter egg. Um jogador conhecido como xGarbett publicou um vídeo subindo uma torre de comunicação em Leonida. A escalada teria levado cerca de sete minutos. Lá no alto, em um ninho, aparecem ovos pintados com cores vivas. Jason pode pegar um deles e arremessá-lo para baixo; o vídeo mostra uma sequência inesperada quando o ovo atinge alguém na rua. É uma piada escondida literalmente no topo da torre, e uma das descobertas mais divertidas desta primeira leva.",
+    "É importante separar descoberta de confirmação oficial. A Rockstar ainda não publicou uma lista de easter eggs nem confirmou a intenção por trás de cada detalhe. O que temos são vídeos de jogadores e reportagens que registram os achados. Por isso, Bigfoot e o ninho de ovos entram aqui como descobertas relatadas por veículos e jogadores, enquanto rumores sobre OVNIs, fantasmas ou outros mistérios continuam sem comprovação suficiente. O mundo de Leonida é enorme, mas não vamos transformar teoria em fato.",
+    "A estreia também recoloca Jason Duval e Lucia Caminos no centro da conversa. A descrição oficial da Rockstar apresenta os dois no meio de uma conspiração criminosa que atravessa Leonida depois que um golpe aparentemente simples dá errado. O trailer de lançamento mostra cenas capturadas dentro do jogo no PlayStation 5, com perseguições, encontros e momentos da dupla em ação. É essa combinação entre a história dos protagonistas e a exploração livre que deve alimentar novas descobertas nos próximos dias.",
+    "O lançamento de 19 de novembro está confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar ainda não anunciou uma data para PC. Com o jogo já nas mãos dos jogadores, os próximos dias devem trazer mais vídeos, rotas e segredos encontrados em diferentes partes do mapa. O mais interessante agora é acompanhar o que pode ser reproduzido por outros jogadores e o que permanece apenas como uma hipótese isolada.",
+    "E essa é só a primeira rodada. Bigfoot, a figura na mata e os ovos no alto da torre mostram como pequenas curiosidades podem virar assunto em um mapa desse tamanho. Se você encontrar outro segredo em GTA 6, conta pra gente nos comentários: qual descoberta merece um vídeo próprio? Acompanha o Radar dos Games e inscreva-se no canal para continuar explorando as novidades de Leonida com a gente.",
+    "A pergunta que fica é: qual será o próximo mistério que a comunidade vai encontrar? Por enquanto, aproveite os vídeos com cuidado, confira a origem de cada descoberta e fique ligado no Radar dos Games. Leonida acabou de abrir as portas, e a caça aos segredos está só começando."
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 3,
@@ -73,24 +66,22 @@
   "short_scene_numbers": [
     2,
     4,
-    8
+    3
   ],
-  "narration_revision": "2026-11-16 correção definitiva do mapeamento dos três Shorts: cada hook deve corresponder a uma cena exclusiva e concreta do roteiro; abertura sem antecipar o pré-carregamento, hook 1 no parágrafo 2, hook 2 em Jason/Lucia no parágrafo 4, hook 3 na confirmação de lançamento no parágrafo 8.",
+  "narration_revision": "2026-11-19: lançamento já ocorreu; Master cobre launch-day e descobertas iniciais. Três hooks independentes: Bigfoot, ninho de ovos e sequência da efígie na mata.",
   "video_max_assets": {
-    "https://www.instagram.com/p/DehBEbwgV1d/": 1,
-    "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 3,
     "https://www.youtube.com/watch?v=VQRLujxTm3c": 1,
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k": 1
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k": 2,
+    "https://twitter.com/cantworkitout/status/2123085708072239142": 1,
+    "https://twitter.com/xGarbett/status/2123088685210202519": 1
   },
   "video_labels": {
-    "https://www.instagram.com/p/DehBEbwgV1d/": "Rockstar Games official Instagram — Grand Theft Auto VI Launch Trailer",
-    "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — Grand Theft Auto VI airboat gameplay clip",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar official media archive — gameplay and trailer footage (cover artwork excluded)",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games verified YouTube — Grand Theft Auto VI Trailer 2 (official in-game footage)",
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k": "Rockstar Games verified YouTube — Grand Theft Auto VI: An Extended Look (official PS5 gameplay)"
+    "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games verified YouTube — GTA VI Trailer 2, official in-game footage",
+    "https://www.youtube.com/watch?v=tJbzMqJGH4k": "Rockstar Games verified YouTube — GTA VI: An Extended Look, official gameplay",
+    "https://twitter.com/cantworkitout/status/2123085708072239142": "Player clip embedded by GamesRadar — Bigfoot sighting in GTA VI",
+    "https://twitter.com/xGarbett/status/2123088685210202519": "Player xGarbett — painted eggs on a communications tower in GTA VI"
   },
-  "production_note": "Mídia revisada em 16/11/2026: substituir o ZIP de clipes de personagem (arquivos de 1–1,5s) por Trailer 2 e An Extended Look oficiais da Rockstar para completar gameplay em movimento; manter o clipe oficial do airboat como correspondência da fala sobre barco.",
+  "production_note": "Brief atualizado para o dia do lançamento. Validar rigorosamente os clipes de jogadores antes de usar; não substituir por footage sem correspondência semântica. O workflow foi ajustado para respeitar este brief quando TOPIC=Grand Theft Auto VI.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
@@ -99,7 +90,7 @@
       "source_proof": "https://www.rockstargames.com/VI/media/artwork-wallpapers?pubDate=20260806"
     }
   ],
-  "max_video_assets": 3,
+  "max_video_assets": 5,
   "max_image_assets": 1,
   "minimum_image_assets": 1,
   "allow_same_source_role_fallback": true
