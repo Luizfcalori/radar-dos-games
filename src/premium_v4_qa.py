@@ -114,7 +114,8 @@ def main():
     rows=shorts.get("shorts") or []
     hooks=[str(x or "").strip() for x in (picks.get("expected_hooks") or [])]
     indexes=[int(x) for x in (picks.get("scene_indexes") or [])]
-    if len(rows)!=3 or len(hooks)!=3 or len(indexes)!=3 or any(not x for x in hooks):
+    matches=picks.get("semantic_matches") or []
+    if len(rows)!=3 or len(hooks)!=3 or len(indexes)!=3 or len(matches)!=3 or any(not x for x in hooks):
         raise RuntimeError("QUALITY_BLOCK: são obrigatórios exatamente 3 Shorts, 3 hooks e 3 cenas")
     if shorts.get("source_policy")!="master_timeline_crops_preserve_original_audio":
         raise RuntimeError("QUALITY_BLOCK: Shorts não foram derivados da timeline do Master")
@@ -123,11 +124,13 @@ def main():
 
     ranges=[]
     short_report=[]
-    for i,(row,hook,scene_index) in enumerate(zip(rows,hooks,indexes),1):
+    for i,(row,hook,scene_index,match) in enumerate(zip(rows,hooks,indexes,matches),1):
         if norm(row.get("title"))!=norm(hook) or norm(row.get("approved_hook"))!=norm(hook):
             raise RuntimeError(f"QUALITY_BLOCK: hook do Short {i} diverge do hook aprovado")
-        if int(row.get("scene_index",-1))!=scene_index:
-            raise RuntimeError(f"QUALITY_BLOCK: Short {i} não corresponde à cena selecionada")
+        if int(row.get("scene_index",-1))!=scene_index or int(match.get("scene_index",-2))!=scene_index:
+            raise RuntimeError(f"QUALITY_BLOCK: Short {i} não corresponde à cena selecionada pelo hook")
+        if norm(match.get("hook"))!=norm(hook) or float(match.get("semantic_score") or 0)<=0:
+            raise RuntimeError(f"QUALITY_BLOCK: Short {i} não tem correspondência semântica positiva")
         if row.get("source")!="output/master.mp4" or row.get("render_policy")!="direct_master_timeline_crop_with_original_narration":
             raise RuntimeError(f"QUALITY_BLOCK: Short {i} não é corte direto do Master")
         if row.get("boundary_policy")!="complete_master_voice_segment":
@@ -164,7 +167,7 @@ def main():
         "semantic_visual_sync":"APPROVED","phrase_level_direction":"APPROVED",
         "sound_design":"APPROVED","master_derived_shorts":"APPROVED",
         "short_audio_streams":"3/3","short_hooks_exact":"APPROVED",
-        "short_scene_mapping":"APPROVED","real_headlines":"APPROVED",
+        "short_scene_mapping":"APPROVED","short_semantic_selection":"APPROVED","real_headlines":"APPROVED",
         "approved_short_hooks":hooks,"shorts":short_report,
         "gameplay_moving_footage":"APPROVED","video_assets":video_assets,
         "unique_video_seconds":round(unique_video_seconds,3),
