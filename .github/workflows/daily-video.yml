@@ -309,8 +309,8 @@ jobs:
             --prepared \
             --segments-json output/voice-timings.json
 
-      - name: Diretor por frase Premium V4 Director Cut
-        run: python src/director_v4.py output/auto-media-plan.json output/clips.json
+      - name: Montagem simples baseada na decupagem aprovada (sem Diretor V4)
+        run: python src/basic_editor.py
 
       - name: Gate semântico fala -> imagem
         run: python src/semantic_gate.py output/auto-media-plan.json output/clips.json output/semantic-visual-qa.json
