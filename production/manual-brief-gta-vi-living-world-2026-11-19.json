@@ -58,7 +58,7 @@
     4,
     6
   ],
-  "narration_revision": "2026-11-19T15:40Z: recuperação mídia: pacote ZIP e biblioteca oficial Rockstar substituem URL YouTube bloqueada por idade.",
+  "narration_revision": "2026-11-19T16:12:00-03:00",
   "video_max_assets": {
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9,
     "https://www.rockstargames.com/VI/media/videos": 9
@@ -86,5 +86,6 @@
     "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "official_gta_vi_video_archive",
     "https://www.rockstargames.com/VI/media/videos": "official_gta_vi_video_library"
   },
-  "video_source_note": "Remover YouTube age-restricted tJbzMqJGH4k. Priorizar pacote ZIP oficial Rockstar e página oficial de vídeos; extrair somente MP4s do pacote, validar duração/resolução e correspondência visual antes de usar."
+  "video_source_note": "Remover YouTube age-restricted tJbzMqJGH4k. Priorizar pacote ZIP oficial Rockstar e página oficial de vídeos; extrair somente MP4s do pacote, validar duração/resolução e correspondência visual antes de usar.",
+  "production_notes": " Shorts obrigatoriamente derivados do Master: recortes verticais dos mesmos timecodes de fala, mantendo narração, música e efeitos originais; bloquear qualquer Short sem stream de áudio. Não reconstruir Shorts com mídia silenciosa independente."
 }
