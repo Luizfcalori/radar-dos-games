@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# [run-private] TOPIC=Grand Theft Auto VI — remover dependência legada de Fight Night.
+# [run-private] TOPIC=Grand Theft Auto VI — usar somente fontes GTA VI e pular cenas sem intervalo novo.
 """Fail-closed editorial anti-repetition policy for Radar Premium V4.
 
 Check actual beat timelines, never merely metadata flags. Generic footage is
