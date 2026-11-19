@@ -415,7 +415,10 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
             requirements=(scene.get("phrase_subjects") or {}).get(str(phrase.get("sentence",1)),[])
             cta_phrase=any(token in phrase_text.casefold() for token in (
                 "conta nos comentários","acompanha o radar","mais novidades",
-                "se você gosta de acompanhar",
+                "se você gosta de acompanhar","comenta sua descoberta",
+                "comente sua descoberta","conta sua descoberta",
+                "passou despercebido","qual dessas referências",
+                "qual foi a mais surpreendente",
             ))
             while remaining>0.001:
                 stills=[
@@ -453,11 +456,14 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         and str(a.get("role") or "").startswith(("official_subject_reference", "official_context_", "official_steam", "official_screenshot", "official_game_screenshot"))
                         and a.get("source")
                         and a.get("url")
-                        and topic_key
-                        and topic_key in norm(
-                            str(a.get("url") or "") + " " +
-                            str(a.get("source_label") or "") + " " +
-                            str(a.get("source") or "")
+                        and (
+                            cta_phrase or (
+                                topic_key and topic_key in norm(
+                                    str(a.get("url") or "") + " " +
+                                    str(a.get("source_label") or "") + " " +
+                                    str(a.get("source") or "")
+                                )
+                            )
                         )
                     ]
                     fallback_duration=min(remaining,3.5)
