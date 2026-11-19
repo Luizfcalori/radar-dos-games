@@ -300,8 +300,8 @@ public class MainActivity extends Activity {
                     allItems.addAll(loaded);
                     cursor = 0;
                     rebuildVisibleItems();
-                    status.setText("Fila sincronizada • " + loaded.size() + " aprovados • " + syncSource + " • " + queueUpdatedAt);
-                    if (toast) Toast.makeText(this, "Fila atualizada: " + loaded.size() + " aprovados.", Toast.LENGTH_SHORT).show();
+                    status.setText("Fila sincronizada • " + loaded.size() + " itens • " + syncSource + " • " + queueUpdatedAt);
+                    if (toast) Toast.makeText(this, "Fila atualizada: " + loaded.size() + " itens.", Toast.LENGTH_SHORT).show();
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> status.setText("Falha ao sincronizar: " + shortMessage(e)));
@@ -346,9 +346,16 @@ public class MainActivity extends Activity {
 
     private void updateSummary(Set<String> posted) {
         int postedCount = 0;
-        for (QueueItem item : allItems) if (posted.contains(item.id)) postedCount++;
-        int pendingCount = Math.max(0, allItems.size() - postedCount);
-        summary.setText("Pendentes: " + pendingCount + "   •   Publicados: " + postedCount + "   •   Aprovados: " + allItems.size());
+        int readyCount = 0;
+        int waitingMedia = 0;
+        for (QueueItem item : allItems) {
+            if (posted.contains(item.id)) postedCount++;
+            if (item.mediaUrl.isEmpty()) waitingMedia++;
+            else readyCount++;
+        }
+        int pendingCount = Math.max(0, readyCount - postedCount);
+        summary.setText("Prontos: " + readyCount + "   •   Pendentes: " + pendingCount +
+                "   •   Publicados: " + postedCount + "   •   Mídia pendente: " + waitingMedia);
     }
 
     private void showCurrent() {
