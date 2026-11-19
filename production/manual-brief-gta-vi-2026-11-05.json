@@ -1,102 +1,94 @@
 {
   "valid_until": "2026-11-19T23:59:00Z",
-  "content_id": "manual-grand-theft-auto-vi-last-72h-gameplay-update-2026-11-16",
-  "title": "Grand Theft Auto VI — últimos vídeos oficiais antes da estreia",
-  "headline": "GTA VI: OS ÚLTIMOS VÍDEOS OFICIAIS ANTES DA ESTREIA!",
+  "content_id": "manual-grand-theft-auto-vi-easter-eggs-2026-11-19",
+  "title": "Grand Theft Auto VI — Easter Eggs: segredos, referências e conexões escondidas",
+  "headline": "GTA 6 ESCONDE SEGREDOS DE VICE CITY E ATÉ DE RED DEAD!",
   "primary_source": "https://www.rockstargames.com/VI",
   "media_source_urls": [
     "https://www.rockstargames.com/VI/media/videos",
-    "https://www.rockstargames.com/VI/launch-trailer",
     "https://www.rockstargames.com/VI/launch-gallery",
-    "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip",
+    "https://www.youtube.com/watch?v=QdBZY2fkU-0",
     "https://www.youtube.com/watch?v=VQRLujxTm3c",
     "https://www.youtube.com/watch?v=tJbzMqJGH4k"
   ],
   "source_urls": [
     "https://www.rockstargames.com/VI",
-    "https://www.rockstargames.com/br/videos/55kss26g",
-    "https://www.rockstargames.com/br/videos/76orsa95",
-    "https://www.rockstargames.com/newswire/article/517572321a549a/watch-the-grand-theft-auto-vi-launch-trailer",
+    "https://www.rockstargames.com/VI/media/videos",
     "https://www.rockstargames.com/VI/launch-gallery",
     "https://www.rockstargames.com/newswire/article/4k138k8okkk483/grand-theft-auto-vi-an-extended-look-now-playing",
-    "https://www.rockstargames.com/VI/media/videos",
-    "https://www.rockstargames.com/newswire?tag=vi",
-    "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c",
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k"
+    "https://gtaspotter.com/pt-br/guias/gta-6-easter-eggs/",
+    "https://gta6geek.com/pt-br/trailers-gta-6-br/easter-eggs-gta-6-trailers/",
+    "https://www.gta6everything.com/easter-eggs",
+    "https://www.gta6cheatsheet.com/pt/gta-6/easter-eggs/",
+    "https://www.noobfeed.com/articles/gta-6-ultimate-edition-new-gameplay",
+    "https://www.dexerto.com/gta/gta-6s-vice-city-easter-eggs-have-fans-split-after-fresh-sightings-3218650/",
+    "https://egamers.io/gta-6-easter-eggs-so-far-fan-finds-from-the-trailers-and-what-rockstar-has-confirmed/"
   ],
   "video_urls": [
-    "https://www.instagram.com/p/DehBEbwgV1d/",
-    "https://www.instagram.com/p/DcmuKhJAe3I/",
+    "https://www.youtube.com/watch?v=QdBZY2fkU-0",
     "https://www.youtube.com/watch?v=VQRLujxTm3c",
     "https://www.youtube.com/watch?v=tJbzMqJGH4k"
   ],
   "short_hooks": [
-    "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
-    "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
-    "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!"
+    "A MANSÃO DE TOMMY VERCETTI ESTÁ LIGADA A GTA 6 — E A ROCKSTAR DEIXOU UMA PISTA OFICIAL!",
+    "GTA 6 PODE TER UMA CONEXÃO COM RED DEAD REDEMPTION — OLHA ESSE DETALHE NAS NOTAS!",
+    "PHIL CASSIDY PODE ESTAR DE VOLTA? A PISTA ESTÁ EM UMA LOJA DE ARMAS!"
   ],
   "approved_for_publish": true,
   "editorial_rules": [
-    "Tema bloqueado: Grand Theft Auto VI. Não substituir por GTA Online, GTA V ou qualquer outro jogo.",
-    "Data oficial: 19 de novembro de 2026. Plataformas confirmadas: PlayStation 5 e Xbox Series X|S.",
-    "A pauta deve se apoiar em anúncios e vídeos oficiais da Rockstar: Pre-Load Now (10/11), Launch Trailer (15/10), Trailer 2 e materiais oficiais da galeria de lançamento.",
-    "O pré-carregamento digital está disponível para quem fez a pré-venda; compradores de edição física com código podem iniciar o download após receber e ativar o código.",
-    "Pre-Load Now é um vídeo curto de aproximadamente 30 segundos. Não chamá-lo de novo trailer completo nem inventar cenas ou recursos que não aparecem nele.",
-    "O Launch Trailer foi capturado inteiramente dentro do jogo em PlayStation 5, segundo a Rockstar. A música é Flower in a Hurricane, de Justice, com Tame Impala, SZA e King Gizzard & The Lizard Wizard.",
-    "A descrição oficial da história diz que um golpe aparentemente fácil dá errado e coloca Jason e Lucia no meio de uma conspiração criminosa que atravessa Leonida.",
-    "Não incluir detalhes não demonstrados sobre arrombamento de fechaduras, câmeras, códigos de cofres, sistema moral, missões, GTA Online ou recursos ainda não confirmados. Não usar a reportagem de update 01.002.001 nesta versão.",
-    "Usar exclusivamente vídeos oficiais da Rockstar Games listados em video_urls. Não usar vídeos de IGN, reuploads, vazamentos, GTA V ou imagens de outros jogos.",
+    "Tema bloqueado: Grand Theft Auto VI — Easter Eggs e referências escondidas. Não substituir por GTA V, GTA Online ou outro jogo.",
+    "Separar claramente referências confirmadas em materiais oficiais de observações feitas por fãs e teorias. Nunca apresentar especulação como confirmação da Rockstar.",
+    "A Rockstar descreve os revólveres Hawk & Little Morgan da Edição Ultimate como provenientes da Vercetti Estate. Isso referencia a propriedade associada a Tommy Vercetti, mas NÃO confirma que Tommy apareça fisicamente no jogo.",
+    "A Rockstar descreve o padrão de arma Vintage Vice City como inspirado na camisa tropical de Tommy Vercetti. Tratar como referência oficial, não como confirmação de retorno do personagem.",
+    "O Ocean View Hotel, Ocean Beach e Flash FM aparecem associados a GTA VI em materiais oficiais e remetem a GTA: Vice City. Não inventar localização jogável ou missão associada.",
+    "Phil's Ammu-Nation aparece como referência visual no Trailer 2. A possível identificação do homem do comercial como Phil Cassidy é interpretação dos fãs e não foi confirmada pela Rockstar.",
+    "As notas de dinheiro com os presidentes Hardin e Thaddeus Waxman e o adesivo que lembra Everett Morgan são descobertas atribuídas a fãs e reportagens. A possível conexão entre os universos GTA e Red Dead não é confirmação oficial.",
+    "Não incluir teorias sobre Jason ser parente de Arthur Morgan, Dexter, personagens não confirmados ou locais secretos sem evidência verificável.",
+    "Usar exclusivamente gameplay e vídeos oficiais da Rockstar listados em video_urls. Não usar vazamentos, reuploads, GTA V, imagens de outros jogos ou vídeos de terceiros como gameplay.",
+    "O foco é o que pode ser observado nos trailers e materiais oficiais; não afirmar que cada detalhe foi encontrado dentro do jogo jogável se a fonte for apenas um trailer ou texto promocional.",
     "Master 16:9 Full HD, narração natural PT-BR com Thalita Multilingual PT-BR V3, exatamente três Shorts 9:16 com capas próprias.",
-    "Shorts com gancho imediato, legendas grandes, cortes dinâmicos e duração mínima de 60 segundos. Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes.",
+    "Shorts com ganchos diferentes e correspondência direta com o roteiro; legendas grandes, cortes dinâmicos, duração mínima de 60 segundos e sem reaproveitar a mesma sequência nos três.",
+    "Não usar #RadarDosGames nem #Shorts nas descrições; máximo cinco hashtags fortes por Short.",
     "Manter intro oficial integral antes do gameplay. Evitar repetição de cenas, loops, travamentos, imagens estáticas longas e falas sobre processo de produção.",
-    "YouTube: enviar Master e os três Shorts como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados.",
-    "Não usar data de PC, preço, performance ou recursos não confirmados como fatos."
+    "YouTube: enviar Master e os três Shorts como privados. TikTok Helper: importar exatamente os três Shorts aprovados, adicionando-os à fila sem remover ou substituir registros existentes."
   ],
   "script_blocks": [
-    "Faltam apenas três dias para a chegada de Grand Theft Auto VI. No dia 19 de novembro, a Rockstar abre as portas de Vice City e do estado de Leonida para uma nova geração de jogadores. A reta final já está cheia de material oficial: o trailer de lançamento e uma coleção de imagens que mostram melhor os protagonistas e os lugares que vamos explorar.",
-    "A novidade oficial mais recente chegou em 10 de novembro. A Rockstar publicou Pre-Load Now e confirmou que o pré-carregamento digital já está disponível para quem reservou o jogo. Quem comprou uma edição física com código também poderá ativar esse código e iniciar o download assim que recebê-lo. A ideia é deixar tudo preparado para começar a jogar quando o lançamento for liberado no dia 19.",
-    "O vídeo Pre-Load Now tem cerca de trinta segundos e traz uma montagem rápida de cenas de Leonida. A prévia passa por momentos de festa, carros, uma equipe tática e atividades em diferentes ambientes. É um vídeo curto, mas funciona como a última chamada da Rockstar antes da estreia.",
-    "Um mês antes, em 15 de outubro, a Rockstar publicou o Launch Trailer. O vídeo foi capturado inteiramente dentro do jogo em um PlayStation 5 e apresenta Jason e Lucia em uma sequência de cenas que mistura ação, perseguições, encontros e momentos da vida dos dois. A montagem destaca a dupla em cenas de ação e deslocamento por Leonida.",
-    "A descrição oficial resume o ponto de partida da história: Jason e Lucia já sabem que as circunstâncias estão contra eles. Quando um golpe aparentemente fácil dá errado, os dois acabam no meio de uma conspiração criminosa que atravessa todo o estado de Leonida. Nos trailers, os dois aparecem lado a lado em diferentes situações, reforçando a parceria que conduz a história.",
-    "Um dos clipes acompanha um barco atravessando canais e áreas alagadas. Em outros cortes, carros circulam por vias urbanas e aparecem cenas noturnas com veículos em movimento.",
-    "A Rockstar também disponibilizou uma galeria de lançamento com novas capturas de tela em seu site oficial. É mais uma oportunidade de observar Jason, Lucia, os veículos e os cenários antes da estreia. A galeria amplia o material oficial disponível para observar Jason, Lucia, veículos e cenários de Leonida.",
-    "A data anunciada continua sendo 19 de novembro de 2026, com lançamento confirmado para PlayStation 5 e Xbox Series X|S. A Rockstar recomenda que quem fez a pré-venda digital aproveite o pré-carregamento para deixar o jogo pronto.",
-    "Você está pronto para explorar Leonida no dia 19? Conta nos comentários se vai começar a jogar no lançamento. Acompanha o Radar dos Games e inscreva-se no canal para receber as próximas novidades e nossa cobertura da estreia."
+    "Grand Theft Auto VI chegou cercado de expectativa, mas existe uma coisa que os fãs da Rockstar fazem tão bem quanto explorar um mapa: pausar cada trailer, ampliar cada imagem e procurar pistas escondidas. E GTA 6 já entregou várias. Algumas referências são oficiais e estão nos próprios materiais da Rockstar. Outras foram encontradas pela comunidade e ainda levantam perguntas. Hoje vamos separar os easter eggs mais interessantes, mostrar de onde eles vieram e explicar o que realmente está confirmado.",
+    "Vamos começar com uma das referências mais fortes para quem jogou Vice City. Na descrição dos itens da edição Ultimate, a Rockstar diz que os revólveres Hawk & Little Morgan vêm da Vercetti Estate. Esse nome aponta diretamente para a propriedade associada a Tommy Vercetti, protagonista de GTA: Vice City. E não para por aí: os detalhes dos revólveres e o material promocional reforçam a homenagem. Mas atenção: isso confirma a referência à mansão, não confirma que Tommy Vercetti vai aparecer pessoalmente em GTA 6.",
+    "Outra homenagem oficial está no visual das armas. O pacote Vintage Vice City traz um padrão tropical inspirado na famosa camisa de palmeiras de Tommy. É uma daquelas referências que os fãs reconhecem na hora. A Rockstar também recupera elementos ligados à identidade visual de Vice City, mostrando que a nova aventura não esquece as raízes da série. O detalhe interessante é que a homenagem aparece em itens oficiais, e não depende apenas de uma teoria criada pela comunidade.",
+    "E tem mais nostalgia espalhada pelos materiais oficiais. O Ocean View Hotel, Ocean Beach e a estação Flash FM aparecem associados ao novo jogo em referências e imagens promocionais. Para quem conhece Vice City, esses nomes têm peso: são lugares e elementos que ajudaram a definir a atmosfera daquele clássico. A presença dessas referências mostra uma ponte direta com a história da franquia, mesmo que isso não signifique que todos os personagens antigos estarão de volta.",
+    "Agora vamos para uma pista que aparece no segundo trailer: Phil's Ammu-Nation. O nome da loja chamou a atenção dos fãs porque lembra Phil Cassidy, personagem conhecido de GTA: Vice City e de outros capítulos da série. O comercial de TV mostra um homem que também gerou comparações com Phil. Só que existe uma diferença importante: a loja aparece no material, mas a identidade do homem como Phil Cassidy não foi confirmada oficialmente. É uma pista visual interessante, não uma confirmação de retorno.",
+    "Uma das descobertas mais curiosas envolve outro universo da Rockstar. Fãs ampliaram imagens do trailer e identificaram notas de dinheiro com retratos que lembram os presidentes Hardin e Thaddeus Waxman, personagens do universo de Red Dead Redemption. Se a identificação estiver correta, seria uma conexão muito interessante entre as franquias. Mas a Rockstar não confirmou que GTA e Red Dead compartilham oficialmente o mesmo universo. Por enquanto, é uma descoberta visual atribuída à comunidade e deve ser apresentada como possibilidade, não como fato estabelecido.",
+    "E essa não é a única possível referência a Red Dead. Também foi apontado um adesivo no primeiro trailer que lembra Everett Morgan, personagem associado a Red Dead Online. Mais uma vez, a semelhança foi destacada por fãs e reportagens, mas não existe confirmação oficial de que o adesivo represente o personagem. O que torna esses detalhes tão legais é justamente a possibilidade de a Rockstar esconder pequenas homenagens em objetos que passam rapidamente na tela.",
+    "O mais importante é entender a diferença entre easter egg confirmado e teoria. A propriedade Vercetti e o padrão inspirado na camisa de Tommy têm respaldo em descrições oficiais. Já a volta de Phil Cassidy, a ligação definitiva com Red Dead e a identidade do adesivo dependem de interpretações de imagens. A comunidade pode estar certa, mas até a Rockstar confirmar, o Radar dos Games vai tratar cada descoberta com o cuidado que ela merece.",
+    "E agora queremos saber de você: qual dessas referências foi a mais surpreendente? A mansão de Tommy, os detalhes de Vice City, a possível aparição de Phil Cassidy ou as pistas que podem ligar GTA a Red Dead? Comenta sua descoberta e conta se encontrou algum detalhe que passou despercebido. Inscreva-se no Radar dos Games para acompanhar mais segredos, novidades e análises do universo dos games."
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 3,
   "minimum_unique_video_seconds": 120,
   "short_scene_numbers": [
     2,
-    4,
-    8
+    6,
+    5
   ],
-  "narration_revision": "2026-11-16 correção definitiva do mapeamento dos três Shorts: cada hook deve corresponder a uma cena exclusiva e concreta do roteiro; abertura sem antecipar o pré-carregamento, hook 1 no parágrafo 2, hook 2 em Jason/Lucia no parágrafo 4, hook 3 na confirmação de lançamento no parágrafo 8.",
+  "narration_revision": "2026-11-19 Easter Eggs: Short 1 deve corresponder ao parágrafo 2 (Vercetti Estate/Tommy); Short 2 ao parágrafo 6 (notas e possível referência a Red Dead); Short 3 ao parágrafo 5 (Phil's Ammu-Nation/Phil Cassidy). Nunca tratar teoria como confirmação.",
   "video_max_assets": {
-    "https://www.instagram.com/p/DehBEbwgV1d/": 1,
-    "https://www.instagram.com/p/DcmuKhJAe3I/": 1,
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 3,
+    "https://www.youtube.com/watch?v=QdBZY2fkU-0": 1,
     "https://www.youtube.com/watch?v=VQRLujxTm3c": 1,
     "https://www.youtube.com/watch?v=tJbzMqJGH4k": 1
   },
   "video_labels": {
-    "https://www.instagram.com/p/DehBEbwgV1d/": "Rockstar Games official Instagram — Grand Theft Auto VI Launch Trailer",
-    "https://www.instagram.com/p/DcmuKhJAe3I/": "Rockstar Games official Instagram — Grand Theft Auto VI airboat gameplay clip",
-    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar official media archive — gameplay and trailer footage (cover artwork excluded)",
+    "https://www.youtube.com/watch?v=QdBZY2fkU-0": "Rockstar Games verified YouTube — Grand Theft Auto VI Trailer 1 (official in-game footage)",
     "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games verified YouTube — Grand Theft Auto VI Trailer 2 (official in-game footage)",
     "https://www.youtube.com/watch?v=tJbzMqJGH4k": "Rockstar Games verified YouTube — Grand Theft Auto VI: An Extended Look (official PS5 gameplay)"
   },
-  "production_note": "Mídia revisada em 16/11/2026: substituir o ZIP de clipes de personagem (arquivos de 1–1,5s) por Trailer 2 e An Extended Look oficiais da Rockstar para completar gameplay em movimento; manter o clipe oficial do airboat como correspondência da fala sobre barco.",
+  "production_note": "Pauta nova e independente do pacote GTA VI de 16/11. Usar fontes oficiais para capturar imagens em movimento; usar textos de imprensa somente para contextualizar achados de fãs. Não reutilizar o roteiro antigo sobre pré-carregamento/lançamento.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
       "url": "https://www.rockstargames.com/VI/_next/static/media/Jason_and_Lucia_01_landscape.12x2gvspcm_3m.jpg?akim=1&imdensity=1&imwidth=3840",
-      "label": "Grand Theft Auto VI official screenshot — Jason and Lucia 01",
-      "source_proof": "https://www.rockstargames.com/VI/media/artwork-wallpapers?pubDate=20260806"
+      "label": "Grand Theft Auto VI official screenshot — Jason and Lucia",
+      "source_proof": "https://www.rockstargames.com/VI/media/artwork-wallpapers"
     }
   ],
   "max_video_assets": 3,
