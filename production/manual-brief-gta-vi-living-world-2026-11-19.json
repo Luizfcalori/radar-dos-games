@@ -87,5 +87,5 @@
     "https://www.rockstargames.com/VI/media/videos": "official_gta_vi_video_library"
   },
   "video_source_note": "Remover YouTube age-restricted tJbzMqJGH4k. Priorizar pacote ZIP oficial Rockstar e página oficial de vídeos; extrair somente MP4s do pacote, validar duração/resolução e correspondência visual antes de usar.",
-  "production_notes": " Shorts obrigatoriamente derivados do Master: recortes verticais dos mesmos timecodes de fala, mantendo narração, música e efeitos originais; bloquear qualquer Short sem stream de áudio. Não reconstruir Shorts com mídia silenciosa independente."
+  "production_notes": " Shorts obrigatoriamente derivados do Master: recortes verticais dos mesmos timecodes de fala, mantendo narração, música e efeitos originais; bloquear qualquer Short sem stream de áudio. Não reconstruir Shorts com mídia silenciosa independente. Pipeline corrigido em 2026-11-19: três Shorts escolhidos por correspondência semântica com a narração, cortados diretamente do Master e com áudio original obrigatório; QA valida arquivos e streams antes de liberar upload privado."
 }
