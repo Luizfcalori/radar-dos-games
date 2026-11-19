@@ -100,7 +100,22 @@ def main():
     write(OUT/"render.json",manifest)
     write(OUT/"short-picks.json",{"version":"PREMIUM_V4_DIRECTOR_CUT","scene_indexes":picks,
       "expected_hooks":hooks,"semantic_matches":semantic_matches,"selection_policy":"hook_to_narration_semantic_scene_match; exactly three distinct scenes"})
-    write(OUT/"clips.json",{"assets":list(assets.values()),"scenes":scenes,"publishable_media":True})
+    clip_payload=dict(clips)
+    clip_payload.update({"assets":list(assets.values()),"scenes":scenes,"publishable_media":True})
+    clip_payload.setdefault("video_assets",len(videos))
+    if not float(clip_payload.get("unique_video_seconds") or 0):
+        intervals=[]
+        for idx,rows in windows.items():
+            if assets.get(idx,{}).get("type")=="video":
+                intervals.extend((float(w["start"]),float(w["end"])) for w in rows)
+        merged=[]
+        for left,right in sorted(intervals):
+            if not merged or left>merged[-1][1]:
+                merged.append([left,right])
+            else:
+                merged[-1][1]=max(merged[-1][1],right)
+        clip_payload["unique_video_seconds"]=round(sum(right-left for left,right in merged),3)
+    write(OUT/"clips.json",clip_payload)
     write(OUT/"basic-edit-report.json",{"status":"APPROVED","editor":"MEDIA_FIRST_SIMPLE",
       "short_selection":"HOOK_SEMANTIC_MATCH","voice_seconds":round(timeline,2),"video_assets":len(videos),
       "image_assets":len(images),"scenes":len(scenes),"short_scenes":picks})
