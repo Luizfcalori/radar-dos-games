@@ -16,6 +16,10 @@ def norm(value):
     value=re.sub(r"(?i)\s*#shorts?\b","",str(value or ""))
     return re.sub(r"\s+"," ",value).strip().casefold()
 
+def norm_short_title(value):
+    return norm(value)
+
+
 def probe(path):
     data=json.loads(subprocess.check_output([
         "ffprobe","-v","error","-show_streams","-show_format","-of","json",str(path)
