@@ -283,3 +283,5 @@ jobs:
           # Commit generated queue before rebasing it on the latest main.
           git pull --rebase origin main
           git push origin main
+
+# Manual direct import: approved GTA VI Shorts from production run 44603154365.
