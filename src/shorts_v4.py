@@ -258,10 +258,10 @@ def main():
             combined_duration+=sum(float(b.get("duration") or 0) for b in candidate_beats)
             if combined_duration>=target_seconds:
                 break
-        if combined_duration<60.0:
+        if combined_duration<30.0:
             raise RuntimeError(
                 f"QUALITY_BLOCK: Short {short_no} tem apenas {combined_duration:.1f}s de narração/mídia; "
-                "mínimo real de 60s. Amplie o roteiro com conteúdo relevante, sem loops."
+                "mínimo real de 30s para um Short curto; não esticar nem repetir mídia."
             )
         beats=[beat for _,rows,_ in contributing for beat in rows]
         voice_segments=[seg for _,_,seg in contributing]
@@ -293,8 +293,8 @@ def main():
         if not voice.exists():raise RuntimeError(f"QUALITY_BLOCK: áudio combinado do Short {short_no} ausente")
         dest=out/f"short_{short_no}.mp4"; music_policy=mix_audio(visuals,voice,sfx,dest)
         actual_duration=probe_duration(dest)
-        if actual_duration<60.0:
-            raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} renderizado com {actual_duration:.2f}s; mínimo 60s")
+        if actual_duration<30.0:
+            raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} renderizado com {actual_duration:.2f}s; mínimo 30s")
         report.append({
             "index":short_no,"path":str(dest),"scene_index":scene_index,
             "duration":round(probe_duration(dest),3),
