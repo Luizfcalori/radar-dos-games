@@ -17,9 +17,8 @@
     "https://tech.yahoo.com/gaming/articles/69-gta-6-gameplay-details-190021372.html"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c",
-    "https://www.rockstargames.com/VI/launch-trailer"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip",
+    "https://www.rockstargames.com/VI/media/videos"
   ],
   "short_hooks": [
     "600 MIL ANIMAÇÕES: POR QUE GTA 6 PARECE TÃO VIVO?",
@@ -37,7 +36,8 @@
     "Master 16:9 Full HD, Thalita Multilingual PT-BR V3, exatamente três Shorts 9:16 com capas próprias, cada um com gancho distinto e assunto coerente.",
     "Shorts podem ter 30 segundos ou mais quando a mídia inédita disponível não sustenta 60 segundos. Não esticar artificialmente, repetir gameplay ou criar loops.",
     "Manter a intro oficial integral antes do gameplay. Narração natural e direta, sem metacomentários ou falas sobre o processo de produção.",
-    "YouTube: enviar os quatro vídeos como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados após QA."
+    "YouTube: enviar os quatro vídeos como privados, sem agendamento público. TikTok Helper: importar exatamente os três Shorts aprovados após QA.",
+    "Rota de mídia de recuperação: não baixar o vídeo YouTube tJbzMqJGH4k, que exige autenticação por idade. Usar o ZIP oficial GTAVI_Videos.zip e a biblioteca oficial Rockstar; só aceitar clipes aprovados por resolução, duração e aderência visual."
   ],
   "script_blocks": [
     "Grand Theft Auto VI chegou, e a primeira coisa que chama atenção em Leonida não é apenas o tamanho do mapa. É a sensação de que existe alguma coisa acontecendo em praticamente todo lugar. A Rockstar construiu uma cidade e um estado que não parecem existir só para levar Jason e Lucia de uma missão até outra. O trânsito, os moradores, os animais, o clima e as pequenas situações do cotidiano ajudam a criar um mundo que continua funcionando mesmo quando o jogador decide simplesmente parar e observar.",
@@ -52,7 +52,7 @@
   ],
   "minimum_assets": 1,
   "minimum_video_assets": 2,
-  "minimum_unique_video_seconds": 120,
+  "minimum_unique_video_seconds": 60,
   "short_scene_numbers": [
     2,
     4,
@@ -60,16 +60,14 @@
   ],
   "narration_revision": "2026-11-19: brief substitui integralmente a pauta antiga de Easter Eggs por uma pauta de mundo vivo; ênfase em NPCs, regiões, clima, fauna, atividades e veículos.",
   "video_max_assets": {
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k": 2,
-    "https://www.youtube.com/watch?v=VQRLujxTm3c": 1,
-    "https://www.rockstargames.com/VI/launch-trailer": 1
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": 9,
+    "https://www.rockstargames.com/VI/media/videos": 9
   },
   "video_labels": {
-    "https://www.youtube.com/watch?v=tJbzMqJGH4k": "Rockstar Games verified YouTube — GTA VI: An Extended Look, official gameplay captured in-game on PlayStation 5",
-    "https://www.youtube.com/watch?v=VQRLujxTm3c": "Rockstar Games verified YouTube — GTA VI Trailer 2, official in-game footage",
-    "https://www.rockstargames.com/VI/launch-trailer": "Rockstar Games official GTA VI Launch Trailer"
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "Rockstar Games official downloadable archive — nine GTA VI video clips",
+    "https://www.rockstargames.com/VI/media/videos": "Rockstar Games official GTA VI media video library"
   },
-  "production_note": "Produção do tema mundo vivo, sem Easter Eggs ou teorias. Usar os três materiais oficiais de gameplay e validar visualmente cada trecho antes de montar.",
+  "production_note": "Recuperação após bloqueio etário do vídeo YouTube. Usar primeiro o ZIP oficial da Rockstar (nove vídeos) e a biblioteca oficial de vídeos. Nenhum vídeo de outro jogo, gameplay de GTA V, fan edit ou Easter Eggs.",
   "video_fallback_urls": [],
   "visual_reference_images": [
     {
@@ -83,5 +81,10 @@
   "minimum_image_assets": 1,
   "allow_same_source_role_fallback": true,
   "allow_official_subject_fallback": true,
-  "editorial_continuity_policy": "Gameplay de GTA VI deve permanecer coerente com a narração. Para falas específicas sobre NPCs, veículos, regiões, clima e fauna, selecionar trechos que mostrem o assunto; não usar Easter Eggs nem material de outros jogos."
+  "editorial_continuity_policy": "Gameplay de GTA VI deve permanecer coerente com a narração. Para falas específicas sobre NPCs, veículos, regiões, clima e fauna, selecionar trechos que mostrem o assunto; não usar Easter Eggs nem material de outros jogos.",
+  "video_roles": {
+    "https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip": "official_gta_vi_video_archive",
+    "https://www.rockstargames.com/VI/media/videos": "official_gta_vi_video_library"
+  },
+  "video_source_note": "Remover YouTube age-restricted tJbzMqJGH4k. Priorizar pacote ZIP oficial Rockstar e página oficial de vídeos; extrair somente MP4s do pacote, validar duração/resolução e correspondência visual antes de usar."
 }
