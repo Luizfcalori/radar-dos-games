@@ -190,6 +190,11 @@ def is_editorial_bridge_phrase(text, requirements=()):
         "agora a pergunta", "qual e a pergunta",
         "a questao que fica", "o que fica e",
         "a pergunta final",
+        # Short transition fragments are split by voice timing and must remain
+        # eligible for the approved same-title gameplay pool.
+        "nos proximos dias",
+        "acompanhe nossas proximas atualizacoes",
+        "inscreva se no canal",
         # Generic editorial closing lines: use the already reviewed gameplay
     # from the same production instead of blocking on a scene-local media shortlist.
         # pool from this exact title instead of a narrow scene-only shortlist.
