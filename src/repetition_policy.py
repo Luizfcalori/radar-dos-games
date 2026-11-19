@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# [run-private] TOPIC=Call of Duty: Modern Warfare 4 — validar capacidade de fallback de stills oficiais.
+# [run-private] TOPIC=Grand Theft Auto VI — remover dependência legada de Fight Night.
 """Fail-closed editorial anti-repetition policy for Radar Premium V4.
 
 Check actual beat timelines, never merely metadata flags. Generic footage is
@@ -124,26 +124,6 @@ def _enshrouded_curated_still(asset):
     )
 
 
-def _fight_night_curated_still(asset):
-    """Allow official EA stills or distinct frames extracted from approved Fight Night archival footage."""
-    role=str(asset.get("role") or "")
-    url=str(asset.get("url") or "").casefold()
-    label=str(asset.get("source_label") or "").casefold()
-    official_ea_still = (
-        role.startswith(("official_subject_reference_", "official_context_"))
-        and ("ea.com" in url or "eaassets-a.akamaihd.net" in url)
-        and bool(asset.get("source"))
-        and bool(label or url)
-    )
-    extracted_archival_frame = (
-        role.startswith("official_context_fight_night_frame_")
-        and "fight night champion archival gameplay frame" in label
-        and bool(asset.get("source"))
-        and ("youtube.com" in url or "youtu.be" in url)
-    )
-    return asset.get("type") == "image" and (official_ea_still or extracted_archival_frame)
-
-
 def _extract_approved_gameplay_frame(video, timestamp, index):
     """Extract a source-traceable still from an already-approved gameplay video."""
     src=Path(str(video.get("path") or ""))
@@ -200,7 +180,7 @@ def subject_ok(phrase,asset):
         and bool(asset.get("url"))
         and "approved gameplay frame from selected game's verified source" in str(asset.get("source_label") or "").casefold()
     )
-    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset) or (approved_same_game_frame and is_cta)):
+    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _gta6_curated_still(asset) or (approved_same_game_frame and is_cta)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -210,7 +190,7 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset) or str(asset.get('role') or '').startswith('official_context_approved_gameplay_frame_'):
+    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _gta6_curated_still(asset) or str(asset.get('role') or '').startswith('official_context_approved_gameplay_frame_'):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -221,7 +201,7 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _gta6_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
@@ -297,7 +277,7 @@ def validate_master(scenes,assets):
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
                     beat.get("visual_evidence") == "official_image_subject_label"
-                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _fight_night_curated_still(asset) or _gta6_curated_still(asset))
+                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _gta6_curated_still(asset))
                 )
                 if not tracker.can_use(
                     asset, beat.get("text",""), scene_no, cursor, d,
@@ -407,7 +387,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                 ]
                 if not still_choices:
                     # The official EA page may expose only one still. Build distinct,
-                    # source-traceable archival frames from the approved Fight Night
+                    # source-traceable approved gameplay frames from the approved selected-game
                     # video so a Short can continue without recycling the same image.
                     next_index=max([int(k) for k in assets.keys()] + [0]) + 1
                     frame_number=0
@@ -416,7 +396,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                         if total < 1:
                             continue
                         # Use different points across the source; frames are stills,
-                        # explicitly labeled archival, never represented as new-game footage.
+                        # explicitly labeled source-traceable, never detached from the selected game.
                         for timestamp in [min(total-0.2, max(0.2, total*f)) for f in (0.12,0.24,0.36,0.48,0.60,0.72,0.84,0.93)]:
                             frame=_extract_approved_gameplay_frame(video,timestamp,next_index+frame_number)
                             if frame:
@@ -507,13 +487,13 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                 clips_doc["assets"]=merged_assets
             existing={int(a.get("index",0)) for a in clips_doc.get("assets") or []}
             generated=[a for idx,a in assets.items() if int(idx) not in existing
-                       and str(a.get("role") or "").startswith("official_context_fight_night_frame_")]
+                       and str(a.get("role") or "").startswith("official_context_approved_gameplay_frame_")]
             if generated:
                 clips_doc.setdefault("assets",[]).extend(generated)
             # Always persist one normalized JSON document before downstream QA.
             clips_path.write_text(json.dumps(clips_doc,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         except (OSError,ValueError,TypeError) as exc:
-            raise RuntimeError(f"QUALITY_BLOCK: não foi possível persistir quadros de arquivo no inventário: {exc}")
+            raise RuntimeError(f"QUALITY_BLOCK: não foi possível persistir quadros de gameplay aprovados no inventário: {exc}")
     validate_short(beats,assets)
     return beats
 
