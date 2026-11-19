@@ -51,30 +51,32 @@ jobs:
           s=requests.Session()
           s.headers.update({'User-Agent':'Mozilla/5.0 RadarDosGamesRecovery/1.0','Accept':'application/json'})
 
-          sources=[
-            'https://instances.cobalt.best/api/instances.json',
-            'https://instances.cobalt.best/instances.json',
+          # Current community instances listed by cobalt.directory (updated frequently).
+          # Only endpoints with valid TLS and a healthy Cobalt API response are used.
+          urls=[
+            'https://bergung-api.hoffnungfuerdiezukunft.net/',
+            'https://cobalt-omega.wolfy.love/',
+            'https://grapefruit.clxxped.lol/',
+            'https://apicobalt.girlskissing.top/',
+            'https://yuuri-c.meowing.de/',
+            'https://nuko-c.meowing.de/',
+            'https://eulogy-c.meowing.de/',
+            'https://cobalt-api.lamps-dev.dev/',
+            'https://api.cobalt.rpkiinval.id/',
+            'https://cobalt-alpha.wolfy.love/',
+            'https://melon.clxxped.lol/',
+            'https://lime.clxxped.lol/',
+            'https://dog.kittycat.boo/',
+            'https://fox.kittycat.boo/',
+            'https://cobaltapi.kittycat.boo/',
+            'https://cobaltapi.squair.xyz/',
+            'https://rue-cobalt.xenon.zone/',
+            'https://capi.3kh0.net/',
+            'https://kitty.tame.gg/',
+            'https://api.qwkuns.me/',
+            'https://cobaltapi.cjs.nz/',
+            'https://api-cobalt.eversiege.network/',
           ]
-          raw=None
-          for u in sources:
-            try:
-              r=s.get(u,timeout=20,verify=False)
-              print('instance-list',u,r.status_code,r.text[:300])
-              if r.ok:
-                raw=r.json(); break
-            except Exception as e: print('instance-list-error',u,e)
-
-          urls=[]
-          def walk(x):
-            if isinstance(x,dict):
-              for k,v in x.items():
-                if isinstance(v,str) and v.startswith('http') and ('url' in k.lower() or 'api' in k.lower() or 'instance' in k.lower()): urls.append(v)
-                else: walk(v)
-            elif isinstance(x,list):
-              for v in x: walk(v)
-            elif isinstance(x,str) and x.startswith('http'):
-              urls.append(x)
-          if raw is not None: walk(raw)
           # preserve order, normalize
           seen=set(); instances=[]
           for u in urls:
@@ -305,3 +307,5 @@ jobs:
 # Public Cobalt directory TLS is validated at the instance endpoints before sending any video URLs; only its list endpoint is read without verification.
 
 # Use MP4 container signature and size checks; no apt/ffprobe install is needed on hosted runners.
+
+# Use live community API hostnames from cobalt.directory; the old instances.cobalt.best JSON endpoint now serves a JS challenge page.
