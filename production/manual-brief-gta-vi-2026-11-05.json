@@ -68,7 +68,7 @@
     4,
     3
   ],
-  "narration_revision": "2026-11-19: lançamento já ocorreu; Master cobre launch-day e descobertas iniciais. Três hooks independentes: Bigfoot, ninho de ovos e sequência da efígie na mata.",
+  "narration_revision": "2026-11-19: lançamento já ocorreu; Master cobre launch-day e descobertas iniciais. Três hooks independentes: Bigfoot, ninho de ovos e sequência da efígie na mata. Ajuste de continuidade 2026-11-19: permitir gameplay de GTA VI já revisada como cobertura de frases genéricas de transição/CTA; manter bloqueio de outros jogos e semântica de descobertas específicas.",
   "video_max_assets": {
     "https://www.youtube.com/watch?v=VQRLujxTm3c": 1,
     "https://www.youtube.com/watch?v=tJbzMqJGH4k": 2,
@@ -93,5 +93,6 @@
   "max_video_assets": 5,
   "max_image_assets": 1,
   "minimum_image_assets": 1,
-  "allow_same_source_role_fallback": true
+  "allow_same_source_role_fallback": true,
+  "allow_official_subject_fallback": true
 }
