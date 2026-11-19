@@ -163,6 +163,7 @@ def main():
         "semantic_visual_sync":"APPROVED","phrase_level_direction":"APPROVED",
         "sound_design":"APPROVED","master_derived_shorts":"APPROVED",
         "short_audio_streams":"3/3","short_hooks_exact":"APPROVED",
+        "short_scene_mapping":"APPROVED","real_headlines":"APPROVED",
         "approved_short_hooks":hooks,"shorts":short_report,
         "gameplay_moving_footage":"APPROVED","video_assets":video_assets,
         "unique_video_seconds":round(unique_video_seconds,3),
