@@ -545,7 +545,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                                         cta_reuse.append((prior,cta_len,-cta_idx,cta_asset,cta_lo,cta_w))
                             cta_reused=False
                             if cta_fresh:
-                                _,d,_,picked,source_start,proof=max(cta_fresh,key=lambda x:(x[0],x[1],x[2]))
+                                d,_,_,picked,source_start,proof=max(cta_fresh,key=lambda x:(x[0],x[1],x[2]))
                             elif cta_reuse:
                                 _,d,_,picked,source_start,proof=min(cta_reuse,key=lambda x:(x[0],-x[1],-x[2]))
                                 cta_reused=True
