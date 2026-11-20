@@ -319,6 +319,37 @@ def pick_shorts_for_hooks(scenes, hooks):
 
 def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"):
     plan=load(plan_path); clips=load(clips_path); timings=load("output/voice-timings.json")
+    # Reconcile estimated TTS timestamps with the actual encoded narration duration.
+    # Some voice providers return compressed speech while the phrase aligner keeps
+    # its pre-synthesis estimate; without this normalization the Director creates
+    # a visual timeline longer than the narration and the Master fails duration QA.
+    voice_path=Path("output/voice.mp3")
+    if voice_path.exists():
+        import subprocess
+        actual_voice=float(subprocess.check_output([
+            "ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",str(voice_path)
+        ],text=True).strip())
+        timed_end=max(
+            [float(x.get("end") or 0) for x in (timings.get("segments") or [])] +
+            [float(x.get("end") or 0) for x in (timings.get("phrases") or [])] +
+            [0.0]
+        )
+        if actual_voice>0 and timed_end>0 and abs(timed_end-actual_voice)>1.0:
+            ratio=actual_voice/timed_end
+            for collection in (timings.get("segments") or [],timings.get("phrases") or []):
+                for row in collection:
+                    for key in ("start","end","duration"):
+                        if row.get(key) is not None:
+                            row[key]=round(float(row[key])*ratio,6)
+            Path("output/voice-timings.json").write_text(
+                json.dumps(timings,ensure_ascii=False,indent=2),encoding="utf-8"
+            )
+            print(json.dumps({
+                "voice_timing_reconciled":True,
+                "estimated_seconds":round(timed_end,3),
+                "actual_voice_seconds":round(actual_voice,3),
+                "scale":round(ratio,6)
+            }),flush=True)
     scenes=plan.get("scenes") or []; segments=timings.get("segments") or []
     if len(scenes)!=len(segments):
         raise RuntimeError(f"QUALITY_BLOCK: V4 recebeu {len(segments)} blocos de voz para {len(scenes)} cenas")
