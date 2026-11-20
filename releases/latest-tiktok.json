@@ -1,8 +1,8 @@
 {
   "app": "Radar TikTok Helper",
-  "version": "1.4.0",
-  "version_code": 5,
+  "version": "1.5.0",
+  "version_code": 6,
   "apk": "radar-games-tiktok-helper-v1.apk",
   "sha256": "6adc6726124bb79435e833df0fb5cab5402818b6ea924ad949ce2402a91f69ba",
-  "built_at": "2026-11-20T10:30:28Z"
+  "built_at": "2026-11-20T10:32:17Z"
 }
