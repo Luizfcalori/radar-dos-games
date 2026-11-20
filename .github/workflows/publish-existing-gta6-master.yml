@@ -33,12 +33,9 @@ jobs:
           mkdir -p publish
           MASTER="$(find recovered -type f -name master.mp4 -print -quit)"
           META="$(find recovered -type f -name master-youtube.json -print -quit)"
-          THUMB="$(find recovered -type f -name thumbnail.jpg -print -quit)"
           test -s "$MASTER"
           test -s "$META"
-          test -s "$THUMB"
           cp "$MASTER" publish/master.mp4
-          cp "$THUMB" publish/thumbnail.jpg
           python - "$META" <<'PY'
           import json,sys
           from pathlib import Path
@@ -50,6 +47,7 @@ jobs:
           Path("publish/master.json").write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
           print(json.dumps({"title":meta["title"],"privacy":meta["privacy"],"thumbnail":meta["thumbnail"]},ensure_ascii=False))
           PY
+          python src/thumbnail.py publish/master.mp4 "$(python -c 'import json;print(json.load(open("publish/master.json"))["title"])')" publish/thumbnail.jpg
           python - <<'PY'
           from pathlib import Path
           for p in [Path("publish/master.mp4"),Path("publish/thumbnail.jpg")]:
