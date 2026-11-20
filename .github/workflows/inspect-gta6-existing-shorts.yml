@@ -1,0 +1,43 @@
+name: Inspect existing GTA VI Shorts artifact
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/inspect-gta6-existing-shorts.yml"
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the existing GTA VI package without rendering
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-44653216122
+          path: recovered
+          repository: Luizfcalori/radar-dos-games
+          run-id: 44653216122
+          github-token: ${{ github.token }}
+      - name: Inventory existing Shorts and metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path("recovered")
+          files=sorted(p for p in root.rglob("*") if p.is_file())
+          print("ARTIFACT_FILES",len(files))
+          for p in files:
+              if "short" in p.name.lower() or p.suffix.lower()==".mp4":
+                  print("MEDIA_OR_SHORT_META",p,p.stat().st_size)
+          for pattern in ("short_1.mp4","short_2.mp4","short_3.mp4","short-1-youtube.json","short-2-youtube.json","short-3-youtube.json","final-qa.json"):
+              hits=list(root.rglob(pattern))
+              print("CHECK",pattern,[(str(p),p.stat().st_size) for p in hits])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gta6-existing-shorts-inventory-${{ github.run_id }}
+          path: recovered
+          retention-days: 2
