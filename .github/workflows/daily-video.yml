@@ -1,5 +1,6 @@
 # Radar editorial QA: flexible duration, with a 450-word safety floor.
 name: Radar dos Games - Daily Auto Master + 3 Shorts
+# [run-private] TOPIC=Grand Theft Auto VI — nightlife clubs — render timeline fix
 # [run-production] TOPIC=Grand Theft Auto VI — Easter Eggs — CTA direct-window regression.
 # GTA VI recovery dispatch: preserve the corrected CTA fallback and run the requested production.
 # [run-production] TOPIC=Grand Theft Auto VI — Easter Eggs — verify CTA continuity patch.
