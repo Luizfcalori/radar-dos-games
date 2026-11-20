@@ -1,0 +1,86 @@
+name: Publish existing GTA VI Master privately
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-existing-gta6-master.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  upload-master:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download existing production artifact (no rerender)
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-44653216122
+          path: recovered
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Luizfcalori/radar-dos-games
+          run-id: 44653216122
+
+      - name: Prepare the already-rendered Master and private metadata
+        run: |
+          set -euo pipefail
+          mkdir -p publish
+          MASTER="$(find recovered -type f -name master.mp4 -print -quit)"
+          META="$(find recovered -type f -name master-youtube.json -print -quit)"
+          THUMB="$(find recovered -type f -name thumbnail.jpg -print -quit)"
+          test -s "$MASTER"
+          test -s "$META"
+          test -s "$THUMB"
+          cp "$MASTER" publish/master.mp4
+          cp "$THUMB" publish/thumbnail.jpg
+          python - "$META" <<'PY'
+          import json,sys
+          from pathlib import Path
+          meta=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          meta["privacy"]="private"
+          meta.pop("publishAt",None)
+          meta["thumbnail"]="publish/thumbnail.jpg"
+          meta["use_existing_thumbnail"]=True
+          Path("publish/master.json").write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps({"title":meta["title"],"privacy":meta["privacy"],"thumbnail":meta["thumbnail"]},ensure_ascii=False))
+          PY
+          python - <<'PY'
+          from pathlib import Path
+          for p in [Path("publish/master.mp4"),Path("publish/thumbnail.jpg")]:
+              print(p, p.stat().st_size)
+          if Path("publish/master.mp4").stat().st_size < 3000000:
+              raise SystemExit("Master file unexpectedly small")
+          if Path("publish/thumbnail.jpg").stat().st_size < 20000:
+              raise SystemExit("Master thumbnail invalid")
+          PY
+
+      - name: Validate Radar channel OAuth
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python -m pip install --disable-pip-version-check -q -r requirements.txt
+          python src/check_youtube.py
+
+      - name: Upload existing Master as private
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python src/youtube.py publish/master.mp4 publish/master.json | tee publish/youtube-master-result.json
+
+      - name: Save upload confirmation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gta6-master-private-upload-${{ github.run_id }}
+          path: publish/youtube-master-result.json
+          if-no-files-found: warn
+          retention-days: 7
