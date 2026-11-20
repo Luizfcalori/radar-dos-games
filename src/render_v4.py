@@ -244,6 +244,33 @@ def render(manifest_path):
     if len(scenes)!=len(timings.get("segments") or []):
         raise RuntimeError("QUALITY_BLOCK: V4 cenas/timings incompatíveis")
 
+    # Final safety reconciliation at the render boundary. The phrase aligner can
+    # still leave beat durations longer than the encoded MP3 (provider TTS may
+    # compress speech). Scale every approved beat to the real voice duration
+    # before rendering; this shortens cuts only, never loops or extends source
+    # windows, and keeps the Master timeline locked to its actual narration.
+    voice_seconds=probe_duration(m["voice"])
+    planned_seconds=sum(
+        float(beat.get("duration") or 0)
+        for scene in scenes for beat in (scene.get("beats") or [])
+    )
+    if voice_seconds>0 and planned_seconds>0 and abs(planned_seconds-voice_seconds)>0.75:
+        ratio=voice_seconds/planned_seconds
+        for scene in scenes:
+            for beat in (scene.get("beats") or []):
+                if beat.get("duration") is not None:
+                    beat["duration"]=round(float(beat["duration"])*ratio,6)
+                if beat.get("start") is not None:
+                    beat["start"]=round(float(beat["start"])*ratio,6)
+                if beat.get("end") is not None:
+                    beat["end"]=round(float(beat["end"])*ratio,6)
+        print(json.dumps({
+            "render_voice_timing_reconciled":True,
+            "planned_seconds":round(planned_seconds,3),
+            "actual_voice_seconds":round(voice_seconds,3),
+            "scale":round(ratio,6)
+        }),flush=True)
+
     pieces=[]; qa_scenes=[]; global_piece=0; cursor=0.0; sfx_events=[]
     for scene_no,scene in enumerate(scenes,1):
         beats=scene.get("beats") or []
