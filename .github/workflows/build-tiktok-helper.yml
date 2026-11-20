@@ -72,8 +72,8 @@ jobs:
           cat > releases/latest-tiktok.json <<EOF
           {
             "app": "Radar TikTok Helper",
-            "version": "1.4.0",
-            "version_code": 5,
+            "version": "1.5.0",
+            "version_code": 6,
             "apk": "radar-games-tiktok-helper-v1.apk",
             "sha256": "$SHA256",
             "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
