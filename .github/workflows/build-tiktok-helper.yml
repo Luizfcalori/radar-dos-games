@@ -9,6 +9,10 @@ on:
       - 'tiktok-mobile-app/**'
       - '.github/workflows/build-tiktok-helper.yml'
 
+concurrency:
+  group: radar-tiktok-helper-build
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
