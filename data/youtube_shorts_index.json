@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-19T20:58:49.637005+00:00",
-  "total_discovered": 208,
-  "ready_for_tiktok": 198,
+  "updated_at": "2026-11-20T18:00:04.189230+00:00",
+  "total_discovered": 211,
+  "ready_for_tiktok": 201,
   "waiting_media": [
     {
       "youtube_id": "xDCHua1DjJg",
@@ -57,6 +57,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "FbU-0jwlskk",
+      "youtube_url": "https://www.youtube.com/shorts/FbU-0jwlskk",
+      "title": "OS NPCS REAGEM A VOCÊ: O DETALHE QUE MUDA GTA 6",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "6yGQHeEZa5U",
+      "youtube_url": "https://www.youtube.com/shorts/6yGQHeEZa5U",
+      "title": "LEONIDA TEM SEIS REGIÕES — E CADA UMA TEM SUA PRÓPRIA VIDA",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "BwQKE-oYKL8",
+      "youtube_url": "https://www.youtube.com/shorts/BwQKE-oYKL8",
+      "title": "600 MIL ANIMAÇÕES: POR QUE GTA 6 PARECE TÃO VIVO?",
+      "status": "approved"
+    },
     {
       "youtube_id": "xDCHua1DjJg",
       "youtube_url": "https://www.youtube.com/shorts/xDCHua1DjJg",
