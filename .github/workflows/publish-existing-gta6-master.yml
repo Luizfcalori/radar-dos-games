@@ -27,6 +27,11 @@ jobs:
           repository: Luizfcalori/radar-dos-games
           run-id: 44653216122
 
+      - name: Install FFmpeg for the approved thumbnail
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
       - name: Prepare the already-rendered Master and private metadata
         run: |
           set -euo pipefail
