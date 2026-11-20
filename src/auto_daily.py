@@ -855,7 +855,7 @@ def main():
         # Explicit production must load the dedicated Blizzard launch brief even when generic briefs are enabled; keep this route independent of AUTO discovery.
         manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
     elif forced_topic_slug == ascii_slug("Grand Theft Auto VI"):
-        manual = load_manual_brief("production/manual-brief-gta-vi-2026-11-05.json")
+        manual = load_manual_brief("production/manual-brief-gta-vi-nightlife-2026-11-20.json")
     elif forced_topic_slug == ascii_slug("Poppy Playtime"):
         manual = load_manual_brief("production/manual-brief-poppy-playtime-2026-11-08.json")
     elif forced_topic_slug == ascii_slug("Lords of the Fallen II"):
@@ -954,7 +954,7 @@ def main():
             # Pin the requested run to Blizzard's verified global launch brief and official WoW footage.
             manual = load_manual_brief("production/manual-brief-world-of-warcraft-forever-2026-11-05.json")
         elif forced_topic_slug == ascii_slug("Grand Theft Auto VI"):
-            manual = load_manual_brief("production/manual-brief-gta-vi-2026-11-05.json")
+            manual = load_manual_brief("production/manual-brief-gta-vi-nightlife-2026-11-20.json")
         elif forced_topic_slug == ascii_slug("Poppy Playtime"):
             # Keep the explicit Poppy Playtime request pinned to its approved Escape From Playtime brief.
             manual = load_manual_brief("production/manual-brief-poppy-playtime-2026-11-08.json")
