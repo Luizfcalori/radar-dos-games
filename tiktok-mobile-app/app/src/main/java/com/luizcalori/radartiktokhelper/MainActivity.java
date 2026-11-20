@@ -354,8 +354,9 @@ public class MainActivity extends Activity {
             else readyCount++;
         }
         int pendingCount = Math.max(0, readyCount - postedCount);
-        summary.setText("Prontos: " + readyCount + "   •   Pendentes: " + pendingCount +
-                "   •   Publicados: " + postedCount + "   •   Mídia pendente: " + waitingMedia);
+        summary.setText("Total na fila: " + allItems.size() + "   •   MP4 disponíveis: " + readyCount +
+                "   •   Pendentes: " + pendingCount + "   •   Publicados: " + postedCount +
+                "   •   Em recuperação: " + waitingMedia);
     }
 
     private void showCurrent() {
