@@ -47,6 +47,7 @@ jobs:
           Path("publish/master.json").write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
           print(json.dumps({"title":meta["title"],"privacy":meta["privacy"],"thumbnail":meta["thumbnail"]},ensure_ascii=False))
           PY
+          python -m pip install --disable-pip-version-check -q Pillow
           python src/thumbnail.py publish/master.mp4 "$(python -c 'import json;print(json.load(open("publish/master.json"))["title"])')" publish/thumbnail.jpg
           python - <<'PY'
           from pathlib import Path
