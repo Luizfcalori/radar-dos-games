@@ -1,66 +1,15 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-20T18:00:04.189230+00:00",
-  "total_discovered": 211,
-  "ready_for_tiktok": 201,
-  "waiting_media": [
-    {
-      "youtube_id": "xDCHua1DjJg",
-      "title": "RESIDENT EVIL REQUIEM LEVOU O PRÊMIO MAIS IMPORTANTE DE 2026!",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "wFuquyQt9-w",
-      "title": "GRACE ASHCROFT AINDA TEM MUITO A EVOLUIR — DIZ SUA ATRIZ!",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "GS36QlnZiFw",
-      "title": "LEON E GRACE: A PARCERIA PODE TER FUTURO NA SÉRIE?",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "4J11rX8qp-U",
-      "title": "A Coreia Está Pegando Fogo",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "wYDMp_a572w",
-      "title": "Combate Intenso",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "jFqiD7hw0hc",
-      "title": "Missão 1: O Início",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "FWfua78AQis",
-      "title": "Provando que a comunidade gamer é unida",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "4rHekP89KHY",
-      "title": "O QUE O TRAILER DE YEAT MOSTRA? 👀🎮 Curtiu? Siga o Radar dos Games para #Fortnite #Yeat",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "BQ30QQNY9kw",
-      "title": "Radar dos Games: notícias, lançamentos e gameplays!💚 Curta e siga! #GTA6 #GearsOfWarEDay #ARCRaiders",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "XA-YklCtg1k",
-      "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
-      "reason": "original_media_not_recovered_yet"
-    }
-  ],
+  "updated_at": "2026-11-21T12:22:05.811685+00:00",
+  "total_discovered": 214,
+  "ready_for_tiktok": 6,
+  "waiting_media": [],
   "items": [
     {
-      "youtube_id": "FbU-0jwlskk",
-      "youtube_url": "https://www.youtube.com/shorts/FbU-0jwlskk",
-      "title": "OS NPCS REAGEM A VOCÊ: O DETALHE QUE MUDA GTA 6",
+      "youtube_id": "BwQKE-oYKL8",
+      "youtube_url": "https://www.youtube.com/shorts/BwQKE-oYKL8",
+      "title": "600 MIL ANIMAÇÕES: POR QUE GTA 6 PARECE TÃO VIVO?",
       "status": "approved"
     },
     {
@@ -70,1258 +19,1276 @@
       "status": "approved"
     },
     {
-      "youtube_id": "BwQKE-oYKL8",
-      "youtube_url": "https://www.youtube.com/shorts/BwQKE-oYKL8",
-      "title": "600 MIL ANIMAÇÕES: POR QUE GTA 6 PARECE TÃO VIVO?",
+      "youtube_id": "FbU-0jwlskk",
+      "youtube_url": "https://www.youtube.com/shorts/FbU-0jwlskk",
+      "title": "OS NPCS REAGEM A VOCÊ: O DETALHE QUE MUDA GTA 6",
       "status": "approved"
     },
     {
-      "youtube_id": "xDCHua1DjJg",
-      "youtube_url": "https://www.youtube.com/shorts/xDCHua1DjJg",
-      "title": "RESIDENT EVIL REQUIEM LEVOU O PRÊMIO MAIS IMPORTANTE DE 2026!",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "wFuquyQt9-w",
-      "youtube_url": "https://www.youtube.com/shorts/wFuquyQt9-w",
-      "title": "GRACE ASHCROFT AINDA TEM MUITO A EVOLUIR — DIZ SUA ATRIZ!",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "GS36QlnZiFw",
-      "youtube_url": "https://www.youtube.com/shorts/GS36QlnZiFw",
-      "title": "LEON E GRACE: A PARCERIA PODE TER FUTURO NA SÉRIE?",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "FbJ9SbHHeWQ",
-      "youtube_url": "https://www.youtube.com/shorts/FbJ9SbHHeWQ",
-      "title": "HUTUO CHEGOU: A REGIÃO MAIS GUERREIRA DE WHERE WINDS MEET!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "mhpL-wQrdSM",
-      "youtube_url": "https://www.youtube.com/shorts/mhpL-wQrdSM",
-      "title": "DOIS CHEFES MUNDIAIS E UMA CAMPANHA NO MEIO DA GUERRA!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Hi_vn3PPKjQ",
-      "youtube_url": "https://www.youtube.com/shorts/Hi_vn3PPKjQ",
-      "title": "AS LANÇAS DUPLAS DE YUEN WOO-PING CHEGAM EM 26 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "q9ckmU_k8Vc",
-      "youtube_url": "https://www.youtube.com/shorts/q9ckmU_k8Vc",
-      "title": "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "uGx8CakS6DA",
-      "youtube_url": "https://www.youtube.com/shorts/uGx8CakS6DA",
-      "title": "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "PplU6uEkNOM",
-      "youtube_url": "https://www.youtube.com/shorts/PplU6uEkNOM",
-      "title": "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "9t7tCAvMzjw",
-      "youtube_url": "https://www.youtube.com/shorts/9t7tCAvMzjw",
-      "title": "GODZILLA INVADIU STORM POINT: VOCÊ CONSEGUE SOBREVIVER?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "MKQJz11qg5E",
-      "youtube_url": "https://www.youtube.com/shorts/MKQJz11qg5E",
-      "title": "WINGMAN AKIMBO: DUAS PISTOLAS, UM NOVO META EM APEX!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "-7mAI40eivg",
-      "youtube_url": "https://www.youtube.com/shorts/-7mAI40eivg",
-      "title": "CIPHER MUDOU O RANQUEADO: AGORA TEM BANIMENTO DE LENDAS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "GJCa4gOMW7w",
-      "youtube_url": "https://www.youtube.com/shorts/GJCa4gOMW7w",
-      "title": "DERELIKT: O TERROR ESPACIAL COM VISUAL DE PS1!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "f2PCDYLDbiY",
-      "youtube_url": "https://www.youtube.com/shorts/f2PCDYLDbiY",
-      "title": "UMA ESTAÇÃO EM ÓRBITA DE SATURNO ESCONDE UM PESADELO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "TmPjTPfo2-8",
-      "youtube_url": "https://www.youtube.com/shorts/TmPjTPfo2-8",
-      "title": "EM DERELIKT, CADA BALA E CADA ESPAÇO NO INVENTÁRIO IMPORTAM!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "j0bRT2QIgg4",
-      "youtube_url": "https://www.youtube.com/shorts/j0bRT2QIgg4",
-      "title": "SONIC PICO PARK: ATÉ 8 JOGADORES NO CAOS COOPERATIVO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "R9LQGkiMJ_E",
-      "youtube_url": "https://www.youtube.com/shorts/R9LQGkiMJ_E",
-      "title": "ROUGE É JOGÁVEL, OMEGA E VECTOR SÃO GRANDES: ENTENDA O ELENCO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "-p_X_dyQqoU",
-      "youtube_url": "https://www.youtube.com/shorts/-p_X_dyQqoU",
-      "title": "SPIN DASH, ANÉIS E CROSS-PLAY: COMO FUNCIONA SONIC PICO PARK?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Wb36I430aZY",
-      "youtube_url": "https://www.youtube.com/shorts/Wb36I430aZY",
-      "title": "NOTURNO CHEGA AO MARVEL RIVALS EM 13 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "eRf4SopDLpk",
-      "youtube_url": "https://www.youtube.com/shorts/eRf4SopDLpk",
-      "title": "DRÁCULA TAMBÉM VAI ENTRAR NO ELENCO DE MARVEL RIVALS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "BHs2-SPq29U",
-      "youtube_url": "https://www.youtube.com/shorts/BHs2-SPq29U",
-      "title": "MARVEL RIVALS VAI TER BATALHAS 18 CONTRA 18!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "7NpaeY7WroY",
-      "youtube_url": "https://www.youtube.com/shorts/7NpaeY7WroY",
-      "title": "METAPHOR NO SWITCH 2: DESEMPENHO OU GRÁFICOS?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "21tRcry0ikA",
-      "youtube_url": "https://www.youtube.com/shorts/21tRcry0ikA",
-      "title": "A DEMO DE METAPHOR TRANSFERE O PROGRESSO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "lkKl0EQnqUw",
-      "youtube_url": "https://www.youtube.com/shorts/lkKl0EQnqUw",
-      "title": "HEISMAY GANHA NOVO TRAILER ANTES DO LANÇAMENTO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "8m8xa_7xFyY",
-      "youtube_url": "https://www.youtube.com/shorts/8m8xa_7xFyY",
-      "title": "DREADMOOR CHEGA AMANHÃ: VOCÊ SOBREVIVERIA NESSE MAR?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "6hHRa5iypVQ",
-      "youtube_url": "https://www.youtube.com/shorts/6hHRa5iypVQ",
-      "title": "MAIS DE 100 CRIATURAS: A PESCA VIROU UM PESADELO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "eajOUS8EU9A",
-      "youtube_url": "https://www.youtube.com/shorts/eajOUS8EU9A",
-      "title": "SAIR À NOITE EM DREADMOOR É UM RISCO MORTAL!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "6N9AfQdCzjY",
-      "youtube_url": "https://www.youtube.com/shorts/6N9AfQdCzjY",
-      "title": "A DEMO DE METAPHOR NO SWITCH 2 TEM 4 MASMORRAS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "LNuYVYS_4jM",
-      "youtube_url": "https://www.youtube.com/shorts/LNuYVYS_4jM",
-      "title": "40+ ARQUÉTIPOS: COMO FUNCIONA O COMBATE DE METAPHOR?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "wRqvMHcrAA0",
-      "youtube_url": "https://www.youtube.com/shorts/wRqvMHcrAA0",
-      "title": "METAPHOR FICA MAIS BARATO EM 12 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "lkUNkc6i_qw",
-      "youtube_url": "https://www.youtube.com/shorts/lkUNkc6i_qw",
-      "title": "QUASE 30 MOVIMENTOS DE ARMAS: O COMBATE MUDOU!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "lnKBVWRQ7Eg",
-      "youtube_url": "https://www.youtube.com/shorts/lnKBVWRQ7Eg",
-      "title": "TROCA DE ARMAS NO MEIO DO COMBO: COMO FUNCIONA?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "i1l3XRkjduA",
-      "youtube_url": "https://www.youtube.com/shorts/i1l3XRkjduA",
-      "title": "SETE ESCOLAS DE MAGIA E MUNIÇÃO INFINITA!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "p6MEcYLuAs4",
-      "youtube_url": "https://www.youtube.com/shorts/p6MEcYLuAs4",
-      "title": "SHREK 2 VOLTA COM COOP PARA ATÉ 4 JOGADORES!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "tbhkO-0O1vI",
-      "youtube_url": "https://www.youtube.com/shorts/tbhkO-0O1vI",
-      "title": "AGORA DÁ PARA TROCAR DE HERÓI A QUALQUER MOMENTO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "kPj3BrB7-q4",
-      "youtube_url": "https://www.youtube.com/shorts/kPj3BrB7-q4",
-      "title": "MODO FOTO, CHEATS E VISUAL RENOVADO: O QUE MUDOU?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "ukpi1M0hgGE",
-      "youtube_url": "https://www.youtube.com/shorts/ukpi1M0hgGE",
-      "title": "GTA VI: O PRÉ-CARREGAMENTO COMEÇA EM 10 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "8yfSGvJWqAs",
-      "youtube_url": "https://www.youtube.com/shorts/8yfSGvJWqAs",
-      "title": "JUSTICE ASSINA A TRILHA SONORA ORIGINAL DE GTA VI!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "z7o8RuXLiKY",
-      "youtube_url": "https://www.youtube.com/shorts/z7o8RuXLiKY",
-      "title": "GTA VI CHEGA EM 19 DE NOVEMBRO — E O TRAILER JÁ ESTÁ NO AR!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "XMk9wFL47rA",
-      "youtube_url": "https://www.youtube.com/shorts/XMk9wFL47rA",
-      "title": "WORLD OF WARCRAFT: FOREVER JÁ ESTÁ NO AR — E AZEROTH MUDOU!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "yanMQah_Ra4",
-      "youtube_url": "https://www.youtube.com/shorts/yanMQah_Ra4",
-      "title": "MAIS DE MIL MISSÕES E QUATRO NOVAS REGIÕES: OLHA O TAMANHO DISSO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "IivpYo4Nmrc",
-      "youtube_url": "https://www.youtube.com/shorts/IivpYo4Nmrc",
-      "title": "SKYBORNE: A NOVA RAÇA JOGÁVEL QUE CHEGA A AZEROTH!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "_h0E2nxlLac",
-      "youtube_url": "https://www.youtube.com/shorts/_h0E2nxlLac",
-      "title": "STELLAR BLADE CHEGA AO SWITCH 2 EM 5 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "cNtEnUC4aNU",
-      "youtube_url": "https://www.youtube.com/shorts/cNtEnUC4aNU",
-      "title": "NIKKE, NIER E BAYONETTA: O PACOTE COMPLETO DE EVE!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "tUr-ruJa7G4",
-      "youtube_url": "https://www.youtube.com/shorts/tUr-ruJa7G4",
-      "title": "CARTUCHO COMPLETO: SEM DOWNLOAD EXTRA PARA JOGAR!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "p7VBaeZldH8",
-      "youtube_url": "https://www.youtube.com/shorts/p7VBaeZldH8",
-      "title": "O clássico de 1998 está de volta em uma Hyrule totalmente renovada!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "zN0yDEBibgc",
-      "youtube_url": "https://www.youtube.com/shorts/zN0yDEBibgc",
-      "title": "Agora você pode cantar a melodia e fazer a Ocarina responder!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "nKAHBDu2Gyg",
-      "youtube_url": "https://www.youtube.com/shorts/nKAHBDu2Gyg",
-      "title": "O Museu dos Mil Monstros traz revanche contra inimigos derrotados!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "ryUaeZHvOJQ",
-      "youtube_url": "https://www.youtube.com/shorts/ryUaeZHvOJQ",
-      "title": "JINWOO CHEGA AOS CONSOLES EM 3 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "XDh7iwGUYdE",
-      "youtube_url": "https://www.youtube.com/shorts/XDh7iwGUYdE",
-      "title": "QUATRO CAÇADORES CONTRA CHEFES GIGANTES!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "npK-G2QA52Q",
-      "youtube_url": "https://www.youtube.com/shorts/npK-G2QA52Q",
-      "title": "O MONARCA DAS SOMBRAS TEM OITO CAMINHOS DE EVOLUÇÃO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "tyYp6HeEFdA",
-      "youtube_url": "https://www.youtube.com/shorts/tyYp6HeEFdA",
-      "title": "FOOTBALL MANAGER 27 ESTÁ GRÁTIS — MAS SÓ ATÉ 3 DE NOVEMBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "5--hyAXVtfc",
-      "youtube_url": "https://www.youtube.com/shorts/5--hyAXVtfc",
-      "title": "SHUFFLE DRAFT: ATÉ 32 MANAGERS NA NOVA DISPUTA ONLINE!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "q3M6IIJox-s",
-      "youtube_url": "https://www.youtube.com/shorts/q3M6IIJox-s",
-      "title": "59 NAÇÕES JOGÁVEIS E DUAS LIGAS LICENCIADAS: VEJA O QUE MUDOU!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "p56QsAVBm_o",
-      "youtube_url": "https://www.youtube.com/shorts/p56QsAVBm_o",
-      "title": "ARJUN CHEGOU AO STREET FIGHTER 6: VEJA O QUE MUDA NO COMBATE!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "6zxhPSYOptU",
-      "youtube_url": "https://www.youtube.com/shorts/6zxhPSYOptU",
-      "title": "STREET FIGHTER 6 ESTÁ NA EVO BRAZIL 2027: DATA E R$ 1 MILHÃO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Y6rb3D8YzS0",
-      "youtube_url": "https://www.youtube.com/shorts/Y6rb3D8YzS0",
-      "title": "TIFA E BOSCH JÁ TÊM JANELAS DE CHEGADA AO STREET FIGHTER 6!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "TSv3_dEoPSc",
-      "youtube_url": "https://www.youtube.com/shorts/TSv3_dEoPSc",
-      "title": "A RED NUN ESTÁ CAÇANDO VOCÊ — DÁ PARA ESCAPAR?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "TzTFlPR52dE",
-      "youtube_url": "https://www.youtube.com/shorts/TzTFlPR52dE",
-      "title": "TRÊS PODERES PSÍQUICOS PARA DESVENDAR O PESADELO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "fHJHQm6H2UE",
-      "youtube_url": "https://www.youtube.com/shorts/fHJHQm6H2UE",
-      "title": "SUSAN ENTROU NA VILLA ASHMANN PARA SALVAR A FILHA",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "HiYdt2AOIgs",
-      "youtube_url": "https://www.youtube.com/shorts/HiYdt2AOIgs",
-      "title": "HELLRAISER: O UPDATE 1.1 CORRIGE O QUÊ?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "5H60Zl49Amg",
-      "youtube_url": "https://www.youtube.com/shorts/5H60Zl49Amg",
-      "title": "A CONFIGURAÇÃO GÊNESIS É A ARMA MAIS SINISTRA DO JOGO?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "wrH8wAIK1_s",
-      "youtube_url": "https://www.youtube.com/shorts/wrH8wAIK1_s",
-      "title": "PINHEAD, CULTO E TERROR: SOBREVIVER AO LABIRINTO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Eolqg8mIWpM",
-      "youtube_url": "https://www.youtube.com/shorts/Eolqg8mIWpM",
-      "title": "USUAL JUNE ADIADO: O QUE MUDOU NA DATA?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "tKawMz89IA0",
-      "youtube_url": "https://www.youtube.com/shorts/tKawMz89IA0",
-      "title": "MONSTROS, FANTASMAS E COMBATE RÁPIDO: VEJA USUAL JUNE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "VDuQdnrzdmk",
-      "youtube_url": "https://www.youtube.com/shorts/VDuQdnrzdmk",
-      "title": "USUAL JUNE TAMBÉM CHEGA AO XBOX — QUANDO?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "WerVjvee4NU",
-      "youtube_url": "https://www.youtube.com/shorts/WerVjvee4NU",
-      "title": "ANIMAL HOSPITAL: O MINIJOGO DE HALLOWEEN MUDOU TUDO?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "nzzhkNPttew",
-      "youtube_url": "https://www.youtube.com/shorts/nzzhkNPttew",
-      "title": "COMO SABER SE O PACIENTE É UMA ANOMALIA?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Sm4DtpKZ6Qo",
-      "youtube_url": "https://www.youtube.com/shorts/Sm4DtpKZ6Qo",
-      "title": "HALLOWEEN PARTE 2 CHEGA EM 27 DE OUTUBRO — O QUE JÁ SABEMOS?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "X5lc7ntwfTE",
-      "youtube_url": "https://www.youtube.com/shorts/X5lc7ntwfTE",
-      "title": "ZENLESS 3.3: AGORA VOCÊ PILOTA MECHAS?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "_r23TUz7xaI",
-      "youtube_url": "https://www.youtube.com/shorts/_r23TUz7xaI",
-      "title": "PHOENIX E SEVERIAN: O QUE CADA AGENTE FAZ?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "N7GHoe_kfG0",
-      "youtube_url": "https://www.youtube.com/shorts/N7GHoe_kfG0",
-      "title": "QUIETUDE ISLE: O QUE MUDOU NA NOVA HISTÓRIA?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "wmMJcdDzWmU",
-      "youtube_url": "https://www.youtube.com/shorts/wmMJcdDzWmU",
-      "title": "BIGBY ESTÁ MAIS ASSUSTADOR: VEJA A NOVA FORMA DE LOBO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "KT8DZMgVD2Q",
-      "youtube_url": "https://www.youtube.com/shorts/KT8DZMgVD2Q",
-      "title": "O MODO NOIR MUDA COMPLETAMENTE O CLIMA DE FABLETOWN",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Jvu15pf47Wc",
-      "youtube_url": "https://www.youtube.com/shorts/Jvu15pf47Wc",
-      "title": "CENAS PERDIDAS E MAIS DE UMA HORA DE BASTIDORES",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "7q_AykfWMyA",
-      "youtube_url": "https://www.youtube.com/shorts/7q_AykfWMyA",
-      "title": "UPDATE 1.1: MAIS DE 1.100 MUDANÇAS — O QUE REALMENTE MELHOROU?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "qx3qLsskUCc",
-      "youtube_url": "https://www.youtube.com/shorts/qx3qLsskUCc",
-      "title": "DIA OU NOITE: COEN MUDA DE GUERREIRO PARA VAMPIRO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "mrMpgliv5zw",
-      "youtube_url": "https://www.youtube.com/shorts/mrMpgliv5zw",
-      "title": "REFORMULE SUA BUILD — E AGORA DÁ ATÉ PARA ACARICIAR ANIMAIS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "zPUGQPmg4VE",
-      "youtube_url": "https://www.youtube.com/shorts/zPUGQPmg4VE",
-      "title": "PROTO MAN JOGÁVEL MUDA A AÇÃO EM MEGA MAN: DUAL OVERRIDE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "rlK0zT8bu4g",
-      "youtube_url": "https://www.youtube.com/shorts/rlK0zT8bu4g",
-      "title": "CUSTOM CHIPS E OVERRIDE: COMO O COMBATE PODE MUDAR",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "N42w35SEVpY",
-      "youtube_url": "https://www.youtube.com/shorts/N42w35SEVpY",
-      "title": "TWINKLE GIRL, ASTRO MAN E OS ROBOT MASTERS DE DUAL OVERRIDE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "YyGhSrL2yKA",
-      "youtube_url": "https://www.youtube.com/shorts/YyGhSrL2yKA",
-      "title": "Saros: modificadores de proteção explicados",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "o2kDXYYSQ0c",
-      "youtube_url": "https://www.youtube.com/shorts/o2kDXYYSQ0c",
-      "title": "Saros: New Game+ com Eclipse Layers",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "ZqIS4oGwiPg",
-      "youtube_url": "https://www.youtube.com/shorts/ZqIS4oGwiPg",
-      "title": "Saros: Overlord Rush reúne oito chefes",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "ZrmwwcC4qvY",
-      "youtube_url": "https://www.youtube.com/shorts/ZrmwwcC4qvY",
-      "title": "FINAL FANTASY RESONANCE JÁ CHEGOU: VEJA O HD-2D EM AÇÃO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "buICeG8v9U0",
-      "youtube_url": "https://www.youtube.com/shorts/buICeG8v9U0",
-      "title": "COMBATE POR TURNOS, FRAQUEZAS E ATAQUES RESONANCE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "aNTfvPxzdzs",
-      "youtube_url": "https://www.youtube.com/shorts/aNTfvPxzdzs",
-      "title": "A DEMO TRANSFERE O PROGRESSO PARA O JOGO COMPLETO?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "0Lo8uAbMlww",
-      "youtube_url": "https://www.youtube.com/shorts/0Lo8uAbMlww",
-      "title": "FIGHT NIGHT ESTÁ VOLTANDO DEPOIS DE 15 ANOS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "xjhhdF6CA58",
-      "youtube_url": "https://www.youtube.com/shorts/xjhhdF6CA58",
-      "title": "A EA CONFIRMOU O RETORNO — MAS NÃO MOSTROU GAMEPLAY",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "eSi38LJTCA4",
-      "youtube_url": "https://www.youtube.com/shorts/eSi38LJTCA4",
-      "title": "FIGHT NIGHT CONSEGUE SUPERAR UNDISPUTED?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "4J11rX8qp-U",
-      "youtube_url": "https://www.youtube.com/shorts/4J11rX8qp-U",
-      "title": "A Coreia Está Pegando Fogo",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "wYDMp_a572w",
-      "youtube_url": "https://www.youtube.com/shorts/wYDMp_a572w",
-      "title": "Combate Intenso",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "jFqiD7hw0hc",
-      "youtube_url": "https://www.youtube.com/shorts/jFqiD7hw0hc",
-      "title": "Missão 1: O Início",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "UhEa75FqF4I",
-      "youtube_url": "https://www.youtube.com/shorts/UhEa75FqF4I",
-      "title": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "vE6S_PXAnaI",
-      "youtube_url": "https://www.youtube.com/shorts/vE6S_PXAnaI",
-      "title": "ARMAS MALUCAS E UPGRADES EM GRADE!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Mr0xAZPyxuc",
-      "youtube_url": "https://www.youtube.com/shorts/Mr0xAZPyxuc",
-      "title": "ATÉ QUATRO JOGADORES CONTRA ALIENS FÚNGICOS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "M5-zPE_WzeY",
-      "youtube_url": "https://www.youtube.com/shorts/M5-zPE_WzeY",
-      "title": "NAVIOS, ILHAS E TESOUROS NO FUNDO DO MAR!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "wYOKgd0bczc",
-      "youtube_url": "https://www.youtube.com/shorts/wYOKgd0bczc",
-      "title": "LULA GIGANTE, TUBARÕES E BATALHAS NAVAIS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "AJbpAQqNM0g",
-      "youtube_url": "https://www.youtube.com/shorts/AJbpAQqNM0g",
-      "title": "ISLES OF ABYSS CHEGA COM SERVIDORES NA AMÉRICA DO SUL!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "J-utgCqephU",
-      "youtube_url": "https://www.youtube.com/shorts/J-utgCqephU",
-      "title": "PS5 COMUM GANHA IA NOS GRÁFICOS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "XncRj0XVzCo",
-      "youtube_url": "https://www.youtube.com/shorts/XncRj0XVzCo",
-      "title": "QSSR É IGUAL AO PSSR DO PS5 PRO?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "_6PBbytouAU",
-      "youtube_url": "https://www.youtube.com/shorts/_6PBbytouAU",
-      "title": "QUAIS JOGOS JÁ USAM QSSR NO PS5?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "-_Dnc_1tIFI",
-      "youtube_url": "https://www.youtube.com/shorts/-_Dnc_1tIFI",
-      "title": "THE WITCHER 3: O QUE MUDA COM O PATCH 5.01?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "42bFCkPP_2E",
-      "youtube_url": "https://www.youtube.com/shorts/42bFCkPP_2E",
-      "title": "REMASTERED: AS MELHORIAS QUE VOCÊ PRECISA VER",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "8EZScYaZIj8",
-      "youtube_url": "https://www.youtube.com/shorts/8EZScYaZIj8",
-      "title": "SONGS OF THE PAST: A NOVA AVENTURA DE 2027",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "dOdAIp7wnXk",
-      "youtube_url": "https://www.youtube.com/shorts/dOdAIp7wnXk",
-      "title": "VALE A PENA USAR O REWARDS NO XBOX?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "3AopWwqqOig",
-      "youtube_url": "https://www.youtube.com/shorts/3AopWwqqOig",
-      "title": "COMO FUNCIONAM OS PONTOS DO REWARDS?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "by2uGmQl3OY",
-      "youtube_url": "https://www.youtube.com/shorts/by2uGmQl3OY",
-      "title": "MICROSOFT REWARDS: DÁ PARA GANHAR JOGOS?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "FWfua78AQis",
-      "youtube_url": "https://www.youtube.com/shorts/FWfua78AQis",
-      "title": "Provando que a comunidade gamer é unida",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "47OUb24YQwQ",
-      "youtube_url": "https://www.youtube.com/shorts/47OUb24YQwQ",
-      "title": "ENSHROUDED 1.0: A REGIÃO NOVA QUE MUDA TUDO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "LqIbBNQECVI",
-      "youtube_url": "https://www.youtube.com/shorts/LqIbBNQECVI",
-      "title": "NOVE MAGIAS NOVAS E UM COMBATE MAIS COMPLETO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "MSCLG-K3Lds",
-      "youtube_url": "https://www.youtube.com/shorts/MSCLG-K3Lds",
-      "title": "SPARKWORKS: AGORA DÁ PARA CRIAR SEUS PRÓPRIOS DESAFIOS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "I15NE7R75bY",
-      "youtube_url": "https://www.youtube.com/shorts/I15NE7R75bY",
-      "title": "MODERN WARFARE 4: A CAMPANHA JÁ ESTÁ LIBERADA PARA QUEM FEZ A PRÉ-COMPRA",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "pHC-ZrweBww",
-      "youtube_url": "https://www.youtube.com/shorts/pHC-ZrweBww",
-      "title": "16 MISSÕES E QUATRO REGIÕES: O QUE A CAMPANHA PROMETE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "5F-3sOGkyJg",
-      "youtube_url": "https://www.youtube.com/shorts/5F-3sOGkyJg",
-      "title": "DMZ CHEGA ANTES DO LANÇAMENTO COMPLETO — MAS SÓ EM 20 DE OUTUBRO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "ZlKcR9JoMjk",
-      "youtube_url": "https://www.youtube.com/shorts/ZlKcR9JoMjk",
-      "title": "ROSE BELMONT E O CHICOTE VAMPIRE KILLER",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "ogaiyJR6rrY",
-      "youtube_url": "https://www.youtube.com/shorts/ogaiyJR6rrY",
-      "title": "CHEFES, ARCANA E HABILIDADES: COMO FUNCIONA O COMBATE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "0p9tv3Xyb3E",
-      "youtube_url": "https://www.youtube.com/shorts/0p9tv3Xyb3E",
-      "title": "PARIS EM 1499: O QUE FAZ ESTE CASTLEVANIA SER DIFERENTE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "4rHekP89KHY",
-      "youtube_url": "https://www.youtube.com/shorts/4rHekP89KHY",
-      "title": "O QUE O TRAILER DE YEAT MOSTRA? 👀🎮 Curtiu? Siga o Radar dos Games para #Fortnite #Yeat",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "odjNdfozyMY",
-      "youtube_url": "https://www.youtube.com/shorts/odjNdfozyMY",
-      "title": "PATCH 26.20: O META DO WORLDS VAI MUDAR!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "BHY2AY1ceDw",
-      "youtube_url": "https://www.youtube.com/shorts/BHY2AY1ceDw",
-      "title": "CINCO CAMPEÕES VOLTAM AO LEAGUE CLASSIC!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "zvo71SO0CMc",
-      "youtube_url": "https://www.youtube.com/shorts/zvo71SO0CMc",
-      "title": "WORLDS 2026: 19 TIMES, UM SÓ CAMPEÃO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "2N8yCXerS5o",
-      "youtube_url": "https://www.youtube.com/shorts/2N8yCXerS5o",
-      "title": "NO PvE, O DANO ENTRE JOGADORES FICA DESATIVADO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Y1G-Vh72qmc",
-      "youtube_url": "https://www.youtube.com/shorts/Y1G-Vh72qmc",
-      "title": "GRAPPLING HOOK: AS CORREÇÕES DA ATUALIZAÇÃO 2.1.0",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "gpK9knjbd2o",
-      "youtube_url": "https://www.youtube.com/shorts/gpK9knjbd2o",
-      "title": "A EMBARK VAI AVALIAR FEEDBACK E DADOS ANTES DE DECIDIR O FUTURO DO PvE",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "mWhC1VRoTdQ",
-      "youtube_url": "https://www.youtube.com/shorts/mWhC1VRoTdQ",
-      "title": "YEAT NO FORTNITE: O TRAILER CHEGOU!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "oSZt6VPjBMA",
-      "youtube_url": "https://www.youtube.com/shorts/oSZt6VPjBMA",
-      "title": "FORTNITE E YEAT: O QUE JÁ FOI CONFIRMADO?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "nb8acq1g1II",
-      "youtube_url": "https://www.youtube.com/shorts/nb8acq1g1II",
-      "title": "AGORA DÁ PARA CONTROLAR A NOVE-CAUDAS NO FREE FIRE!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "GCct1kBt8tA",
-      "youtube_url": "https://www.youtube.com/shorts/GCct1kBt8tA",
-      "title": "HINATA OU JIRAIYA: QUAL GRANDE PRÊMIO VOCÊ ESCOLHERIA?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "UDWns2Cj_WY",
-      "youtube_url": "https://www.youtube.com/shorts/UDWns2Cj_WY",
-      "title": "A ACADEMIA NINJA CHEGOU A BERMUDA COM NOVOS NINJUTSUS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "hMlaA_NCJJ0",
-      "youtube_url": "https://www.youtube.com/shorts/hMlaA_NCJJ0",
-      "title": "ROBLOX VAI DEIXAR MAIS FÁCIL PUBLICAR SEU JOGO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "BFB-Ham7Plk",
-      "youtube_url": "https://www.youtube.com/shorts/BFB-Ham7Plk",
-      "title": "AGORA DÁ PARA CONVIDAR ATÉ 10 TESTADORES ANTES DO LANÇAMENTO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "e1yYw9QK8mU",
-      "youtube_url": "https://www.youtube.com/shorts/e1yYw9QK8mU",
-      "title": "NOVAS FERRAMENTAS DE TERRENO E ANIMAÇÃO ESTÃO CHEGANDO AO ROBLOX STUDIO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "RXg8h4Pxbss",
-      "youtube_url": "https://www.youtube.com/shorts/RXg8h4Pxbss",
-      "title": "PHANTOM BLADE ZERO: COMBATE DE FILME, MAS É GAMEPLAY!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "aO4TCFWcIuo",
-      "youtube_url": "https://www.youtube.com/shorts/aO4TCFWcIuo",
-      "title": "SOUL TEM SÓ 66 DIAS PARA DESVENDAR A CONSPIRAÇÃO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "r_h-rczKSgE",
-      "youtube_url": "https://www.youtube.com/shorts/r_h-rczKSgE",
-      "title": "MAIS DE 30 ARMAS E 3 MODOS DE DIFICULDADE!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "cFlHQS3Z94s",
-      "youtube_url": "https://www.youtube.com/shorts/cFlHQS3Z94s",
-      "title": "CADA DADO PODE INVOCAR UM PESADELO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "WRIjlKq0S8c",
-      "youtube_url": "https://www.youtube.com/shorts/WRIjlKq0S8c",
-      "title": "ATÉ 6 JOGADORES PRESOS NO MESMO TERROR!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Dbb2OW9Fglw",
-      "youtube_url": "https://www.youtube.com/shorts/Dbb2OW9Fglw",
-      "title": "AS REGRAS MUDAM — E OS MONSTROS TAMBÉM!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "N-gRJNWNkNE",
-      "youtube_url": "https://www.youtube.com/shorts/N-gRJNWNkNE",
-      "title": "A NOVA DIMENSÃO VAI CHEGAR AO MINECRAFT EM 2027!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "RumhQJhVWmo",
-      "youtube_url": "https://www.youtube.com/shorts/RumhQJhVWmo",
-      "title": "MINECRAFT DUNGEONS II JÁ CHEGOU!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "CJlO1tvD2Dc",
-      "youtube_url": "https://www.youtube.com/shorts/CJlO1tvD2Dc",
-      "title": "THE SIFT: A NOVA DIMENSÃO DE MINECRAFT!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Tgud1D_uQpw",
-      "youtube_url": "https://www.youtube.com/shorts/Tgud1D_uQpw",
-      "title": "LYSSA SONY CHARACTERS TAMBÉM APARECEM",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "YDf73lbX-CI",
-      "youtube_url": "https://www.youtube.com/shorts/YDf73lbX-CI",
-      "title": "WARHAMMER SURVIVORS DETALHES LANÇAMENTO GANHA",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "yvrZ7lV8ZnI",
-      "youtube_url": "https://www.youtube.com/shorts/yvrZ7lV8ZnI",
-      "title": "WARHAMMER SURVIVORS ENTRE PRINCIPAIS DESTAQUES",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "BQ30QQNY9kw",
-      "youtube_url": "https://www.youtube.com/shorts/BQ30QQNY9kw",
-      "title": "Radar dos Games: notícias, lançamentos e gameplays!💚 Curta e siga! #GTA6 #GearsOfWarEDay #ARCRaiders",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "CqyVOF9LTuw",
-      "youtube_url": "https://www.youtube.com/shorts/CqyVOF9LTuw",
-      "title": "EDGERUNNERS 2 ESTREIA EM 20 DE OUTUBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "37osk6O4LHY",
-      "youtube_url": "https://www.youtube.com/shorts/37osk6O4LHY",
-      "title": "CYBERPUNK 2077 VAI VIRAR FILME COM A PARAMOUNT!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "EOHihFvkZf8",
-      "youtube_url": "https://www.youtube.com/shorts/EOHihFvkZf8",
-      "title": "CYBERPUNK 2 JÁ ESTÁ EM DESENVOLVIMENTO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "B_3mb5rhp7o",
-      "youtube_url": "https://www.youtube.com/shorts/B_3mb5rhp7o",
-      "title": "BULLY, SKULKER E HYDRA: TRÊS NOVOS INIMIGOS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Q22j9kObFaA",
-      "youtube_url": "https://www.youtube.com/shorts/Q22j9kObFaA",
-      "title": "PENDOLA PASS: O NOVO MAPA CONGELADO DE ARC RAIDERS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "cVyqPG-eCIg",
-      "youtube_url": "https://www.youtube.com/shorts/cVyqPG-eCIg",
-      "title": "ARC RAIDERS GRÁTIS ATÉ 12 DE OUTUBRO!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "6ceqhYs3LQc",
-      "youtube_url": "https://www.youtube.com/shorts/6ceqhYs3LQc",
-      "title": "GTA 6: TUNAGEM DE CARROS E CORRIDA DE RUA",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "hVgnaktP2jc",
-      "youtube_url": "https://www.youtube.com/shorts/hVgnaktP2jc",
-      "title": "GTA 6 EM PRIMEIRA PESSOA: O QUE O VAZAMENTO INDICA",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "I4Ii6KhO6Ug",
-      "youtube_url": "https://www.youtube.com/shorts/I4Ii6KhO6Ug",
-      "title": "25 MINUTOS DE GTA 6: A CORRIDA DE MOTO NA LAMA",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "uQ3dihNPQw0",
-      "youtube_url": "https://www.youtube.com/shorts/uQ3dihNPQw0",
-      "title": "BATTLEFIELD 6 CHEGA AO GAME PASS!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Lz4qghei38c",
-      "youtube_url": "https://www.youtube.com/shorts/Lz4qghei38c",
-      "title": "BATTLEFIELD 6: TEMPORADA 5 VAI PARA VEGAS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Djecjc9_zwA",
-      "youtube_url": "https://www.youtube.com/shorts/Djecjc9_zwA",
-      "title": "GAME PASS ULTIMATE: O QUE VOCÊ GANHA NO BATTLEFIELD 6",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "HRLzhVvxdRY",
-      "youtube_url": "https://www.youtube.com/shorts/HRLzhVvxdRY",
-      "title": "JASON, LUCIA E LEONIDA: O QUE JÁ SABEMOS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "AXvICN8q8Vo",
-      "youtube_url": "https://www.youtube.com/shorts/AXvICN8q8Vo",
-      "title": "GTA VI: DATA, PRÉ-CARGA E PLATAFORMAS",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "_6tSnifRzIw",
-      "youtube_url": "https://www.youtube.com/shorts/_6tSnifRzIw",
-      "title": "GTA VI NO XBOX CLOUD? O QUE FOI CONFIRMADO",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "jwXtn0b0rYA",
-      "youtube_url": "https://www.youtube.com/shorts/jwXtn0b0rYA",
-      "title": "FREDDY KRUEGER ESTÁ NO FORTNITE! 😱",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "FCP-BVHY_sk",
-      "youtube_url": "https://www.youtube.com/shorts/FCP-BVHY_sk",
-      "title": "HORDE RUSH VOLTOU NO FORTNITE! 🎃",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "CRXm8kVDCUo",
-      "youtube_url": "https://www.youtube.com/shorts/CRXm8kVDCUo",
-      "title": "FNAF VIROU CHEFE NO FORTNITE! 🤯",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "MuWdL8FE5ns",
-      "youtube_url": "https://www.youtube.com/shorts/MuWdL8FE5ns",
-      "title": "6 GAMES DA SEGA para ver na BGS 2026 🎮",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "DSp4g5lyEZk",
-      "youtube_url": "https://www.youtube.com/shorts/DSp4g5lyEZk",
-      "title": "CRAZY TAXI VOLTOU — e Kenji Kanno vem ao Brasil! 🇧🇷",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "gdIZrvA5Whw",
-      "youtube_url": "https://www.youtube.com/shorts/gdIZrvA5Whw",
-      "title": "ALIEN: ISOLATION 2 na BGS 2026! 😱",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "3Z-HdsAnm5U",
-      "youtube_url": "https://www.youtube.com/shorts/3Z-HdsAnm5U",
-      "title": "GEARS E-DAY voltou a ser BRUTAL!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "3DRa5L_gF-o",
-      "youtube_url": "https://www.youtube.com/shorts/3DRa5L_gF-o",
-      "title": "O começo da INVASÃO LOCUST em Gears E-Day",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "1lwIpveTDlA",
-      "youtube_url": "https://www.youtube.com/shorts/1lwIpveTDlA",
-      "title": "Gears E-Day VALE A PENA no lançamento?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "OqRUFau7c1s",
-      "youtube_url": "https://www.youtube.com/shorts/OqRUFau7c1s",
-      "title": "GTA 6: tudo que já está confirmado para novembro",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "KzDNEsMjfjw",
-      "youtube_url": "https://www.youtube.com/shorts/KzDNEsMjfjw",
-      "title": "GTA 6 terá FURACÕES e clima muito mais realista!",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "AxfHm6Toj5w",
-      "youtube_url": "https://www.youtube.com/shorts/AxfHm6Toj5w",
-      "title": "GTA 6: por que esse gameplay mudou o jogo?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "i28TYdGzPrI",
-      "youtube_url": "https://www.youtube.com/shorts/i28TYdGzPrI",
-      "title": "Galactic Racer tem campanha, Arcade e até 12 online",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Jgc8oz3zALM",
-      "youtube_url": "https://www.youtube.com/shorts/Jgc8oz3zALM",
-      "title": "4 veículos de Galactic Racer: qual combina com você?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "m_M1m9Ijo8Y",
-      "youtube_url": "https://www.youtube.com/shorts/m_M1m9Ijo8Y",
-      "title": "Galactic Racer: por que o PODRACER é tão difícil?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "PijxXReT4Gs",
-      "youtube_url": "https://www.youtube.com/shorts/PijxXReT4Gs",
-      "title": "WARDOGS vale a pena acompanhar?",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "zULfXZEKDm8",
-      "youtube_url": "https://www.youtube.com/shorts/zULfXZEKDm8",
-      "title": "WARDOGS: destruição, tanques e helicópteros",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "vOShZR5WAIE",
-      "youtube_url": "https://www.youtube.com/shorts/vOShZR5WAIE",
-      "title": "WARDOGS: 100 jogadores em guerra total",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "XA-YklCtg1k",
-      "youtube_url": "https://www.youtube.com/shorts/XA-YklCtg1k",
-      "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
-      "status": "waiting_media"
-    },
-    {
-      "youtube_id": "G7uUZh_dcmE",
-      "youtube_url": "https://www.youtube.com/shorts/G7uUZh_dcmE",
-      "title": "Dragon’s Dogma em destaque no TOP 10 Games",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "xZvU-U2lBOg",
-      "youtube_url": "https://www.youtube.com/shorts/xZvU-U2lBOg",
-      "title": "Team Fortress 2: Halloween começou! 🎃",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "_FRcK8AnIoI",
-      "youtube_url": "https://www.youtube.com/shorts/_FRcK8AnIoI",
-      "title": "QSSR pode melhorar muitos jogos no PS5",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Ec5DOnNEmsQ",
-      "youtube_url": "https://www.youtube.com/shorts/Ec5DOnNEmsQ",
-      "title": "Wolverine e Ghost of Yōtei estreiam QSSR",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "9XJfF2fMTZ8",
-      "youtube_url": "https://www.youtube.com/shorts/9XJfF2fMTZ8",
-      "title": "QSSR: o PS5 ganhou upscaling por IA",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "deg5A2eYoRA",
-      "youtube_url": "https://www.youtube.com/shorts/deg5A2eYoRA",
-      "title": "Dragon’s Dogma 2: Dark Arisen | Conheça Norgan",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "rwld0AShJ8c",
-      "youtube_url": "https://www.youtube.com/shorts/rwld0AShJ8c",
-      "title": "Modern Warfare 4 | Multiplayer mais fluido e DMZ de volta",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "t7rOGU817fs",
-      "youtube_url": "https://www.youtube.com/shorts/t7rOGU817fs",
-      "title": "Modern Warfare 4 | A Task Force 141 está dividida",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "2NyCeNUZj4g",
-      "youtube_url": "https://www.youtube.com/shorts/2NyCeNUZj4g",
-      "title": "Modern Warfare 4 | Price está foragido e a guerra mudou",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "qZd5wP7Bepk",
-      "youtube_url": "https://www.youtube.com/shorts/qZd5wP7Bepk",
-      "title": "Star Wars: Galactic Racer | A galáxia vai correr",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "udL3WpYgj8A",
-      "youtube_url": "https://www.youtube.com/shorts/udL3WpYgj8A",
-      "title": "Galactic Racer | Competição e evolução em alta velocidade",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "t3Ef9xjp2Eg",
-      "youtube_url": "https://www.youtube.com/shorts/t3Ef9xjp2Eg",
-      "title": "Star Wars voltou às grandes corridas? | Galactic Racer",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "FrS_CuyvCxo",
-      "youtube_url": "https://www.youtube.com/shorts/FrS_CuyvCxo",
-      "title": "Vale ficar de olho em ELTA: Defy All Gods? 🐉",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Mn6IZn2nPYM",
-      "youtube_url": "https://www.youtube.com/shorts/Mn6IZn2nPYM",
-      "title": "As inspirações de ELTA de Castlevania a God of War",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "akvK2Vmy8qE",
-      "youtube_url": "https://www.youtube.com/shorts/akvK2Vmy8qE",
-      "title": "ELTA: DEFY ALL GODS JÁ TEM DATA! 🔥",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "qF_J0S_Ro24",
-      "youtube_url": "https://www.youtube.com/shorts/qF_J0S_Ro24",
-      "title": "ACE COMBAT 8 CHEGOU! 7 ANOS DE ESPERA ACABARAM ✈️",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "iRGjt-366xQ",
-      "youtube_url": "https://www.youtube.com/shorts/iRGjt-366xQ",
-      "title": "ACE COMBAT 8: O RETORNO QUE OS FÃS ESPERARAM ✈️",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "PTKLCEgdxTo",
-      "youtube_url": "https://www.youtube.com/shorts/PTKLCEgdxTo",
-      "title": "ACE COMBAT 8 JÁ ESTÁ ENTRE NÓS ✈️",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "BhTKkDjhTnc",
-      "youtube_url": "https://www.youtube.com/shorts/BhTKkDjhTnc",
-      "title": "Gears of War: E-Day já começou",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "hjCBW6wopN8",
-      "youtube_url": "https://www.youtube.com/shorts/hjCBW6wopN8",
-      "title": "THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "S-Kw8W24bzM",
-      "youtube_url": "https://www.youtube.com/shorts/S-Kw8W24bzM",
-      "title": "O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "Lc3BXMSZanU",
-      "youtube_url": "https://www.youtube.com/shorts/Lc3BXMSZanU",
-      "title": "MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT",
-      "status": "approved"
-    },
-    {
-      "youtube_id": "rDT12IWkDE8",
-      "youtube_url": "https://www.youtube.com/shorts/rDT12IWkDE8",
-      "title": "HORDE SIEGE + VERSUS EM GEARS E-DAY! 🎮",
+      "youtube_id": "i-sCE8iyZuI",
+      "youtube_url": "https://www.youtube.com/shorts/i-sCE8iyZuI",
+      "title": "SLOTBOUND LANÇOU A VERSÃO 1.0 — E JÁ RECEBEU VÁRIOS HOTFIXES!",
       "status": "approved"
     },
     {
-      "youtube_id": "9QmthjXQgq4",
-      "youtube_url": "https://www.youtube.com/shorts/9QmthjXQgq4",
-      "title": "GEARS E-DAY ESTÁ MUITO MAIS SOMBRIO 😱",
+      "youtube_id": "-yMbaJGvq7A",
+      "youtube_url": "https://www.youtube.com/shorts/-yMbaJGvq7A",
+      "title": "O QUE MUDOU NO SLOTBOUND COM AS NOVAS MISSÕES FATE STONE?",
       "status": "approved"
     },
     {
-      "youtube_id": "krjnB6c0KvE",
-      "youtube_url": "https://www.youtube.com/shorts/krjnB6c0KvE",
-      "title": "MARCUS E DOM ESTÃO DE VOLTA! 🔥 Gears of War: E-Day",
+      "youtube_id": "V0-YzUayaWA",
+      "youtube_url": "https://www.youtube.com/shorts/V0-YzUayaWA",
+      "title": "O JACKPOT DO SLOTBOUND PODE MUDAR UMA RUN INTEIRA!",
       "status": "approved"
     },
     {
       "youtube_id": "dvu_iLOeRds",
       "youtube_url": "https://www.youtube.com/shorts/dvu_iLOeRds",
       "title": "Vice City é só o COMEÇO em GTA 6! Conheça Leonida",
-      "status": "approved"
+      "status": "published"
     },
     {
       "youtube_id": "t-KVaCwbrbA",
       "youtube_url": "https://www.youtube.com/shorts/t-KVaCwbrbA",
       "title": "Jason e Lucia: o que a Rockstar JÁ CONFIRMOU em GTA 6",
-      "status": "approved"
+      "status": "published"
     },
     {
       "youtube_id": "DFMjasmIOSw",
       "youtube_url": "https://www.youtube.com/shorts/DFMjasmIOSw",
       "title": "GTA 6 já tem DATA e PLATAFORMAS confirmadas! 👀",
-      "status": "approved"
+      "status": "published"
+    },
+    {
+      "youtube_id": "xDCHua1DjJg",
+      "youtube_url": "https://www.youtube.com/shorts/xDCHua1DjJg",
+      "title": "RESIDENT EVIL REQUIEM LEVOU O PRÊMIO MAIS IMPORTANTE DE 2026!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "wFuquyQt9-w",
+      "youtube_url": "https://www.youtube.com/shorts/wFuquyQt9-w",
+      "title": "GRACE ASHCROFT AINDA TEM MUITO A EVOLUIR — DIZ SUA ATRIZ!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "GS36QlnZiFw",
+      "youtube_url": "https://www.youtube.com/shorts/GS36QlnZiFw",
+      "title": "LEON E GRACE: A PARCERIA PODE TER FUTURO NA SÉRIE?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "FbJ9SbHHeWQ",
+      "youtube_url": "https://www.youtube.com/shorts/FbJ9SbHHeWQ",
+      "title": "HUTUO CHEGOU: A REGIÃO MAIS GUERREIRA DE WHERE WINDS MEET!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "mhpL-wQrdSM",
+      "youtube_url": "https://www.youtube.com/shorts/mhpL-wQrdSM",
+      "title": "DOIS CHEFES MUNDIAIS E UMA CAMPANHA NO MEIO DA GUERRA!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Hi_vn3PPKjQ",
+      "youtube_url": "https://www.youtube.com/shorts/Hi_vn3PPKjQ",
+      "title": "AS LANÇAS DUPLAS DE YUEN WOO-PING CHEGAM EM 26 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "q9ckmU_k8Vc",
+      "youtube_url": "https://www.youtube.com/shorts/q9ckmU_k8Vc",
+      "title": "PRÉ-CARREGAMENTO DIGITAL DE GTA 6 JÁ ESTÁ DISPONÍVEL!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "uGx8CakS6DA",
+      "youtube_url": "https://www.youtube.com/shorts/uGx8CakS6DA",
+      "title": "JASON E LUCIA ESTÃO PRESTES A ENTRAR EM AÇÃO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "PplU6uEkNOM",
+      "youtube_url": "https://www.youtube.com/shorts/PplU6uEkNOM",
+      "title": "DATA CONFIRMADA: GTA 6 CHEGA EM 19 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "9t7tCAvMzjw",
+      "youtube_url": "https://www.youtube.com/shorts/9t7tCAvMzjw",
+      "title": "GODZILLA INVADIU STORM POINT: VOCÊ CONSEGUE SOBREVIVER?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "MKQJz11qg5E",
+      "youtube_url": "https://www.youtube.com/shorts/MKQJz11qg5E",
+      "title": "WINGMAN AKIMBO: DUAS PISTOLAS, UM NOVO META EM APEX!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "-7mAI40eivg",
+      "youtube_url": "https://www.youtube.com/shorts/-7mAI40eivg",
+      "title": "CIPHER MUDOU O RANQUEADO: AGORA TEM BANIMENTO DE LENDAS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "GJCa4gOMW7w",
+      "youtube_url": "https://www.youtube.com/shorts/GJCa4gOMW7w",
+      "title": "DERELIKT: O TERROR ESPACIAL COM VISUAL DE PS1!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "f2PCDYLDbiY",
+      "youtube_url": "https://www.youtube.com/shorts/f2PCDYLDbiY",
+      "title": "UMA ESTAÇÃO EM ÓRBITA DE SATURNO ESCONDE UM PESADELO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "TmPjTPfo2-8",
+      "youtube_url": "https://www.youtube.com/shorts/TmPjTPfo2-8",
+      "title": "EM DERELIKT, CADA BALA E CADA ESPAÇO NO INVENTÁRIO IMPORTAM!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "j0bRT2QIgg4",
+      "youtube_url": "https://www.youtube.com/shorts/j0bRT2QIgg4",
+      "title": "SONIC PICO PARK: ATÉ 8 JOGADORES NO CAOS COOPERATIVO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "R9LQGkiMJ_E",
+      "youtube_url": "https://www.youtube.com/shorts/R9LQGkiMJ_E",
+      "title": "ROUGE É JOGÁVEL, OMEGA E VECTOR SÃO GRANDES: ENTENDA O ELENCO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "-p_X_dyQqoU",
+      "youtube_url": "https://www.youtube.com/shorts/-p_X_dyQqoU",
+      "title": "SPIN DASH, ANÉIS E CROSS-PLAY: COMO FUNCIONA SONIC PICO PARK?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Wb36I430aZY",
+      "youtube_url": "https://www.youtube.com/shorts/Wb36I430aZY",
+      "title": "NOTURNO CHEGA AO MARVEL RIVALS EM 13 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "eRf4SopDLpk",
+      "youtube_url": "https://www.youtube.com/shorts/eRf4SopDLpk",
+      "title": "DRÁCULA TAMBÉM VAI ENTRAR NO ELENCO DE MARVEL RIVALS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "BHs2-SPq29U",
+      "youtube_url": "https://www.youtube.com/shorts/BHs2-SPq29U",
+      "title": "MARVEL RIVALS VAI TER BATALHAS 18 CONTRA 18!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "7NpaeY7WroY",
+      "youtube_url": "https://www.youtube.com/shorts/7NpaeY7WroY",
+      "title": "METAPHOR NO SWITCH 2: DESEMPENHO OU GRÁFICOS?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "21tRcry0ikA",
+      "youtube_url": "https://www.youtube.com/shorts/21tRcry0ikA",
+      "title": "A DEMO DE METAPHOR TRANSFERE O PROGRESSO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "lkKl0EQnqUw",
+      "youtube_url": "https://www.youtube.com/shorts/lkKl0EQnqUw",
+      "title": "HEISMAY GANHA NOVO TRAILER ANTES DO LANÇAMENTO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "8m8xa_7xFyY",
+      "youtube_url": "https://www.youtube.com/shorts/8m8xa_7xFyY",
+      "title": "DREADMOOR CHEGA AMANHÃ: VOCÊ SOBREVIVERIA NESSE MAR?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "6hHRa5iypVQ",
+      "youtube_url": "https://www.youtube.com/shorts/6hHRa5iypVQ",
+      "title": "MAIS DE 100 CRIATURAS: A PESCA VIROU UM PESADELO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "eajOUS8EU9A",
+      "youtube_url": "https://www.youtube.com/shorts/eajOUS8EU9A",
+      "title": "SAIR À NOITE EM DREADMOOR É UM RISCO MORTAL!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "6N9AfQdCzjY",
+      "youtube_url": "https://www.youtube.com/shorts/6N9AfQdCzjY",
+      "title": "A DEMO DE METAPHOR NO SWITCH 2 TEM 4 MASMORRAS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "LNuYVYS_4jM",
+      "youtube_url": "https://www.youtube.com/shorts/LNuYVYS_4jM",
+      "title": "40+ ARQUÉTIPOS: COMO FUNCIONA O COMBATE DE METAPHOR?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "wRqvMHcrAA0",
+      "youtube_url": "https://www.youtube.com/shorts/wRqvMHcrAA0",
+      "title": "METAPHOR FICA MAIS BARATO EM 12 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "lkUNkc6i_qw",
+      "youtube_url": "https://www.youtube.com/shorts/lkUNkc6i_qw",
+      "title": "QUASE 30 MOVIMENTOS DE ARMAS: O COMBATE MUDOU!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "lnKBVWRQ7Eg",
+      "youtube_url": "https://www.youtube.com/shorts/lnKBVWRQ7Eg",
+      "title": "TROCA DE ARMAS NO MEIO DO COMBO: COMO FUNCIONA?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "i1l3XRkjduA",
+      "youtube_url": "https://www.youtube.com/shorts/i1l3XRkjduA",
+      "title": "SETE ESCOLAS DE MAGIA E MUNIÇÃO INFINITA!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "p6MEcYLuAs4",
+      "youtube_url": "https://www.youtube.com/shorts/p6MEcYLuAs4",
+      "title": "SHREK 2 VOLTA COM COOP PARA ATÉ 4 JOGADORES!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "tbhkO-0O1vI",
+      "youtube_url": "https://www.youtube.com/shorts/tbhkO-0O1vI",
+      "title": "AGORA DÁ PARA TROCAR DE HERÓI A QUALQUER MOMENTO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "kPj3BrB7-q4",
+      "youtube_url": "https://www.youtube.com/shorts/kPj3BrB7-q4",
+      "title": "MODO FOTO, CHEATS E VISUAL RENOVADO: O QUE MUDOU?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "ukpi1M0hgGE",
+      "youtube_url": "https://www.youtube.com/shorts/ukpi1M0hgGE",
+      "title": "GTA VI: O PRÉ-CARREGAMENTO COMEÇA EM 10 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "8yfSGvJWqAs",
+      "youtube_url": "https://www.youtube.com/shorts/8yfSGvJWqAs",
+      "title": "JUSTICE ASSINA A TRILHA SONORA ORIGINAL DE GTA VI!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "z7o8RuXLiKY",
+      "youtube_url": "https://www.youtube.com/shorts/z7o8RuXLiKY",
+      "title": "GTA VI CHEGA EM 19 DE NOVEMBRO — E O TRAILER JÁ ESTÁ NO AR!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "XMk9wFL47rA",
+      "youtube_url": "https://www.youtube.com/shorts/XMk9wFL47rA",
+      "title": "WORLD OF WARCRAFT: FOREVER JÁ ESTÁ NO AR — E AZEROTH MUDOU!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "yanMQah_Ra4",
+      "youtube_url": "https://www.youtube.com/shorts/yanMQah_Ra4",
+      "title": "MAIS DE MIL MISSÕES E QUATRO NOVAS REGIÕES: OLHA O TAMANHO DISSO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "IivpYo4Nmrc",
+      "youtube_url": "https://www.youtube.com/shorts/IivpYo4Nmrc",
+      "title": "SKYBORNE: A NOVA RAÇA JOGÁVEL QUE CHEGA A AZEROTH!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "_h0E2nxlLac",
+      "youtube_url": "https://www.youtube.com/shorts/_h0E2nxlLac",
+      "title": "STELLAR BLADE CHEGA AO SWITCH 2 EM 5 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "cNtEnUC4aNU",
+      "youtube_url": "https://www.youtube.com/shorts/cNtEnUC4aNU",
+      "title": "NIKKE, NIER E BAYONETTA: O PACOTE COMPLETO DE EVE!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "tUr-ruJa7G4",
+      "youtube_url": "https://www.youtube.com/shorts/tUr-ruJa7G4",
+      "title": "CARTUCHO COMPLETO: SEM DOWNLOAD EXTRA PARA JOGAR!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "p7VBaeZldH8",
+      "youtube_url": "https://www.youtube.com/shorts/p7VBaeZldH8",
+      "title": "O clássico de 1998 está de volta em uma Hyrule totalmente renovada!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "zN0yDEBibgc",
+      "youtube_url": "https://www.youtube.com/shorts/zN0yDEBibgc",
+      "title": "Agora você pode cantar a melodia e fazer a Ocarina responder!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "nKAHBDu2Gyg",
+      "youtube_url": "https://www.youtube.com/shorts/nKAHBDu2Gyg",
+      "title": "O Museu dos Mil Monstros traz revanche contra inimigos derrotados!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "ryUaeZHvOJQ",
+      "youtube_url": "https://www.youtube.com/shorts/ryUaeZHvOJQ",
+      "title": "JINWOO CHEGA AOS CONSOLES EM 3 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "XDh7iwGUYdE",
+      "youtube_url": "https://www.youtube.com/shorts/XDh7iwGUYdE",
+      "title": "QUATRO CAÇADORES CONTRA CHEFES GIGANTES!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "npK-G2QA52Q",
+      "youtube_url": "https://www.youtube.com/shorts/npK-G2QA52Q",
+      "title": "O MONARCA DAS SOMBRAS TEM OITO CAMINHOS DE EVOLUÇÃO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "tyYp6HeEFdA",
+      "youtube_url": "https://www.youtube.com/shorts/tyYp6HeEFdA",
+      "title": "FOOTBALL MANAGER 27 ESTÁ GRÁTIS — MAS SÓ ATÉ 3 DE NOVEMBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "5--hyAXVtfc",
+      "youtube_url": "https://www.youtube.com/shorts/5--hyAXVtfc",
+      "title": "SHUFFLE DRAFT: ATÉ 32 MANAGERS NA NOVA DISPUTA ONLINE!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "q3M6IIJox-s",
+      "youtube_url": "https://www.youtube.com/shorts/q3M6IIJox-s",
+      "title": "59 NAÇÕES JOGÁVEIS E DUAS LIGAS LICENCIADAS: VEJA O QUE MUDOU!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "p56QsAVBm_o",
+      "youtube_url": "https://www.youtube.com/shorts/p56QsAVBm_o",
+      "title": "ARJUN CHEGOU AO STREET FIGHTER 6: VEJA O QUE MUDA NO COMBATE!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "6zxhPSYOptU",
+      "youtube_url": "https://www.youtube.com/shorts/6zxhPSYOptU",
+      "title": "STREET FIGHTER 6 ESTÁ NA EVO BRAZIL 2027: DATA E R$ 1 MILHÃO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Y6rb3D8YzS0",
+      "youtube_url": "https://www.youtube.com/shorts/Y6rb3D8YzS0",
+      "title": "TIFA E BOSCH JÁ TÊM JANELAS DE CHEGADA AO STREET FIGHTER 6!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "TSv3_dEoPSc",
+      "youtube_url": "https://www.youtube.com/shorts/TSv3_dEoPSc",
+      "title": "A RED NUN ESTÁ CAÇANDO VOCÊ — DÁ PARA ESCAPAR?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "TzTFlPR52dE",
+      "youtube_url": "https://www.youtube.com/shorts/TzTFlPR52dE",
+      "title": "TRÊS PODERES PSÍQUICOS PARA DESVENDAR O PESADELO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "fHJHQm6H2UE",
+      "youtube_url": "https://www.youtube.com/shorts/fHJHQm6H2UE",
+      "title": "SUSAN ENTROU NA VILLA ASHMANN PARA SALVAR A FILHA",
+      "status": "published"
+    },
+    {
+      "youtube_id": "HiYdt2AOIgs",
+      "youtube_url": "https://www.youtube.com/shorts/HiYdt2AOIgs",
+      "title": "HELLRAISER: O UPDATE 1.1 CORRIGE O QUÊ?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "5H60Zl49Amg",
+      "youtube_url": "https://www.youtube.com/shorts/5H60Zl49Amg",
+      "title": "A CONFIGURAÇÃO GÊNESIS É A ARMA MAIS SINISTRA DO JOGO?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "wrH8wAIK1_s",
+      "youtube_url": "https://www.youtube.com/shorts/wrH8wAIK1_s",
+      "title": "PINHEAD, CULTO E TERROR: SOBREVIVER AO LABIRINTO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Eolqg8mIWpM",
+      "youtube_url": "https://www.youtube.com/shorts/Eolqg8mIWpM",
+      "title": "USUAL JUNE ADIADO: O QUE MUDOU NA DATA?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "tKawMz89IA0",
+      "youtube_url": "https://www.youtube.com/shorts/tKawMz89IA0",
+      "title": "MONSTROS, FANTASMAS E COMBATE RÁPIDO: VEJA USUAL JUNE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "VDuQdnrzdmk",
+      "youtube_url": "https://www.youtube.com/shorts/VDuQdnrzdmk",
+      "title": "USUAL JUNE TAMBÉM CHEGA AO XBOX — QUANDO?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "WerVjvee4NU",
+      "youtube_url": "https://www.youtube.com/shorts/WerVjvee4NU",
+      "title": "ANIMAL HOSPITAL: O MINIJOGO DE HALLOWEEN MUDOU TUDO?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "nzzhkNPttew",
+      "youtube_url": "https://www.youtube.com/shorts/nzzhkNPttew",
+      "title": "COMO SABER SE O PACIENTE É UMA ANOMALIA?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Sm4DtpKZ6Qo",
+      "youtube_url": "https://www.youtube.com/shorts/Sm4DtpKZ6Qo",
+      "title": "HALLOWEEN PARTE 2 CHEGA EM 27 DE OUTUBRO — O QUE JÁ SABEMOS?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "X5lc7ntwfTE",
+      "youtube_url": "https://www.youtube.com/shorts/X5lc7ntwfTE",
+      "title": "ZENLESS 3.3: AGORA VOCÊ PILOTA MECHAS?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "_r23TUz7xaI",
+      "youtube_url": "https://www.youtube.com/shorts/_r23TUz7xaI",
+      "title": "PHOENIX E SEVERIAN: O QUE CADA AGENTE FAZ?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "N7GHoe_kfG0",
+      "youtube_url": "https://www.youtube.com/shorts/N7GHoe_kfG0",
+      "title": "QUIETUDE ISLE: O QUE MUDOU NA NOVA HISTÓRIA?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "wmMJcdDzWmU",
+      "youtube_url": "https://www.youtube.com/shorts/wmMJcdDzWmU",
+      "title": "BIGBY ESTÁ MAIS ASSUSTADOR: VEJA A NOVA FORMA DE LOBO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "KT8DZMgVD2Q",
+      "youtube_url": "https://www.youtube.com/shorts/KT8DZMgVD2Q",
+      "title": "O MODO NOIR MUDA COMPLETAMENTE O CLIMA DE FABLETOWN",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Jvu15pf47Wc",
+      "youtube_url": "https://www.youtube.com/shorts/Jvu15pf47Wc",
+      "title": "CENAS PERDIDAS E MAIS DE UMA HORA DE BASTIDORES",
+      "status": "published"
+    },
+    {
+      "youtube_id": "7q_AykfWMyA",
+      "youtube_url": "https://www.youtube.com/shorts/7q_AykfWMyA",
+      "title": "UPDATE 1.1: MAIS DE 1.100 MUDANÇAS — O QUE REALMENTE MELHOROU?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "qx3qLsskUCc",
+      "youtube_url": "https://www.youtube.com/shorts/qx3qLsskUCc",
+      "title": "DIA OU NOITE: COEN MUDA DE GUERREIRO PARA VAMPIRO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "mrMpgliv5zw",
+      "youtube_url": "https://www.youtube.com/shorts/mrMpgliv5zw",
+      "title": "REFORMULE SUA BUILD — E AGORA DÁ ATÉ PARA ACARICIAR ANIMAIS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "zPUGQPmg4VE",
+      "youtube_url": "https://www.youtube.com/shorts/zPUGQPmg4VE",
+      "title": "PROTO MAN JOGÁVEL MUDA A AÇÃO EM MEGA MAN: DUAL OVERRIDE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "rlK0zT8bu4g",
+      "youtube_url": "https://www.youtube.com/shorts/rlK0zT8bu4g",
+      "title": "CUSTOM CHIPS E OVERRIDE: COMO O COMBATE PODE MUDAR",
+      "status": "published"
+    },
+    {
+      "youtube_id": "N42w35SEVpY",
+      "youtube_url": "https://www.youtube.com/shorts/N42w35SEVpY",
+      "title": "TWINKLE GIRL, ASTRO MAN E OS ROBOT MASTERS DE DUAL OVERRIDE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "YyGhSrL2yKA",
+      "youtube_url": "https://www.youtube.com/shorts/YyGhSrL2yKA",
+      "title": "Saros: modificadores de proteção explicados",
+      "status": "published"
+    },
+    {
+      "youtube_id": "o2kDXYYSQ0c",
+      "youtube_url": "https://www.youtube.com/shorts/o2kDXYYSQ0c",
+      "title": "Saros: New Game+ com Eclipse Layers",
+      "status": "published"
+    },
+    {
+      "youtube_id": "ZqIS4oGwiPg",
+      "youtube_url": "https://www.youtube.com/shorts/ZqIS4oGwiPg",
+      "title": "Saros: Overlord Rush reúne oito chefes",
+      "status": "published"
+    },
+    {
+      "youtube_id": "ZrmwwcC4qvY",
+      "youtube_url": "https://www.youtube.com/shorts/ZrmwwcC4qvY",
+      "title": "FINAL FANTASY RESONANCE JÁ CHEGOU: VEJA O HD-2D EM AÇÃO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "buICeG8v9U0",
+      "youtube_url": "https://www.youtube.com/shorts/buICeG8v9U0",
+      "title": "COMBATE POR TURNOS, FRAQUEZAS E ATAQUES RESONANCE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "aNTfvPxzdzs",
+      "youtube_url": "https://www.youtube.com/shorts/aNTfvPxzdzs",
+      "title": "A DEMO TRANSFERE O PROGRESSO PARA O JOGO COMPLETO?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "0Lo8uAbMlww",
+      "youtube_url": "https://www.youtube.com/shorts/0Lo8uAbMlww",
+      "title": "FIGHT NIGHT ESTÁ VOLTANDO DEPOIS DE 15 ANOS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "xjhhdF6CA58",
+      "youtube_url": "https://www.youtube.com/shorts/xjhhdF6CA58",
+      "title": "A EA CONFIRMOU O RETORNO — MAS NÃO MOSTROU GAMEPLAY",
+      "status": "published"
+    },
+    {
+      "youtube_id": "eSi38LJTCA4",
+      "youtube_url": "https://www.youtube.com/shorts/eSi38LJTCA4",
+      "title": "FIGHT NIGHT CONSEGUE SUPERAR UNDISPUTED?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "4J11rX8qp-U",
+      "youtube_url": "https://www.youtube.com/shorts/4J11rX8qp-U",
+      "title": "A Coreia Está Pegando Fogo",
+      "status": "published"
+    },
+    {
+      "youtube_id": "wYDMp_a572w",
+      "youtube_url": "https://www.youtube.com/shorts/wYDMp_a572w",
+      "title": "Combate Intenso",
+      "status": "published"
+    },
+    {
+      "youtube_id": "jFqiD7hw0hc",
+      "youtube_url": "https://www.youtube.com/shorts/jFqiD7hw0hc",
+      "title": "Missão 1: O Início",
+      "status": "published"
+    },
+    {
+      "youtube_id": "UhEa75FqF4I",
+      "youtube_url": "https://www.youtube.com/shorts/UhEa75FqF4I",
+      "title": "MYCOPUNK 1.0 CHEGOU AO PC E PS5!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "vE6S_PXAnaI",
+      "youtube_url": "https://www.youtube.com/shorts/vE6S_PXAnaI",
+      "title": "ARMAS MALUCAS E UPGRADES EM GRADE!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Mr0xAZPyxuc",
+      "youtube_url": "https://www.youtube.com/shorts/Mr0xAZPyxuc",
+      "title": "ATÉ QUATRO JOGADORES CONTRA ALIENS FÚNGICOS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "M5-zPE_WzeY",
+      "youtube_url": "https://www.youtube.com/shorts/M5-zPE_WzeY",
+      "title": "NAVIOS, ILHAS E TESOUROS NO FUNDO DO MAR!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "wYOKgd0bczc",
+      "youtube_url": "https://www.youtube.com/shorts/wYOKgd0bczc",
+      "title": "LULA GIGANTE, TUBARÕES E BATALHAS NAVAIS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "AJbpAQqNM0g",
+      "youtube_url": "https://www.youtube.com/shorts/AJbpAQqNM0g",
+      "title": "ISLES OF ABYSS CHEGA COM SERVIDORES NA AMÉRICA DO SUL!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "J-utgCqephU",
+      "youtube_url": "https://www.youtube.com/shorts/J-utgCqephU",
+      "title": "PS5 COMUM GANHA IA NOS GRÁFICOS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "XncRj0XVzCo",
+      "youtube_url": "https://www.youtube.com/shorts/XncRj0XVzCo",
+      "title": "QSSR É IGUAL AO PSSR DO PS5 PRO?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "_6PBbytouAU",
+      "youtube_url": "https://www.youtube.com/shorts/_6PBbytouAU",
+      "title": "QUAIS JOGOS JÁ USAM QSSR NO PS5?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "-_Dnc_1tIFI",
+      "youtube_url": "https://www.youtube.com/shorts/-_Dnc_1tIFI",
+      "title": "THE WITCHER 3: O QUE MUDA COM O PATCH 5.01?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "42bFCkPP_2E",
+      "youtube_url": "https://www.youtube.com/shorts/42bFCkPP_2E",
+      "title": "REMASTERED: AS MELHORIAS QUE VOCÊ PRECISA VER",
+      "status": "published"
+    },
+    {
+      "youtube_id": "8EZScYaZIj8",
+      "youtube_url": "https://www.youtube.com/shorts/8EZScYaZIj8",
+      "title": "SONGS OF THE PAST: A NOVA AVENTURA DE 2027",
+      "status": "published"
+    },
+    {
+      "youtube_id": "dOdAIp7wnXk",
+      "youtube_url": "https://www.youtube.com/shorts/dOdAIp7wnXk",
+      "title": "VALE A PENA USAR O REWARDS NO XBOX?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "3AopWwqqOig",
+      "youtube_url": "https://www.youtube.com/shorts/3AopWwqqOig",
+      "title": "COMO FUNCIONAM OS PONTOS DO REWARDS?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "by2uGmQl3OY",
+      "youtube_url": "https://www.youtube.com/shorts/by2uGmQl3OY",
+      "title": "MICROSOFT REWARDS: DÁ PARA GANHAR JOGOS?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "FWfua78AQis",
+      "youtube_url": "https://www.youtube.com/shorts/FWfua78AQis",
+      "title": "Provando que a comunidade gamer é unida",
+      "status": "published"
+    },
+    {
+      "youtube_id": "47OUb24YQwQ",
+      "youtube_url": "https://www.youtube.com/shorts/47OUb24YQwQ",
+      "title": "ENSHROUDED 1.0: A REGIÃO NOVA QUE MUDA TUDO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "LqIbBNQECVI",
+      "youtube_url": "https://www.youtube.com/shorts/LqIbBNQECVI",
+      "title": "NOVE MAGIAS NOVAS E UM COMBATE MAIS COMPLETO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "MSCLG-K3Lds",
+      "youtube_url": "https://www.youtube.com/shorts/MSCLG-K3Lds",
+      "title": "SPARKWORKS: AGORA DÁ PARA CRIAR SEUS PRÓPRIOS DESAFIOS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "I15NE7R75bY",
+      "youtube_url": "https://www.youtube.com/shorts/I15NE7R75bY",
+      "title": "MODERN WARFARE 4: A CAMPANHA JÁ ESTÁ LIBERADA PARA QUEM FEZ A PRÉ-COMPRA",
+      "status": "published"
+    },
+    {
+      "youtube_id": "pHC-ZrweBww",
+      "youtube_url": "https://www.youtube.com/shorts/pHC-ZrweBww",
+      "title": "16 MISSÕES E QUATRO REGIÕES: O QUE A CAMPANHA PROMETE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "5F-3sOGkyJg",
+      "youtube_url": "https://www.youtube.com/shorts/5F-3sOGkyJg",
+      "title": "DMZ CHEGA ANTES DO LANÇAMENTO COMPLETO — MAS SÓ EM 20 DE OUTUBRO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "ZlKcR9JoMjk",
+      "youtube_url": "https://www.youtube.com/shorts/ZlKcR9JoMjk",
+      "title": "ROSE BELMONT E O CHICOTE VAMPIRE KILLER",
+      "status": "published"
+    },
+    {
+      "youtube_id": "ogaiyJR6rrY",
+      "youtube_url": "https://www.youtube.com/shorts/ogaiyJR6rrY",
+      "title": "CHEFES, ARCANA E HABILIDADES: COMO FUNCIONA O COMBATE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "0p9tv3Xyb3E",
+      "youtube_url": "https://www.youtube.com/shorts/0p9tv3Xyb3E",
+      "title": "PARIS EM 1499: O QUE FAZ ESTE CASTLEVANIA SER DIFERENTE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "4rHekP89KHY",
+      "youtube_url": "https://www.youtube.com/shorts/4rHekP89KHY",
+      "title": "O QUE O TRAILER DE YEAT MOSTRA? 👀🎮 Curtiu? Siga o Radar dos Games para #Fortnite #Yeat",
+      "status": "published"
+    },
+    {
+      "youtube_id": "odjNdfozyMY",
+      "youtube_url": "https://www.youtube.com/shorts/odjNdfozyMY",
+      "title": "PATCH 26.20: O META DO WORLDS VAI MUDAR!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "BHY2AY1ceDw",
+      "youtube_url": "https://www.youtube.com/shorts/BHY2AY1ceDw",
+      "title": "CINCO CAMPEÕES VOLTAM AO LEAGUE CLASSIC!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "zvo71SO0CMc",
+      "youtube_url": "https://www.youtube.com/shorts/zvo71SO0CMc",
+      "title": "WORLDS 2026: 19 TIMES, UM SÓ CAMPEÃO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "2N8yCXerS5o",
+      "youtube_url": "https://www.youtube.com/shorts/2N8yCXerS5o",
+      "title": "NO PvE, O DANO ENTRE JOGADORES FICA DESATIVADO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Y1G-Vh72qmc",
+      "youtube_url": "https://www.youtube.com/shorts/Y1G-Vh72qmc",
+      "title": "GRAPPLING HOOK: AS CORREÇÕES DA ATUALIZAÇÃO 2.1.0",
+      "status": "published"
+    },
+    {
+      "youtube_id": "gpK9knjbd2o",
+      "youtube_url": "https://www.youtube.com/shorts/gpK9knjbd2o",
+      "title": "A EMBARK VAI AVALIAR FEEDBACK E DADOS ANTES DE DECIDIR O FUTURO DO PvE",
+      "status": "published"
+    },
+    {
+      "youtube_id": "mWhC1VRoTdQ",
+      "youtube_url": "https://www.youtube.com/shorts/mWhC1VRoTdQ",
+      "title": "YEAT NO FORTNITE: O TRAILER CHEGOU!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "oSZt6VPjBMA",
+      "youtube_url": "https://www.youtube.com/shorts/oSZt6VPjBMA",
+      "title": "FORTNITE E YEAT: O QUE JÁ FOI CONFIRMADO?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "nb8acq1g1II",
+      "youtube_url": "https://www.youtube.com/shorts/nb8acq1g1II",
+      "title": "AGORA DÁ PARA CONTROLAR A NOVE-CAUDAS NO FREE FIRE!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "GCct1kBt8tA",
+      "youtube_url": "https://www.youtube.com/shorts/GCct1kBt8tA",
+      "title": "HINATA OU JIRAIYA: QUAL GRANDE PRÊMIO VOCÊ ESCOLHERIA?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "UDWns2Cj_WY",
+      "youtube_url": "https://www.youtube.com/shorts/UDWns2Cj_WY",
+      "title": "A ACADEMIA NINJA CHEGOU A BERMUDA COM NOVOS NINJUTSUS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "hMlaA_NCJJ0",
+      "youtube_url": "https://www.youtube.com/shorts/hMlaA_NCJJ0",
+      "title": "ROBLOX VAI DEIXAR MAIS FÁCIL PUBLICAR SEU JOGO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "BFB-Ham7Plk",
+      "youtube_url": "https://www.youtube.com/shorts/BFB-Ham7Plk",
+      "title": "AGORA DÁ PARA CONVIDAR ATÉ 10 TESTADORES ANTES DO LANÇAMENTO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "e1yYw9QK8mU",
+      "youtube_url": "https://www.youtube.com/shorts/e1yYw9QK8mU",
+      "title": "NOVAS FERRAMENTAS DE TERRENO E ANIMAÇÃO ESTÃO CHEGANDO AO ROBLOX STUDIO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "RXg8h4Pxbss",
+      "youtube_url": "https://www.youtube.com/shorts/RXg8h4Pxbss",
+      "title": "PHANTOM BLADE ZERO: COMBATE DE FILME, MAS É GAMEPLAY!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "aO4TCFWcIuo",
+      "youtube_url": "https://www.youtube.com/shorts/aO4TCFWcIuo",
+      "title": "SOUL TEM SÓ 66 DIAS PARA DESVENDAR A CONSPIRAÇÃO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "r_h-rczKSgE",
+      "youtube_url": "https://www.youtube.com/shorts/r_h-rczKSgE",
+      "title": "MAIS DE 30 ARMAS E 3 MODOS DE DIFICULDADE!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "cFlHQS3Z94s",
+      "youtube_url": "https://www.youtube.com/shorts/cFlHQS3Z94s",
+      "title": "CADA DADO PODE INVOCAR UM PESADELO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "WRIjlKq0S8c",
+      "youtube_url": "https://www.youtube.com/shorts/WRIjlKq0S8c",
+      "title": "ATÉ 6 JOGADORES PRESOS NO MESMO TERROR!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Dbb2OW9Fglw",
+      "youtube_url": "https://www.youtube.com/shorts/Dbb2OW9Fglw",
+      "title": "AS REGRAS MUDAM — E OS MONSTROS TAMBÉM!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "N-gRJNWNkNE",
+      "youtube_url": "https://www.youtube.com/shorts/N-gRJNWNkNE",
+      "title": "A NOVA DIMENSÃO VAI CHEGAR AO MINECRAFT EM 2027!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "RumhQJhVWmo",
+      "youtube_url": "https://www.youtube.com/shorts/RumhQJhVWmo",
+      "title": "MINECRAFT DUNGEONS II JÁ CHEGOU!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "CJlO1tvD2Dc",
+      "youtube_url": "https://www.youtube.com/shorts/CJlO1tvD2Dc",
+      "title": "THE SIFT: A NOVA DIMENSÃO DE MINECRAFT!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Tgud1D_uQpw",
+      "youtube_url": "https://www.youtube.com/shorts/Tgud1D_uQpw",
+      "title": "LYSSA SONY CHARACTERS TAMBÉM APARECEM",
+      "status": "published"
+    },
+    {
+      "youtube_id": "YDf73lbX-CI",
+      "youtube_url": "https://www.youtube.com/shorts/YDf73lbX-CI",
+      "title": "WARHAMMER SURVIVORS DETALHES LANÇAMENTO GANHA",
+      "status": "published"
+    },
+    {
+      "youtube_id": "yvrZ7lV8ZnI",
+      "youtube_url": "https://www.youtube.com/shorts/yvrZ7lV8ZnI",
+      "title": "WARHAMMER SURVIVORS ENTRE PRINCIPAIS DESTAQUES",
+      "status": "published"
+    },
+    {
+      "youtube_id": "BQ30QQNY9kw",
+      "youtube_url": "https://www.youtube.com/shorts/BQ30QQNY9kw",
+      "title": "Radar dos Games: notícias, lançamentos e gameplays!💚 Curta e siga! #GTA6 #GearsOfWarEDay #ARCRaiders",
+      "status": "published"
+    },
+    {
+      "youtube_id": "CqyVOF9LTuw",
+      "youtube_url": "https://www.youtube.com/shorts/CqyVOF9LTuw",
+      "title": "EDGERUNNERS 2 ESTREIA EM 20 DE OUTUBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "37osk6O4LHY",
+      "youtube_url": "https://www.youtube.com/shorts/37osk6O4LHY",
+      "title": "CYBERPUNK 2077 VAI VIRAR FILME COM A PARAMOUNT!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "EOHihFvkZf8",
+      "youtube_url": "https://www.youtube.com/shorts/EOHihFvkZf8",
+      "title": "CYBERPUNK 2 JÁ ESTÁ EM DESENVOLVIMENTO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "B_3mb5rhp7o",
+      "youtube_url": "https://www.youtube.com/shorts/B_3mb5rhp7o",
+      "title": "BULLY, SKULKER E HYDRA: TRÊS NOVOS INIMIGOS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Q22j9kObFaA",
+      "youtube_url": "https://www.youtube.com/shorts/Q22j9kObFaA",
+      "title": "PENDOLA PASS: O NOVO MAPA CONGELADO DE ARC RAIDERS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "cVyqPG-eCIg",
+      "youtube_url": "https://www.youtube.com/shorts/cVyqPG-eCIg",
+      "title": "ARC RAIDERS GRÁTIS ATÉ 12 DE OUTUBRO!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "6ceqhYs3LQc",
+      "youtube_url": "https://www.youtube.com/shorts/6ceqhYs3LQc",
+      "title": "GTA 6: TUNAGEM DE CARROS E CORRIDA DE RUA",
+      "status": "published"
+    },
+    {
+      "youtube_id": "hVgnaktP2jc",
+      "youtube_url": "https://www.youtube.com/shorts/hVgnaktP2jc",
+      "title": "GTA 6 EM PRIMEIRA PESSOA: O QUE O VAZAMENTO INDICA",
+      "status": "published"
+    },
+    {
+      "youtube_id": "I4Ii6KhO6Ug",
+      "youtube_url": "https://www.youtube.com/shorts/I4Ii6KhO6Ug",
+      "title": "25 MINUTOS DE GTA 6: A CORRIDA DE MOTO NA LAMA",
+      "status": "published"
+    },
+    {
+      "youtube_id": "uQ3dihNPQw0",
+      "youtube_url": "https://www.youtube.com/shorts/uQ3dihNPQw0",
+      "title": "BATTLEFIELD 6 CHEGA AO GAME PASS!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Lz4qghei38c",
+      "youtube_url": "https://www.youtube.com/shorts/Lz4qghei38c",
+      "title": "BATTLEFIELD 6: TEMPORADA 5 VAI PARA VEGAS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Djecjc9_zwA",
+      "youtube_url": "https://www.youtube.com/shorts/Djecjc9_zwA",
+      "title": "GAME PASS ULTIMATE: O QUE VOCÊ GANHA NO BATTLEFIELD 6",
+      "status": "published"
+    },
+    {
+      "youtube_id": "HRLzhVvxdRY",
+      "youtube_url": "https://www.youtube.com/shorts/HRLzhVvxdRY",
+      "title": "JASON, LUCIA E LEONIDA: O QUE JÁ SABEMOS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "AXvICN8q8Vo",
+      "youtube_url": "https://www.youtube.com/shorts/AXvICN8q8Vo",
+      "title": "GTA VI: DATA, PRÉ-CARGA E PLATAFORMAS",
+      "status": "published"
+    },
+    {
+      "youtube_id": "_6tSnifRzIw",
+      "youtube_url": "https://www.youtube.com/shorts/_6tSnifRzIw",
+      "title": "GTA VI NO XBOX CLOUD? O QUE FOI CONFIRMADO",
+      "status": "published"
+    },
+    {
+      "youtube_id": "jwXtn0b0rYA",
+      "youtube_url": "https://www.youtube.com/shorts/jwXtn0b0rYA",
+      "title": "FREDDY KRUEGER ESTÁ NO FORTNITE! 😱",
+      "status": "published"
+    },
+    {
+      "youtube_id": "FCP-BVHY_sk",
+      "youtube_url": "https://www.youtube.com/shorts/FCP-BVHY_sk",
+      "title": "HORDE RUSH VOLTOU NO FORTNITE! 🎃",
+      "status": "published"
+    },
+    {
+      "youtube_id": "CRXm8kVDCUo",
+      "youtube_url": "https://www.youtube.com/shorts/CRXm8kVDCUo",
+      "title": "FNAF VIROU CHEFE NO FORTNITE! 🤯",
+      "status": "published"
+    },
+    {
+      "youtube_id": "MuWdL8FE5ns",
+      "youtube_url": "https://www.youtube.com/shorts/MuWdL8FE5ns",
+      "title": "6 GAMES DA SEGA para ver na BGS 2026 🎮",
+      "status": "published"
+    },
+    {
+      "youtube_id": "DSp4g5lyEZk",
+      "youtube_url": "https://www.youtube.com/shorts/DSp4g5lyEZk",
+      "title": "CRAZY TAXI VOLTOU — e Kenji Kanno vem ao Brasil! 🇧🇷",
+      "status": "published"
+    },
+    {
+      "youtube_id": "gdIZrvA5Whw",
+      "youtube_url": "https://www.youtube.com/shorts/gdIZrvA5Whw",
+      "title": "ALIEN: ISOLATION 2 na BGS 2026! 😱",
+      "status": "published"
+    },
+    {
+      "youtube_id": "3Z-HdsAnm5U",
+      "youtube_url": "https://www.youtube.com/shorts/3Z-HdsAnm5U",
+      "title": "GEARS E-DAY voltou a ser BRUTAL!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "3DRa5L_gF-o",
+      "youtube_url": "https://www.youtube.com/shorts/3DRa5L_gF-o",
+      "title": "O começo da INVASÃO LOCUST em Gears E-Day",
+      "status": "published"
+    },
+    {
+      "youtube_id": "1lwIpveTDlA",
+      "youtube_url": "https://www.youtube.com/shorts/1lwIpveTDlA",
+      "title": "Gears E-Day VALE A PENA no lançamento?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "OqRUFau7c1s",
+      "youtube_url": "https://www.youtube.com/shorts/OqRUFau7c1s",
+      "title": "GTA 6: tudo que já está confirmado para novembro",
+      "status": "published"
+    },
+    {
+      "youtube_id": "KzDNEsMjfjw",
+      "youtube_url": "https://www.youtube.com/shorts/KzDNEsMjfjw",
+      "title": "GTA 6 terá FURACÕES e clima muito mais realista!",
+      "status": "published"
+    },
+    {
+      "youtube_id": "AxfHm6Toj5w",
+      "youtube_url": "https://www.youtube.com/shorts/AxfHm6Toj5w",
+      "title": "GTA 6: por que esse gameplay mudou o jogo?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "i28TYdGzPrI",
+      "youtube_url": "https://www.youtube.com/shorts/i28TYdGzPrI",
+      "title": "Galactic Racer tem campanha, Arcade e até 12 online",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Jgc8oz3zALM",
+      "youtube_url": "https://www.youtube.com/shorts/Jgc8oz3zALM",
+      "title": "4 veículos de Galactic Racer: qual combina com você?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "m_M1m9Ijo8Y",
+      "youtube_url": "https://www.youtube.com/shorts/m_M1m9Ijo8Y",
+      "title": "Galactic Racer: por que o PODRACER é tão difícil?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "PijxXReT4Gs",
+      "youtube_url": "https://www.youtube.com/shorts/PijxXReT4Gs",
+      "title": "WARDOGS vale a pena acompanhar?",
+      "status": "published"
+    },
+    {
+      "youtube_id": "zULfXZEKDm8",
+      "youtube_url": "https://www.youtube.com/shorts/zULfXZEKDm8",
+      "title": "WARDOGS: destruição, tanques e helicópteros",
+      "status": "published"
+    },
+    {
+      "youtube_id": "vOShZR5WAIE",
+      "youtube_url": "https://www.youtube.com/shorts/vOShZR5WAIE",
+      "title": "WARDOGS: 100 jogadores em guerra total",
+      "status": "published"
+    },
+    {
+      "youtube_id": "XA-YklCtg1k",
+      "youtube_url": "https://www.youtube.com/shorts/XA-YklCtg1k",
+      "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
+      "status": "published"
+    },
+    {
+      "youtube_id": "G7uUZh_dcmE",
+      "youtube_url": "https://www.youtube.com/shorts/G7uUZh_dcmE",
+      "title": "Dragon’s Dogma em destaque no TOP 10 Games",
+      "status": "published"
+    },
+    {
+      "youtube_id": "xZvU-U2lBOg",
+      "youtube_url": "https://www.youtube.com/shorts/xZvU-U2lBOg",
+      "title": "Team Fortress 2: Halloween começou! 🎃",
+      "status": "published"
+    },
+    {
+      "youtube_id": "_FRcK8AnIoI",
+      "youtube_url": "https://www.youtube.com/shorts/_FRcK8AnIoI",
+      "title": "QSSR pode melhorar muitos jogos no PS5",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Ec5DOnNEmsQ",
+      "youtube_url": "https://www.youtube.com/shorts/Ec5DOnNEmsQ",
+      "title": "Wolverine e Ghost of Yōtei estreiam QSSR",
+      "status": "published"
+    },
+    {
+      "youtube_id": "9XJfF2fMTZ8",
+      "youtube_url": "https://www.youtube.com/shorts/9XJfF2fMTZ8",
+      "title": "QSSR: o PS5 ganhou upscaling por IA",
+      "status": "published"
+    },
+    {
+      "youtube_id": "deg5A2eYoRA",
+      "youtube_url": "https://www.youtube.com/shorts/deg5A2eYoRA",
+      "title": "Dragon’s Dogma 2: Dark Arisen | Conheça Norgan",
+      "status": "published"
+    },
+    {
+      "youtube_id": "rwld0AShJ8c",
+      "youtube_url": "https://www.youtube.com/shorts/rwld0AShJ8c",
+      "title": "Modern Warfare 4 | Multiplayer mais fluido e DMZ de volta",
+      "status": "published"
+    },
+    {
+      "youtube_id": "t7rOGU817fs",
+      "youtube_url": "https://www.youtube.com/shorts/t7rOGU817fs",
+      "title": "Modern Warfare 4 | A Task Force 141 está dividida",
+      "status": "published"
+    },
+    {
+      "youtube_id": "2NyCeNUZj4g",
+      "youtube_url": "https://www.youtube.com/shorts/2NyCeNUZj4g",
+      "title": "Modern Warfare 4 | Price está foragido e a guerra mudou",
+      "status": "published"
+    },
+    {
+      "youtube_id": "qZd5wP7Bepk",
+      "youtube_url": "https://www.youtube.com/shorts/qZd5wP7Bepk",
+      "title": "Star Wars: Galactic Racer | A galáxia vai correr",
+      "status": "published"
+    },
+    {
+      "youtube_id": "udL3WpYgj8A",
+      "youtube_url": "https://www.youtube.com/shorts/udL3WpYgj8A",
+      "title": "Galactic Racer | Competição e evolução em alta velocidade",
+      "status": "published"
+    },
+    {
+      "youtube_id": "t3Ef9xjp2Eg",
+      "youtube_url": "https://www.youtube.com/shorts/t3Ef9xjp2Eg",
+      "title": "Star Wars voltou às grandes corridas? | Galactic Racer",
+      "status": "published"
+    },
+    {
+      "youtube_id": "FrS_CuyvCxo",
+      "youtube_url": "https://www.youtube.com/shorts/FrS_CuyvCxo",
+      "title": "Vale ficar de olho em ELTA: Defy All Gods? 🐉",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Mn6IZn2nPYM",
+      "youtube_url": "https://www.youtube.com/shorts/Mn6IZn2nPYM",
+      "title": "As inspirações de ELTA de Castlevania a God of War",
+      "status": "published"
+    },
+    {
+      "youtube_id": "akvK2Vmy8qE",
+      "youtube_url": "https://www.youtube.com/shorts/akvK2Vmy8qE",
+      "title": "ELTA: DEFY ALL GODS JÁ TEM DATA! 🔥",
+      "status": "published"
+    },
+    {
+      "youtube_id": "qF_J0S_Ro24",
+      "youtube_url": "https://www.youtube.com/shorts/qF_J0S_Ro24",
+      "title": "ACE COMBAT 8 CHEGOU! 7 ANOS DE ESPERA ACABARAM ✈️",
+      "status": "published"
+    },
+    {
+      "youtube_id": "iRGjt-366xQ",
+      "youtube_url": "https://www.youtube.com/shorts/iRGjt-366xQ",
+      "title": "ACE COMBAT 8: O RETORNO QUE OS FÃS ESPERARAM ✈️",
+      "status": "published"
+    },
+    {
+      "youtube_id": "PTKLCEgdxTo",
+      "youtube_url": "https://www.youtube.com/shorts/PTKLCEgdxTo",
+      "title": "ACE COMBAT 8 JÁ ESTÁ ENTRE NÓS ✈️",
+      "status": "published"
+    },
+    {
+      "youtube_id": "BhTKkDjhTnc",
+      "youtube_url": "https://www.youtube.com/shorts/BhTKkDjhTnc",
+      "title": "Gears of War: E-Day já começou",
+      "status": "published"
+    },
+    {
+      "youtube_id": "hjCBW6wopN8",
+      "youtube_url": "https://www.youtube.com/shorts/hjCBW6wopN8",
+      "title": "THE SIFT VAI CHEGAR AO MINECRAFT NORMAL! JAVA + BEDROCK",
+      "status": "published"
+    },
+    {
+      "youtube_id": "S-Kw8W24bzM",
+      "youtube_url": "https://www.youtube.com/shorts/S-Kw8W24bzM",
+      "title": "O QUE É THE SIFT? A NOVA DIMENSÃO DO MINECRAFT",
+      "status": "published"
+    },
+    {
+      "youtube_id": "Lc3BXMSZanU",
+      "youtube_url": "https://www.youtube.com/shorts/Lc3BXMSZanU",
+      "title": "MINECRAFT TEM UMA NOVA DIMENSÃO! 😱 THE SIFT",
+      "status": "published"
+    },
+    {
+      "youtube_id": "rDT12IWkDE8",
+      "youtube_url": "https://www.youtube.com/shorts/rDT12IWkDE8",
+      "title": "HORDE SIEGE + VERSUS EM GEARS E-DAY! 🎮",
+      "status": "published"
+    },
+    {
+      "youtube_id": "9QmthjXQgq4",
+      "youtube_url": "https://www.youtube.com/shorts/9QmthjXQgq4",
+      "title": "GEARS E-DAY ESTÁ MUITO MAIS SOMBRIO 😱",
+      "status": "published"
+    },
+    {
+      "youtube_id": "krjnB6c0KvE",
+      "youtube_url": "https://www.youtube.com/shorts/krjnB6c0KvE",
+      "title": "MARCUS E DOM ESTÃO DE VOLTA! 🔥 Gears of War: E-Day",
+      "status": "published"
     }
   ]
 }
