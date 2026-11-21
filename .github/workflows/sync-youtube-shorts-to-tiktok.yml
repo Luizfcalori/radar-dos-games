@@ -111,7 +111,7 @@ jobs:
               base=dict(by_yid.get(vid) or by_title.get(norm(title)) or {})
               media=str(base.get('media_url') or '').strip()
               old_status=str(base.get('status') or '')
-              status='approved' if media else 'waiting_media'
+              status=old_status or ('approved' if media else 'waiting_media')
               item={
                   **base,
                   'id':base.get('id') or f'yt-{vid}',
@@ -132,12 +132,19 @@ jobs:
               discovered.append(item)
               used_ids.add(str(item['id']))
 
-          # Preserve original files already queued by our production pipeline,
-          # even before YouTube has indexed/matched a freshly published Short.
+          # Preserve the queue as the source of truth for ordering and manual statuses.
+          # The YouTube scan may enrich matching entries, but must never reorder, reset,
+          # or discard existing queue rows (including rows still waiting for media).
+          scanned_by_id={str(x.get('id') or ''):x for x in discovered if x.get('id')}
+          ordered=[]
           for row in old:
               rid=str(row.get('id') or '')
-              if rid and rid not in used_ids and row.get('media_url'):
-                  discovered.append(row)
+              if rid and rid in scanned_by_id:
+                  ordered.append(scanned_by_id.pop(rid))
+              else:
+                  ordered.append(row)
+          ordered.extend(scanned_by_id.values())
+          discovered=ordered
 
           waiting=[
               {'youtube_id':x['youtube_id'],'title':x['title'],'reason':'original_media_not_recovered_yet'}
