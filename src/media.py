@@ -46,6 +46,13 @@ def youtube_video_id(url):
     return ''
 
 
+def steam_movie_identity(url):
+    """Retorna identidade estável de um trailer Steam, independente do label."""
+    path=urllib.parse.urlparse(str(url)).path
+    match=re.search(r'/store_trailers/(\d+)/(\d+)/([^/]+)/(\d+)/',path)
+    return tuple(match.groups()) if match else None
+
+
 def probe_info(p):
     if not p.exists() or p.stat().st_size < 20000:return None
     try:
@@ -705,9 +712,8 @@ def main(path):
                 continue
             # Different official trailers may share the same Steam display label.
             # Use the canonical CDN trailer identity, never the display name.
-            movie_path=urllib.parse.urlparse(u).path
-            movie_match=re.search(r'/store_trailers/(\d+)/(\d+)/([^/]+)/(\d+)/',movie_path)
-            movie_key=(source,tuple(movie_match.groups())) if item.get("steam_app_id") and movie_match else None
+            movie_identity=steam_movie_identity(u)
+            movie_key=(source,movie_identity) if item.get("steam_app_id") and movie_identity else None
             if movie_key and movie_key in seen_movie_sources:continue
             low=u.lower();clean=low.split('?')[0];isimg=clean.endswith(IMAGE_EXTS) or bool(item.get('force_image',False) and wanted=='image');isstream=clean.endswith(STREAM_EXTS);isdrive='drive.google.com/file/d/' in low
             is_rockstar_zip = (
