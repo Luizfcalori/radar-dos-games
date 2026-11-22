@@ -20,18 +20,18 @@ class ContinuityTests(unittest.TestCase):
         result=VideoTimeline(self.assets).choose(self.scene,'Invasão digital de um netrunner',5,list(self.assets.values()))
         self.assertEqual(result[0]['index'],2)
 
-    def test_category_mismatch_is_blocked_instead_of_using_other_gameplay(self):
+    def test_category_mismatch_uses_reviewed_same_game_fallback(self):
         t=VideoTimeline(self.assets)
-        t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        with self.assertRaisesRegex(RuntimeError,'QUALITY_BLOCK'):
-            t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        t.choose(self.scene,'Combate',20,list(self.assets.values()))
+        result=t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        self.assertEqual(result[0]['index'],2)
+        self.assertEqual(result[3]['semantic_categories'],['hacking'])
 
-    def test_exhaustion_blocks_reuse_as_last_resort(self):
+    def test_fresh_same_game_fallback_is_used_before_any_reuse(self):
         t=VideoTimeline(self.assets)
-        t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        # The third phrase cannot silently switch to unrelated hacking footage.
+        t.choose(self.scene,'Combate',20,list(self.assets.values()))
+        result=t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        self.assertEqual(result[0]['index'],2)
         with self.assertRaisesRegex(RuntimeError,'QUALITY_BLOCK'):
             t.choose(self.scene,'Combate',5,list(self.assets.values()))
         repeated=[{'media_index':1,'duration':5,'source_window':{'start':0,'end':5}},
