@@ -767,11 +767,29 @@ def fetch_manual_media(brief):
         ):
             curated.append(("video", url))
 
+    # Exact-game Steam fallback: collect only direct trailers and screenshots from this app's
+    # official store/CDN and official announcement feed. This keeps manual briefs from
+    # depending on a blocked third-party mirror or falling back to unrelated gameplay.
+    steam_app_id = str(brief.get("steam_app_id") or "").strip()
+    if steam_app_id.isdigit():
+        app_id = int(steam_app_id)
+        steam_videos = steam_candidates(app_id, "video")
+        steam_images = steam_candidates(app_id, "image")
+        for asset_url, evidence, label in steam_videos:
+            curated.append(("video", asset_url))
+        for asset_url, evidence, label in steam_images[:10]:
+            curated.append(("image", asset_url))
+        print(
+            f"manual brief exact Steam app {app_id}: "
+            f"{len(steam_videos)} official video candidates, {min(len(steam_images), 10)} screenshots",
+            flush=True,
+        )
+
     # Recover direct media from the exact official source pages named in the brief.
     # YouTube embeds are not treated as downloadable media here: GitHub runners can
     # be rate-limited by YouTube, so prefer direct PlayStation-hosted video assets.
     # Official publisher domains are allowed for this exact game brief; never crawl generic news/ad pages.
-    trusted_hosts = (".playstation.com", ".playstation.net", ".sony.com", ".sony.net", ".ea.com", ".eaassets-a.akamaihd.net")
+    trusted_hosts = (".playstation.com", ".playstation.net", ".sony.com", ".sony.net", ".ea.com", ".eaassets-a.akamaihd.net", ".bethesda.net", "res.cloudinary.com")
     for source_url in list(brief.get("media_source_urls", []) or []):
         if not isinstance(source_url, str) or not source_url.startswith("https://"):
             continue
