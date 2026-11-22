@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from src.media import blocked_candidate, sha256_file, youtube_video_id
+from src.media import blocked_candidate, sha256_file, steam_movie_identity, youtube_video_id
 
 
 class MediaDeduplicationTests(unittest.TestCase):
@@ -17,6 +17,13 @@ class MediaDeduplicationTests(unittest.TestCase):
             youtube_video_id("https://youtu.be/pry9pkfKUJk?si=abc"),
             "pry9pkfKUJk",
         )
+
+    def test_distinct_steam_trailers_do_not_share_identity_by_title(self):
+        first = "https://video.akamai.steamstatic.com/store_trailers/3017860/111/abc/222/hls_264_master.m3u8"
+        second = "https://video.akamai.steamstatic.com/store_trailers/3017860/333/def/444/hls_264_master.m3u8"
+        same_movie_other_encoding = "https://video.akamai.steamstatic.com/store_trailers/3017860/111/abc/222/dash_h264.mpd"
+        self.assertNotEqual(steam_movie_identity(first), steam_movie_identity(second))
+        self.assertEqual(steam_movie_identity(first), steam_movie_identity(same_movie_other_encoding))
 
     def test_identical_video_bytes_have_same_digest(self):
         with tempfile.TemporaryDirectory() as tmp:
