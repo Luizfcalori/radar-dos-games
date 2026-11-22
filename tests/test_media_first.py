@@ -31,8 +31,8 @@ class MediaFirstTests(unittest.TestCase):
         self.assertEqual(plan["media_first_policy"],"MEDIA_FIRST_V1")
         self.assertEqual(report["script_sha256"],hashlib.sha256(script.encode()).hexdigest())
         for s in plan["scenes"]:
-            self.assertEqual(s["media_first_assets"],[7,13])
-            self.assertEqual(len(s["allowed_roles"]),2)
+            self.assertEqual(s["media_first_assets"],[7])
+            self.assertEqual(len(s["allowed_roles"]),1)
         # Hashed filenames still receive a topic label only because the image
         # is served from the exact official article URL.
         self.assertEqual(self.assets[1]["source_label"],"Battlefield 6")
@@ -50,7 +50,9 @@ class MediaFirstTests(unittest.TestCase):
             {"url":"https://news.example/test","title":"Battlefield 6"},
             self.outline
         )
-        self.assertIn(13, plan["scenes"][0]["media_first_assets"])
+        # Same-host provenance and an opaque CDN filename do not prove that
+        # the still depicts the narration; do not attach it without scene evidence.
+        self.assertNotIn(13, plan["scenes"][0]["media_first_assets"])
         self.assertEqual(self.assets[1]["source_label"],"Battlefield 6")
 
     def test_unrelated_host_official_role_is_not_admitted_as_contextual_fallback(self):
