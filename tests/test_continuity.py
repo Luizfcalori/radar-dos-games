@@ -23,14 +23,14 @@ class ContinuityTests(unittest.TestCase):
     def test_category_mismatch_uses_reviewed_same_game_fallback(self):
         t=VideoTimeline(self.assets)
         t.choose(self.scene,'Combate',20,list(self.assets.values()))
-        result=t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        result=t.choose(self.scene,'Combate',20,list(self.assets.values()))
         self.assertEqual(result[0]['index'],2)
         self.assertEqual(result[3]['semantic_categories'],['hacking'])
 
     def test_fresh_same_game_fallback_is_used_before_any_reuse(self):
         t=VideoTimeline(self.assets)
         t.choose(self.scene,'Combate',20,list(self.assets.values()))
-        result=t.choose(self.scene,'Combate',5,list(self.assets.values()))
+        result=t.choose(self.scene,'Combate',20,list(self.assets.values()))
         self.assertEqual(result[0]['index'],2)
         with self.assertRaisesRegex(RuntimeError,'QUALITY_BLOCK'):
             t.choose(self.scene,'Combate',5,list(self.assets.values()))
