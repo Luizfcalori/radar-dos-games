@@ -32,6 +32,9 @@ def main():
     assert plan.get("premium_version")=="PREMIUM_V4_DIRECTOR_CUT",plan.get("premium_version")
     assert director.get("status")=="APPROVED" and director.get("version")=="PREMIUM_V4_DIRECTOR_CUT",director
     assert semantic.get("status")=="APPROVED",semantic
+    assert semantic.get("policy")=="STRICT_PHRASE_TO_REVIEWED_FRAME_MATCH_V2",semantic
+    assert int(semantic.get("error_count") or 0)==0,semantic
+    assert int(semantic.get("warning_count") or 0)==0,semantic
     assert render.get("standard")=="radar-dos-games-premium-v4-director-cut",render.get("standard")
     assert render.get("editing_policy")=="phrase_level_beats; variable_pacing; selective_keyword_overlays"
     assert frames.get("status")=="APPROVED",frames
