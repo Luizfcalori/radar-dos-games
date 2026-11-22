@@ -24,14 +24,15 @@ class ContinuityTests(unittest.TestCase):
         t=VideoTimeline(self.assets)
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        with self.assertRaisesRegex(RuntimeError,'sem gameplay aprovada utilizável'):
+        with self.assertRaisesRegex(RuntimeError,'QUALITY_BLOCK'):
             t.choose(self.scene,'Combate',5,list(self.assets.values()))
 
     def test_exhaustion_blocks_reuse_as_last_resort(self):
         t=VideoTimeline(self.assets)
-        for _ in range(4):
-            t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        with self.assertRaisesRegex(RuntimeError,'não é permitido repetir gameplay'):
+        t.choose(self.scene,'Combate',10,list(self.assets.values()))
+        t.choose(self.scene,'Combate',10,list(self.assets.values()))
+        # The third phrase cannot silently switch to unrelated hacking footage.
+        with self.assertRaisesRegex(RuntimeError,'QUALITY_BLOCK'):
             t.choose(self.scene,'Combate',5,list(self.assets.values()))
         repeated=[{'media_index':1,'duration':5,'source_window':{'start':0,'end':5}},
                   {'media_index':1,'duration':5,'source_window':{'start':0,'end':5},
