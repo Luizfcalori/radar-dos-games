@@ -110,32 +110,24 @@ def _enshrouded_curated_still(asset):
     )
 
 
-def _fight_night_curated_still(asset):
-    """Allow official EA stills or distinct frames extracted from approved Fight Night archival footage."""
+def _approved_gameplay_frame(asset):
+    """Recognize a still extracted from the same approved gameplay source as this Short."""
     role=str(asset.get("role") or "")
-    url=str(asset.get("url") or "").casefold()
-    label=str(asset.get("source_label") or "").casefold()
-    official_ea_still = (
-        role.startswith(("official_subject_reference_", "official_context_"))
-        and ("ea.com" in url or "eaassets-a.akamaihd.net" in url)
+    return (
+        asset.get("type") == "image"
+        and role.startswith("official_context_approved_gameplay_frame_")
         and bool(asset.get("source"))
-        and bool(label or url)
+        and bool(asset.get("url"))
+        and "approved gameplay frame" in str(asset.get("source_label") or "").casefold()
     )
-    extracted_archival_frame = (
-        role.startswith("official_context_fight_night_frame_")
-        and "fight night champion archival gameplay frame" in label
-        and bool(asset.get("source"))
-        and ("youtube.com" in url or "youtu.be" in url)
-    )
-    return asset.get("type") == "image" and (official_ea_still or extracted_archival_frame)
 
 
-def _extract_fight_night_frame(video, timestamp, index):
-    """Create a unique still from already-approved archival Fight Night footage for fallback beats."""
+def _extract_approved_gameplay_frame(video, timestamp, index):
+    """Create a distinct, source-traceable still from a reviewed window of this game's footage."""
     src=Path(str(video.get("path") or ""))
-    if not src.is_file():
+    if not src.is_file() or video.get("approved") is not True:
         return None
-    dest=src.parent / f"fight_night_short_frame_{index}_{int(timestamp*1000)}.jpg"
+    dest=src.parent / f"approved_gameplay_frame_{index}_{int(timestamp*1000)}.jpg"
     try:
         subprocess.run([
             "ffmpeg","-y","-v","error","-ss",f"{max(0.0,float(timestamp)):.3f}",
@@ -148,12 +140,13 @@ def _extract_fight_night_frame(video, timestamp, index):
     if not dest.is_file() or dest.stat().st_size < 1000:
         dest.unlink(missing_ok=True)
         return None
+    source=str(video.get("source") or video.get("url") or "")
     return {
         "index": int(index), "type":"image", "path":str(dest),
-        "url":str(video.get("url") or ""),
-        "source":str(video.get("source") or video.get("url") or ""),
-        "source_label":"Fight Night Champion archival gameplay frame",
-        "role":f"official_context_fight_night_frame_{index}",
+        "url":str(video.get("url") or source),
+        "source":source,
+        "source_label":"Approved gameplay frame extracted from the same official source",
+        "role":f"official_context_approved_gameplay_frame_{index}",
         "approved":True, "duration":0.0
     }
 
@@ -173,7 +166,7 @@ def subject_ok(phrase,asset):
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)):
+    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -183,7 +176,7 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset):
+    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -194,7 +187,7 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _fight_night_curated_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
@@ -270,7 +263,7 @@ def validate_master(scenes,assets):
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
                     beat.get("visual_evidence") == "official_image_subject_label"
-                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _fight_night_curated_still(asset))
+                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset))
                 )
                 if not tracker.can_use(
                     asset, beat.get("text",""), scene_no, cursor, d,
@@ -328,7 +321,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
 
     beats=deepcopy(scene.get("beats") or [])
     selected={int(x) for x in scene.get("media_first_assets",[])}
-    videos=[a for a in assets.values() if a.get("type")=="video"
+    videos=[a for a in assets.values() if a.get("type")=="video" and a.get("approved") is True
             and int(a["index"]) in selected]
     windows=scene.get("visual_windows") or {}
     timeline=timeline or VideoTimeline(assets)
@@ -379,22 +372,25 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                     and subject_ok(beat.get("text", ""), a)
                 ]
                 if not still_choices:
-                    # The official EA page may expose only one still. Build distinct,
-                    # source-traceable archival frames from the approved Fight Night
-                    # video so a Short can continue without recycling the same image.
+                    # Extract distinct stills only from reviewed windows of this same approved game source.
                     next_index=max([int(k) for k in assets.keys()] + [0]) + 1
                     frame_number=0
                     for video in videos:
                         total=float(video.get("duration") or 0)
-                        if total < 1:
+                        if total < 1 or video.get("approved") is not True:
                             continue
-                        # Use different points across the source; frames are stills,
-                        # explicitly labeled archival, never represented as new-game footage.
-                        for timestamp in [min(total-0.2, max(0.2, total*f)) for f in (0.12,0.24,0.36,0.48,0.60,0.72,0.84,0.93)]:
-                            frame=_extract_fight_night_frame(video,timestamp,next_index+frame_number)
-                            if frame:
-                                assets[int(frame["index"])]=frame
-                                frame_number+=1
+                        reviewed=merge_reviewed_windows(windows.get(str(int(video["index"])),[]),total)
+                        for window in reviewed:
+                            lo=float(window["start"]); hi=float(window["end"])
+                            if hi-lo < 0.5:
+                                continue
+                            # Sample inside reviewed windows, never arbitrary source timestamps.
+                            for fraction in (0.25,0.50,0.75):
+                                timestamp=lo+(hi-lo)*fraction
+                                frame=_extract_approved_gameplay_frame(video,timestamp,next_index+frame_number)
+                                if frame:
+                                    assets[int(frame["index"])]=frame
+                                    frame_number+=1
                     still_choices = [
                         a for a in assets.values()
                         if a.get("type") == "image"
@@ -480,7 +476,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                 clips_doc["assets"]=merged_assets
             existing={int(a.get("index",0)) for a in clips_doc.get("assets") or []}
             generated=[a for idx,a in assets.items() if int(idx) not in existing
-                       and str(a.get("role") or "").startswith("official_context_fight_night_frame_")]
+                       and str(a.get("role") or "").startswith("official_context_approved_gameplay_frame_")]
             if generated:
                 clips_doc.setdefault("assets",[]).extend(generated)
             # Always persist one normalized JSON document before downstream QA.
