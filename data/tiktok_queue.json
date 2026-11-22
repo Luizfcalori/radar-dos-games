@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-21T12:22:05.811685+00:00",
+  "updated_at": "2026-11-22T15:15:47.932238+00:00",
   "items": [
     {
       "id": "44603154365-short-1",
@@ -12,7 +12,12 @@
       "status": "approved",
       "source_run_id": 44603154365,
       "short_number": 1,
-      "approved_at": "2026-11-19T20:47:35.105224+00:00"
+      "approved_at": "2026-11-19T20:47:35.105224+00:00",
+      "youtube_id": "1e7BD4uN_OI",
+      "youtube_url": "https://www.youtube.com/shorts/1e7BD4uN_OI",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-11-22T15:15:47.932238+00:00"
     },
     {
       "id": "44603154365-short-2",
@@ -23,7 +28,12 @@
       "status": "approved",
       "source_run_id": 44603154365,
       "short_number": 2,
-      "approved_at": "2026-11-19T20:47:35.105250+00:00"
+      "approved_at": "2026-11-19T20:47:35.105250+00:00",
+      "youtube_id": "PFa3ucAmEWU",
+      "youtube_url": "https://www.youtube.com/shorts/PFa3ucAmEWU",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-11-22T15:15:47.932238+00:00"
     },
     {
       "id": "44603154365-short-3",
@@ -34,7 +44,12 @@
       "status": "approved",
       "source_run_id": 44603154365,
       "short_number": 3,
-      "approved_at": "2026-11-19T20:47:35.105254+00:00"
+      "approved_at": "2026-11-19T20:47:35.105254+00:00",
+      "youtube_id": "pqkbsYR7tsg",
+      "youtube_url": "https://www.youtube.com/shorts/pqkbsYR7tsg",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-11-22T15:15:47.932238+00:00"
     },
     {
       "id": "gta-vi-2026-11-19-mundo-vivo-short-1",
