@@ -39,11 +39,13 @@ class StrictSemanticGateTests(unittest.TestCase):
                 main(*(str(x) for x in paths))
             report=json.loads(paths[2].read_text(encoding="utf-8"))
             self.assertEqual(report["status"],"BLOCKED")
-            self.assertEqual(report["errors"][0]["type"],"phrase_visual_mismatch")
+            self.assertEqual(report["errors"][0]["type"],"unclassifiable_phrase")
 
     def test_unclassifiable_phrase_blocks_instead_of_guessing(self):
         with tempfile.TemporaryDirectory() as folder:
-            paths=self.make_files(Path(folder),[],phrase="A novidade muda tudo.")
+            # Even a frame tagged with the surrounding scene's category must
+            # not validate a phrase that has no independently verifiable visual subject.
+            paths=self.make_files(Path(folder),["demon","arena"],phrase="A novidade muda tudo.")
             with self.assertRaisesRegex(RuntimeError,"divergência"):
                 main(*(str(x) for x in paths))
             report=json.loads(paths[2].read_text(encoding="utf-8"))
