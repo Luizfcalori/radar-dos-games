@@ -6,7 +6,7 @@ from pathlib import Path
 from src.repetition_policy import (
     MAX_STATIC_BEAT_SECONDS, StaticTracker, asset_identity, match_score,
     qa_report, replace_short_repeats, subject_ok, validate_master, validate_short,
-    _apex_curated_still, static_limit, static_total_limit,
+    _apex_curated_still, _approved_gameplay_frame, static_limit, static_total_limit,
 )
 
 
@@ -75,6 +75,22 @@ class RepetitionPolicyTests(unittest.TestCase):
         self.assertTrue(subject_ok("A disputa pela área chama atenção e pode atrair outros esquadrões",apex))
         self.assertEqual(static_limit(apex),8)
         self.assertEqual(static_total_limit(apex),14.0)
+
+    def test_approved_gameplay_frame_is_same_source_fallback_only(self):
+        frame={
+            "index":31,"type":"image","approved":True,
+            "role":"official_context_approved_gameplay_frame_31",
+            "source":"https://video.akamai.steamstatic.com/store_trailers/3017860/example.mp4",
+            "url":"https://video.akamai.steamstatic.com/store_trailers/3017860/example.mp4",
+            "source_label":"Approved gameplay frame extracted from the same official source",
+        }
+        unrelated={**frame,"role":"official_context_01"}
+        self.assertTrue(_approved_gameplay_frame(frame))
+        self.assertFalse(_approved_gameplay_frame(unrelated))
+        self.assertTrue(subject_ok("A nova rodada aumenta a pressão contra os demônios",frame))
+        self.assertFalse(subject_ok("A batalha contra John Price muda tudo",frame))
+        self.assertEqual(static_limit(frame),8)
+        self.assertEqual(static_total_limit(frame),14.0)
 
     def test_unrelated_picture_cannot_fill_other_topic(self):
         self.assertFalse(subject_ok("O novo mapa Pendola Pass é coberto de neve",self.reward))
