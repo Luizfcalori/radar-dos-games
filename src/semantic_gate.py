@@ -42,11 +42,6 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
             else:
                 selected.append(asset)
 
-        scene_category=set(scene.get("vision_categories") or [])
-        if not scene_category:
-            scene_category=set(scene_categories(
-                " ".join(str(scene.get(k) or "") for k in ("title","subtitle","semantic_subject"))
-            ))
         beats_here=scene.get("beats",[])
         if not beats_here:
             scene_errors.append({"type":"missing_scene_beats","message":"Cena sem frases/intervalos associados."})
@@ -74,10 +69,11 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                 scene_errors.append({"phrase":phrase,"type":"missing_source_window",
                                      "message":"Frase sem intervalo de origem rastreável."})
                 continue
-            expected=set(scene_categories(text)) or scene_category
-            if not expected:
+            expected=set(scene_categories(text))
+            requirements=(scene.get("phrase_subjects") or {}).get(str(phrase),[])
+            if not expected and not requirements:
                 scene_errors.append({"phrase":phrase,"type":"unclassifiable_phrase",
-                                     "message":"Não foi possível classificar visualmente a frase; reescreva-a para descrever uma ação/cena verificável ou use quadro oficial específico."})
+                                     "message":"A frase não descreve uma categoria visual verificável nem tem sujeito nominal validado; reescreva-a ou associe quadro oficial específico."})
                 continue
             start=float(source_window.get("start",0))
             end=float(source_window.get("end",0))
@@ -86,7 +82,6 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                       if float(w.get("start",0))<=start+0.002
                       and float(w.get("end",0))+0.002>=end
                       and w.get("reviewed") is True and w.get("evidence")]
-            requirements=(scene.get("phrase_subjects") or {}).get(str(phrase),[])
             valid=[]
             for window in covering:
                 categories=set(window.get("semantic_categories",[]))
