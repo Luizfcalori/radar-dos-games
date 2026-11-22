@@ -30,9 +30,10 @@ class MediaFirstTests(unittest.TestCase):
         self.assertEqual(len(report["scenes"]),3)
         self.assertEqual(plan["media_first_policy"],"MEDIA_FIRST_V1")
         self.assertEqual(report["script_sha256"],hashlib.sha256(script.encode()).hexdigest())
-        for s in plan["scenes"]:
-            self.assertEqual(s["media_first_assets"],[7])
-            self.assertEqual(len(s["allowed_roles"]),1)
+        expected_assets=[[7],[7,13],[7]]
+        for scene,expected in zip(plan["scenes"],expected_assets):
+            self.assertEqual(scene["media_first_assets"],expected)
+            self.assertEqual(len(scene["allowed_roles"]),len(expected))
         # Hashed filenames still receive a topic label only because the image
         # is served from the exact official article URL.
         self.assertEqual(self.assets[1]["source_label"],"Battlefield 6")
