@@ -20,13 +20,12 @@ class ContinuityTests(unittest.TestCase):
         result=VideoTimeline(self.assets).choose(self.scene,'Invasão digital de um netrunner',5,list(self.assets.values()))
         self.assertEqual(result[0]['index'],2)
 
-    def test_fallback_uses_other_reviewed_gameplay_when_category_is_exhausted(self):
+    def test_category_mismatch_is_blocked_instead_of_using_other_gameplay(self):
         t=VideoTimeline(self.assets)
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        fallback=t.choose(self.scene,'Combate',5,list(self.assets.values()))
-        self.assertEqual(fallback[0]['index'],2)
-        self.assertEqual(fallback[1],0)
+        with self.assertRaisesRegex(RuntimeError,'sem gameplay aprovada utilizável'):
+            t.choose(self.scene,'Combate',5,list(self.assets.values()))
 
     def test_exhaustion_blocks_reuse_as_last_resort(self):
         t=VideoTimeline(self.assets)
