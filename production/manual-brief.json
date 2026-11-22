@@ -14,9 +14,7 @@
     "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-hotfix-1",
     "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-release-date"
   ],
-  "video_urls": [
-    "https://zolotube.com/watch?v=46iBb-vTRGw"
-  ],
+  "video_urls": [],
   "approved_for_publish": true,
   "short_hooks": [
     "DOOM AGORA TEM RODADAS SEM FIM DE DEMÔNIOS!",
@@ -48,5 +46,6 @@
     "O Update 5 traz outras mudanças além do novo modo. Nas configurações de interface, agora é possível ajustar os efeitos de dano na tela e a intensidade do efeito visual de pouca vida. O jogo também recebeu ajustes em armas e no comportamento de comandos, incluindo melhorias relacionadas ao Shield Saw e à Chain Spear. No PC, a atualização adiciona suporte ao AMD FSR 4 com upscaling 4.1 e Frame Generation 4 em placas compatíveis. A geração de quadros também pode ser ativada em GPUs Intel que atendam aos requisitos de hardware e driver.",
     "E a atualização não parou por aí. Em 19 de novembro, a Bethesda publicou o Hotfix 1 para o Update 5, com ajustes de equilíbrio em chefes e correções de problemas. Portanto, quem está voltando agora encontra o Slaughter Mode acompanhado de uma primeira rodada de refinamentos. A grande pergunta é quanto tempo você consegue resistir antes de perder tudo o que acumulou. Você protegeria suas caveiras no checkpoint ou escolheria Risk It para tentar multiplicar a recompensa? Conta nos comentários. Este é o Radar dos Games: inscreva-se para acompanhar as próximas novidades."
   ],
-  "production_note": "Brief bloqueado em 22/11/2026 com base nas notas oficiais Bethesda/id Software do Update 5 e Hotfix 1. Roteiro com 679 palavras para cumprir o piso editorial de 450 palavras. Usar o trailer oficial Slaughter Mode no Zolotube como fonte de vídeo, evitando depender do download direto do YouTube."
+  "production_note": "Brief bloqueado em 22/11/2026 com base nas notas oficiais Bethesda/id Software do Update 5 e Hotfix 1. Mídia deve vir do CDN e dos anúncios oficiais da página Steam exata do DOOM: The Dark Ages (App ID 3017860), além das imagens oficiais Bethesda; não depender de Zolotube/YouTube nem usar gameplay de outro jogo.",
+  "steam_app_id": 3017860
 }
