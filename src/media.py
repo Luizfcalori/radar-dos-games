@@ -703,7 +703,11 @@ def main(path):
             if video_id and video_id in seen_video_ids:
                 print('duplicate YouTube video ID rejected',u,'video_id',video_id,flush=True)
                 continue
-            movie_key=(source,label) if item.get("steam_app_id") and label else None
+            # Different official trailers may share the same Steam display label.
+            # Use the canonical CDN trailer identity, never the display name.
+            movie_path=urllib.parse.urlparse(u).path
+            movie_match=re.search(r'/store_trailers/(\d+)/(\d+)/([^/]+)/(\d+)/',movie_path)
+            movie_key=(source,tuple(movie_match.groups())) if item.get("steam_app_id") and movie_match else None
             if movie_key and movie_key in seen_movie_sources:continue
             low=u.lower();clean=low.split('?')[0];isimg=clean.endswith(IMAGE_EXTS) or bool(item.get('force_image',False) and wanted=='image');isstream=clean.endswith(STREAM_EXTS);isdrive='drive.google.com/file/d/' in low
             is_rockstar_zip = (
