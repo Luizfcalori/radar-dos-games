@@ -122,7 +122,7 @@ jobs:
                   if len(key)<4 or key in blocked or key in seen: continue
                   seen.add(key); chosen.append(tag)
                   if len(chosen)==5: break
-              caption=title+"\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n"+" ".join(chosen)
+              caption=title+"\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n"+" ".join(chosen)
               key=f"doom-dark-ages-slaughter-mode-2026-11-22-short-{n}"
               new.append({"id":key,"title":title,"media_url":f"{base}/{key}.mp4",
                 "thumbnail_url":f"{base}/{key}.jpg","post_text":caption,"status":"approved",
@@ -134,7 +134,7 @@ jobs:
           q["updated_at"]=now
           q["items"]=new+remaining
           qpath.parent.mkdir(parents=True,exist_ok=True)
-          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           print(json.dumps({"added":len(new),"preserved":len(remaining),"total":len(q["items"]),"titles":[x["title"] for x in new]},ensure_ascii=False))
           PY
 
