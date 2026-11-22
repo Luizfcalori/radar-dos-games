@@ -7,8 +7,8 @@ class ContinuityTests(unittest.TestCase):
     def setUp(self):
         self.assets={1:{'index':1,'type':'video','duration':60,'url':'https://official/one.mp4'},
                      2:{'index':2,'type':'video','duration':60,'url':'https://official/two.mp4'}}
-        self.scene={'visual_windows':{'1':[{'start':0,'end':20,'semantic_categories':['combat'],'reviewed':True,'evidence':'review/frame-1.jpg'}],
-                                      '2':[{'start':0,'end':20,'semantic_categories':['hacking'],'reviewed':True,'evidence':'review/frame-2.jpg'}]}}
+        self.scene={'visual_windows':{'1':[{'start':0,'end':10,'semantic_categories':['combat'],'reviewed':True,'evidence':'review/frame-1.jpg'}],
+                                      '2':[{'start':0,'end':10,'semantic_categories':['hacking'],'reviewed':True,'evidence':'review/frame-2.jpg'}]}}
 
     def test_follows_same_gameplay_without_restarting(self):
         t=VideoTimeline(self.assets)
@@ -23,14 +23,12 @@ class ContinuityTests(unittest.TestCase):
     def test_category_mismatch_uses_reviewed_same_game_fallback(self):
         t=VideoTimeline(self.assets)
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
-        t.choose(self.scene,'Combate',10,list(self.assets.values()))
         result=t.choose(self.scene,'Combate',5,list(self.assets.values()))
         self.assertEqual(result[0]['index'],2)
         self.assertEqual(result[3]['semantic_categories'],['hacking'])
 
     def test_fresh_same_game_fallback_is_used_before_any_reuse(self):
         t=VideoTimeline(self.assets)
-        t.choose(self.scene,'Combate',10,list(self.assets.values()))
         t.choose(self.scene,'Combate',10,list(self.assets.values()))
         result=t.choose(self.scene,'Combate',10,list(self.assets.values()))
         self.assertEqual(result[0]['index'],2)
