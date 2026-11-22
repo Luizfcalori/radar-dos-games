@@ -18,7 +18,8 @@
     "https://steamcommunity.com/app/3017860/allnews/",
     "https://store.steampowered.com/app/3017860/DOOM_The_Dark_Ages/",
     "https://www.playstation.com/en-us/games/doom-the-dark-ages/",
-    "https://www.youtube.com/watch?v=RwtRHiZ8zkE"
+    "https://www.youtube.com/watch?v=RwtRHiZ8zkE",
+    "https://zolotube.com/watch?v=RwtRHiZ8zkE"
   ],
   "video_urls": [
     "https://www.youtube.com/watch?v=RwtRHiZ8zkE",
@@ -26,6 +27,7 @@
     "https://www.youtube.com/watch?v=4tk8lkmYGWQ"
   ],
   "video_fallback_urls": [
+    "https://zolotube.com/watch?v=RwtRHiZ8zkE",
     "https://www.youtube.com/watch?v=FGFuaVUI6_E",
     "https://www.youtube.com/watch?v=8KyA7bf4IB0",
     "https://www.youtube.com/watch?v=s1i3YfGl5ag"
@@ -67,5 +69,5 @@
   "minimum_image_assets": 4,
   "steam_app_id": "3017860",
   "allow_same_source_role_fallback": true,
-  "narration_revision": "2026-11-22: novo brief focado no lançamento de Slaughter Mode, com fontes oficiais Bethesda, Steam, PlayStation e vídeos oficiais de reserva. [run-production] TOPIC=DOOM: The Dark Ages"
+  "narration_revision": "2026-11-22: novo brief focado no lançamento de Slaughter Mode, com fontes oficiais Bethesda, Steam, PlayStation e vídeos oficiais de reserva. [run-production] TOPIC=DOOM: The Dark Ages; added official Bethesda mirror on ZoloTube as a separate download route"
 }
