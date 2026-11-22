@@ -1,0 +1,164 @@
+name: Import DOOM Slaughter Mode Shorts to TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-doom-slaughter-mode-2026-11-22-to-tiktok-helper.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-doom-slaughter-mode-45048401734-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download completed DOOM production artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-45048401734
+          path: doom-source
+          repository: Luizfcalori/radar-dos-games
+          run-id: 45048401734
+          github-token: ${{ github.token }}
+
+      - name: Validate QA and exactly three Shorts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, shutil, subprocess
+          from pathlib import Path
+          source=Path("doom-source")
+          qa_files=list(source.rglob("final-qa.json"))
+          assert len(qa_files)==1, f"final-qa.json count={len(qa_files)}"
+          qa=json.loads(qa_files[0].read_text(encoding="utf-8"))
+          assert str(qa.get("status","")).upper().startswith("APPROVED"), qa.get("status")
+          for n in (1,2,3):
+              videos=[p for p in source.rglob(f"short_{n}.mp4") if p.is_file() and p.stat().st_size>500_000]
+              metas=list(source.rglob(f"short-{n}-youtube.json"))
+              results=list(source.rglob(f"youtube-short-{n}-result.json"))
+              assert len(videos)==1 and len(metas)==1 and len(results)==1, f"Short {n}: artifact count mismatch"
+              result=json.loads(results[0].read_text(encoding="utf-8"))
+              assert result.get("id") and result.get("status",{}).get("uploadStatus")=="uploaded", f"Short {n} YouTube upload not confirmed"
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              assert meta.get("title") and meta.get("description"), f"Short {n} metadata missing"
+              covers=[p for p in source.rglob(f"short_{n}_cover.jpg") if p.is_file() and p.stat().st_size>1000]
+              dst=Path("tiktok-doom")/f"doom-dark-ages-slaughter-mode-2026-11-22-short-{n}.mp4"
+              dst.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(videos[0],dst)
+              jpg=dst.with_suffix(".jpg")
+              if covers:
+                  shutil.copy2(covers[0],jpg)
+              else:
+                  subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss","1","-i",str(videos[0]),"-frames:v","1","-vf","scale=720:-2",str(jpg)],check=True)
+              print(f"VALIDATED_SHORT {n}: {meta['title']} ({dst.stat().st_size} bytes)")
+          print("DOOM_TIKTOK_PACKAGE_OK",flush=True)
+          PY
+
+      - name: Upload three MP4s and covers to stable Helper storage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-doom/*.mp4 tiktok-doom/*.jpg --clobber
+
+      - name: Verify all six public media URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 5 --retry-all-errors --retry-delay 2 --max-time 120 --range 0-1023 "$BASE/doom-dark-ages-slaughter-mode-2026-11-22-short-$n.$ext" -o /dev/null
+              echo "REMOTE_OK short-$n.$ext"
+            done
+          done
+
+      - name: Add exactly three DOOM Shorts to TikTok Helper queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re, unicodedata
+          from datetime import datetime, timezone
+          from pathlib import Path
+          source=Path("doom-source")
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          new=[]
+          for n in (1,2,3):
+              meta_files=list(source.rglob(f"short-{n}-youtube.json"))
+              assert len(meta_files)==1
+              meta=json.loads(meta_files[0].read_text(encoding="utf-8"))
+              title=re.sub(r"(?i)#shorts?\\b","",str(meta.get("title") or "DOOM: The Dark Ages")).strip(" -|")
+              desc=str(meta.get("description") or "")
+              candidates=re.findall(r"#([\\wÀ-ÿ]+)",desc,flags=re.UNICODE)
+              tags=meta.get("tags") or []
+              if isinstance(tags,str): tags=[x.strip() for x in tags.split(",")]
+              candidates += tags
+              chosen=[]; seen=set()
+              blocked={"radardosgames","shorts","youtubeshorts","games","gaming","tiktokgames"}
+              for raw in candidates:
+                  tag="#"+re.sub(r"[^\\w]","",str(raw).lstrip("#"),flags=re.UNICODE)
+                  key=unicodedata.normalize("NFKD",tag[1:]).encode("ascii","ignore").decode().lower()
+                  if len(key)<4 or key in blocked or key in seen: continue
+                  seen.add(key); chosen.append(tag)
+                  if len(chosen)==5: break
+              caption=title+"\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n"+" ".join(chosen)
+              key=f"doom-dark-ages-slaughter-mode-2026-11-22-short-{n}"
+              new.append({"id":key,"title":title,"media_url":f"{base}/{key}.mp4",
+                "thumbnail_url":f"{base}/{key}.jpg","post_text":caption,"status":"approved",
+                "source_run_id":45048401734,"short_number":n,"approved_at":now,
+                "source":"approved_production_artifact_auto","platform":"tiktok_helper_manual_posting"})
+          ids={x["id"] for x in new}
+          remaining=[x for x in old if x.get("id") not in ids]
+          q["version"]=2
+          q["updated_at"]=now
+          q["items"]=new+remaining
+          qpath.parent.mkdir(parents=True,exist_ok=True)
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          print(json.dumps({"added":len(new),"preserved":len(remaining),"total":len(q["items"]),"titles":[x["title"] for x in new]},ensure_ascii=False))
+          PY
+
+      - name: Commit queue update and verify exactly three records
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: add three DOOM Slaughter Mode Shorts to TikTok Helper"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-queue-verified.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-queue-verified.json",encoding="utf-8"))
+          prefix="doom-dark-ages-slaughter-mode-2026-11-22-short-"
+          found=[x for x in q.get("items",[]) if str(x.get("id","")).startswith(prefix)]
+          assert len(found)==3, f"Expected 3 DOOM Shorts, found {len(found)}"
+          assert {x.get("short_number") for x in found}=={1,2,3}
+          assert all(x.get("status")=="approved" and x.get("media_url","").endswith(".mp4") and x.get("thumbnail_url","").endswith(".jpg") for x in found)
+          print("TIKTOK_HELPER_DOOM_OK",len(found),"QUEUE_TOTAL",len(q.get("items",[])))
+          PY
