@@ -789,7 +789,7 @@ def fetch_manual_media(brief):
     # YouTube embeds are not treated as downloadable media here: GitHub runners can
     # be rate-limited by YouTube, so prefer direct PlayStation-hosted video assets.
     # Official publisher domains are allowed for this exact game brief; never crawl generic news/ad pages.
-    trusted_hosts = (".playstation.com", ".playstation.net", ".sony.com", ".sony.net", ".ea.com", ".eaassets-a.akamaihd.net", ".bethesda.net", "res.cloudinary.com")
+    trusted_hosts = (".playstation.com", ".playstation.net", ".sony.com", ".sony.net", ".ea.com", ".eaassets-a.akamaihd.net", ".bethesda.net", ".steamcommunity.com", ".steamstatic.com", ".akamaihd.net", "res.cloudinary.com")
     for source_url in list(brief.get("media_source_urls", []) or []):
         if not isinstance(source_url, str) or not source_url.startswith("https://"):
             continue
