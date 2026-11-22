@@ -108,9 +108,10 @@ class VideoTimeline:
                 if 'title_card' in cats: continue
                 reviewed=w.get('reviewed') is True and bool(w.get('evidence'))
                 if not reviewed: continue
-                # A source from the correct game is not enough: the visible
-                # category must match this phrase (or its scene-level category).
-                if expected and not (expected & cats): continue
+                # Flexible direction: exact visual categories rank first, but
+                # any reviewed gameplay from this same approved game/source remains
+                # eligible when the exact shot is unavailable. Named required
+                # subjects below remain hard constraints.
                 subject_match=not required_subjects or set(required_subjects)<=set(w.get('subjects',[]))
                 if scene.get("allow_official_subject_fallback"):
                     subject_match=True
@@ -165,7 +166,9 @@ class VideoTimeline:
                 for w in merge_reviewed_windows((scene.get('visual_windows') or {}).get(str(idx),[]),source_duration):
                     if w.get('reviewed') is not True or not w.get('evidence'): continue
                     if 'title_card' in set(w.get('semantic_categories',[])): continue
-                    if expected and not (expected & set(w.get('semantic_categories',[]))): continue
+                    # Do not discard reviewed same-game footage solely because
+                    # the broad CLIP category differs from the narration phrase.
+                    # Exact category matches are ranked above these fallbacks.
                     if required_subjects and not scene.get("allow_official_subject_fallback"):
                         if not set(required_subjects).issubset(set(w.get('subjects',[]))): continue
                     end=min(float(w['end']),source_duration-EPS) if source_duration>0 else float(w['end'])
