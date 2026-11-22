@@ -7,14 +7,20 @@
   "media_source_urls": [
     "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-release-notes",
     "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-hotfix-1",
-    "https://store.steampowered.com/app/3017860/DOOM_The_Dark_Ages/"
+    "https://store.steampowered.com/app/3017860/DOOM_The_Dark_Ages/",
+    "https://zolotube.com/watch?v=46iBb-vTRGw"
   ],
   "source_urls": [
     "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-release-notes",
     "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-hotfix-1",
     "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-release-date"
   ],
-  "video_urls": [],
+  "video_urls": [
+    "https://zolotube.com/watch?v=46iBb-vTRGw",
+    "https://www.youtube.com/watch?v=lJ0uZbqZgEU",
+    "https://www.youtube.com/watch?v=jHjrkbyEEgU",
+    "https://www.youtube.com/watch?v=4tk8lkmYGWQ"
+  ],
   "approved_for_publish": true,
   "short_hooks": [
     "DOOM AGORA TEM RODADAS SEM FIM DE DEMÔNIOS!",
@@ -33,8 +39,8 @@
     "Update 5 inclui opções de efeitos de dano e intensidade de efeito de pouca vida, ajustes no Shield Saw e Chain Spear, suporte a AMD FSR 4 Upscaling 4.1 e Frame Generation 4 em GPUs compatíveis; geração de quadros também pode ser ativada em GPUs Intel compatíveis.",
     "Hotfix 1 foi publicado em 19 de novembro de 2026 com ajustes de equilíbrio em chefes e correções. Não inventar valores específicos ou lista de mudanças que não conste na nota oficial consultada.",
     "Master cinematográfico 16:9, duração natural para desenvolver o tema, voz Thalita Multilingual PT-BR V3. Exatamente 3 Shorts verticais 9:16 derivados do Master, preservando narração, música e efeitos; não cortar no meio de frases.",
-    "Não usar gameplay de outro jogo, imagens genéricas, anúncios, loops, tomadas repetidas ou imagens estáticas prolongadas. Cenas devem corresponder à fala.",
-    "Capas oficiais no padrão Radar dos Games, com logo menor sobre a arte do jogo; manter títulos e cards legíveis. CTA final: inscreva-se; não usar 'ative o sininho' nem @radardosgamesbr."
+    "Capas oficiais no padrão Radar dos Games, com logo menor sobre a arte do jogo; manter títulos e cards legíveis. CTA final: inscreva-se; não usar 'ative o sininho' nem @radardosgamesbr.",
+    "Aquisição visual: incluir o trailer oficial Slaughter Mode do IGN via Zolotube e os trailers/gameplay oficiais de DOOM listados em video_urls. Priorizar cenas de Slaughter Mode quando a fala tratar do modo; usar gameplay oficial de DOOM: The Dark Ages apenas para contextualizar armas, arenas e combate. Não reutilizar o mesmo intervalo de vídeo; se a mídia inédita for insuficiente, bloquear e adquirir novas fontes."
   ],
   "script_blocks": [
     "O DOOM: The Dark Ages acaba de ganhar uma atualização que muda o jeito de enfrentar as hordas do inferno. O nome é Slaughter Mode, e a proposta é direta: sobreviver a rodadas cada vez mais brutais, atravessar arenas diferentes e descobrir até onde o Slayer consegue chegar. Não é apenas uma sequência de combates repetidos. Os encontros podem variar, com inimigos, chefes e desafios que tornam cada tentativa diferente. E existe uma decisão que pode custar tudo.",
