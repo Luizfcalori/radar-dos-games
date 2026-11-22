@@ -1,3 +1,4 @@
+# [run-private] TOPIC=DOOM: The Dark Ages — rerun after approved-source and no-repeat fixes.
 import unittest
 from src.continuity import VideoTimeline, validate_video_beats
 from src.pronunciation import spoken_text, measured_phrases
