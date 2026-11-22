@@ -116,27 +116,15 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             for vid in videos:
                 candidate_windows=inspected[int(vid["index"])]["usable_windows"]
                 window_options[int(vid["index"])]=usable_for_scene(candidate_windows,expected)
-            # Broad categories are hints, not proof of game-specific identity.
-            # Flexible fallback: every candidate here was already sourced from the
-            # exact official game page and visually inspected. If CLIP cannot map a
-            # narration paragraph to one of its broad labels, keep the production
-            # moving with official gameplay from this same game rather than blocking
-            # the whole Master over a secondary semantic mismatch.
+            # Fail closed: official origin proves the game identity, not that the
+            # pictured action matches this paragraph. Only windows that passed the
+            # visual category match may be assigned to this scene.
             matched_videos=[a for a in videos if window_options[int(a["index"])]]
-            # Generic official Fortnite gameplay is reserved for narration about
-            # in-game action. Do not place a different season's trailer over Yeat-specific
-            # claims; the collaboration trailer remains the preferred source there.
-            low_text=text.casefold()
-            gameplay_context=any(token in low_text for token in (
-                "dentro do jogo","personagens em movimento","equipamentos",
-                "confrontos","ação característica","ação","gameplay","combate"
-            ))
-            matched_videos=[a for a in matched_videos
-                            if a.get("role")!="official_general_fortnite_gameplay" or gameplay_context]
-            if not matched_videos:
-                fallback=[a for a in videos
-                          if a.get("role")!="official_general_fortnite_gameplay" or gameplay_context]
-                matched_videos=fallback or videos
+            if expected and not matched_videos and not matched_stills:
+                raise RuntimeError(
+                    f"QUALITY_BLOCK: nenhuma gameplay/quadro aprovado corresponde "
+                    f"semanticamente à cena {i}: {text[:180]}"
+                )
         else:
             matched_videos=videos
         picks=[]
@@ -148,7 +136,13 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         # contextual cutaways. StaticTracker enforces subject match, cooldown,
         # and per-image limits; unrelated sources are never admitted.
         if contextual_images:
-            picks.extend(sorted(contextual_images,key=rank))
+            # A publisher page is not proof that every image on it illustrates
+            # every sentence. Admit contextual stills only when their labels
+            # contain scene-specific evidence after topic terms are removed.
+            picks.extend(sorted(
+                [a for a in contextual_images if relevance(text,a,topic)>0],
+                key=rank
+            ))
         # Never use an unrelated image merely because the semantic inventory is
         # unavailable. A still must match the narration or qualify as a verified
         # official, topic-bound contextual image above.
