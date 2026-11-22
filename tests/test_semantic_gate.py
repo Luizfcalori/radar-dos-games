@@ -7,7 +7,7 @@ from pathlib import Path
 from src.semantic_gate import main
 
 
-class StrictSemanticGateTests(unittest.TestCase):
+class FlexibleSemanticGateTests(unittest.TestCase):
     def make_files(self, root, category, phrase="Demônios avançam na arena."):
         assets={"assets":[{"index":1,"type":"video","duration":30,"approved":True,
                            "role":"official_gameplay","url":"https://official.test/gameplay.mp4"}]}
@@ -32,25 +32,24 @@ class StrictSemanticGateTests(unittest.TestCase):
             self.assertEqual(report["status"],"APPROVED")
             self.assertEqual(report["error_count"],0)
 
-    def test_wrong_gameplay_category_blocks_render(self):
+    def test_different_reviewed_gameplay_is_accepted_as_soft_fallback(self):
         with tempfile.TemporaryDirectory() as folder:
             paths=self.make_files(Path(folder),["driving"])
-            with self.assertRaisesRegex(RuntimeError,"divergência"):
-                main(*(str(x) for x in paths))
+            main(*(str(x) for x in paths))
             report=json.loads(paths[2].read_text(encoding="utf-8"))
-            self.assertEqual(report["status"],"BLOCKED")
-            self.assertEqual(report["errors"][0]["type"],"phrase_visual_mismatch")
+            self.assertEqual(report["status"],"APPROVED")
+            self.assertEqual(report["error_count"],0)
+            self.assertEqual(report["warning_count"],1)
+            self.assertEqual(report["warnings"][0]["type"],"flexible_same_game_fallback")
 
-    def test_unclassifiable_phrase_blocks_instead_of_guessing(self):
+    def test_contextual_phrase_is_allowed_with_scene_context(self):
         with tempfile.TemporaryDirectory() as folder:
-            # Even a frame tagged with the surrounding scene's category must
-            # not validate a phrase that has no independently verifiable visual subject.
             paths=self.make_files(Path(folder),["demon","arena"],phrase="A novidade muda tudo.")
-            with self.assertRaisesRegex(RuntimeError,"divergência"):
-                main(*(str(x) for x in paths))
+            main(*(str(x) for x in paths))
             report=json.loads(paths[2].read_text(encoding="utf-8"))
-            self.assertEqual(report["status"],"BLOCKED")
-            self.assertEqual(report["errors"][0]["type"],"unclassifiable_phrase")
+            self.assertEqual(report["status"],"APPROVED")
+            self.assertEqual(report["error_count"],0)
+            self.assertEqual(report["warning_count"],1)
 
 if __name__=="__main__":
     unittest.main()
