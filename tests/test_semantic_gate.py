@@ -39,7 +39,7 @@ class StrictSemanticGateTests(unittest.TestCase):
                 main(*(str(x) for x in paths))
             report=json.loads(paths[2].read_text(encoding="utf-8"))
             self.assertEqual(report["status"],"BLOCKED")
-            self.assertEqual(report["errors"][0]["type"],"unclassifiable_phrase")
+            self.assertEqual(report["errors"][0]["type"],"phrase_visual_mismatch")
 
     def test_unclassifiable_phrase_blocks_instead_of_guessing(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -50,7 +50,7 @@ class StrictSemanticGateTests(unittest.TestCase):
                 main(*(str(x) for x in paths))
             report=json.loads(paths[2].read_text(encoding="utf-8"))
             self.assertEqual(report["status"],"BLOCKED")
-            self.assertEqual(report["errors"][0]["type"],"phrase_visual_mismatch")
+            self.assertEqual(report["errors"][0]["type"],"unclassifiable_phrase")
 
 if __name__=="__main__":
     unittest.main()
