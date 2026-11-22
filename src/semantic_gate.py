@@ -88,7 +88,7 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                 subjects=set(window.get("subjects",[]))
                 if "title_card" in categories:
                     continue
-                if not (expected & categories):
+                if expected and not (expected & categories):
                     continue
                 if requirements and not set(requirements).issubset(subjects):
                     continue
