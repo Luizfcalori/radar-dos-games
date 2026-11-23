@@ -125,13 +125,13 @@ jobs:
           blocked={"radardosgames","shorts","youtubeshorts","gaming","games","gameplay","jogos","tiktokgames"}
           for n in (1,2,3):
               meta=json.loads(next(root.rglob(f"short-{n}-youtube.json")).read_text(encoding="utf-8"))
-              title=re.sub(r"(?i)#shorts?\\b","",str(meta.get("title") or "STRANGER THAN HEAVEN")).strip(" -|")
+              title=re.sub(r"(?i)#shorts?\b","",str(meta.get("title") or "STRANGER THAN HEAVEN")).strip(" -|")
               desc=str(meta.get("description") or "")
-              raw=re.findall(r"#([\\wÀ-ÿ]+)",desc,flags=re.UNICODE)
+              raw=re.findall(r"#([\wÀ-ÿ]+)",desc,flags=re.UNICODE)
               raw += list(meta.get("tags") or []) if isinstance(meta.get("tags"),list) else []
               chosen=[]; seen=set()
               for value in raw:
-                  clean=re.sub(r"[^\\w]","",str(value).lstrip("#"),flags=re.UNICODE)
+                  clean=re.sub(r"[^\w]","",str(value).lstrip("#"),flags=re.UNICODE)
                   key=unicodedata.normalize("NFKD",clean).encode("ascii","ignore").decode().lower()
                   if len(key)<4 or key in blocked or key in seen: continue
                   seen.add(key); chosen.append("#"+clean)
@@ -156,7 +156,7 @@ jobs:
           remaining=[x for x in old if x.get("id") not in ids]
           q["version"]=2; q["updated_at"]=now; q["items"]=new+remaining
           qpath.parent.mkdir(parents=True,exist_ok=True)
-          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           print(json.dumps({"added":len(new),"preserved":len(remaining),"total":len(q["items"]),"titles":[x["title"] for x in new]},ensure_ascii=False))
           PY
 
