@@ -31,10 +31,19 @@
     "PASSES COM TESTE GRÁTIS CHEGAM EM 2 DE DEZEMBRO!"
   ],
   "approved_for_publish": true,
-  "minimum_assets": 1,
-  "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 90,
-  "minimum_image_assets": 0,
+  "minimum_assets": 3,
+  "minimum_video_assets": 0,
+  "minimum_unique_video_seconds": 0,
+  "minimum_image_assets": 3,
+  "allow_image_only_master": true,
+  "allow_official_subject_fallback": true,
+  "image_pages": [
+    "https://devforum.roblox.com/t/sharper-web-play-rendering-with-webgpu/4996719",
+    "https://devforum.roblox.com/t/create-avatar-moments-to-showcase-and-sell-your-items/4997778",
+    "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943",
+    "https://devforum.roblox.com/t/weekly-recap-november-16%E2%80%9320-2026/4998199"
+  ],
+  "images_per_page": 4,
   "editorial_rules": [
     "Tema travado: novidades oficiais da plataforma Roblox divulgadas entre 16 e 23 de novembro de 2026. Não trocar por outro jogo nem por Roblox Rivals.",
     "Explicar que o Web Play passou a usar WebGPU, melhorando renderização, iluminação, texturas e avatares; a compatibilidade depende do suporte WebGPU do dispositivo.",
