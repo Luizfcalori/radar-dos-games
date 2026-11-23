@@ -135,7 +135,7 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             # pictured action matches this paragraph. Only windows that passed the
             # visual category match may be assigned to this scene.
             matched_videos=[a for a in videos if window_options[int(a["index"])]]
-            if expected and not matched_videos and not matched_stills:
+            if expected and not matched_videos and not matched_stills and not image_only:
                 raise RuntimeError(
                     f"QUALITY_BLOCK: nenhuma gameplay/quadro aprovado corresponde "
                     f"semanticamente à cena {i}: {text[:180]}"
