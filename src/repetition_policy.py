@@ -185,10 +185,11 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset):
-        # Official MW4 stills are the approved continuity fallback when unique
-        # reviewed gameplay is exhausted; allow enough short, spaced inserts to
-        # bridge factual narration without replaying motion footage.
+    if _roblox_announcement_still(asset):
+        return 12
+    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset):
+        # Curated official stills are a bounded continuity fallback when unique
+        # reviewed gameplay is exhausted; never generalize this exception to other sources.
         return 8
     if str(asset.get("role") or "").startswith("official_subject_reference_"):
         return MAX_CURATED_STATIC_USES_MASTER
@@ -196,7 +197,9 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    if _roblox_announcement_still(asset):
+        return 28.0
+    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
