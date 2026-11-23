@@ -566,11 +566,12 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                                 generated_frames.append(frame)
                                 generated_frame_keys.add(frame_key)
                                 next_generated_index+=1
-                                if static_tracker.can_use(
-                                    frame,phrase_text,i,timeline_seconds,
-                                    min(remaining,3.5),relax_cooldown=True
-                                ):
-                                    frame_candidates.append(frame)
+                                # Candidate generation is deliberately separate from
+                                # shot selection: final master QA still validates every
+                                # selected frame for provenance, subject relevance, duration,
+                                # and non-consecutive use. Do not let the cooldown tracker
+                                # suppress all newly extracted frames before they are tried.
+                                frame_candidates.append(frame)
                                 if len(frame_candidates)>=4:
                                     break
                             if len(frame_candidates)>=4:
@@ -583,6 +584,13 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     # stills from the same researched game/topic, then distinct frames
                     # extracted from reviewed gameplay. Motion intervals are never replayed.
                     candidates_for_still = stills or fallback_stills
+                    if fallback_stills:
+                        print(json.dumps({
+                            "director_fallback":"approved_gameplay_frames",
+                            "generated_frames":len(generated_frames),
+                            "eligible_frames":len(fallback_stills),
+                            "scene":i,
+                        },ensure_ascii=False))
                     if not candidates_for_still and cta_phrase:
                         # Final subscriber sign-off: if the scene's local shotlist and
                         # the single official still are exhausted, use already-reviewed
