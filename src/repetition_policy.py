@@ -121,6 +121,15 @@ def _approved_gameplay_frame(asset):
         and "approved gameplay frame" in str(asset.get("source_label") or "").casefold()
     )
 
+def _roblox_announcement_still(asset):
+    """Recognize only images acquired from the official Roblox DevForum announcement pages."""
+    return (
+        asset.get("type") == "image"
+        and str(asset.get("role") or "").startswith("official_roblox_announcement_visual_")
+        and str(asset.get("source") or "").startswith("https://devforum.roblox.com/")
+        and str(asset.get("url") or "").startswith("https://")
+    )
+
 
 def _extract_approved_gameplay_frame(video, timestamp, index):
     """Create a distinct, source-traceable still from a reviewed window of this game's footage."""
@@ -166,7 +175,7 @@ def subject_ok(phrase,asset):
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset)):
+    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -176,7 +185,7 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
-    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset):
+    if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset):
         # Official MW4 stills are the approved continuity fallback when unique
         # reviewed gameplay is exhausted; allow enough short, spaced inserts to
         # bridge factual narration without replaying motion footage.
@@ -187,7 +196,7 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
-    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
+    return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
 
 
 def asset_identity(asset):
@@ -222,7 +231,7 @@ class StaticTracker:
         # official MW4 stills after all fresh stills and unique gameplay are exhausted.
         # Usage/seconds caps, subject matching, and the no-immediate-repeat guard
         # remain mandatory.
-        relaxed_official_bridge=relax_cooldown and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset))
+        relaxed_official_bridge=relax_cooldown and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset))
         if not relaxed_official_bridge:
             if row["scene"] is not None and scene_no-row["scene"]<STATIC_COOLDOWN_SCENES:
                 return False
@@ -263,7 +272,7 @@ def validate_master(scenes,assets):
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
                     beat.get("visual_evidence") == "official_image_subject_label"
-                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset))
+                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset))
                 )
                 if not tracker.can_use(
                     asset, beat.get("text",""), scene_no, cursor, d,
