@@ -1,10 +1,16 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-23T09:46:12.078755+00:00",
-  "total_discovered": 220,
+  "updated_at": "2026-11-23T21:50:02.423001+00:00",
+  "total_discovered": 221,
   "ready_for_tiktok": 12,
-  "waiting_media": [],
+  "waiting_media": [
+    {
+      "youtube_id": "hvNGrAlPfWA",
+      "title": "🎮 GTA 6 promete elevar a experiência a outro nível!",
+      "reason": "original_media_not_recovered_yet"
+    }
+  ],
   "items": [
     {
       "youtube_id": "HF4dB7VEO1U",
@@ -1325,6 +1331,12 @@
       "youtube_url": "https://www.youtube.com/shorts/krjnB6c0KvE",
       "title": "MARCUS E DOM ESTÃO DE VOLTA! 🔥 Gears of War: E-Day",
       "status": "published"
+    },
+    {
+      "youtube_id": "hvNGrAlPfWA",
+      "youtube_url": "https://www.youtube.com/shorts/hvNGrAlPfWA",
+      "title": "🎮 GTA 6 promete elevar a experiência a outro nível!",
+      "status": "waiting_media"
     }
   ]
 }
