@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-22T18:10:42.191509+00:00",
+  "updated_at": "2026-11-23T09:46:12.078755+00:00",
   "items": [
     {
       "id": "doom-dark-ages-slaughter-mode-2026-11-22-short-1",
@@ -13,8 +13,12 @@
       "source_run_id": 45048401734,
       "short_number": 1,
       "approved_at": "2026-11-22T18:10:42.191509+00:00",
-      "source": "approved_production_artifact_auto",
-      "platform": "tiktok_helper_manual_posting"
+      "source": "youtube_channel",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "HF4dB7VEO1U",
+      "youtube_url": "https://www.youtube.com/shorts/HF4dB7VEO1U",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-23T09:46:12.078755+00:00"
     },
     {
       "id": "doom-dark-ages-slaughter-mode-2026-11-22-short-2",
@@ -26,8 +30,12 @@
       "source_run_id": 45048401734,
       "short_number": 2,
       "approved_at": "2026-11-22T18:10:42.191509+00:00",
-      "source": "approved_production_artifact_auto",
-      "platform": "tiktok_helper_manual_posting"
+      "source": "youtube_channel",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "CIagbf_OEWw",
+      "youtube_url": "https://www.youtube.com/shorts/CIagbf_OEWw",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-23T09:46:12.078755+00:00"
     },
     {
       "id": "doom-dark-ages-slaughter-mode-2026-11-22-short-3",
@@ -39,8 +47,12 @@
       "source_run_id": 45048401734,
       "short_number": 3,
       "approved_at": "2026-11-22T18:10:42.191509+00:00",
-      "source": "approved_production_artifact_auto",
-      "platform": "tiktok_helper_manual_posting"
+      "source": "youtube_channel",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "bvUUW4dFxDk",
+      "youtube_url": "https://www.youtube.com/shorts/bvUUW4dFxDk",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-23T09:46:12.078755+00:00"
     },
     {
       "id": "44603154365-short-1",

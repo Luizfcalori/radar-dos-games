@@ -1,11 +1,29 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-22T15:15:47.932238+00:00",
-  "total_discovered": 217,
-  "ready_for_tiktok": 9,
+  "updated_at": "2026-11-23T09:46:12.078755+00:00",
+  "total_discovered": 220,
+  "ready_for_tiktok": 12,
   "waiting_media": [],
   "items": [
+    {
+      "youtube_id": "HF4dB7VEO1U",
+      "youtube_url": "https://www.youtube.com/shorts/HF4dB7VEO1U",
+      "title": "SLAUGHTER MODE: HORDAS INFINITAS DE DEMÔNIOS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "CIagbf_OEWw",
+      "youtube_url": "https://www.youtube.com/shorts/CIagbf_OEWw",
+      "title": "ARRISCAR OU GARANTIR OS CRÂNIOS? A ESCOLHA É SUA!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "bvUUW4dFxDk",
+      "youtube_url": "https://www.youtube.com/shorts/bvUUW4dFxDk",
+      "title": "CHEFES, ARENAS ALEATÓRIAS E RECOMPENSAS EXCLUSIVAS!",
+      "status": "approved"
+    },
     {
       "youtube_id": "1e7BD4uN_OI",
       "youtube_url": "https://www.youtube.com/shorts/1e7BD4uN_OI",
