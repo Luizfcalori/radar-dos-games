@@ -33,8 +33,9 @@ def label(asset):
 def relevance(paragraph,asset,topic):
     return len((terms(paragraph)-terms(topic)) & terms(label(asset)))
 
-def verify_assets(clips):
+def verify_assets(clips, plan):
     found=[]
+    image_only = bool(plan.get("allow_image_only_master", False))
     for asset in clips.get("assets") or []:
         if not asset.get("approved"):continue
         if asset.get("type") not in ("video","image"):continue
@@ -50,14 +51,21 @@ def verify_assets(clips):
     # one verified, topic-relevant official video is available. Do not contradict
     # that policy here: a single approved moving asset can support a storyboard,
     # while the visual-inspection gate still rejects unusable or duplicate clips.
-    if not clips.get("publishable_media") or len(found)<1 or not any(
-        x["type"]=="video" for x in found
+    has_video = any(x["type"] == "video" for x in found)
+    has_official_stills = any(
+        x["type"] == "image"
+        and str(x.get("role") or "").startswith("official_roblox_announcement_visual_")
+        and str(x.get("source") or "").startswith("https://")
+        for x in found
+    )
+    if not clips.get("publishable_media") or len(found)<1 or not (
+        has_video or (image_only and has_official_stills)
     ):
-        raise RuntimeError("QUALITY_BLOCK: não há mídia em movimento aprovada suficiente")
+        raise RuntimeError("QUALITY_BLOCK: não há vídeo aprovado nem fallback de imagens oficiais explicitamente autorizado")
     return found
 
 def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
-    assets=verify_assets(clips)
+    assets=verify_assets(clips,plan)
     paragraphs=[p.strip() for p in outline.split("\n\n") if p.strip()]
     scenes=plan.get("scenes") or []
     if len(scenes)!=len(paragraphs) or len(scenes)<3:
@@ -90,7 +98,8 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         # Requiring the source host to match the selected official source keeps
         # the fallback topic-bound and prevents generic third-party images.
         official_role=asset_role.startswith((
-            "official_subject_reference_", "official_context_"
+            "official_subject_reference_", "official_context_",
+            "official_roblox_announcement_visual_"
         ))
         same_official_host=bool(primary_source[0] and asset_source[0]==primary_source[0])
         if official_role and same_official_host:
@@ -136,16 +145,17 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         # contextual cutaways. StaticTracker enforces subject match, cooldown,
         # and per-image limits; unrelated sources are never admitted.
         if contextual_images:
-            # A publisher page is not proof that every image on it illustrates
-            # every sentence. Admit contextual stills only when their labels
-            # contain scene-specific evidence after topic terms are removed.
-            picks.extend(sorted(
-                [a for a in contextual_images if relevance(text,a,topic)>0],
-                key=rank
-            ))
-        # Never use an unrelated image merely because the semantic inventory is
-        # unavailable. A still must match the narration or qualify as a verified
-        # official, topic-bound contextual image above.
+            # A publisher page is not proof that every image illustrates every
+            # sentence. Prefer scene-specific label matches; the explicit Roblox
+            # image-led mode may use the remaining official announcement stills
+            # as contextual backgrounds while the on-screen cards carry the facts.
+            contextual_matches=[a for a in contextual_images if relevance(text,a,topic)>0]
+            if plan.get("allow_image_only_master", False):
+                picks.extend(sorted(contextual_matches or contextual_images,key=rank))
+            else:
+                picks.extend(sorted(contextual_matches,key=rank))
+        # Never use unrelated third-party imagery. The only broad contextual
+        # fallback is the explicitly authorized official Roblox announcement mode.
         if not picks:
             raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem vídeo reconhecido nem imagem oficial identificável")
         # A semantic label mismatch is not a hard block when official gameplay
