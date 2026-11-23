@@ -8,10 +8,7 @@
     "https://devforum.roblox.com/t/weekly-recap-november-16%E2%80%9320-2026/4998199",
     "https://devforum.roblox.com/t/sharper-web-play-rendering-with-webgpu/4996719",
     "https://devforum.roblox.com/t/create-avatar-moments-to-showcase-and-sell-your-items/4997778",
-    "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943",
-    "https://create.roblox.com/docs/videos/roblox-made-a-friendslop-template",
-    "https://create.roblox.com/docs/videos/how-to-add-rain-to-roblox-games",
-    "https://create.roblox.com/docs/videos/get-a-sneak-peek-at-bungie-co-founders-new-roblox-game"
+    "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943"
   ],
   "source_urls": [
     "https://devforum.roblox.com/t/weekly-recap-november-16%E2%80%9320-2026/4998199",
@@ -20,10 +17,7 @@
     "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943"
   ],
   "video_urls": [],
-  "video_fallback_urls": [
-    "https://www.sotwe.com/robloxcreators?lang=en",
-    "https://www.sotwe.com/roblox?lang=en"
-  ],
+  "video_fallback_urls": [],
   "short_hooks": [
     "ROBLOX AGORA USA WEBGPU: O QUE MUDA AO JOGAR PELO NAVEGADOR?",
     "AVATAR MOMENTS: AGORA DÁ PARA MOSTRAR E VENDER SEUS LOOKS!",
@@ -41,7 +35,6 @@
     "Os testes grátis de Passes serão disponibilizados aos jogadores em 2 de dezembro de 2026; criadores já podem ativar a opção em passes elegíveis. Um teste vale por uma sessão de jogo.",
     "State Machine e Luau Expression nodes foram liberados no Animation Graph Editor e funcionam em jogos publicados.",
     "UI Particles continua em beta e não deve ser apresentado como recurso liberado para todos.",
-    "A demonstração de Boneheads, o tutorial de chuva e o primeiro olhar de Drifters são vídeos oficiais do canal Roblox Creators publicados anteriormente; usar apenas como imagens ilustrativas de experiências Roblox e desenvolvimento, nunca afirmar que mostram as novidades de novembro.",
     "Manter separação visual clara entre gameplay/experiências Roblox e telas de Roblox Studio. Não inventar gameplay de uma atualização específica.",
     "Master 16:9 Full HD, intro oficial integral e narração Thalita Multilingual PT-BR V3. Exatamente 3 Shorts 9:16 independentes, hooks distintos e capas próprias.",
     "Cards e textos precisam permanecer legíveis tempo suficiente. Aceitar imagens oficiais relacionadas de Roblox/Studio sem bloquear por incompatibilidade visual secundária; não usar imagens de outros jogos.",
