@@ -796,7 +796,7 @@ def fetch_manual_media(brief):
     # be rate-limited by YouTube, so prefer direct PlayStation-hosted video assets.
     # Official publisher domains are allowed for this exact game brief; never crawl generic news/ad pages.
     # [run-production] TOPIC=DOOM: The Dark Ages — rerun with expanded official Slaughter Mode sources.
-    trusted_hosts = (".playstation.com", ".playstation.net", ".sony.com", ".sony.net", ".ea.com", ".eaassets-a.akamaihd.net", ".bethesda.net", ".steamcommunity.com", ".steamstatic.com", ".akamaihd.net", "res.cloudinary.com")
+    trusted_hosts = (".playstation.com", ".playstation.net", ".sony.com", ".sony.net", ".ea.com", ".eaassets-a.akamaihd.net", ".bethesda.net", ".steamcommunity.com", ".steamstatic.com", ".akamaihd.net", "res.cloudinary.com", ".roblox.com")
     for source_url in list(brief.get("media_source_urls", []) or []):
         if not isinstance(source_url, str) or not source_url.startswith("https://"):
             continue
@@ -826,7 +826,9 @@ def fetch_manual_media(brief):
     # provide the exact Steam app ID; the exact game's publisher-controlled CDN
     # is then the approved independent route. Do not fail before that route runs.
     has_exact_steam_fallback = str(brief.get("steam_app_id") or "").isdigit()
-    if (not media or not any(kind == "video" for kind, _ in media)) and not has_exact_steam_fallback:
+    allow_image_only = bool(brief.get("allow_image_only_master", False))
+    has_approved_images = any(kind == "image" for kind, _ in media)
+    if (not media or (not any(kind == "video" for kind, _ in media) and not (allow_image_only and has_approved_images))) and not has_exact_steam_fallback:
         raise RuntimeError(
             "QUALITY_BLOCK: trailer oficial explicitamente aprovado indisponível; "
             "não será usada mídia genérica nem publicidade de páginas."
