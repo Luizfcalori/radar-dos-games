@@ -222,7 +222,7 @@ class StaticTracker:
         # official MW4 stills after all fresh stills and unique gameplay are exhausted.
         # Usage/seconds caps, subject matching, and the no-immediate-repeat guard
         # remain mandatory.
-        relaxed_official_bridge=relax_cooldown and (_mw4_curated_still(asset) or _apex_curated_still(asset))
+        relaxed_official_bridge=relax_cooldown and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset))
         if not relaxed_official_bridge:
             if row["scene"] is not None and scene_no-row["scene"]<STATIC_COOLDOWN_SCENES:
                 return False
