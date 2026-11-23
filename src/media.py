@@ -529,6 +529,21 @@ def discover(page,allow_images=False):
         text=''
     text=html.unescape(text).replace('\\/','/').replace('\\u0026','&')
     raws=[]
+    # Discourse/Roblox DevForum stores announcement screenshots inside cooked-post
+    # JSON, which is not always present in the initial HTML response. Only query
+    # this JSON when the caller explicitly enabled images for this exact source.
+    parsed_page=urllib.parse.urlparse(page)
+    if allow_images and (parsed_page.hostname or "").lower().endswith("devforum.roblox.com"):
+        api_url=page.rstrip("/")+".json"
+        try:
+            with urllib.request.urlopen(req(api_url,page),timeout=25) as response:
+                payload=json.loads(response.read(12*1024*1024).decode("utf-8","ignore"))
+            for post in (payload.get("post_stream") or {}).get("posts") or []:
+                cooked=html.unescape(post.get("cooked") or "").replace('\\/','/')
+                raws += re.findall(r'''(?:src|data-src|href)=["']([^"']+)["']''',cooked,re.I)
+                raws += re.findall(r'''https?://[^"'<> ]+\.(?:jpg|jpeg|png|webp)(?:\?[^"'<> ]*)?''',cooked,re.I)
+        except Exception as e:
+            print("official DevForum image JSON discovery failed",api_url,type(e).__name__,str(e)[:180],flush=True)
     raws += re.findall(r'''(?:href|src|content|data-src|data-orig-src|data-base62-sha1|data-video|data-url|poster)=["']([^"']+)["']''',text,re.I)
     raws += re.findall(r'''https?://[^"'<>\s]+''',text)
     raws += ['https://www.youtube.com/watch?v='+v for v in re.findall(r'(?:youtube\.com/embed/|youtu\.be/)([A-Za-z0-9_-]{6,})',text,re.I)]
