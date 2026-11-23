@@ -156,8 +156,12 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
             # image-led mode may use the remaining official announcement stills
             # as contextual backgrounds while the on-screen cards carry the facts.
             contextual_matches=[a for a in contextual_images if relevance(text,a,topic)>0]
-            if plan.get("allow_image_only_master", False):
-                picks.extend(sorted(contextual_matches or contextual_images,key=rank))
+            if image_only:
+                # In image-led mode every scene can draw from the complete set of
+                # verified official announcement stills. Feature-specific matches
+                # rank first, but a single weekly-recap screenshot must not become
+                # the only eligible image for later scenes.
+                picks.extend(sorted(contextual_images,key=rank))
             else:
                 picks.extend(sorted(contextual_matches,key=rank))
         # Never use unrelated third-party imagery. The only broad contextual
