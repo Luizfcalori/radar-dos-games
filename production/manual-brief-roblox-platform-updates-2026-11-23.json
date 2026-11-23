@@ -19,25 +19,18 @@
     "https://devforum.roblox.com/t/create-avatar-moments-to-showcase-and-sell-your-items/4997778",
     "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943"
   ],
-  "video_urls": [
-    "https://www.youtube.com/watch?v=2XP882xARSQ",
-    "https://www.youtube.com/watch?v=awH9TlwM6d4",
-    "https://www.youtube.com/watch?v=Zn9u4sTNTag"
-  ],
-  "video_fallback_urls": [
-    "https://x.com/RobloxCreators",
-    "https://x.com/Roblox"
-  ],
+  "video_urls": [],
+  "video_fallback_urls": [],
   "short_hooks": [
     "ROBLOX AGORA USA WEBGPU: O QUE MUDA AO JOGAR PELO NAVEGADOR?",
     "AVATAR MOMENTS: AGORA DÁ PARA MOSTRAR E VENDER SEUS LOOKS!",
     "PASSES COM TESTE GRÁTIS CHEGAM EM 2 DE DEZEMBRO!"
   ],
   "approved_for_publish": true,
-  "minimum_assets": 1,
-  "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 90,
-  "minimum_image_assets": 0,
+  "minimum_assets": 4,
+  "minimum_video_assets": 0,
+  "minimum_unique_video_seconds": 0,
+  "minimum_image_assets": 4,
   "editorial_rules": [
     "Tema travado: novidades oficiais da plataforma Roblox divulgadas entre 16 e 23 de novembro de 2026. Não trocar por outro jogo nem por Roblox Rivals.",
     "Explicar que o Web Play passou a usar WebGPU, melhorando renderização, iluminação, texturas e avatares; a compatibilidade depende do suporte WebGPU do dispositivo.",
@@ -49,7 +42,8 @@
     "Manter separação visual clara entre gameplay/experiências Roblox e telas de Roblox Studio. Não inventar gameplay de uma atualização específica.",
     "Master 16:9 Full HD, intro oficial integral e narração Thalita Multilingual PT-BR V3. Exatamente 3 Shorts 9:16 independentes, hooks distintos e capas próprias.",
     "Cards e textos precisam permanecer legíveis tempo suficiente. Aceitar imagens oficiais relacionadas de Roblox/Studio sem bloquear por incompatibilidade visual secundária; não usar imagens de outros jogos.",
-    "Enviar Master e exatamente três Shorts ao YouTube como privados; importar exatamente os três Shorts aprovados para o TikTok Helper."
+    "Enviar Master e exatamente três Shorts ao YouTube como privados; importar exatamente os três Shorts aprovados para o TikTok Helper.",
+    "Se os vídeos oficiais estiverem bloqueados, usar somente imagens e capturas oficiais obtidas nas páginas Roblox citadas; montar edição dinâmica com movimento, sem rotular imagens como gameplay e sem inventar cenas. O Master pode ser image-led, mantendo a pauta factual e cards legíveis."
   ],
   "script_blocks": [
     "Roblox está mudando em várias frentes ao mesmo tempo. As novidades mais recentes mexem na qualidade visual de quem joga pelo navegador, na maneira de compartilhar e comprar visuais de avatar e até na forma como os criadores oferecem vantagens dentro dos jogos. E tem mais: ferramentas de animação do Roblox Studio chegaram à versão completa. Vamos separar o que já está funcionando, o que está sendo liberado aos poucos e o que tem data marcada.",
@@ -60,5 +54,11 @@
     "Nem tudo, porém, está liberado para todo mundo. O sistema UI Particles, por exemplo, continua em beta. Ele permite criar efeitos de partículas 2D em elementos da interface, como brilhos, confetes e respostas visuais. É uma demonstração interessante do rumo das ferramentas, mas ainda precisa ser tratado como recurso experimental, não como função disponível em qualquer projeto publicado.",
     "O conjunto dessas mudanças mostra que Roblox está tentando melhorar tanto a experiência de quem joga quanto as ferramentas de quem cria. WebGPU mira a qualidade no navegador; Avatar Moments aproxima descoberta e compra de itens; os testes gratuitos podem mudar a forma de apresentar Passes; e os novos nós de animação deixam o Studio mais flexível. Algumas novidades já estão disponíveis, outras chegam por etapas e os testes gratuitos têm data marcada para 2 de dezembro.",
     "Agora queremos saber: qual dessas novidades faz mais diferença para você? Jogar Roblox direto pelo navegador com imagem melhor, compartilhar looks pelo Avatar Moments ou experimentar Passes antes de comprar? Conta nos comentários e inscreva-se no Radar dos Games para acompanhar as próximas atualizações."
-  ]
+  ],
+  "blocked_video_urls": [
+    "https://www.youtube.com/watch?v=2XP882xARSQ",
+    "https://www.youtube.com/watch?v=awH9TlwM6d4",
+    "https://www.youtube.com/watch?v=Zn9u4sTNTag"
+  ],
+  "allow_image_only_master": true
 }
