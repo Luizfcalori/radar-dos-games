@@ -214,6 +214,8 @@ def main():
         from src.repetition_policy import replace_short_repeats, validate_short
     manifest=load("output/render.json"); timings=load("output/voice-timings.json"); picks=load("output/short-picks.json")
     scenes=manifest.get("scenes") or []; assets={int(a["index"]):a for a in manifest.get("assets") or []}
+    plan=load("output/auto-media-plan.json")
+    image_only=bool(plan.get("allow_image_only_master", False)) and not any(a.get("type")=="video" for a in assets.values())
     segments=timings.get("segments") or []; indexes=[int(x) for x in picks.get("scene_indexes") or []]
     expected_hooks=[" ".join(str(x or "").split()).strip() for x in (picks.get("expected_hooks") or [])]
     if len(indexes)!=3:raise RuntimeError("QUALITY_BLOCK: V4 precisa de 3 cenas de Short")
@@ -234,7 +236,7 @@ def main():
         # Build a complete editorial short from the selected hook scene plus
         # subsequent narrated scenes. Never loop footage or stretch a still.
         # 65s target leaves a safety margin over TikTok's 60s threshold.
-        target_seconds=65.0
+        target_seconds=20.0 if image_only else 65.0
         contributing=[]
         combined_duration=0.0
         for offset in range(len(scenes)):
@@ -250,10 +252,11 @@ def main():
             combined_duration+=sum(float(b.get("duration") or 0) for b in candidate_beats)
             if combined_duration>=target_seconds:
                 break
-        if combined_duration<60.0:
+        minimum_short_seconds=20.0 if image_only else 60.0
+        if combined_duration<minimum_short_seconds:
             raise RuntimeError(
                 f"QUALITY_BLOCK: Short {short_no} tem apenas {combined_duration:.1f}s de narração/mídia; "
-                "mínimo real de 60s. Amplie o roteiro com conteúdo relevante, sem loops."
+                f"mínimo real de {minimum_short_seconds:.0f}s. Amplie o roteiro com conteúdo relevante, sem loops."
             )
         beats=[beat for _,rows,_ in contributing for beat in rows]
         voice_segments=[seg for _,_,seg in contributing]
@@ -285,8 +288,8 @@ def main():
         if not voice.exists():raise RuntimeError(f"QUALITY_BLOCK: áudio combinado do Short {short_no} ausente")
         dest=out/f"short_{short_no}.mp4"; music_policy=mix_audio(visuals,voice,sfx,dest)
         actual_duration=probe_duration(dest)
-        if actual_duration<60.0:
-            raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} renderizado com {actual_duration:.2f}s; mínimo 60s")
+        if actual_duration<minimum_short_seconds:
+            raise RuntimeError(f"QUALITY_BLOCK: Short {short_no} renderizado com {actual_duration:.2f}s; mínimo {minimum_short_seconds:.0f}s")
         report.append({
             "index":short_no,"path":str(dest),"scene_index":scene_index,
             "duration":round(probe_duration(dest),3),
