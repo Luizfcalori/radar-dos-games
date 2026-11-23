@@ -734,6 +734,7 @@ def fetch_manual_media(brief):
     combined.paragraphs = []
     errors = []
     curated = []
+    media_source_map = {}
 
     # Explicit video URLs are trusted only as the supplied trailer, direct media,
     # or topic-matched posts discovered on official profiles.
@@ -752,6 +753,7 @@ def fetch_manual_media(brief):
             try:
                 for post_url, evidence, title in discover_social_posts(url):
                     curated.append(("video", post_url))
+                    media_source_map[post_url] = url
                     print("manual brief accepted topic-matched official post", evidence, title[:120], flush=True)
             except Exception as exc:
                 errors.append({"url": url, "error": str(exc)[:180]})
@@ -767,6 +769,7 @@ def fetch_manual_media(brief):
             or (urlparse(url).netloc.lower() == "media-rockstargames-com.akamaized.net" and low.endswith("/vi/downloads/videos/gtavi_videos.zip"))
         ):
             curated.append(("video", url))
+            media_source_map[url] = url
 
     # Exact-game Steam fallback: collect only direct trailers and screenshots from this app's
     # official store/CDN and official announcement feed. This keeps manual briefs from
@@ -782,8 +785,10 @@ def fetch_manual_media(brief):
         steam_images = steam_candidates(app_id, "image")
         for asset_url, evidence, label in steam_videos:
             steam_video_curated.append(("video", asset_url))
+            media_source_map[asset_url] = f"https://store.steampowered.com/app/{app_id}/"
         for asset_url, evidence, label in steam_images[:10]:
             steam_image_curated.append(("image", asset_url))
+            media_source_map[asset_url] = f"https://store.steampowered.com/app/{app_id}/"
         print(
             f"manual brief exact Steam app {app_id}: "
             f"{len(steam_videos)} official video candidates, {min(len(steam_images), 10)} screenshots",
@@ -850,9 +855,11 @@ def fetch_manual_media(brief):
                     for kind, asset_url in post_parser.media:
                         if kind == "image":
                             curated.append(("image", asset_url))
+                            media_source_map[asset_url] = image_page_url
         except Exception as exc:
             errors.append({"url": image_page_url, "error": "official_image_page: " + str(exc)[:160]})
     media = canonical_media(curated)
+    combined.media_sources = media_source_map
     # A single explicitly approved trailer is valid source footage. Topic-specific
     # stills are added later as separate media items; never pad with page ads.
     # If the official trailer host is blocked, a manual brief may explicitly
@@ -1121,7 +1128,7 @@ def main():
                 "reasons": [],
                 "topic_key": topic_key(selected["title"]),
             },
-            "media_sources": {url: url for _, url in selected_media},
+            "media_sources": {url: getattr(parser, "media_sources", {}).get(url, url) for _, url in selected_media},
         }
         script = "\n\n".join(manual["script_blocks"])
     else:
