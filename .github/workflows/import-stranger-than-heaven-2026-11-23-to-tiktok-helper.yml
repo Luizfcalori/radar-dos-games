@@ -1,0 +1,186 @@
+name: Import Stranger Than Heaven Shorts to TikTok Helper
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-stranger-than-heaven-2026-11-23-to-tiktok-helper.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: import-stranger-than-heaven-45203598910-tiktok-helper
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Baixar pacote aprovado da produção Stranger Than Heaven
+        uses: actions/download-artifact@v4
+        with:
+          name: radar-daily-auto-45203598910
+          path: source
+          repository: Luizfcalori/radar-dos-games
+          run-id: 45203598910
+          github-token: ${{ github.token }}
+
+      - name: Validar Master QA, três Shorts e uploads privados no YouTube
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("source")
+          qa_files=list(root.rglob("final-qa.json"))
+          assert len(qa_files)==1, f"final-qa.json count={len(qa_files)}"
+          qa=json.loads(qa_files[0].read_text(encoding="utf-8"))
+          assert str(qa.get("status","")).upper().startswith("APPROVED"), qa.get("status")
+          for n in (1,2,3):
+              videos=[p for p in root.rglob(f"short_{n}.mp4") if p.is_file() and p.stat().st_size>500_000]
+              metas=list(root.rglob(f"short-{n}-youtube.json"))
+              results=list(root.rglob(f"youtube-short-{n}-result.json"))
+              assert len(videos)==1 and len(metas)==1 and len(results)==1, f"Short {n}: arquivos ausentes/duplicados"
+              result=json.loads(results[0].read_text(encoding="utf-8"))
+              assert result.get("id") and result.get("status",{}).get("uploadStatus")=="uploaded", f"Short {n}: upload YouTube não confirmado"
+              meta=json.loads(metas[0].read_text(encoding="utf-8"))
+              assert meta.get("title") and meta.get("description"), f"Short {n}: metadados incompletos"
+              print(f"SHORT_{n}_OK: {meta['title']} ({videos[0].stat().st_size} bytes)")
+          print("STRANGER_THAN_HEAVEN_TIKTOK_PACKAGE_OK")
+          PY
+
+      - name: Preparar MP4s e capas para o TikTok Helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          mkdir -p tiktok-assets
+          python - <<'PY'
+          import json, shutil, subprocess
+          from pathlib import Path
+          root=Path("source")
+          out=Path("tiktok-assets")
+          for n in (1,2,3):
+              video=next(p for p in root.rglob(f"short_{n}.mp4") if p.is_file() and p.stat().st_size>500_000)
+              meta=next(root.rglob(f"short-{n}-youtube.json"))
+              cover=next(iter(root.rglob(f"short_{n}_cover.jpg")),None)
+              stem=f"stranger-than-heaven-2026-11-23-short-{n}"
+              shutil.copy2(video,out/f"{stem}.mp4")
+              if cover and cover.is_file() and cover.stat().st_size>1000:
+                  shutil.copy2(cover,out/f"{stem}.jpg")
+              else:
+                  subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss","1","-i",str(video),"-frames:v","1","-vf","scale=720:-2",str(out/f"{stem}.jpg")],check=True)
+              print(f"PREPARED {stem}")
+          PY
+
+      - name: Publicar arquivos aprovados no armazenamento estável do Helper
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=tiktok-approved-assets
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Assets aprovados usados pelo Radar TikTok Helper."
+          gh release upload "$TAG" tiktok-assets/*.mp4 tiktok-assets/*.jpg --clobber
+
+      - name: Verificar os seis arquivos remotos
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          for n in 1 2 3; do
+            for ext in mp4 jpg; do
+              curl -fL --retry 5 --retry-all-errors --retry-delay 2 --max-time 120 --range 0-1023 "$BASE/stranger-than-heaven-2026-11-23-short-$n.$ext" -o /dev/null
+              echo "REMOTE_OK short-$n.$ext"
+            done
+          done
+
+      - name: Inserir exatamente três Shorts na fila TikTok Helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re, unicodedata
+          from datetime import datetime, timezone
+          from pathlib import Path
+          root=Path("source")
+          qpath=Path("data/tiktok_queue.json")
+          q=json.loads(qpath.read_text(encoding="utf-8")) if qpath.exists() else {"version":2,"items":[]}
+          old=q.get("items") or []
+          now=datetime.now(timezone.utc).isoformat()
+          base="https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets"
+          new=[]
+          blocked={"radardosgames","shorts","youtubeshorts","gaming","games","gameplay","jogos","tiktokgames"}
+          for n in (1,2,3):
+              meta=json.loads(next(root.rglob(f"short-{n}-youtube.json")).read_text(encoding="utf-8"))
+              title=re.sub(r"(?i)#shorts?\\b","",str(meta.get("title") or "STRANGER THAN HEAVEN")).strip(" -|")
+              desc=str(meta.get("description") or "")
+              raw=re.findall(r"#([\\wÀ-ÿ]+)",desc,flags=re.UNICODE)
+              raw += list(meta.get("tags") or []) if isinstance(meta.get("tags"),list) else []
+              chosen=[]; seen=set()
+              for value in raw:
+                  clean=re.sub(r"[^\\w]","",str(value).lstrip("#"),flags=re.UNICODE)
+                  key=unicodedata.normalize("NFKD",clean).encode("ascii","ignore").decode().lower()
+                  if len(key)<4 or key in blocked or key in seen: continue
+                  seen.add(key); chosen.append("#"+clean)
+                  if len(chosen)==5: break
+              for fallback in ["#StrangerThanHeaven","#SEGA","#RGGStudio","#RPG","#Gameplay"]:
+                  key=fallback.lower().lstrip("#")
+                  if len(chosen)>=5: break
+                  if key not in seen:
+                      seen.add(key); chosen.append(fallback)
+              caption=title+"\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n"+" ".join(chosen[:5])
+              stem=f"stranger-than-heaven-2026-11-23-short-{n}"
+              new.append({
+                "id":stem,"title":title,
+                "media_url":f"{base}/{stem}.mp4",
+                "thumbnail_url":f"{base}/{stem}.jpg",
+                "post_text":caption,"status":"approved",
+                "source_run_id":45203598910,"short_number":n,
+                "approved_at":now,"source":"approved_production_artifact_auto",
+                "platform":"tiktok_helper_manual_posting"
+              })
+          ids={x["id"] for x in new}
+          remaining=[x for x in old if x.get("id") not in ids]
+          q["version"]=2; q["updated_at"]=now; q["items"]=new+remaining
+          qpath.parent.mkdir(parents=True,exist_ok=True)
+          qpath.write_text(json.dumps(q,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          print(json.dumps({"added":len(new),"preserved":len(remaining),"total":len(q["items"]),"titles":[x["title"] for x in new]},ensure_ascii=False))
+          PY
+
+      - name: Commit e conferir a fila do TikTok Helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name radar-tiktok-bot
+          git config user.email actions@users.noreply.github.com
+          git add data/tiktok_queue.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: add three Stranger Than Heaven Shorts to TikTok Helper"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          git fetch origin main
+          git show origin/main:data/tiktok_queue.json > /tmp/tiktok-queue-verified.json
+          python - <<'PY'
+          import json
+          q=json.load(open("/tmp/tiktok-queue-verified.json",encoding="utf-8"))
+          prefix="stranger-than-heaven-2026-11-23-short-"
+          found=[x for x in q.get("items",[]) if str(x.get("id","")).startswith(prefix)]
+          assert len(found)==3, f"Esperados 3 Shorts, encontrados {len(found)}"
+          assert {x.get("short_number") for x in found}=={1,2,3}
+          assert all(x.get("status")=="approved" and x.get("media_url","").endswith(".mp4") and x.get("thumbnail_url","").endswith(".jpg") for x in found)
+          print("TIKTOK_HELPER_STRANGER_THAN_HEAVEN_OK",len(found),"QUEUE_TOTAL",len(q.get("items",[])))
+          PY
