@@ -1268,6 +1268,34 @@ def main():
                 "relevance_evidence": "publisher_curated_subject_specific_still",
             })
 
+    if manual:
+        # Roblox November 2026 fallback: if public video hosts block automated
+        # downloads, acquire official announcement screenshots and let Premium V4
+        # animate each still with camera motion. This is an explicit, topic-locked
+        # fallback; it never substitutes unrelated gameplay or silently changes games.
+        for j, page_url in enumerate(manual.get("image_pages") or [], 1):
+            if isinstance(page_url, str) and page_url.startswith("https://"):
+                page_slug = urlparse(page_url).path.casefold()
+                if "sharper-web-play-rendering-with-webgpu" in page_slug:
+                    image_label = "Roblox Web Play WebGPU navegador renderizacao visual oficial"
+                elif "avatar-moments-to-showcase" in page_slug:
+                    image_label = "Roblox Avatar Moments avatares looks roupas acessorios itens oficiais"
+                elif "introducing-pass-free-trials" in page_slug:
+                    image_label = "Roblox Passes Free Trials teste gratuito beneficios oficiais"
+                else:
+                    image_label = "Roblox novidades plataforma Animation Graph State Machine Luau UI Particles Studio oficiais"
+                media_items.append({
+                    "type": "image",
+                    "url": page_url,
+                    "role": f"official_roblox_announcement_visual_{j:02d}",
+                    "max_assets": int(manual.get("images_per_page", 1)),
+                    "allow_images_from_page": True,
+                    "source_label": image_label,
+                    "source_proof": page_url,
+                    "relevance_evidence": "official_roblox_announcement_page_image",
+                })
+
+
     for i, (typ, url) in enumerate(selected_media, 1):
         source_page = media_sources.get(url, selected["url"])
         role = f"official_gameplay_or_trailer_{i:02d}" if typ == "video" else f"official_context_{i:02d}"
@@ -1362,31 +1390,6 @@ def main():
             })
             planned_video_urls.add(candidate_url)
 
-        # Roblox November 2026 fallback: if public video hosts block automated
-        # downloads, acquire official announcement screenshots and let Premium V4
-        # animate each still with camera motion. This is an explicit, topic-locked
-        # fallback; it never substitutes unrelated gameplay or silently changes games.
-        for j, page_url in enumerate(manual.get("image_pages") or [], 1):
-            if isinstance(page_url, str) and page_url.startswith("https://"):
-                page_slug = urlparse(page_url).path.casefold()
-                if "sharper-web-play-rendering-with-webgpu" in page_slug:
-                    image_label = "Roblox Web Play WebGPU navegador renderizacao visual oficial"
-                elif "avatar-moments-to-showcase" in page_slug:
-                    image_label = "Roblox Avatar Moments avatares looks roupas acessorios itens oficiais"
-                elif "introducing-pass-free-trials" in page_slug:
-                    image_label = "Roblox Passes Free Trials teste gratuito beneficios oficiais"
-                else:
-                    image_label = "Roblox novidades plataforma Animation Graph State Machine Luau UI Particles Studio oficiais"
-                media_items.append({
-                    "type": "image",
-                    "url": page_url,
-                    "role": f"official_roblox_announcement_visual_{j:02d}",
-                    "max_assets": int(manual.get("images_per_page", 1)),
-                    "allow_images_from_page": True,
-                    "source_label": image_label,
-                    "source_proof": page_url,
-                    "relevance_evidence": "official_roblox_announcement_page_image",
-                })
 
     # For an explicitly curated manual brief, prefer original game media on
     # Steam's own CDN when its exact app ID is supplied. This does not alter
