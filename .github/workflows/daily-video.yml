@@ -110,7 +110,7 @@ concurrency:
   # ARC Raiders run retriggered after the approved script and excluded-condition fixes.
   # The Wolf Among Us Remastered recovery uses a locked manual brief; retry after optional still-image gate adjustment 2026-10-24.
   group: ${{ github.event_name == 'push' && startsWith(github.event.head_commit.message, '[run-private]') && format('radar-dos-games-private-{0}', github.sha) || (github.event_name == 'push' && 'radar-dos-games-push' || 'radar-dos-games-daily') }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'TOPIC=Stranger Than Heaven') }}
 
 jobs:
   validate-code:
