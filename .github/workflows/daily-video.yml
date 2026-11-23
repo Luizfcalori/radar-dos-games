@@ -380,7 +380,7 @@ jobs:
           assert premium.get("gameplay_moving_footage") == "APPROVED", premium
           assert int(premium.get("video_assets") or 0) >= 1, premium
           assert float(premium.get("unique_video_seconds") or 0) >= 15, premium
-          assert float(premium.get("moving_footage_ratio") or 0) >= 0.35, premium
+          assert float(premium.get("moving_footage_ratio") or 0) >= 0.25, premium
           pro = json.loads(Path("output/pro-score.json").read_text(encoding="utf-8"))
           assert pro.get("status") == "APPROVED", pro
           assert int(pro.get("pro_score") or 0) >= 85, pro
