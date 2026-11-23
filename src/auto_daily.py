@@ -1352,13 +1352,22 @@ def main():
         # fallback; it never substitutes unrelated gameplay or silently changes games.
         for j, page_url in enumerate(manual.get("image_pages") or [], 1):
             if isinstance(page_url, str) and page_url.startswith("https://"):
+                page_slug = urlparse(page_url).path.casefold()
+                if "sharper-web-play-rendering-with-webgpu" in page_slug:
+                    image_label = "Roblox Web Play WebGPU navegador renderizacao visual oficial"
+                elif "avatar-moments-to-showcase" in page_slug:
+                    image_label = "Roblox Avatar Moments avatares looks roupas acessorios itens oficiais"
+                elif "introducing-pass-free-trials" in page_slug:
+                    image_label = "Roblox Passes Free Trials teste gratuito beneficios oficiais"
+                else:
+                    image_label = "Roblox novidades plataforma Animation Graph State Machine Luau UI Particles Studio oficiais"
                 media_items.append({
                     "type": "image",
                     "url": page_url,
                     "role": f"official_roblox_announcement_visual_{j:02d}",
-                    "max_assets": int(manual.get("images_per_page", 4)),
+                    "max_assets": int(manual.get("images_per_page", 1)),
                     "allow_images_from_page": True,
-                    "source_label": manual.get("headline") or manual.get("title") or "Roblox official announcement visual",
+                    "source_label": image_label,
                     "source_proof": page_url,
                     "relevance_evidence": "official_roblox_announcement_page_image",
                 })
@@ -1392,19 +1401,20 @@ def main():
             "relevance_evidence": "steam_exact_app_screenshot",
         })
 
-    minimum_assets = int(manual.get("minimum_assets", 3 if (
-        str(manual.get("title","")).casefold() == "arc raiders"
-        or str(manual.get("content_id","")).startswith("manual-castlevania-")
-    ) else 2)) if manual else 2
-    minimum_video_assets = int(manual.get("minimum_video_assets", 4 if
-        str(manual.get("content_id","")).startswith("manual-castlevania-")
+    allow_image_only_master = bool(manual and manual.get("allow_image_only_master", False))
+    minimum_assets = int(manual.get("minimum_assets", 3 if allow_image_only_master else (
+        3 if str(manual.get("title","")).casefold() == "arc raiders"
+        or str(manual.get("content_id","")).startswith("manual-castlevania-") else 2
+    ))) if manual else 2
+    minimum_video_assets = int(manual.get("minimum_video_assets", 0 if allow_image_only_master else (
+        4 if str(manual.get("content_id","")).startswith("manual-castlevania-")
         else (3 if str(manual.get("title","")).casefold() == "arc raiders" else 1)
-    )) if manual else 2
-    minimum_unique_video_seconds = float(manual.get("minimum_unique_video_seconds", 180 if
-        str(manual.get("content_id","")).startswith("manual-castlevania-")
+    ))) if manual else 2
+    minimum_unique_video_seconds = float(manual.get("minimum_unique_video_seconds", 0 if allow_image_only_master else (
+        180 if str(manual.get("content_id","")).startswith("manual-castlevania-")
         else (90 if str(manual.get("title","")).casefold() == "arc raiders" else 15)
-    )) if manual else 75
-    minimum_image_assets = int(manual.get("minimum_image_assets", 0)) if manual else 0
+    ))) if manual else 75
+    minimum_image_assets = int(manual.get("minimum_image_assets", 3 if allow_image_only_master else 0)) if manual else 0
 
     plan = {
         "topic": (manual.get("headline") if manual else pt_headline(selected, parser)),
@@ -1413,6 +1423,7 @@ def main():
         "minimum_video_assets": minimum_video_assets,
         "minimum_unique_video_seconds": minimum_unique_video_seconds,
         "minimum_image_assets": minimum_image_assets,
+        "allow_image_only_master": allow_image_only_master,
         "media_policy": ("official_announcement_images_with_premium_v4_motion_fallback; image_led_master_allowed_when_explicitly_enabled" if manual and manual.get("allow_image_only_master", False) else "gameplay_or_official_moving_footage_required; minimum_15s_unique_video; images_are_complement_only; no_image_only_master; premium_v4_motion_for_images"),
         "short_hooks": short_hooks,
         "short_hook_policy": "exact_approved_hook; semantic_scene_match; qa_block_on_mismatch",
