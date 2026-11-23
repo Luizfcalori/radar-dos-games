@@ -307,10 +307,16 @@ def supported_video_page_url(url):
 
 def social_profile_url(url):
     low=url.lower().split('?')[0].rstrip('/')
-    return low in ('https://x.com/fortnitegame','https://twitter.com/fortnitegame',
-                   'https://www.instagram.com/fortnite','https://instagram.com/fortnite',
-                   'https://www.tiktok.com/@fortnite','https://tiktok.com/@fortnite',
-                   'https://www.facebook.com/fortnitegame','https://facebook.com/fortnitegame')
+    return low in (
+        'https://x.com/fortnitegame','https://twitter.com/fortnitegame',
+        'https://www.instagram.com/fortnite','https://instagram.com/fortnite',
+        'https://www.tiktok.com/@fortnite','https://tiktok.com/@fortnite',
+        'https://www.facebook.com/fortnitegame','https://facebook.com/fortnitegame',
+        # Official Roblox accounts: discover their native X video posts as a
+        # fallback when YouTube blocks automated downloads in GitHub Actions.
+        'https://x.com/robloxcreators','https://twitter.com/robloxcreators',
+        'https://x.com/roblox','https://twitter.com/roblox'
+    )
 
 def discover_social_posts(profile):
     """Inspect recent posts on official accounts and keep only topic-matched posts."""
@@ -324,7 +330,18 @@ def discover_social_posts(profile):
             title=str(entry.get('title') or '')
             desc=str(entry.get('description') or '')
             combined=(title+' '+desc).lower()
-            if not (('yeat' in combined or 'real lyfe' in combined) and 'fortnite' in combined):
+            account=(urllib.parse.urlparse(profile).path.strip('/').lower())
+            if account in ('robloxcreators','roblox'):
+                # These are publisher-owned accounts. Keep Roblox-native clips,
+                # demos, creator showcases and gameplay posts; exclude link-only
+                # announcements where the extractor exposes no video duration.
+                duration=float(entry.get('duration') or 0)
+                has_video=duration>=5 or bool(entry.get('formats') or entry.get('url'))
+                if 'roblox' not in combined and not any(k in combined for k in ('gameplay','game demo','experience','avatar','studio','creator')):
+                    continue
+                if not has_video:
+                    continue
+            elif not (('yeat' in combined or 'real lyfe' in combined) and 'fortnite' in combined):
                 continue
             post_url=entry.get('webpage_url') or entry.get('original_url')
             if post_url and social_post_url(post_url):
