@@ -81,9 +81,9 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
               and (visual_inventory is None or
                    (inspected.get(int(a["index"]), {}).get("usable_windows") and
                     not inspected.get(int(a["index"]), {}).get("duplicate_of")))]
-    if not videos:
-        raise RuntimeError("QUALITY_BLOCK: vídeos originais sem janelas aprovadas pela inspeção visual")
     images=[a for a in assets if a["type"]=="image"]
+    if not videos and not (image_only and images):
+        raise RuntimeError("QUALITY_BLOCK: vídeos originais sem janelas aprovadas e sem fallback oficial image-led")
     usage=Counter()
     topic=plan.get("topic") or selected.get("title") or ""
     # Official stills from the exact article remain available as contextual
