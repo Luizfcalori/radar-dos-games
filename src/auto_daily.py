@@ -1105,6 +1105,7 @@ def main():
                 "roblox-rivals-season-4-standard-2026-11-15": "production/manual-brief-roblox-rivals-season-4-2026-11-15.json",
                 "apex-legends-cipher-godzilla-2026-11-15": "production/manual-brief-apex-legends-cipher-godzilla-2026-11-15.json",
                 "where-winds-meet-hutuo-anniversary-2026-11-15": "production/manual-brief-where-winds-meet-hutuo-anniversary-2026-11-15.json",
+                "roblox-platform-updates-november-2026": "production/manual-brief-roblox-platform-updates-2026-11-23.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
         mix = media_mix(selected_media)
