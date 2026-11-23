@@ -906,10 +906,17 @@ def main(path):
         videos_now=[a for a in assets if a['type']=='video']
         images_now=[a for a in assets if a['type']=='image']
         seconds_now=sum(float(a.get('duration',0)) for a in videos_now)
+        image_only_mode=bool(spec.get("allow_image_only_master",False))
+        has_explicit_roblox_still=any(
+            asset.get('type')=='image'
+            and str(asset.get('role') or '').startswith('official_roblox_announcement_visual_')
+            for asset in assets
+        )
         if (len(assets)>=minimum_now
             and len(videos_now)>=int(spec.get('minimum_video_assets',1))
             and seconds_now>=float(spec.get('minimum_unique_video_seconds',0))
-            and len(images_now)>=int(spec.get('minimum_image_assets',0))):
+            and len(images_now)>=int(spec.get('minimum_image_assets',0))
+            and (not image_only_mode or has_explicit_roblox_still)):
             print('media acquisition complete; skipping remaining fallbacks',len(assets),'assets',len(videos_now),'videos',round(seconds_now,2),'unique video seconds',flush=True)
             break
     minimum=int(spec.get('minimum_assets',2));videos=[a for a in assets if a['type']=='video'];images=[a for a in assets if a['type']=='image']
@@ -918,7 +925,15 @@ def main(path):
     # Delivery fallback: tolerate a one-asset shortfall only when every substantive
     # media gate (approved video count, unique footage duration, and image count) passes.
     # This avoids blocking a complete edit over one unavailable secondary still.
-    media_core_passes=(len(videos)>=min_videos and unique_video_seconds>=min_secs and len(images)>=min_images)
+    image_only_mode=bool(spec.get('allow_image_only_master',False))
+    has_explicit_roblox_still=any(
+        asset.get('type')=='image'
+        and str(asset.get('role') or '').startswith('official_roblox_announcement_visual_')
+        for asset in assets
+    )
+    media_core_passes=(len(videos)>=min_videos and unique_video_seconds>=min_secs
+                       and len(images)>=min_images
+                       and (not image_only_mode or has_explicit_roblox_still))
     effective_minimum=minimum-1 if len(assets)==minimum-1 and media_core_passes else minimum
     manifest={'assets':assets,'clips':[a['path'] for a in assets],'errors':errors,'publishable_media':False,'generic_fallback':False,'official_assets':True,
               'minimum_assets':effective_minimum,'requested_minimum_assets':minimum,'one_asset_shortfall_tolerated':effective_minimum<minimum,
