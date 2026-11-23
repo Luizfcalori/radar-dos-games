@@ -524,20 +524,55 @@ def ytdlp(url,dest):
 def discover(page,allow_images=False):
     try:
         with urllib.request.urlopen(req(page),timeout=20) as r:text=r.read(10*1024*1024).decode('utf-8','ignore')
-    except Exception as e:print('page discovery failed',page,e);return []
-    text=html.unescape(text).replace('\\/','/')
+    except Exception as e:
+        print('page discovery failed',page,e,flush=True)
+        text=''
+    text=html.unescape(text).replace('\\/','/').replace('\\u0026','&')
     raws=[]
-    raws += re.findall(r'(?:href|src|content|data-src|data-video|data-url|poster)=["\']([^"\']+)["\']',text,re.I)
-    raws += re.findall(r'https?://[^"\'<>\\ ]+',text)
+    raws += re.findall(r'''(?:href|src|content|data-src|data-orig-src|data-base62-sha1|data-video|data-url|poster)=["']([^"']+)["']''',text,re.I)
+    raws += re.findall(r'''https?://[^"'<>\s]+''',text)
     raws += ['https://www.youtube.com/watch?v='+v for v in re.findall(r'(?:youtube\.com/embed/|youtu\.be/)([A-Za-z0-9_-]{6,})',text,re.I)]
+
+    # Roblox DevForum's Discourse JSON contains the full, exact post body.
+    # HTML shells can omit lazy-loaded images; this official topic endpoint is
+    # a scoped fallback, never a generic image search.
+    if allow_images:
+        parsed=urllib.parse.urlparse(page)
+        topic=re.search(r'/t/([^/]+)/([0-9]+)',parsed.path)
+        if parsed.hostname and parsed.hostname.lower().endswith('devforum.roblox.com') and topic:
+            api=urllib.parse.urlunparse((parsed.scheme,parsed.netloc,
+                f'/t/{topic.group(1)}/{topic.group(2)}.json','','',''))
+            try:
+                with urllib.request.urlopen(req(api,page),timeout=25) as response:
+                    topic_data=json.loads(response.read(12*1024*1024).decode('utf-8','replace'))
+                posts=((topic_data.get('post_stream') or {}).get('posts') or [])
+                for post in posts:
+                    cooked=str(post.get('cooked') or '')
+                    for tag in re.findall(r'<img\b[^>]*>',cooked,re.I):
+                        raws.extend(re.findall(r'''(?:src|data-src|data-orig-src)=["']([^"']+)["']''',tag,re.I))
+                    raws.extend(raw for raw in re.findall(r'''https?://[^"'<>\s]+''',cooked)
+                                if re.search(r'\.(?:jpe?g|png|webp)(?:[?#]|$)',raw,re.I))
+                print('Roblox DevForum JSON image discovery',page,'posts',len(posts),'raw_candidates',len(raws),flush=True)
+            except Exception as exc:
+                print('Roblox DevForum JSON image discovery failed',api,type(exc).__name__,str(exc)[:180],flush=True)
+
     vals=[]
     for raw in raws:
-        u=urllib.parse.urljoin(page,raw.strip());low=u.lower();clean=low.split('?')[0]
+        u=urllib.parse.urljoin(page,raw.strip()).replace('&amp;','&')
+        low=u.lower()
+        clean=urllib.parse.urlparse(u).path.lower()
         is_video=clean.endswith(VIDEO_EXTS+STREAM_EXTS) or 'drive.google.com/file/d/' in low or 'youtube.com/watch' in low or 'youtu.be/' in low
         is_image=clean.endswith(IMAGE_EXTS)
+        if allow_images and is_image:
+            host=(urllib.parse.urlparse(u).hostname or '').lower()
+            if any(token in low for token in ('/avatar/','/avatars/','/emoji/','/user_avatar/','/profile/')):
+                continue
+            if not (host.endswith('roblox.com') or host.endswith('rbxcdn.com')
+                    or 'devforum-uploads.s3.' in host or host.endswith('s3.amazonaws.com')):
+                continue
         if is_video or (allow_images and is_image):
             if u not in vals:vals.append(u)
-    vals.sort(key=lambda u:0 if u.lower().split('?')[0].endswith(STREAM_EXTS+VIDEO_EXTS) or 'drive.google.com/file/d/' in u.lower() else (1 if ('youtube.com' in u or 'youtu.be/' in u) else 2))
+    vals.sort(key=lambda u:0 if urllib.parse.urlparse(u).path.lower().endswith(STREAM_EXTS+VIDEO_EXTS) or 'drive.google.com/file/d/' in u.lower() else (1 if ('youtube.com' in u or 'youtu.be/' in u) else 2))
     return vals[:120]
 
 def steam_url(value):
