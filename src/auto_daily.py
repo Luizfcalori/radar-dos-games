@@ -925,7 +925,7 @@ def main():
         elif forced_topic_slug == ascii_slug("Phantom Blade Zero"):
             manual = load_manual_brief("production/manual-brief-phantom-blade-zero.json")
         elif forced_topic_slug == ascii_slug("Roblox"):
-            manual = load_manual_brief("production/manual-brief-roblox-2026-10-13.json")
+            manual = load_manual_brief("production/manual-brief-roblox-platform-updates-2026-11-23.json")
         elif forced_topic_slug == ascii_slug("Animal Hospital"):
             manual = load_manual_brief("production/manual-brief-animal-hospital-roblox-2026-10-25.json")
         elif forced_topic_slug == ascii_slug("Free Fire"):
