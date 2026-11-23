@@ -1269,14 +1269,30 @@ def main():
             })
 
     for i, (typ, url) in enumerate(selected_media, 1):
+        source_page = media_sources.get(url, selected["url"])
         role = f"official_gameplay_or_trailer_{i:02d}" if typ == "video" else f"official_context_{i:02d}"
+        source_label = ((manual.get("video_labels") or {}).get(url, "") if manual and typ == "video" else "")
+        if manual and manual.get("allow_image_only_master", False) and typ == "image":
+            # Manual Roblox images were discovered on the exact official DevForum
+            # pages. Preserve that page provenance instead of treating the CDN
+            # image URL itself as the source, so image-led QA can verify origin.
+            role = f"official_roblox_announcement_visual_{i:02d}"
+            page_slug = urlparse(source_page).path.casefold()
+            if "sharper-web-play-rendering-with-webgpu" in page_slug:
+                source_label = "Roblox Web Play WebGPU navegador renderizacao visual oficial"
+            elif "avatar-moments-to-showcase" in page_slug:
+                source_label = "Roblox Avatar Moments avatares looks roupas acessorios itens oficiais"
+            elif "introducing-pass-free-trials" in page_slug:
+                source_label = "Roblox Passes Free Trials teste gratuito beneficios oficiais"
+            else:
+                source_label = "Roblox novidades plataforma Animation Graph State Machine Luau UI Particles Studio oficiais"
         item = {
             "type": typ,
             "url": url,
             "role": ((manual.get("video_roles") or {}).get(url, role) if manual and typ == "video" else role),
-            "source_label": ((manual.get("video_labels") or {}).get(url, "") if manual else ""),
+            "source_label": source_label,
             "max_assets": int((manual.get("video_max_assets") or {}).get(url, 1)) if manual and typ == "video" else 1,
-            "source_proof": media_sources.get(url, selected["url"]),
+            "source_proof": source_page,
             "relevance_evidence": "official_source_page_discovered_asset",
         }
         if typ == "video":
