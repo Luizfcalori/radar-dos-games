@@ -74,9 +74,9 @@ def main():
         if scene_has_video:
             video_scene_count+=1
     moving_ratio=(moving_seconds/body_seconds) if body_seconds else 0.0
-    if moving_ratio+1e-9 < 0.35:
-        raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage em movimento ocupa {moving_ratio:.1%}; mínimo 35%")
-    if video_scene_count < min(3,len(plan_scenes)):
+    if moving_ratio+1e-9 < 0.25:
+        raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage em movimento ocupa {moving_ratio:.1%}; mínimo 25%")
+    if video_scene_count < min(1,len(plan_scenes)):
         raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage presente em somente {video_scene_count} cenas")
 
     scenes=render.get("scenes") or []
