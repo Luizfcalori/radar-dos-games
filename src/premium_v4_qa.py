@@ -44,7 +44,7 @@ def main():
     video_assets=int(clips.get("video_assets") or 0)
     image_assets=int(clips.get("image_assets") or 0)
     unique_video_seconds=float(clips.get("unique_video_seconds") or 0)
-    image_only=bool(plan.get("allow_image_only_master", False))
+    image_only=bool(plan.get("allow_image_only_master", False)) and video_assets == 0
     required_videos=0 if image_only else max(1,int(plan.get("minimum_video_assets") or 0))
     required_unique=0.0 if image_only else max(15.0,float(plan.get("minimum_unique_video_seconds") or 0))
     required_images=int(plan.get("minimum_image_assets") or 0)
