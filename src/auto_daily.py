@@ -1307,6 +1307,23 @@ def main():
             })
             planned_video_urls.add(candidate_url)
 
+        # Roblox November 2026 fallback: if public video hosts block automated
+        # downloads, acquire official announcement screenshots and let Premium V4
+        # animate each still with camera motion. This is an explicit, topic-locked
+        # fallback; it never substitutes unrelated gameplay or silently changes games.
+        for j, page_url in enumerate(manual.get("image_pages") or [], 1):
+            if isinstance(page_url, str) and page_url.startswith("https://"):
+                media_items.append({
+                    "type": "image",
+                    "url": page_url,
+                    "role": f"official_roblox_announcement_visual_{j:02d}",
+                    "max_assets": int(manual.get("images_per_page", 4)),
+                    "allow_images_from_page": True,
+                    "source_label": manual.get("headline") or manual.get("title") or "Roblox official announcement visual",
+                    "source_proof": page_url,
+                    "relevance_evidence": "official_roblox_announcement_page_image",
+                })
+
     # For an explicitly curated manual brief, prefer original game media on
     # Steam's own CDN when its exact app ID is supplied. This does not alter
     # automatic editorial discovery or other productions.
@@ -1357,7 +1374,7 @@ def main():
         "minimum_video_assets": minimum_video_assets,
         "minimum_unique_video_seconds": minimum_unique_video_seconds,
         "minimum_image_assets": minimum_image_assets,
-        "media_policy": "gameplay_or_official_moving_footage_required; minimum_15s_unique_video; images_are_complement_only; no_image_only_master; premium_v4_motion_for_images",
+        "media_policy": ("official_announcement_images_with_premium_v4_motion_fallback; image_led_master_allowed_when_explicitly_enabled" if manual and manual.get("allow_image_only_master", False) else "gameplay_or_official_moving_footage_required; minimum_15s_unique_video; images_are_complement_only; no_image_only_master; premium_v4_motion_for_images"),
         "short_hooks": short_hooks,
         "short_hook_policy": "exact_approved_hook; semantic_scene_match; qa_block_on_mismatch",
         "allow_official_subject_fallback": bool(manual and (str(manual.get("content_id","")).startswith("manual-castlevania-") or manual.get("allow_official_subject_fallback", False))),
