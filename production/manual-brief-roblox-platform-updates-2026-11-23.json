@@ -20,7 +20,10 @@
     "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943"
   ],
   "video_urls": [],
-  "video_fallback_urls": [],
+  "video_fallback_urls": [
+    "https://www.sotwe.com/robloxcreators?lang=en",
+    "https://www.sotwe.com/roblox?lang=en"
+  ],
   "short_hooks": [
     "ROBLOX AGORA USA WEBGPU: O QUE MUDA AO JOGAR PELO NAVEGADOR?",
     "AVATAR MOMENTS: AGORA DÁ PARA MOSTRAR E VENDER SEUS LOOKS!",
@@ -68,5 +71,9 @@
     "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943"
   ],
   "images_per_page": 1,
-  "image_fallback_strategy": "official_devforum_post_json_and_html"
+  "image_fallback_strategy": "official_devforum_post_json_and_html",
+  "video_labels": {
+    "https://www.sotwe.com/robloxcreators?lang=en": "Roblox Creators official X profile video mirror; illustrative Roblox content only",
+    "https://www.sotwe.com/roblox?lang=en": "Roblox official X profile video mirror; illustrative Roblox content only"
+  }
 }
