@@ -24,7 +24,10 @@
     "https://www.youtube.com/watch?v=awH9TlwM6d4",
     "https://www.youtube.com/watch?v=Zn9u4sTNTag"
   ],
-  "video_fallback_urls": [\n    "https://x.com/RobloxCreators",\n    "https://x.com/Roblox"\n  ],
+  "video_fallback_urls": [
+    "https://x.com/RobloxCreators",
+    "https://x.com/Roblox"
+  ],
   "short_hooks": [
     "ROBLOX AGORA USA WEBGPU: O QUE MUDA AO JOGAR PELO NAVEGADOR?",
     "AVATAR MOMENTS: AGORA DÁ PARA MOSTRAR E VENDER SEUS LOOKS!",
