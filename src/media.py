@@ -336,10 +336,12 @@ def discover_social_posts(profile):
                 # demos, creator showcases and gameplay posts; exclude link-only
                 # announcements where the extractor exposes no video duration.
                 duration=float(entry.get('duration') or 0)
-                has_video=duration>=5 or bool(entry.get('formats') or entry.get('url'))
+                has_video=duration>=5 or bool(entry.get('formats'))
                 if 'roblox' not in combined and not any(k in combined for k in ('gameplay','game demo','experience','avatar','studio','creator')):
                     continue
                 if not has_video:
+                    continue
+                if duration and duration < 5:
                     continue
             elif not (('yeat' in combined or 'real lyfe' in combined) and 'fortnite' in combined):
                 continue
