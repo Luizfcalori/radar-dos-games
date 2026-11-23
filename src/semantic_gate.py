@@ -50,14 +50,21 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
         idx for idx,asset in assets.items() if approved_context_frame(asset)
     }
 
+    image_only = bool(plan.get("allow_image_only_master", False))
     beats=[b for scene in plan.get("scenes",[]) for b in scene.get("beats",[])]
     if not beats:
         errors.append({"type":"missing_beats","message":"Plano sem beats de fala para validar."})
-    try:
-        continuity=validate_video_beats(beats,assets,require_windows=True)
-    except Exception as exc:
-        continuity={"status":"BLOCKED","message":str(exc)}
-        errors.append({"type":"continuity","message":str(exc)})
+    if image_only:
+        continuity={
+            "status":"APPROVED_IMAGE_LED",
+            "message":"Modo explícito de imagens oficiais contextualizadas; sem alegação de gameplay ou janela de vídeo."
+        }
+    else:
+        try:
+            continuity=validate_video_beats(beats,assets,require_windows=True)
+        except Exception as exc:
+            continuity={"status":"BLOCKED","message":str(exc)}
+            errors.append({"type":"continuity","message":str(exc)})
 
     for scene_no,scene in enumerate(plan.get("scenes",[]),1):
         scene_errors=[]
@@ -90,10 +97,18 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                                      "message":"A frase aponta para mídia não aprovada."})
                 continue
             if asset.get("type")!="video":
-                # Approval lives on the manifest asset, not on every phrase beat.
-                # Trust only frames whose extraction provenance is tied to a reviewed,
-                # approved video source from this same game's manifest.
-                if idx not in approved_context_ids:
+                if image_only:
+                    official_roblox_still = (
+                        asset.get("type") == "image"
+                        and asset.get("approved") is True
+                        and str(asset.get("role") or "").startswith("official_roblox_announcement_visual_")
+                        and str(asset.get("source") or "").startswith("https://devforum.roblox.com/")
+                        and str(asset.get("url") or "").startswith("https://")
+                    )
+                    if not official_roblox_still:
+                        scene_errors.append({"phrase":phrase,"type":"unverified_image_led_asset",
+                                             "message":"Imagem não pertence ao conjunto de imagens oficiais Roblox autorizado."})
+                elif idx not in approved_context_ids:
                     scene_errors.append({"phrase":phrase,"type":"unverified_still",
                                          "message":"Imagem estática sem aprovação contextual e procedência verificável."})
                 continue
