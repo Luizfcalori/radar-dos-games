@@ -155,6 +155,9 @@ def deduplicate(rows):
 
 def inspect(clips):
     rows = []
+    plan_path = OUT / "auto-media-plan.json"
+    plan = json.loads(plan_path.read_text(encoding="utf-8")) if plan_path.is_file() else {}
+    image_only = bool(plan.get("allow_image_only_master", False))
     for asset in clips.get("assets", []):
         if not asset.get("approved"):
             continue
@@ -166,10 +169,12 @@ def inspect(clips):
             rows.append({"index": idx, "type": "image", "status": "SOURCE_IMAGE",
                          "semantic_status": "SOURCE_LABEL_ONLY"})
     deduplicate(rows)
-    if not any(r.get("usable_windows") and not r.get("duplicate_of") for r in rows):
-        raise RuntimeError("QUALITY_BLOCK: nenhum trecho de vídeo visualmente utilizável")
+    has_reviewed_video = any(r.get("usable_windows") and not r.get("duplicate_of") for r in rows)
+    has_approved_images = any(r.get("type") == "image" for r in rows)
+    if not has_reviewed_video and not (image_only and has_approved_images):
+        raise RuntimeError("QUALITY_BLOCK: nenhum trecho de vídeo visualmente utilizável nem fallback oficial de imagens autorizado")
     return {"status": "ANALYZED", "policy": "FULL_FRAME_TECHNICAL_SCAN_V1",
-            "note": "All decoded frames checked for darkness/motion; object identity is NOT inferred",
+            "note": ("Official image-led source mode; stills are not represented as gameplay" if image_only and not has_reviewed_video else "All decoded frames checked for darkness/motion; object identity is NOT inferred"),
             "assets": rows}
 
 
