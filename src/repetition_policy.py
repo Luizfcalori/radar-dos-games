@@ -271,7 +271,7 @@ def validate_master(scenes,assets):
                 # Only an explicitly marked official-image bridge can relax cooldown;
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
-                    beat.get("visual_evidence") == "official_image_subject_label"
+                    beat.get("visual_evidence") in ("official_image_subject_label", "official_roblox_announcement_image_with_camera_motion")
                     and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset))
                 )
                 if not tracker.can_use(
@@ -335,6 +335,36 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
     windows=scene.get("visual_windows") or {}
     timeline=timeline or VideoTimeline(assets)
     used_stills=used_stills if used_stills is not None else set()
+
+    # In the explicit Roblox image-led fallback, each Short still uses distinct
+    # official images. If adjacent Master beats reuse a still, replace it with
+    # another unused image already approved for this same scene; never loop one
+    # picture just to fill the Short.
+    image_only = not any(a.get("type") == "video" and a.get("approved") is True for a in assets.values())
+    if image_only:
+        for beat in beats:
+            asset=assets[int(beat["media_index"])]
+            if asset.get("type") != "image":
+                continue
+            key=asset_identity(asset)
+            if key in used_stills:
+                candidates=[
+                    assets[idx] for idx in selected
+                    if idx in assets
+                    and assets[idx].get("type") == "image"
+                    and assets[idx].get("approved") is True
+                    and _roblox_announcement_still(assets[idx])
+                    and asset_identity(assets[idx]) not in used_stills
+                    and float(beat.get("duration") or 0) <= MAX_STATIC_BEAT_SECONDS + 0.001
+                    and subject_ok(beat.get("text", ""), assets[idx])
+                ]
+                candidates.sort(key=lambda a:(-match_score(beat.get("text",""),a),int(a["index"])))
+                if candidates:
+                    asset=candidates[0]
+                    beat["media_index"]=int(asset["index"])
+                    beat["visual_evidence"]="official_roblox_announcement_image_with_camera_motion"
+                    key=asset_identity(asset)
+            used_stills.add(key)
 
     # Reserve fresh intervals from this scene in the shared per-Short timeline.
     # If a later scene collides with an earlier scene, flag it for replacement
