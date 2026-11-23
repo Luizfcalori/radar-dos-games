@@ -896,6 +896,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-sonic-pico-park-2026-11-12.json")
     elif forced_topic_slug == ascii_slug("Roblox Rivals"):
         manual = load_manual_brief("production/manual-brief-roblox-rivals-season-4-2026-11-15.json")
+    elif forced_topic_slug == ascii_slug("Roblox"):
+        manual = load_manual_brief("production/manual-brief-roblox-platform-updates-2026-11-23.json")
     elif forced_topic_slug == ascii_slug("DERELIKT"):
         manual = load_manual_brief("production/manual-brief-derelikt-2026-11-13.json")
     elif forced_topic_slug == ascii_slug("Apex Legends"):
