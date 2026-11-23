@@ -770,20 +770,25 @@ def fetch_manual_media(brief):
     # Exact-game Steam fallback: collect only direct trailers and screenshots from this app's
     # official store/CDN and official announcement feed. This keeps manual briefs from
     # depending on a blocked third-party mirror or falling back to unrelated gameplay.
+    # Exact Steam CDN assets are tried before YouTube so hosted-runner rate limits
+    # cannot stall a production when publisher-controlled trailers/screenshots exist.
+    steam_video_curated = []
+    steam_image_curated = []
     steam_app_id = str(brief.get("steam_app_id") or "").strip()
     if steam_app_id.isdigit():
         app_id = int(steam_app_id)
         steam_videos = steam_candidates(app_id, "video")
         steam_images = steam_candidates(app_id, "image")
         for asset_url, evidence, label in steam_videos:
-            curated.append(("video", asset_url))
+            steam_video_curated.append(("video", asset_url))
         for asset_url, evidence, label in steam_images[:10]:
-            curated.append(("image", asset_url))
+            steam_image_curated.append(("image", asset_url))
         print(
             f"manual brief exact Steam app {app_id}: "
             f"{len(steam_videos)} official video candidates, {min(len(steam_images), 10)} screenshots",
             flush=True,
         )
+    curated = steam_video_curated + curated + steam_image_curated
 
     # Recover direct media from the exact official source pages named in the brief.
     # YouTube embeds are not treated as downloadable media here: GitHub runners can
