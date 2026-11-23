@@ -50,7 +50,9 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
         idx for idx,asset in assets.items() if approved_context_frame(asset)
     }
 
-    image_only = bool(plan.get("allow_image_only_master", False))
+    image_only = bool(plan.get("allow_image_only_master", False)) and not any(
+        a.get("approved") is True and a.get("type") == "video" for a in clips.get("assets", [])
+    )
     beats=[b for scene in plan.get("scenes",[]) for b in scene.get("beats",[])]
     if not beats:
         errors.append({"type":"missing_beats","message":"Plano sem beats de fala para validar."})
