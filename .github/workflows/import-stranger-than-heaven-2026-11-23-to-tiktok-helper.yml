@@ -141,7 +141,7 @@ jobs:
                   if len(chosen)>=5: break
                   if key not in seen:
                       seen.add(key); chosen.append(fallback)
-              caption=title+"\\n\\n🎮 Curtiu? Siga o Radar dos Games para mais.\\n\\n"+" ".join(chosen[:5])
+              caption=title+"\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n"+" ".join(chosen[:5])
               stem=f"stranger-than-heaven-2026-11-23-short-{n}"
               new.append({
                 "id":stem,"title":title,
