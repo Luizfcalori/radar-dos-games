@@ -819,6 +819,39 @@ def fetch_manual_media(brief):
                     curated.append(("image", asset_url))
         except Exception as exc:
             errors.append({"url": source_url, "error": str(exc)[:180]})
+    # Discourse (Roblox DevForum) keeps announcement screenshots in the cooked
+    # post JSON on some pages, not in the initial HTML. Read that official JSON
+    # representation as an additional image-only source; never treat it as gameplay.
+    for image_page_url in brief.get("image_pages", []) or []:
+        if not isinstance(image_page_url, str) or not image_page_url.startswith("https://"):
+            continue
+        try:
+            image_page = fetch_page(image_page_url)
+            for kind, asset_url in image_page.media:
+                if kind == "image":
+                    curated.append(("image", asset_url))
+            host = urlparse(image_page_url).netloc.lower()
+            if host == "devforum.roblox.com" or host.endswith(".devforum.roblox.com"):
+                api_url = image_page_url.rstrip("/") + ".json"
+                response = requests.get(
+                    api_url,
+                    headers={"User-Agent": UA, "Accept": "application/json"},
+                    timeout=25,
+                )
+                response.raise_for_status()
+                payload = response.json()
+                posts = (payload.get("post_stream") or {}).get("posts") or []
+                for post in posts:
+                    cooked = post.get("cooked") or ""
+                    if not cooked:
+                        continue
+                    post_parser = PageParser(image_page_url)
+                    post_parser.feed(cooked)
+                    for kind, asset_url in post_parser.media:
+                        if kind == "image":
+                            curated.append(("image", asset_url))
+        except Exception as exc:
+            errors.append({"url": image_page_url, "error": "official_image_page: " + str(exc)[:160]})
     media = canonical_media(curated)
     # A single explicitly approved trailer is valid source footage. Topic-specific
     # stills are added later as separate media items; never pad with page ads.
