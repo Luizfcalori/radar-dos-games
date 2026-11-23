@@ -157,7 +157,9 @@ def inspect(clips):
     rows = []
     plan_path = OUT / "auto-media-plan.json"
     plan = json.loads(plan_path.read_text(encoding="utf-8")) if plan_path.is_file() else {}
-    image_only = bool(plan.get("allow_image_only_master", False))
+    image_only = bool(plan.get("allow_image_only_master", False)) and not any(
+        a.get("approved") and a.get("type") == "video" for a in clips.get("assets", [])
+    )
     for asset in clips.get("assets", []):
         if not asset.get("approved"):
             continue
