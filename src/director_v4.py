@@ -464,14 +464,38 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     and (not requirements or all(phrase_asset_match(str(subject),a)>0 for subject in requirements) or cta_phrase)
                 ]
                 stills.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
-                # Always exhaust unique, reviewed moving footage first. A still is
-                # only a source-matched fallback, and only for a phrase whose named
-                # subjects are actually present in the still's official source label.
-                try:
-                    picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
-                    window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
-                    evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
-                except RuntimeError as exc:
+                image_only = bool(plan.get("allow_image_only_master", False))
+                if image_only:
+                    # Explicit image-led mode: only official Roblox announcement
+                    # images are eligible. They receive subtle camera motion in
+                    # the renderer and are never described as gameplay.
+                    image_pool = [
+                        a for a in allowed
+                        if a.get("type") == "image"
+                        and str(a.get("role") or "").startswith("official_roblox_announcement_visual_")
+                        and str(a.get("source") or "").startswith("https://")
+                    ]
+                    image_pool.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
+                    available = [
+                        a for a in image_pool
+                        if static_tracker.can_use(a,phrase_text,i,timeline_seconds,min(remaining,3.5),relax_cooldown=True)
+                    ]
+                    if not available:
+                        raise RuntimeError(f"QUALITY_BLOCK: cena {i} sem imagem oficial inédita disponível para o modo image-led")
+                    picked=available[0]
+                    d=min(remaining,3.5)
+                    window=None
+                    proof={}
+                    evidence="official_roblox_announcement_image_with_camera_motion"
+                else:
+                    # Always exhaust unique, reviewed moving footage first. A still is
+                    # only a source-matched fallback, and only for a phrase whose named
+                    # subjects are actually present in the still's official source label.
+                    try:
+                        picked,source_start,d,proof=timeline.choose(scene,phrase_text,remaining,allowed,requirements)
+                        window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
+                        evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
+                    except RuntimeError as exc:
                     exhausted = any(token in str(exc) for token in (
                         "faltam cenas inéditas correspondentes à fala",
                         "acabou a gameplay inédita aprovada para a fala",
@@ -714,8 +738,12 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         return total,moving,video_scenes
 
     video_assets=[a for a in assets.values() if a.get("type")=="video" and a.get("approved",True)]
-    if not video_assets:
-        raise RuntimeError("QUALITY_BLOCK: Master sem gameplay/vídeo oficial em movimento")
+    image_only = bool(plan.get("allow_image_only_master", False))
+    official_stills=[a for a in assets.values() if a.get("type")=="image"
+                     and a.get("approved",True)
+                     and str(a.get("role") or "").startswith("official_roblox_announcement_visual_")]
+    if not video_assets and not (image_only and official_stills):
+        raise RuntimeError("QUALITY_BLOCK: Master sem gameplay oficial nem fallback image-led autorizado")
 
     # Fail before rendering costly footage if substitutions reintroduced
     # repeated stills or captions unrelated to the narration.
@@ -724,10 +752,20 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
 
     total,moving,video_scenes=footage_stats()
     moving_ratio=(moving/total) if total else 0.0
-    if moving_ratio+1e-9<MIN_MOVING_FOOTAGE_RATIO:
-        raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage em movimento {moving_ratio:.1%}; mínimo {MIN_MOVING_FOOTAGE_RATIO:.0%}")
-    if video_scenes<min(MIN_VIDEO_SCENES,len(scenes)):
-        raise RuntimeError(f"QUALITY_BLOCK: gameplay presente em somente {video_scenes} cenas")
+    if image_only:
+        image_scene_count=sum(
+            1 for scene in scenes
+            if any(assets.get(int(b.get("media_index") or 0),{}).get("type")=="image"
+                   and str(assets.get(int(b.get("media_index") or 0),{}).get("role") or "").startswith("official_roblox_announcement_visual_")
+                   for b in scene.get("beats") or [])
+        )
+        if image_scene_count < len(scenes):
+            raise RuntimeError(f"QUALITY_BLOCK: imagens oficiais não cobrem todas as cenas ({image_scene_count}/{len(scenes)})")
+    else:
+        if moving_ratio+1e-9<MIN_MOVING_FOOTAGE_RATIO:
+            raise RuntimeError(f"QUALITY_BLOCK: gameplay/footage em movimento {moving_ratio:.1%}; mínimo {MIN_MOVING_FOOTAGE_RATIO:.0%}")
+        if video_scenes<min(MIN_VIDEO_SCENES,len(scenes)):
+            raise RuntimeError(f"QUALITY_BLOCK: gameplay presente em somente {video_scenes} cenas")
 
     scene_report=[]
     for i,scene in enumerate(scenes,1):
@@ -796,7 +834,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         "moving_footage_ratio":round(moving_ratio,4),
         "video_scenes":video_scenes,
         "headline_policy":"semantic_real_headline_no_DESTAQUE_X",
-        "gameplay_policy":"official_video_required; moving_footage_ratio_gte_35pct",
+        "gameplay_policy": image_only ? "official_announcement_images_with_camera_motion; not_gameplay" : "official_video_required; moving_footage_ratio_gte_35pct",
         "scenes":scene_report,
     }
     Path("output/anti-repetition-director.json").write_text(
