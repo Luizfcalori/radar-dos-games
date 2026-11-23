@@ -834,7 +834,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         "moving_footage_ratio":round(moving_ratio,4),
         "video_scenes":video_scenes,
         "headline_policy":"semantic_real_headline_no_DESTAQUE_X",
-        "gameplay_policy": image_only ? "official_announcement_images_with_camera_motion; not_gameplay" : "official_video_required; moving_footage_ratio_gte_35pct",
+        "gameplay_policy": "official_announcement_images_with_camera_motion; not_gameplay" if image_only else "official_video_required; moving_footage_ratio_gte_35pct",
         "scenes":scene_report,
     }
     Path("output/anti-repetition-director.json").write_text(
