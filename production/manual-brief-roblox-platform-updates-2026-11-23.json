@@ -24,10 +24,10 @@
     "PASSES COM TESTE GRÁTIS CHEGAM EM 2 DE DEZEMBRO!"
   ],
   "approved_for_publish": true,
-  "minimum_assets": 8,
+  "minimum_assets": 12,
   "minimum_video_assets": 0,
   "minimum_unique_video_seconds": 0,
-  "minimum_image_assets": 8,
+  "minimum_image_assets": 12,
   "editorial_rules": [
     "Tema travado: novidades oficiais da plataforma Roblox divulgadas entre 16 e 23 de novembro de 2026. Não trocar por outro jogo nem por Roblox Rivals.",
     "Explicar que o Web Play passou a usar WebGPU, melhorando renderização, iluminação, texturas e avatares; a compatibilidade depende do suporte WebGPU do dispositivo.",
