@@ -140,3 +140,16 @@ Masters e os três Shorts passam a usar `RADAR_CINEMATIC_V1` por padrão.
 - Classificação visual automática por categorias é uma sugestão, não prova de identidade de uma arma, personagem ou ação específica. Para identificação exata, revisar os frames e registrar `reviewed: true`, `evidence` e `subjects` na janela de `visual_windows`, com os identificadores exigidos em `phrase_subjects` (chaves correspondem aos números das frases). Nunca marcar revisão sem inspecionar o conteúdo.
 - Manter nomes originais em roteiros, títulos e legendas. `production/pronunciations.json` altera apenas o texto enviado à voz. Cyberpunk recebe a orientação fonética `Sáiber pânk`; a voz continua Thalita Multilingual. Novos nomes em inglês precisam de amostra de escuta e, se necessário, entrada no glossário. Não prometer pronúncia perfeita de todo nome desconhecido.
 - Push de código executa testes; produção continua disponível pelo acionamento manual e agenda existentes. Não iniciar uma produção só para validar uma alteração de código.
+
+
+## Política permanente de flexibilidade do Diretor
+
+Esta regra vale para **todas as produções futuras do Radar dos Games**, independentemente do jogo, do tema ou do brief manual. Não é uma exceção exclusiva de Stranger Than Heaven.
+
+- O Diretor deve ser flexível na montagem dos planos: priorizar gameplay/trailer em movimento que corresponda exatamente à fala, mas não exigir um intervalo inédito para cada frase quando a fonte aprovada já tiver sido explorada.
+- Quando os intervalos inéditos e as alternativas de vídeo relevantes se esgotarem, o Diretor pode extrair **quadros estáticos distintos** de janelas já revisadas de gameplay/trailer oficial do mesmo jogo, mantendo a origem e a janela/timestamp rastreáveis no manifesto de mídia.
+- Antes de recorrer a quadros estáticos, tentar as fontes oficiais e alternativas de mídia disponíveis. Nunca preencher lacunas com outro jogo, imagens sem procedência ou material que não corresponda ao assunto narrado.
+- Evitar repetição visual perceptível: variar os quadros e os momentos de origem; não repetir o mesmo quadro em sequência nem reutilizar intervalos idênticos como se fossem cenas novas.
+- A validação deve reconhecer a aprovação registrada no manifesto do asset e confirmar que o quadro foi extraído de um vídeo aprovado do mesmo jogo. Não exigir que a mesma autorização seja duplicada em cada frase/beat.
+- A flexibilidade elimina bloqueios artificiais por escassez de planos inéditos por frase, mas **não elimina** a revisão semântica fala-imagem, a rastreabilidade, a inspeção visual ou o QA final. Se não houver mídia aprovada que corresponda ao assunto, buscar novas fontes; só bloquear quando a correspondência realmente não puder ser garantida.
+- Aplicar esta política por padrão no Master e nos três Shorts de cada nova produção. Um brief específico pode exigir critérios adicionais, mas não pode tornar o Diretor desnecessariamente rígido nem revogar esta flexibilidade sem autorização explícita do usuário.
