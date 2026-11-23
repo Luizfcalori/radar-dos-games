@@ -1531,3 +1531,5 @@ if __name__ == "__main__":
 # [run-production] TOPIC=World of Warcraft: Forever — use IGN-hosted launch overview after YouTube anti-bot block.
 
 # Poppy Playtime dedicated brief recovery trigger 2026-11-08.
+
+# [run-private] TOPIC=Roblox — retry with the corrected manual brief path and official image fallback.
