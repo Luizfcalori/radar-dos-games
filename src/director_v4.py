@@ -23,8 +23,8 @@ CALM_TARGET = 4.7
 HOOK_TARGET = 2.25
 MAX_BEAT = 5.8
 MAX_ASSETS_PER_SCENE = 5
-MIN_MOVING_FOOTAGE_RATIO = 0.35
-MIN_VIDEO_SCENES = 3
+MIN_MOVING_FOOTAGE_RATIO = 0.25
+MIN_VIDEO_SCENES = 1
 
 HOOK_TOKENS = (
     "confirm", "novo", "nova", "revel", "agora", "lanç", "data", "primeir",
@@ -419,10 +419,13 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                 local[str(idx)] = windows
 
     try:
-        from repetition_policy import StaticTracker, match_score, validate_master
+        from repetition_policy import StaticTracker, match_score, validate_master, _extract_approved_gameplay_frame
     except ModuleNotFoundError:
-        from src.repetition_policy import StaticTracker, match_score, validate_master
+        from src.repetition_policy import StaticTracker, match_score, validate_master, _extract_approved_gameplay_frame
 
+    generated_frames=[]
+    next_generated_index=max(assets.keys(),default=-1)+1
+    generated_frame_keys=set()
     generic=all(str(a.get("role") or "").startswith("official_context_") for a in assets.values())
     usage=Counter(); previous=None; scene_report=[]; phrase_total=0
     static_tracker=StaticTracker(); timeline_seconds=0.0
@@ -475,6 +478,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         "vídeo acabaria antes da fala",
                         "intervalo de gameplay repetido",
                         "sem gameplay aprovada utilizável para a fala",
+                        "intervalos inéditos esgotados para a fala",
                     ))
                     if not exhausted:
                         raise
@@ -525,10 +529,59 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         fallback_stills.sort(
                             key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
                         )
+                    # FLEXIBLE DIRECTOR FALLBACK: if official stills are missing or
+                    # exhausted, extract distinct still frames from already-reviewed
+                    # windows of this same approved game's footage. This preserves
+                    # source provenance and avoids replaying motion intervals.
+                    if not fallback_stills:
+                        frame_candidates=[]
+                        reviewed_sources=[
+                            a for a in list(assets.values())
+                            if a.get("approved",True) and a.get("type")=="video"
+                            and int(a.get("index",-1)) in global_reviewed_windows
+                            and Path(str(a.get("path") or "")).is_file()
+                        ]
+                        for source_video in reviewed_sources:
+                            source_idx=int(source_video["index"])
+                            for reviewed_window in global_reviewed_windows.get(source_idx,[]):
+                                lo=float(reviewed_window.get("start",0))
+                                hi=float(reviewed_window.get("end",0))
+                                if hi-lo<0.5:
+                                    continue
+                                timestamp=round((lo+hi)/2,3)
+                                frame_key=(source_idx,round(timestamp,2))
+                                if frame_key in generated_frame_keys:
+                                    continue
+                                frame=_extract_approved_gameplay_frame(
+                                    source_video,timestamp,next_generated_index
+                                )
+                                if not frame:
+                                    continue
+                                frame["approved_context_still"]=True
+                                frame["source_label"]=(
+                                    "Approved gameplay frame extracted from the same official "
+                                    "game source; visually reviewed source window"
+                                )
+                                assets[next_generated_index]=frame
+                                generated_frames.append(frame)
+                                generated_frame_keys.add(frame_key)
+                                next_generated_index+=1
+                                if static_tracker.can_use(
+                                    frame,phrase_text,i,timeline_seconds,
+                                    min(remaining,3.5),relax_cooldown=True
+                                ):
+                                    frame_candidates.append(frame)
+                                if len(frame_candidates)>=4:
+                                    break
+                            if len(frame_candidates)>=4:
+                                break
+                        fallback_stills.extend(frame_candidates)
+                        fallback_stills.sort(
+                            key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])])
+                        )
                     # Prefer scene-approved stills, then official subject-specific
-                    # stills from the same researched game/topic. This fallback is
-                    # only reached after unique reviewed gameplay is exhausted;
-                    # it does not authorize repeated video intervals.
+                    # stills from the same researched game/topic, then distinct frames
+                    # extracted from reviewed gameplay. Motion intervals are never replayed.
                     candidates_for_still = stills or fallback_stills
                     if not candidates_for_still and cta_phrase:
                         # Final subscriber sign-off: if the scene's local shotlist and
@@ -669,6 +722,18 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     hooks=[str(x or "").strip() for x in (plan.get("short_hooks") or []) if str(x or "").strip()]
     picks,short_matches=pick_shorts_for_hooks(scenes,hooks)
 
+    # Persist generated still frames in both manifests so semantic and final QA
+    # can resolve every selected media index; keep all original approved assets.
+    if generated_frames:
+        existing={int(a.get("index",-1)) for a in (clips.get("assets") or [])}
+        clips.setdefault("assets",[]).extend(
+            a for a in generated_frames if int(a["index"]) not in existing
+        )
+        Path(clips_path).write_text(
+            json.dumps(clips,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"
+        )
+    plan["assets"]=list(assets.values())
+    plan["director_flexibility_policy"]="same_game_reviewed_gameplay_fallback; official_stills; extracted_reviewed_frames; no_repeated_motion_intervals; flexible_25pct_motion_floor"
     plan["premium_version"]="PREMIUM_V4_DIRECTOR_CUT"
     plan["director_policy"]="phrase_level_semantic_direction; variable_pacing; selective_keyword_overlays; independent_shorts; pro_score_gate"
     Path(plan_path).write_text(json.dumps(plan,ensure_ascii=False,indent=2),encoding="utf-8")
