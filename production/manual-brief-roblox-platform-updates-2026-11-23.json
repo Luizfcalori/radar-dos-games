@@ -67,5 +67,6 @@
     "https://devforum.roblox.com/t/create-avatar-moments-to-showcase-and-sell-your-items/4997778",
     "https://devforum.roblox.com/t/introducing-pass-free-trials/4995943"
   ],
-  "images_per_page": 4
+  "images_per_page": 4,
+  "image_fallback_strategy": "official_devforum_post_json_and_html"
 }
