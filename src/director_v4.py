@@ -548,35 +548,50 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                                 hi=float(reviewed_window.get("end",0))
                                 if hi-lo<0.5:
                                     continue
-                                timestamp=round((lo+hi)/2,3)
-                                frame_key=(source_idx,round(timestamp,2))
-                                if frame_key in generated_frame_keys:
-                                    continue
-                                frame=_extract_approved_gameplay_frame(
-                                    source_video,timestamp,next_generated_index
-                                )
-                                if not frame:
-                                    continue
-                                frame["approved_context_still"]=True
-                                frame["source_label"]=(
-                                    "Approved gameplay frame extracted from the same official "
-                                    "game source; visually reviewed source window"
-                                )
-                                assets[next_generated_index]=frame
-                                generated_frames.append(frame)
-                                generated_frame_keys.add(frame_key)
-                                next_generated_index+=1
-                                # Candidate generation is deliberately separate from
-                                # shot selection: final master QA still validates every
-                                # selected frame for provenance, subject relevance, duration,
-                                # and non-consecutive use. Do not let the cooldown tracker
-                                # suppress all newly extracted frames before they are tried.
-                                frame_candidates.append(frame)
+                                # Generate several distinct moments per reviewed window.
+                                # A single midpoint per window exhausted the bridge pool
+                                # on longer narration despite unused footage in the same source.
+                                for fraction in (0.12,0.30,0.48,0.66,0.84):
+                                    timestamp=round(lo+(hi-lo)*fraction,3)
+                                    frame_key=(source_idx,round(timestamp,2))
+                                    if frame_key in generated_frame_keys:
+                                        continue
+                                    frame=_extract_approved_gameplay_frame(
+                                        source_video,timestamp,next_generated_index
+                                    )
+                                    if not frame:
+                                        continue
+                                    frame["approved_context_still"]=True
+                                    frame["source_label"]=(
+                                        "Approved gameplay frame extracted from the same official "
+                                        "game source; visually reviewed source window"
+                                    )
+                                    assets[next_generated_index]=frame
+                                    generated_frames.append(frame)
+                                    generated_frame_keys.add(frame_key)
+                                    next_generated_index+=1
+                                    # Candidate generation is separate from shot selection;
+                                    # final QA checks provenance, relevance, duration and use caps.
+                                    frame_candidates.append(frame)
+                                    if len(frame_candidates)>=4:
+                                        break
                                 if len(frame_candidates)>=4:
                                     break
                             if len(frame_candidates)>=4:
                                 break
                         fallback_stills.extend(frame_candidates)
+                        # When no fresh timestamp remains, reuse a previously extracted
+                        # source-traceable frame within the existing per-frame use/seconds
+                        # caps. Cooldown may relax for this emergency bridge; consecutive
+                        # repeats remain forbidden by StaticTracker.
+                        if not fallback_stills:
+                            fallback_stills = [
+                                a for a in generated_frames
+                                if static_tracker.can_use(
+                                    a, phrase_text, i, timeline_seconds,
+                                    fallback_duration, relax_cooldown=True
+                                )
+                            ]
                         fallback_stills.sort(
                             key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])])
                         )
