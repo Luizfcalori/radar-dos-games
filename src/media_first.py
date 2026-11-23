@@ -35,7 +35,10 @@ def relevance(paragraph,asset,topic):
 
 def verify_assets(clips, plan):
     found=[]
-    image_only = bool(plan.get("allow_image_only_master", False))
+    image_only = bool(plan.get("allow_image_only_master", False)) and not any(
+        a.get("approved") is True and a.get("type") == "video"
+        for a in clips.get("assets", [])
+    )
     for asset in clips.get("assets") or []:
         if not asset.get("approved"):continue
         if asset.get("type") not in ("video","image"):continue
