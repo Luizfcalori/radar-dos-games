@@ -708,7 +708,8 @@ def load_manual_brief(path=None):
         return None
     try:
         data = json.loads(p.read_text(encoding="utf-8"))
-    except Exception:
+    except Exception as exc:
+        print(f"manual brief JSON inválido em {p}: {type(exc).__name__}: {exc}", flush=True)
         return None
     valid_until = parse_dt(data.get("valid_until"))
     if valid_until and datetime.now(timezone.utc) > valid_until:
