@@ -110,6 +110,21 @@ def extract_keyframe(path, time):
 
 
 def classify(inventory, clips, plan):
+    if plan.get("allow_image_only_master", False) and not any(
+        a.get("approved") and a.get("type") == "video"
+        for a in clips.get("assets", [])
+    ):
+        return {
+            "status": "ANALYZED",
+            "policy": "OFFICIAL_IMAGE_LED_CONTEXT_V1",
+            "model": "not_applicable",
+            "sampled_keyframes": 0,
+            "scenes": [
+                {"scene": n, "title": scene.get("title"),
+                 "note": "Official announcement image context only; not gameplay proof"}
+                for n, scene in enumerate(plan.get("scenes", []), 1)
+            ],
+        }
     import torch
     from transformers import CLIPModel, CLIPProcessor
 
