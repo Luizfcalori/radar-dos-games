@@ -496,208 +496,208 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                         window={"start":round(source_start,6),"end":round(proof['reserved_end'],6)}
                         evidence="reviewed_shot" if proof.get("reviewed") and proof.get("evidence") else "broad_category_suggestion"
                     except RuntimeError as exc:
-                    exhausted = any(token in str(exc) for token in (
-                        "faltam cenas inéditas correspondentes à fala",
-                        "acabou a gameplay inédita aprovada para a fala",
-                        "vídeo acabaria antes da fala",
-                        "intervalo de gameplay repetido",
-                        "sem gameplay aprovada utilizável para a fala",
-                        "intervalos inéditos esgotados para a fala",
-                    ))
-                    if not exhausted:
-                        raise
-                    # MEDIA_FIRST_V1 can restrict a scene to video-only clip IDs.
-                    # When those reviewed motion intervals are exhausted, permit
-                    # approved, game-specific official stills from the acquired asset
-                    # manifest as a continuity bridge; never broaden to generic art.
-                    topic_key = norm(plan.get("topic") or "")
-                    fallback_pool = [
-                        a for a in assets.values()
-                        if a.get("approved", True)
-                        and a.get("type") == "image"
-                        and str(a.get("role") or "").startswith(("official_subject_reference", "official_context_", "official_steam", "official_screenshot", "official_game_screenshot"))
-                        and a.get("source")
-                        and a.get("url")
-                        and (
-                            cta_phrase or (
-                                topic_key and topic_key in norm(
-                                    str(a.get("url") or "") + " " +
-                                    str(a.get("source_label") or "") + " " +
-                                    str(a.get("source") or "")
+                        exhausted = any(token in str(exc) for token in (
+                            "faltam cenas inéditas correspondentes à fala",
+                            "acabou a gameplay inédita aprovada para a fala",
+                            "vídeo acabaria antes da fala",
+                            "intervalo de gameplay repetido",
+                            "sem gameplay aprovada utilizável para a fala",
+                            "intervalos inéditos esgotados para a fala",
+                        ))
+                        if not exhausted:
+                            raise
+                        # MEDIA_FIRST_V1 can restrict a scene to video-only clip IDs.
+                        # When those reviewed motion intervals are exhausted, permit
+                        # approved, game-specific official stills from the acquired asset
+                        # manifest as a continuity bridge; never broaden to generic art.
+                        topic_key = norm(plan.get("topic") or "")
+                        fallback_pool = [
+                            a for a in assets.values()
+                            if a.get("approved", True)
+                            and a.get("type") == "image"
+                            and str(a.get("role") or "").startswith(("official_subject_reference", "official_context_", "official_steam", "official_screenshot", "official_game_screenshot"))
+                            and a.get("source")
+                            and a.get("url")
+                            and (
+                                cta_phrase or (
+                                    topic_key and topic_key in norm(
+                                        str(a.get("url") or "") + " " +
+                                        str(a.get("source_label") or "") + " " +
+                                        str(a.get("source") or "")
+                                    )
                                 )
                             )
-                        )
-                    ]
-                    fallback_duration=min(remaining,3.5)
-                    fallback_stills = [
-                        a for a in fallback_pool
-                        if static_tracker.can_use(
-                            a, phrase_text, i, timeline_seconds, fallback_duration
-                        )
-                    ]
-                    fallback_stills.sort(
-                        key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
-                    )
-                    # If every official still is inside the normal spacing cooldown,
-                    # allow a second-tier bridge using verified, same-topic official game
-                    # stills. Subject-specific narration remains protected by the policy;
-                    # gameplay intervals are never repeated.
-                    if not fallback_stills:
+                        ]
+                        fallback_duration=min(remaining,3.5)
                         fallback_stills = [
                             a for a in fallback_pool
                             if static_tracker.can_use(
-                                a, phrase_text, i, timeline_seconds, fallback_duration,
-                                relax_cooldown=True
+                                a, phrase_text, i, timeline_seconds, fallback_duration
                             )
                         ]
                         fallback_stills.sort(
                             key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
                         )
-                    # FLEXIBLE DIRECTOR FALLBACK: if official stills are missing or
-                    # exhausted, extract distinct still frames from already-reviewed
-                    # windows of this same approved game's footage. This preserves
-                    # source provenance and avoids replaying motion intervals.
-                    if not fallback_stills:
-                        frame_candidates=[]
-                        reviewed_sources=[
-                            a for a in list(assets.values())
-                            if a.get("approved",True) and a.get("type")=="video"
-                            and int(a.get("index",-1)) in global_reviewed_windows
-                            and Path(str(a.get("path") or "")).is_file()
-                        ]
-                        for source_video in reviewed_sources:
-                            source_idx=int(source_video["index"])
-                            for reviewed_window in global_reviewed_windows.get(source_idx,[]):
-                                lo=float(reviewed_window.get("start",0))
-                                hi=float(reviewed_window.get("end",0))
-                                if hi-lo<0.5:
-                                    continue
-                                # Generate several distinct moments per reviewed window.
-                                # A single midpoint per window exhausted the bridge pool
-                                # on longer narration despite unused footage in the same source.
-                                for fraction in (0.12,0.30,0.48,0.66,0.84):
-                                    timestamp=round(lo+(hi-lo)*fraction,3)
-                                    frame_key=(source_idx,round(timestamp,2))
-                                    if frame_key in generated_frame_keys:
+                        # If every official still is inside the normal spacing cooldown,
+                        # allow a second-tier bridge using verified, same-topic official game
+                        # stills. Subject-specific narration remains protected by the policy;
+                        # gameplay intervals are never repeated.
+                        if not fallback_stills:
+                            fallback_stills = [
+                                a for a in fallback_pool
+                                if static_tracker.can_use(
+                                    a, phrase_text, i, timeline_seconds, fallback_duration,
+                                    relax_cooldown=True
+                                )
+                            ]
+                            fallback_stills.sort(
+                                key=lambda a: (-match_score(phrase_text, a), usage[int(a["index"])])
+                            )
+                        # FLEXIBLE DIRECTOR FALLBACK: if official stills are missing or
+                        # exhausted, extract distinct still frames from already-reviewed
+                        # windows of this same approved game's footage. This preserves
+                        # source provenance and avoids replaying motion intervals.
+                        if not fallback_stills:
+                            frame_candidates=[]
+                            reviewed_sources=[
+                                a for a in list(assets.values())
+                                if a.get("approved",True) and a.get("type")=="video"
+                                and int(a.get("index",-1)) in global_reviewed_windows
+                                and Path(str(a.get("path") or "")).is_file()
+                            ]
+                            for source_video in reviewed_sources:
+                                source_idx=int(source_video["index"])
+                                for reviewed_window in global_reviewed_windows.get(source_idx,[]):
+                                    lo=float(reviewed_window.get("start",0))
+                                    hi=float(reviewed_window.get("end",0))
+                                    if hi-lo<0.5:
                                         continue
-                                    frame=_extract_approved_gameplay_frame(
-                                        source_video,timestamp,next_generated_index
-                                    )
-                                    if not frame:
-                                        continue
-                                    frame["approved_context_still"]=True
-                                    frame["source_label"]=(
-                                        "Approved gameplay frame extracted from the same official "
-                                        "game source; visually reviewed source window"
-                                    )
-                                    assets[next_generated_index]=frame
-                                    generated_frames.append(frame)
-                                    generated_frame_keys.add(frame_key)
-                                    next_generated_index+=1
-                                    # Candidate generation is separate from shot selection;
-                                    # final QA checks provenance, relevance, duration and use caps.
-                                    frame_candidates.append(frame)
+                                    # Generate several distinct moments per reviewed window.
+                                    # A single midpoint per window exhausted the bridge pool
+                                    # on longer narration despite unused footage in the same source.
+                                    for fraction in (0.12,0.30,0.48,0.66,0.84):
+                                        timestamp=round(lo+(hi-lo)*fraction,3)
+                                        frame_key=(source_idx,round(timestamp,2))
+                                        if frame_key in generated_frame_keys:
+                                            continue
+                                        frame=_extract_approved_gameplay_frame(
+                                            source_video,timestamp,next_generated_index
+                                        )
+                                        if not frame:
+                                            continue
+                                        frame["approved_context_still"]=True
+                                        frame["source_label"]=(
+                                            "Approved gameplay frame extracted from the same official "
+                                            "game source; visually reviewed source window"
+                                        )
+                                        assets[next_generated_index]=frame
+                                        generated_frames.append(frame)
+                                        generated_frame_keys.add(frame_key)
+                                        next_generated_index+=1
+                                        # Candidate generation is separate from shot selection;
+                                        # final QA checks provenance, relevance, duration and use caps.
+                                        frame_candidates.append(frame)
+                                        if len(frame_candidates)>=4:
+                                            break
                                     if len(frame_candidates)>=4:
                                         break
                                 if len(frame_candidates)>=4:
                                     break
-                            if len(frame_candidates)>=4:
-                                break
-                        fallback_stills.extend(frame_candidates)
-                        # When no fresh timestamp remains, reuse a previously extracted
-                        # source-traceable frame within the existing per-frame use/seconds
-                        # caps. Cooldown may relax for this emergency bridge; consecutive
-                        # repeats remain forbidden by StaticTracker.
-                        if not fallback_stills:
-                            fallback_stills = [
-                                a for a in generated_frames
-                                if static_tracker.can_use(
-                                    a, phrase_text, i, timeline_seconds,
-                                    fallback_duration, relax_cooldown=True
-                                )
+                            fallback_stills.extend(frame_candidates)
+                            # When no fresh timestamp remains, reuse a previously extracted
+                            # source-traceable frame within the existing per-frame use/seconds
+                            # caps. Cooldown may relax for this emergency bridge; consecutive
+                            # repeats remain forbidden by StaticTracker.
+                            if not fallback_stills:
+                                fallback_stills = [
+                                    a for a in generated_frames
+                                    if static_tracker.can_use(
+                                        a, phrase_text, i, timeline_seconds,
+                                        fallback_duration, relax_cooldown=True
+                                    )
+                                ]
+                            fallback_stills.sort(
+                                key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])])
+                            )
+                        # Prefer scene-approved stills, then official subject-specific
+                        # stills from the same researched game/topic, then distinct frames
+                        # extracted from reviewed gameplay. Motion intervals are never replayed.
+                        candidates_for_still = stills or fallback_stills
+                        if fallback_stills:
+                            print(json.dumps({
+                                "director_fallback":"approved_gameplay_frames",
+                                "generated_frames":len(generated_frames),
+                                "eligible_frames":len(fallback_stills),
+                                "scene":i,
+                            },ensure_ascii=False))
+                        if not candidates_for_still and cta_phrase:
+                            # Final subscriber sign-off: if the scene's local shotlist and
+                            # the single official still are exhausted, use already-reviewed
+                            # footage from this same approved game manifest. VideoTimeline
+                            # consumes every fresh interval first and only permits its
+                            # bounded last-resort reuse after that; no unrelated media,
+                            # unreviewed frames, title cards, or new downloads are admitted.
+                            cta_scene = dict(scene)
+                            cta_scene["visual_windows"] = {
+                                **(scene.get("visual_windows") or {}),
+                                **global_reviewed_windows,
+                            }
+                            cta_videos = [
+                                a for a in assets.values()
+                                if a.get("approved", True) and a.get("type") == "video"
                             ]
-                        fallback_stills.sort(
-                            key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])])
-                        )
-                    # Prefer scene-approved stills, then official subject-specific
-                    # stills from the same researched game/topic, then distinct frames
-                    # extracted from reviewed gameplay. Motion intervals are never replayed.
-                    candidates_for_still = stills or fallback_stills
-                    if fallback_stills:
-                        print(json.dumps({
-                            "director_fallback":"approved_gameplay_frames",
-                            "generated_frames":len(generated_frames),
-                            "eligible_frames":len(fallback_stills),
-                            "scene":i,
-                        },ensure_ascii=False))
-                    if not candidates_for_still and cta_phrase:
-                        # Final subscriber sign-off: if the scene's local shotlist and
-                        # the single official still are exhausted, use already-reviewed
-                        # footage from this same approved game manifest. VideoTimeline
-                        # consumes every fresh interval first and only permits its
-                        # bounded last-resort reuse after that; no unrelated media,
-                        # unreviewed frames, title cards, or new downloads are admitted.
-                        cta_scene = dict(scene)
-                        cta_scene["visual_windows"] = {
-                            **(scene.get("visual_windows") or {}),
-                            **global_reviewed_windows,
-                        }
-                        cta_videos = [
-                            a for a in assets.values()
-                            if a.get("approved", True) and a.get("type") == "video"
-                        ]
-                        if cta_videos:
-                            # Do not route the channel sign-off through the normal
-                            # semantic matcher: the CTA is not a gameplay subject.
-                            # Select directly from the inspected same-game windows,
-                            # preferring unused source ranges and allowing a bounded
-                            # last-resort reuse only after every fresh range is spent.
-                            from continuity import merge_reviewed_windows
-                            cta_fresh=[]
-                            cta_reuse=[]
-                            for cta_asset in cta_videos:
-                                cta_idx=int(cta_asset["index"])
-                                cta_duration=float(cta_asset.get("duration") or 0)
-                                cta_windows=(cta_scene.get("visual_windows") or {}).get(str(cta_idx),[])
-                                for cta_w in merge_reviewed_windows(cta_windows,cta_duration):
-                                    cta_lo=float(cta_w["start"])
-                                    cta_hi=min(float(cta_w["end"]),cta_duration-0.002 if cta_duration>0 else float(cta_w["end"]))
-                                    if cta_hi<=cta_lo+0.002:
-                                        continue
-                                    cta_key=timeline.identity(cta_idx)
-                                    for free_lo,free_hi in timeline.free(cta_idx,cta_lo,cta_hi):
-                                        if free_hi-free_lo>=0.25:
-                                            cta_len=min(3.5,remaining,free_hi-free_lo)
-                                            if cta_len>0:
-                                                cta_fresh.append((cta_len,-cta_idx,-free_lo,cta_asset,free_lo,cta_w))
-                                    cta_len=min(3.5,remaining,cta_hi-cta_lo)
-                                    if cta_len>0:
-                                        prior=sum(max(0,min(cta_hi,b)-max(cta_lo,a)) for a,b in timeline.used[cta_key])
-                                        cta_reuse.append((prior,cta_len,-cta_idx,cta_asset,cta_lo,cta_w))
-                            cta_reused=False
-                            if cta_fresh:
-                                d,_,_,picked,source_start,proof=max(cta_fresh,key=lambda x:(x[0],x[1],x[2]))
-                            elif cta_reuse:
-                                _,d,_,picked,source_start,proof=min(cta_reuse,key=lambda x:(x[0],-x[1],-x[2]))
-                                cta_reused=True
-                            else:
-                                raise RuntimeError(
-                                    "QUALITY_BLOCK: CTA sem janela oficial revisada; "
-                                    "inventário visual não forneceu intervalos utilizáveis"
-                                )
-                            reserved=math.ceil((d-1e-8)*30)/30
-                            timeline.reserve(int(picked["index"]),source_start,reserved,allow_reuse=cta_reused)
-                            window={"start":round(source_start,6),"end":round(source_start+reserved,6)}
-                            evidence="reviewed_shot_cta_continuity"
-                            if cta_reused:
-                                proof={**proof,"reused_source":True}
-                    if not candidates_for_still and window is None:
-                        raise
-                    if candidates_for_still:
-                        picked=candidates_for_still[0]
-                        d=min(remaining,3.5)
-                        window=None
-                        evidence="official_image_subject_label"
+                            if cta_videos:
+                                # Do not route the channel sign-off through the normal
+                                # semantic matcher: the CTA is not a gameplay subject.
+                                # Select directly from the inspected same-game windows,
+                                # preferring unused source ranges and allowing a bounded
+                                # last-resort reuse only after every fresh range is spent.
+                                from continuity import merge_reviewed_windows
+                                cta_fresh=[]
+                                cta_reuse=[]
+                                for cta_asset in cta_videos:
+                                    cta_idx=int(cta_asset["index"])
+                                    cta_duration=float(cta_asset.get("duration") or 0)
+                                    cta_windows=(cta_scene.get("visual_windows") or {}).get(str(cta_idx),[])
+                                    for cta_w in merge_reviewed_windows(cta_windows,cta_duration):
+                                        cta_lo=float(cta_w["start"])
+                                        cta_hi=min(float(cta_w["end"]),cta_duration-0.002 if cta_duration>0 else float(cta_w["end"]))
+                                        if cta_hi<=cta_lo+0.002:
+                                            continue
+                                        cta_key=timeline.identity(cta_idx)
+                                        for free_lo,free_hi in timeline.free(cta_idx,cta_lo,cta_hi):
+                                            if free_hi-free_lo>=0.25:
+                                                cta_len=min(3.5,remaining,free_hi-free_lo)
+                                                if cta_len>0:
+                                                    cta_fresh.append((cta_len,-cta_idx,-free_lo,cta_asset,free_lo,cta_w))
+                                        cta_len=min(3.5,remaining,cta_hi-cta_lo)
+                                        if cta_len>0:
+                                            prior=sum(max(0,min(cta_hi,b)-max(cta_lo,a)) for a,b in timeline.used[cta_key])
+                                            cta_reuse.append((prior,cta_len,-cta_idx,cta_asset,cta_lo,cta_w))
+                                cta_reused=False
+                                if cta_fresh:
+                                    d,_,_,picked,source_start,proof=max(cta_fresh,key=lambda x:(x[0],x[1],x[2]))
+                                elif cta_reuse:
+                                    _,d,_,picked,source_start,proof=min(cta_reuse,key=lambda x:(x[0],-x[1],-x[2]))
+                                    cta_reused=True
+                                else:
+                                    raise RuntimeError(
+                                        "QUALITY_BLOCK: CTA sem janela oficial revisada; "
+                                        "inventário visual não forneceu intervalos utilizáveis"
+                                    )
+                                reserved=math.ceil((d-1e-8)*30)/30
+                                timeline.reserve(int(picked["index"]),source_start,reserved,allow_reuse=cta_reused)
+                                window={"start":round(source_start,6),"end":round(source_start+reserved,6)}
+                                evidence="reviewed_shot_cta_continuity"
+                                if cta_reused:
+                                    proof={**proof,"reused_source":True}
+                        if not candidates_for_still and window is None:
+                            raise
+                        if candidates_for_still:
+                            picked=candidates_for_still[0]
+                            d=min(remaining,3.5)
+                            window=None
+                            evidence="official_image_subject_label"
                 # At 30 fps, sub-frame residuals cannot produce a valid video stream.
                 # Voice timings may leave a few milliseconds after phrase splitting;
                 # skip that inaudible tail instead of passing a duration that ffmpeg
