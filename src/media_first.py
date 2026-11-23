@@ -69,6 +69,9 @@ def verify_assets(clips, plan):
 
 def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
     assets=verify_assets(clips,plan)
+    image_only = bool(plan.get("allow_image_only_master", False)) and not any(
+        a.get("approved") is True and a.get("type") == "video" for a in assets
+    )
     paragraphs=[p.strip() for p in outline.split("\n\n") if p.strip()]
     scenes=plan.get("scenes") or []
     if len(scenes)!=len(paragraphs) or len(scenes)<3:
