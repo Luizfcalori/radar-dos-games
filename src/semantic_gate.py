@@ -21,6 +21,35 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
     except ModuleNotFoundError:
         from src.continuity import validate_video_beats
 
+    # Frames extracted from already-reviewed official gameplay are valid contextual
+    # stills only when their provenance points back to an approved video in this
+    # exact manifest. This keeps the fallback flexible without admitting arbitrary
+    # images or media from another game.
+    def approved_context_frame(asset):
+        if not asset or asset.get("type") != "image":
+            return False
+        if asset.get("approved") is not True or asset.get("approved_context_still") is not True:
+            return False
+        if not str(asset.get("source_label") or "").startswith(
+            "Approved gameplay frame extracted from the same official game source;"
+        ):
+            return False
+        if not str(asset.get("role") or "").startswith("official_context_approved_gameplay_frame_"):
+            return False
+        frame_source=str(asset.get("source") or asset.get("url") or "").strip()
+        if not frame_source:
+            return False
+        return any(
+            candidate.get("type") == "video"
+            and candidate.get("approved", True) is True
+            and frame_source == str(candidate.get("source") or candidate.get("url") or "").strip()
+            for candidate in assets.values()
+        )
+
+    approved_context_ids={
+        idx for idx,asset in assets.items() if approved_context_frame(asset)
+    }
+
     beats=[b for scene in plan.get("scenes",[]) for b in scene.get("beats",[])]
     if not beats:
         errors.append({"type":"missing_beats","message":"Plano sem beats de fala para validar."})
@@ -61,9 +90,12 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                                      "message":"A frase aponta para mídia não aprovada."})
                 continue
             if asset.get("type")!="video":
-                if not beat.get("approved_context_still"):
+                # Approval lives on the manifest asset, not on every phrase beat.
+                # Trust only frames whose extraction provenance is tied to a reviewed,
+                # approved video source from this same game's manifest.
+                if idx not in approved_context_ids:
                     scene_errors.append({"phrase":phrase,"type":"unverified_still",
-                                         "message":"Imagem estática sem aprovação contextual explícita."})
+                                         "message":"Imagem estática sem aprovação contextual e procedência verificável."})
                 continue
             source_window=beat.get("source_window") or {}
             if not source_window:
@@ -117,7 +149,7 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
         for asset in selected:
             role=str(asset.get("role") or "")
             ok=(not allowed_roles and not allowed_prefixes) or role in allowed_roles or any(role.startswith(p) for p in allowed_prefixes)
-            if not ok:
+            if not ok and int(asset.get("index",-1)) not in approved_context_ids:
                 scene_errors.append({"type":"role_mismatch","role":role,
                                      "message":"Papel visual fora das fontes aprovadas para a cena."})
         errors.extend([{"scene":scene.get("paragraph",scene_no),**item} for item in scene_errors])
