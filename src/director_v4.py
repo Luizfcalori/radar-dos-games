@@ -464,7 +464,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     and (not requirements or all(phrase_asset_match(str(subject),a)>0 for subject in requirements) or cta_phrase)
                 ]
                 stills.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
-                image_only = bool(plan.get("allow_image_only_master", False)) and not video_assets and not any(
+                image_only = bool(plan.get("allow_image_only_master", False)) and not any(
                     a.get("approved", True) and a.get("type") == "video" for a in assets.values()
                 )
                 if image_only:
@@ -740,7 +740,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         return total,moving,video_scenes
 
     video_assets=[a for a in assets.values() if a.get("type")=="video" and a.get("approved",True)]
-    image_only = bool(plan.get("allow_image_only_master", False))
+    image_only = bool(plan.get("allow_image_only_master", False)) and not video_assets
     official_stills=[a for a in assets.values() if a.get("type")=="image"
                      and a.get("approved",True)
                      and str(a.get("role") or "").startswith("official_roblox_announcement_visual_")]
