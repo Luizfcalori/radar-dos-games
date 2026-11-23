@@ -112,3 +112,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+# Radar dispatch marker: private Roblox production requested 2026-11-23.
