@@ -345,27 +345,38 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
     # picture just to fill the Short.
     image_only = not any(a.get("type") == "video" and a.get("approved") is True for a in assets.values())
     if image_only:
+        # The Roblox fallback is intentionally image-led: there is no approved
+        # gameplay in this run. Build a shared pool from every verified official
+        # announcement still, not only the assets attached to the current scene.
+        # This lets the three Shorts use distinct, topic-grounded images without
+        # inventing gameplay or looping one picture.
+        official_stills=[
+            a for a in assets.values()
+            if a.get("type") == "image"
+            and a.get("approved") is True
+            and _roblox_announcement_still(a)
+        ]
         for beat in beats:
             asset=assets[int(beat["media_index"])]
             if asset.get("type") != "image":
                 continue
             key=asset_identity(asset)
             if key in used_stills:
+                duration=float(beat.get("duration") or 0)
                 candidates=[
-                    assets[idx] for idx in selected
-                    if idx in assets
-                    and assets[idx].get("type") == "image"
-                    and assets[idx].get("approved") is True
-                    and _roblox_announcement_still(assets[idx])
-                    and asset_identity(assets[idx]) not in used_stills
-                    and float(beat.get("duration") or 0) <= MAX_STATIC_BEAT_SECONDS + 0.001
-                    and subject_ok(beat.get("text", ""), assets[idx])
+                    a for a in official_stills
+                    if asset_identity(a) not in used_stills
+                    and duration <= MAX_STATIC_BEAT_SECONDS + 0.001
                 ]
-                candidates.sort(key=lambda a:(-match_score(beat.get("text",""),a),int(a["index"])))
+                candidates.sort(key=lambda a:(
+                    -int(subject_ok(beat.get("text", ""),a)),
+                    -match_score(beat.get("text",""),a),
+                    int(a["index"])
+                ))
                 if candidates:
                     asset=candidates[0]
                     beat["media_index"]=int(asset["index"])
-                    beat["visual_evidence"]="official_roblox_announcement_image_with_camera_motion"
+                    beat["visual_evidence"]="official_roblox_announcement_still_with_camera_motion"
                     key=asset_identity(asset)
             used_stills.add(key)
 
