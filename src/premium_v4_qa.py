@@ -161,7 +161,7 @@ def main():
             "segments":len(ranges),
         }
         Path("output/anti-repetition-qa.json").write_text(
-            json.dumps(anti_spam,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+            json.dumps(anti_spam,ensure_ascii=False,indent=2),encoding="utf-8")
     else:
         if shorts.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
             raise RuntimeError("QUALITY_BLOCK: padrão visual Premium Conversão não aplicado")
@@ -195,7 +195,7 @@ def main():
             from src.repetition_policy import qa_report
         anti_spam=qa_report(plan_scenes,clips,srows)
         Path("output/anti-repetition-qa.json").write_text(
-            json.dumps(anti_spam,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+            json.dumps(anti_spam,ensure_ascii=False,indent=2),encoding="utf-8")
 
     sound=render.get("sound_design") or {}
     assert sound.get("voice_chain")=="compression+loudnorm+limiter",sound

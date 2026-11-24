@@ -117,7 +117,7 @@ def main():
         "expected_hooks":hooks,
         "shorts":rows,
     }
-    (DEST/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    (DEST/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps(manifest,ensure_ascii=False,indent=2))
 
 
