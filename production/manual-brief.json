@@ -1,61 +1,60 @@
 {
-  "valid_until": "2026-11-23T23:59:00Z",
-  "content_id": "doom-the-dark-ages-slaughter-mode-update-5-2026-11-22",
-  "title": "DOOM: The Dark Ages — Slaughter Mode e Update 5",
-  "headline": "DOOM GANHOU UM MODO SEM FIM: VOCÊ ARRISCARIA TUDO?",
-  "primary_source": "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-release-notes",
-  "media_source_urls": [
-    "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-release-notes",
-    "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-hotfix-1",
-    "https://store.steampowered.com/app/3017860/DOOM_The_Dark_Ages/",
-    "https://zolotube.com/watch?v=46iBb-vTRGw"
-  ],
+  "valid_until": "2026-11-26T23:59:00Z",
+  "content_id": "manual-like-a-dragon-pirate-yakuza-ps-plus-arrival-2026-11-24",
+  "title": "Like a Dragon: Pirate Yakuza in Hawaii — chegada ao PlayStation Plus",
+  "headline": "MAJIMA VIROU PIRATA: A AVENTURA CHEGOU AO PLAYSTATION PLUS!",
+  "primary_source": "https://blog.br.playstation.com/2026/11/10/novidades-de-novembro-para-o-catalogo-de-jogos-playstation-plus-death-stranding-2-on-the-beach-like-a-dragon-pirate-yakuza-in-hawaii-atomfall-dragon-quest-iii-hd-2d-remake-e-muito-mais/",
   "source_urls": [
-    "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-release-notes",
-    "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-update-5-hotfix-1",
-    "https://slayersclub.bethesda.net/en-US/news/doom-the-dark-ages-revelations-slaughter-mode-release-date"
+    "https://blog.br.playstation.com/2026/11/10/novidades-de-novembro-para-o-catalogo-de-jogos-playstation-plus-death-stranding-2-on-the-beach-like-a-dragon-pirate-yakuza-in-hawaii-atomfall-dragon-quest-iii-hd-2d-remake-e-muito-mais/",
+    "https://ryu-ga-gotoku.com/pirate/asia_en/",
+    "https://ryu-ga-gotoku.com/pirate/asia_en/battle/",
+    "https://www.sega.co.jp/en/release/240920_1.html",
+    "https://ryu-ga-gotoku.com/asia_en/info/detail/000245.html"
+  ],
+  "media_source_urls": [
+    "https://ryu-ga-gotoku.com/pirate/asia_en/",
+    "https://ryu-ga-gotoku.com/pirate/asia_en/battle/",
+    "https://www.sega.co.jp/en/release/240920_1.html",
+    "https://www.youtube.com/watch?v=-pwu5TkOTpU",
+    "https://www.youtube.com/watch?v=rL-OoVxc6NU",
+    "https://www.youtube.com/watch?v=1msFPkAjAG4"
   ],
   "video_urls": [
-    "https://zolotube.com/watch?v=46iBb-vTRGw",
-    "https://www.youtube.com/watch?v=lJ0uZbqZgEU",
-    "https://www.youtube.com/watch?v=jHjrkbyEEgU",
-    "https://www.youtube.com/watch?v=4tk8lkmYGWQ"
+    "https://www.youtube.com/watch?v=-pwu5TkOTpU",
+    "https://www.youtube.com/watch?v=rL-OoVxc6NU",
+    "https://www.youtube.com/watch?v=1msFPkAjAG4"
   ],
   "approved_for_publish": true,
   "short_hooks": [
-    "DOOM AGORA TEM RODADAS SEM FIM DE DEMÔNIOS!",
-    "ARRISCAR AS CAVEIRAS PODE FAZER VOCÊ PERDER TUDO!",
-    "FSR 4.1 E UPDATE 5: O QUE MUDOU EM DOOM?"
+    "GORO MAJIMA VIROU PIRATA E CHEGOU AO PLAYSTATION PLUS!",
+    "DOIS ESTILOS DE LUTA: CACHORRO LOUCO OU PIRATA DO MAR?",
+    "BATALHAS NAVAIS, CANHÕES E MAIS DE 100 TRIPULANTES!"
   ],
   "editorial_rules": [
-    "Tema bloqueado: DOOM: The Dark Ages — Slaughter Mode e Update 5. Não trocar por outro jogo nem misturar notícias de outros títulos.",
-    "Priorizar o trailer oficial Slaughter Mode hospedado no Zolotube: https://zolotube.com/watch?v=46iBb-vTRGw. O vídeo é o trailer oficial publicado pela Bethesda/IGN em 12 de novembro de 2026.",
-    "Slaughter Mode chegou em 16 de novembro de 2026 como parte do Update 5 de DOOM: The Dark Ages | Revelations.",
-    "Acesso incluído sem custo adicional para proprietários de Revelations, Premium Edition ou Premium Upgrade. Não afirmar que está liberado para todos os donos apenas da edição básica.",
-    "Descrever rodadas com encontros aleatórios ou selecionados, arenas diferentes, hordas e chefes. Não inventar multiplayer, número de jogadores, mapa ou conteúdo não confirmado.",
-    "Skulls avançam o nível do perfil e liberam recompensas cosméticas, níveis de insígnia, skins exclusivas do Slayer, skins de armas para outros modos e ícones de perfil.",
-    "As faixas da trilha IDKFA de Andrew Hulshult podem ser desbloqueadas para Slaughter Mode e Ripatorium.",
-    "Nos checkpoints, Secure protege as Skulls acumuladas; Risk It aumenta o multiplicador, mas morrer antes do próximo checkpoint faz perder todas as Skulls ainda em risco. Checkpoints concluídos liberam pontos de partida para futuras tentativas.",
-    "Update 5 inclui opções de efeitos de dano e intensidade de efeito de pouca vida, ajustes no Shield Saw e Chain Spear, suporte a AMD FSR 4 Upscaling 4.1 e Frame Generation 4 em GPUs compatíveis; geração de quadros também pode ser ativada em GPUs Intel compatíveis.",
-    "Hotfix 1 foi publicado em 19 de novembro de 2026 com ajustes de equilíbrio em chefes e correções. Não inventar valores específicos ou lista de mudanças que não conste na nota oficial consultada.",
-    "Master cinematográfico 16:9, duração natural para desenvolver o tema, voz Thalita Multilingual PT-BR V3. Exatamente 3 Shorts verticais 9:16 derivados do Master, preservando narração, música e efeitos; não cortar no meio de frases.",
-    "Capas oficiais no padrão Radar dos Games, com logo menor sobre a arte do jogo; manter títulos e cards legíveis. CTA final: inscreva-se; não usar 'ative o sininho' nem @radardosgamesbr.",
-    "Aquisição visual: incluir o trailer oficial Slaughter Mode do IGN via Zolotube e os trailers/gameplay oficiais de DOOM listados em video_urls. Priorizar cenas de Slaughter Mode quando a fala tratar do modo; usar gameplay oficial de DOOM: The Dark Ages apenas para contextualizar armas, arenas e combate. Não reutilizar o mesmo intervalo de vídeo; se a mídia inédita for insuficiente, bloquear e adquirir novas fontes."
+    "Pauta bloqueada: Like a Dragon: Pirate Yakuza in Hawaii. Não trocar por outro jogo nem misturar notícias de outros títulos.",
+    "Gancho atual: o jogo entrou no Catálogo de Jogos do PlayStation Plus Extra e Premium em 24 de novembro de 2026 nos territórios anunciados pela Sony. Informar que a disponibilidade e o catálogo podem variar por região; orientar a conferir a PS Store brasileira sem afirmar disponibilidade regional não confirmada.",
+    "A aventura acompanha Goro Majima após perder a memória, assumir a identidade de capitão pirata e buscar tesouro e pistas sobre seu passado. Plataformas oficiais incluem PS5, PS4, Xbox Series X|S, Xbox One e PC.",
+    "O combate terrestre tem dois estilos alternáveis: Mad Dog, ágil e focado em ataques rápidos, e Sea Dog, com cutlasses e equipamentos piratas. Não confundir com combate por turnos.",
+    "As batalhas navais envolvem pilotar o Goromaru, manobrar contra disparos, usar canhões, abordar navios inimigos e enfrentar a tripulação adversária no convés.",
+    "A exploração inclui Honolulu, Rich Island, Madlantis e Nele Island. Madlantis abriga o Pirates' Coliseum e batalhas navais entre tripulações.",
+    "O jogo oferece mais de 100 tripulantes recrutáveis segundo a página oficial de batalha; citar apenas se contextualizado e sem inventar que todos são obrigatórios.",
+    "Master cinematográfico 16:9 em Full HD, duração natural para desenvolver a pauta, voz Thalita Multilingual PT-BR V3. Exatamente 3 Shorts verticais 9:16 derivados do Master, sem criar vídeos independentes fora dele e sem cortar frases.",
+    "Capas oficiais no padrão Radar dos Games, logo menor sobre arte oficial do jogo; títulos e cards legíveis. CTA final: inscreva-se. Não usar 'ative o sininho' nem @radardosgamesbr.",
+    "Usar somente mídia oficial SEGA/RGG Studio/PlayStation indicada neste brief. Priorizar cenas distintas de combate terrestre, combate naval, exploração e atividades. Não reutilizar o mesmo intervalo de vídeo; verificar correspondência entre fala e imagem."
   ],
   "script_blocks": [
-    "O DOOM: The Dark Ages acaba de ganhar uma atualização que muda o jeito de enfrentar as hordas do inferno. O nome é Slaughter Mode, e a proposta é direta: sobreviver a rodadas cada vez mais brutais, atravessar arenas diferentes e descobrir até onde o Slayer consegue chegar. Não é apenas uma sequência de combates repetidos. Os encontros podem variar, com inimigos, chefes e desafios que tornam cada tentativa diferente. E existe uma decisão que pode custar tudo.",
-    "A novidade chegou em 16 de novembro como parte do Update 5 de DOOM: The Dark Ages | Revelations. O modo está incluído sem custo adicional para quem possui a expansão Revelations, a Premium Edition ou o Premium Upgrade do jogo. Isso é importante: não significa que Slaughter Mode esteja liberado para qualquer pessoa que tenha somente a edição básica. O acesso depende de uma dessas opções específicas. A atualização amplia o conteúdo da expansão e oferece um desafio pensado para continuar depois da campanha.",
-    "Em Slaughter Mode, cada rodada coloca o jogador diante de um encontro aleatório ou de um desafio selecionado. Ao limpar a arena, o Slayer avança para o próximo campo de batalha, onde outra combinação de ameaças espera. As rodadas ficam mais intensas conforme a sequência avança, misturando hordas, chefes e arenas diferentes. O objetivo é continuar vivo, alcançar uma nova melhor marca pessoal e provar que consegue sobreviver por mais tempo. A imprevisibilidade é parte central da experiência: duas partidas não precisam seguir o mesmo caminho.",
-    "O progresso gira em torno das Skulls, as caveiras conquistadas ao completar rodadas. Elas ajudam a avançar o nível do perfil e liberam recompensas cosméticas e novos níveis de insígnia. Entre os desbloqueios estão skins do Slayer exclusivas do Slaughter Mode, skins de armas que também podem ser usadas nos outros modos e ícones de perfil. A atualização ainda permite desbloquear faixas da trilha IDKFA, de Andrew Hulshult, para tocar tanto no Slaughter Mode quanto no Ripatorium.",
-    "Mas o detalhe mais tenso aparece nos checkpoints. Quando alcança um ponto de controle, o jogador pode proteger as caveiras que já conquistou ou escolher Risk It. Essa segunda opção aumenta o multiplicador e pode render uma quantidade maior de Skulls nas próximas rodadas. Só que existe um risco real: se o Slayer morrer antes de garantir o próximo checkpoint, todas as caveiras que ainda estiverem em risco serão perdidas. É uma aposta entre sair com a recompensa segura ou tentar multiplicá-la.",
-    "Os checkpoints também ajudam a tornar as próximas tentativas menos demoradas. Cada ponto de controle concluído libera aquele trecho como opção de início para futuras partidas. Assim, quem já avançou bastante pode voltar diretamente a encontros posteriores, em vez de começar sempre do zero. Isso não elimina o desafio, mas cria uma forma de perseguir pontuações melhores e experimentar novas estratégias sem repetir obrigatoriamente toda a sequência inicial. As decisões sobre quando proteger as Skulls e quando arriscar passam a fazer parte da estratégia.",
-    "O Update 5 traz outras mudanças além do novo modo. Nas configurações de interface, agora é possível ajustar os efeitos de dano na tela e a intensidade do efeito visual de pouca vida. O jogo também recebeu ajustes em armas e no comportamento de comandos, incluindo melhorias relacionadas ao Shield Saw e à Chain Spear. No PC, a atualização adiciona suporte ao AMD FSR 4 com upscaling 4.1 e Frame Generation 4 em placas compatíveis. A geração de quadros também pode ser ativada em GPUs Intel que atendam aos requisitos de hardware e driver.",
-    "E a atualização não parou por aí. Em 19 de novembro, a Bethesda publicou o Hotfix 1 para o Update 5, com ajustes de equilíbrio em chefes e correções de problemas. Portanto, quem está voltando agora encontra o Slaughter Mode acompanhado de uma primeira rodada de refinamentos. A grande pergunta é quanto tempo você consegue resistir antes de perder tudo o que acumulou. Você protegeria suas caveiras no checkpoint ou escolheria Risk It para tentar multiplicar a recompensa? Conta nos comentários. Este é o Radar dos Games: inscreva-se para acompanhar as próximas novidades."
+    "Goro Majima já enfrentou famílias da Yakuza, criminosos perigosos e situações completamente fora da realidade. Mas desta vez ele foi ainda mais longe: perdeu a memória, acordou longe de casa e acabou se tornando um capitão pirata. Essa é a premissa de Like a Dragon: Pirate Yakuza in Hawaii, uma aventura de ação que mistura pancadaria, exploração, navios de guerra e o humor absurdo que tornou a franquia conhecida. E agora existe um motivo especial para muita gente conhecer essa aventura: o jogo acaba de chegar ao Catálogo de Jogos do PlayStation Plus Extra e Premium, com disponibilização anunciada para 24 de novembro de 2026 em regiões selecionadas.",
+    "A novidade foi confirmada pela própria PlayStation no anúncio oficial do catálogo de novembro. O jogo está listado para PlayStation 5 e PlayStation 4. Como a Sony distribui o catálogo por região, a disponibilidade pode variar: vale conferir a PlayStation Store brasileira antes de procurar o download. Para quem já tem acesso ao catálogo compatível, essa é uma oportunidade de embarcar em uma aventura protagonizada por Goro Majima, um dos personagens mais imprevisíveis da série. A história começa depois que ele perde as lembranças e precisa descobrir quem é, enquanto se envolve com piratas e uma busca por um tesouro lendário.",
+    "A grande diferença está no combate. Em vez do sistema por turnos de alguns capítulos recentes da franquia, Pirate Yakuza retorna à ação em tempo real. Majima pode alternar entre dois estilos. O primeiro é Mad Dog, que aposta na velocidade, em golpes acrobáticos, ataques com faca e sequências aéreas. É o estilo que combina com a personalidade caótica do personagem: entrar no meio dos inimigos, mudar de direção rapidamente e transformar uma briga comum em um espetáculo de golpes.",
+    "O segundo estilo é Sea Dog, feito para a vida de pirata. Nele, Majima usa duas cutlasses e diferentes equipamentos de combate, incluindo armas laterais que ampliam as possibilidades de ataque. A troca entre Mad Dog e Sea Dog permite adaptar o ritmo da luta: velocidade e movimentos acrobáticos de um lado; espadas, ferramentas piratas e ataques de maior alcance do outro. A página oficial da SEGA também destaca ações especiais e equipamentos que ajudam a deixar os confrontos ainda mais exagerados.",
+    "Mas a aventura não acontece apenas nas ruas de Honolulu. Majima também assume o comando do Goromaru e parte para o alto-mar. Nas batalhas navais, é preciso manobrar o navio para escapar dos disparos inimigos e responder com salvas de canhão. Depois de enfraquecer uma embarcação rival, a tripulação pode invadir o convés adversário e transformar o confronto em uma briga coletiva. É uma mudança importante de ritmo: primeiro a disputa acontece entre navios; depois, a batalha continua de perto, com Majima e seus companheiros enfrentando os piratas inimigos.",
+    "A tripulação também faz parte da estratégia. O jogo permite recrutar mais de cem marinheiros, cada um com características próprias, e modificar o Goromaru com melhorias e elementos visuais. Escolher quem acompanha o capitão influencia a preparação para os confrontos. E existe ainda o Pirates' Coliseum, em Madlantis, uma arena dedicada a disputas navais com diferentes regras e formatos. A ilha funciona como um ponto de encontro para organizações criminosas e oferece alguns dos desafios mais extravagantes da aventura.",
+    "A exploração completa o pacote. Além de Honolulu, o jogador visita Rich Island, Nele Island e Madlantis, cada uma com sua identidade e atividades. Há tesouros escondidos, locais para descobrir, personagens excêntricos e minijogos que quebram o ritmo das batalhas. Essa mistura de ação, navegação e atividades paralelas é o que diferencia Pirate Yakuza de uma aventura tradicional de piratas. Tudo acontece dentro do universo de Like a Dragon, onde uma cena séria pode rapidamente dar lugar a uma situação completamente absurda.",
+    "Com a chegada ao PlayStation Plus, Pirate Yakuza in Hawaii ganha uma nova chance de encontrar jogadores que ainda não tinham experimentado a aventura de Majima. O destaque não é apenas vestir o personagem de pirata: é alternar estilos de luta, comandar um navio, montar uma tripulação e explorar diferentes regiões do Havaí em busca de respostas. Agora queremos saber: você começaria pelo combate terrestre ou iria direto para as batalhas navais? Conta nos comentários. Este é o Radar dos Games. Inscreva-se para acompanhar mais novidades."
   ],
-  "production_note": "Brief bloqueado em 22/11/2026 com base nas notas oficiais Bethesda/id Software do Update 5 e Hotfix 1. Mídia deve vir do CDN e dos anúncios oficiais da página Steam exata do DOOM: The Dark Ages (App ID 3017860), além das imagens oficiais Bethesda; não depender de Zolotube/YouTube nem usar gameplay de outro jogo. QA 22/11: aquisição exige pelo menos 320 segundos de gameplay oficial inédita e 2 trailers distintos para sustentar Master e Shorts; não encerrar após o primeiro trailer nem deduplicar trailers distintos pelo mesmo título.",
-  "steam_app_id": 3017860,
+  "production_note": "Brief criado em 24/11/2026 com base no anúncio oficial PlayStation Blog BR de novembro de 2026 e nas páginas oficiais SEGA/RGG Studio. Priorizar o anúncio de entrada no PS Plus como notícia atual; usar os vídeos oficiais SEGA listados para gameplay. Validar disponibilidade brasileira sem extrapolar a confirmação de territórios. Master + exatamente 3 Shorts derivados do Master.",
   "minimum_assets": 2,
   "minimum_video_assets": 2,
-  "minimum_unique_video_seconds": 320,
+  "minimum_unique_video_seconds": 240,
   "minimum_image_assets": 0
 }
