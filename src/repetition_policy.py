@@ -367,6 +367,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                 candidates=[
                     a for a in official_stills
                     if asset_identity(a) not in used_stills
+                    and asset_identity(a) not in scene_stills
                     and duration <= MAX_STATIC_BEAT_SECONDS + 0.001
                 ]
                 candidates.sort(key=lambda a:(
