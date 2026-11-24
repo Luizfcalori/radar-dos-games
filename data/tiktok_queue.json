@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-24T10:53:28.587076+00:00",
+  "updated_at": "2026-11-24T16:26:23.497232+00:00",
   "items": [
     {
       "id": "roblox-agora-usa-webgpu-o-que-muda-ao-jogar-pelo-navega-approved-45373194033-short-1",
@@ -49,8 +49,12 @@
       "source_run_id": 45203598910,
       "short_number": 1,
       "approved_at": "2026-11-23T16:07:17.796913+00:00",
-      "source": "approved_production_artifact_auto",
-      "platform": "tiktok_helper_manual_posting"
+      "source": "youtube_channel",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "NuScPDBvBM4",
+      "youtube_url": "https://www.youtube.com/shorts/NuScPDBvBM4",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-24T16:26:23.497232+00:00"
     },
     {
       "id": "stranger-than-heaven-2026-11-23-short-2",
@@ -62,8 +66,12 @@
       "source_run_id": 45203598910,
       "short_number": 2,
       "approved_at": "2026-11-23T16:07:17.796913+00:00",
-      "source": "approved_production_artifact_auto",
-      "platform": "tiktok_helper_manual_posting"
+      "source": "youtube_channel",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "am5k3NM9C6g",
+      "youtube_url": "https://www.youtube.com/shorts/am5k3NM9C6g",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-24T16:26:23.497232+00:00"
     },
     {
       "id": "stranger-than-heaven-2026-11-23-short-3",
@@ -75,8 +83,12 @@
       "source_run_id": 45203598910,
       "short_number": 3,
       "approved_at": "2026-11-23T16:07:17.796913+00:00",
-      "source": "approved_production_artifact_auto",
-      "platform": "tiktok_helper_manual_posting"
+      "source": "youtube_channel",
+      "platform": "tiktok_helper_manual_posting",
+      "youtube_id": "PUpOqn_DwMA",
+      "youtube_url": "https://www.youtube.com/shorts/PUpOqn_DwMA",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-24T16:26:23.497232+00:00"
     },
     {
       "id": "doom-dark-ages-slaughter-mode-2026-11-22-short-1",

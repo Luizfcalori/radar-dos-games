@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-23T21:50:02.423001+00:00",
-  "total_discovered": 221,
-  "ready_for_tiktok": 12,
+  "updated_at": "2026-11-24T16:26:23.497232+00:00",
+  "total_discovered": 224,
+  "ready_for_tiktok": 15,
   "waiting_media": [
     {
       "youtube_id": "hvNGrAlPfWA",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "NuScPDBvBM4",
+      "youtube_url": "https://www.youtube.com/shorts/NuScPDBvBM4",
+      "title": "MAKOTO DAITO VIROU O DEMÔNIO VERMELHO DE KURE!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "am5k3NM9C6g",
+      "youtube_url": "https://www.youtube.com/shorts/am5k3NM9C6g",
+      "title": "STRANGER THAN HEAVEN TERÁ CINCO ERAS E CINCO CIDADES!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "PUpOqn_DwMA",
+      "youtube_url": "https://www.youtube.com/shorts/PUpOqn_DwMA",
+      "title": "O COMBATE DE STRANGER THAN HEAVEN É DIFERENTE DE TUDO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "HF4dB7VEO1U",
       "youtube_url": "https://www.youtube.com/shorts/HF4dB7VEO1U",
