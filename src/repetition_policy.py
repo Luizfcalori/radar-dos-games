@@ -356,12 +356,13 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
             and a.get("approved") is True
             and _roblox_announcement_still(a)
         ]
+        scene_stills=set()
         for beat in beats:
             asset=assets[int(beat["media_index"])]
             if asset.get("type") != "image":
                 continue
             key=asset_identity(asset)
-            if key in used_stills:
+            if key in used_stills or key in scene_stills:
                 duration=float(beat.get("duration") or 0)
                 candidates=[
                     a for a in official_stills
@@ -378,7 +379,7 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
                     beat["media_index"]=int(asset["index"])
                     beat["visual_evidence"]="official_roblox_announcement_still_with_camera_motion"
                     key=asset_identity(asset)
-            used_stills.add(key)
+            scene_stills.add(key)
 
     # Reserve fresh intervals from this scene in the shared per-Short timeline.
     # If a later scene collides with an earlier scene, flag it for replacement
