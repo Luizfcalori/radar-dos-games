@@ -383,10 +383,14 @@ jobs:
           assert premium.get("short_semantic_selection") in ("APPROVED", "APPROVED_MASTER_SPLIT"), premium
           assert len(premium.get("approved_short_hooks") or []) == 3, premium
           assert premium.get("real_headlines") == "APPROVED", premium
-          assert premium.get("gameplay_moving_footage") in ("APPROVED", "NOT_APPLICABLE_IMAGE_LED"), premium
-          assert int(premium.get("video_assets") or 0) >= 1, premium
-          assert float(premium.get("unique_video_seconds") or 0) >= 15, premium
-          assert float(premium.get("moving_footage_ratio") or 0) >= 0.25, premium
+          if premium.get("gameplay_moving_footage") == "APPROVED":
+              assert int(premium.get("video_assets") or 0) >= 1, premium
+              assert float(premium.get("unique_video_seconds") or 0) >= 15, premium
+              assert float(premium.get("moving_footage_ratio") or 0) >= 0.25, premium
+          else:
+              assert premium.get("gameplay_moving_footage") == "NOT_APPLICABLE_IMAGE_LED", premium
+              assert premium.get("official_image_led_mode") == "APPROVED", premium
+              assert int(premium.get("official_image_assets") or 0) >= 1, premium
           pro = json.loads(Path("output/pro-score.json").read_text(encoding="utf-8"))
           assert pro.get("status") == "APPROVED", pro
           assert int(pro.get("pro_score") or 0) >= 85, pro
