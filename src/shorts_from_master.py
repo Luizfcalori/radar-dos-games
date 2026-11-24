@@ -64,8 +64,8 @@ def main():
             "[0:v]split=2[bgsrc][fgsrc];"
             "[bgsrc]scale=1080:1920:force_original_aspect_ratio=increase,"
             "crop=1080:1920,boxblur=28:14,eq=brightness=-0.18:saturation=0.85[bg];"
-            "[fgsrc]scale=1080:607:force_original_aspect_ratio=decrease,"
-            "pad=1080:607:(ow-iw)/2:(oh-ih)/2:color=0x081420,setsar=1[fg];"
+            "[fgsrc]scale=1080:608:force_original_aspect_ratio=decrease,"
+            "pad=1080:608:(ow-iw)/2:(oh-ih)/2:color=0x081420,setsar=1[fg];"
             "[bg][fg]overlay=0:(H-h)/2,format=yuv420p[v]"
         )
         run([
