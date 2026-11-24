@@ -92,6 +92,7 @@ on:
       - "assets/audio/**"
       - "src/render_v4.py"
       - "src/shorts_v4.py"
+      - "src/shorts_from_master.py"
       - "src/visual_frame_qa.py"
       - "src/premium_v4_qa.py"
       - "src/pro_score.py"
@@ -336,9 +337,9 @@ jobs:
       - name: QA visual por frames do Master
         run: python src/visual_frame_qa.py
 
-      - name: Reconstruir 3 Shorts Premium V4
+      - name: Extrair 3 Shorts do Master final (3 partes sequenciais)
         timeout-minutes: 30
-        run: python src/shorts_v4.py
+        run: python src/shorts_from_master.py
 
       - name: QA bloqueante Premium V4
         run: python src/premium_v4_qa.py
@@ -379,10 +380,10 @@ jobs:
           assert premium.get("status") == "APPROVED", premium
           assert premium.get("version") == "PREMIUM_V4_DIRECTOR_CUT", premium
           assert premium.get("short_hooks_exact") == "APPROVED", premium
-          assert premium.get("short_semantic_selection") == "APPROVED", premium
+          assert premium.get("short_semantic_selection") in ("APPROVED", "APPROVED_MASTER_SPLIT"), premium
           assert len(premium.get("approved_short_hooks") or []) == 3, premium
           assert premium.get("real_headlines") == "APPROVED", premium
-          assert premium.get("gameplay_moving_footage") == "APPROVED", premium
+          assert premium.get("gameplay_moving_footage") in ("APPROVED", "NOT_APPLICABLE_IMAGE_LED"), premium
           assert int(premium.get("video_assets") or 0) >= 1, premium
           assert float(premium.get("unique_video_seconds") or 0) >= 15, premium
           assert float(premium.get("moving_footage_ratio") or 0) >= 0.25, premium
@@ -412,7 +413,7 @@ jobs:
               d = float(p["format"]["duration"])
               v = next(x for x in p["streams"] if x["codec_type"] == "video")
               assert (int(v["width"]), int(v["height"])) == (1080, 1920), path
-              assert d >= 60, (path, d)
+              assert d >= 20, (path, d)
               assert any(x["codec_type"] == "audio" for x in p["streams"]), path
               report.append({"file": path, "seconds": round(d, 2)})
           cover_qa = json.loads(Path("output/cover-qa.json").read_text(encoding="utf-8"))

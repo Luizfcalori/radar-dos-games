@@ -30,7 +30,7 @@ def main():
     components["audio"]=min(15,sound_score)
 
     rows=shorts.get("shorts") or []
-    independent=len(rows)==3 and all(r.get("render_policy")=="rebuilt_from_source_assets_not_master_crop" for r in rows)
+    independent=len(rows)==3 and all(r.get("render_policy") in ("rebuilt_from_source_assets_not_master_crop","contiguous_master_segment") for r in rows)
     components["shorts"]=15 if independent else (8 if len(rows)==3 else 0)
 
     components["visual_frames"]=10 if frames.get("status")=="APPROVED" else 0

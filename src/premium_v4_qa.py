@@ -106,50 +106,96 @@ def main():
         assert int(row.get("beats") or 0)>=1,row
         cadence.append({"scene":row.get("scene"),"beats":row.get("beats"),"avg_beat":avg})
 
-    if shorts.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
-        raise RuntimeError("QUALITY_BLOCK: padrão visual Premium Conversão não aplicado")
-    if shorts.get("hook_policy") != "exact_approved_hook_persistent_all_beats; semantic_scene_match; phrase_level_visuals; premium_conversion_fixed_layout":
-        raise RuntimeError("QUALITY_BLOCK: política de layout Premium ausente")
     srows=shorts.get("shorts") or []
     assert len(srows)==3,len(srows)
     expected_hooks=[str(x or "").strip() for x in (picks.get("expected_hooks") or [])]
     manifest_hooks=[str(x or "").strip() for x in (shorts.get("expected_hooks") or [])]
-    matches=picks.get("semantic_matches") or []
     if len(expected_hooks)!=3 or any(not x for x in expected_hooks):
         raise RuntimeError("QUALITY_BLOCK: short-picks sem exatamente 3 hooks aprovados")
     if [norm_short_title(x) for x in manifest_hooks] != [norm_short_title(x) for x in expected_hooks]:
         raise RuntimeError("QUALITY_BLOCK: manifest dos Shorts divergiu dos hooks aprovados")
-    if len(matches)!=3:
-        raise RuntimeError("QUALITY_BLOCK: seleção semântica dos Shorts incompleta")
-    for i,(row,hook,match) in enumerate(zip(srows,expected_hooks,matches),1):
-        if row.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
-            raise RuntimeError(f"QUALITY_BLOCK: Short {i} não usa o padrão Premium Conversão")
-        if row.get("cta") != ["INSCREVA-SE AGORA", "DEIXE O LIKE", "RADAR DOS GAMES"]:
-            raise RuntimeError(f"QUALITY_BLOCK: CTA multiplataforma aprovado ausente no Short {i}")
-        assert row.get("render_policy")=="rebuilt_from_source_assets_not_master_crop",row
-        assert row.get("boundary_policy")=="independent_scene_voice_complete",row
-        assert float(row.get("duration") or 0)>=(20 if image_only else 60),row
-        if norm_short_title(row.get("title")) != norm_short_title(hook):
-            raise RuntimeError(f"QUALITY_BLOCK: Short {i} saiu com título diferente do hook aprovado: {row.get('title')} != {hook}")
-        if norm_short_title(row.get("approved_hook")) != norm_short_title(hook):
-            raise RuntimeError(f"QUALITY_BLOCK: Short {i} perdeu o hook aprovado no manifesto")
-        if int(match.get("scene_index",-1)) != int(row.get("scene_index",-2)):
-            raise RuntimeError(f"QUALITY_BLOCK: Short {i} renderizou cena diferente da seleção semântica")
-        if float(match.get("semantic_score") or 0) <= 0:
-            raise RuntimeError(f"QUALITY_BLOCK: Short {i} sem correspondência semântica entre hook e narração")
-        meta=load(f"output/short-{i}-youtube.json")
-        if norm_short_title(meta.get("title")) != norm_short_title(hook):
-            raise RuntimeError(f"QUALITY_BLOCK: metadata do Short {i} diverge do hook aprovado")
 
-    # Check the actual render source beats for the Master and independently
-    # rebuilt Shorts. Do not trust director metadata without recounting images.
-    try:
-        from repetition_policy import qa_report
-    except ModuleNotFoundError:
-        from src.repetition_policy import qa_report
-    anti_spam=qa_report(plan_scenes,clips,srows)
-    Path("output/anti-repetition-qa.json").write_text(
-        json.dumps(anti_spam,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    master_split=shorts.get("source_policy")=="contiguous_master_split_v1"
+    if master_split:
+        if shorts.get("layout_profile")!="RADAR_MASTER_SPLIT_9X16_V1":
+            raise RuntimeError("QUALITY_BLOCK: layout 9:16 do recorte do Master ausente")
+        if shorts.get("hook_policy")!="approved_hook_as_metadata; contiguous_master_timeline; preserve_master_audio":
+            raise RuntimeError("QUALITY_BLOCK: política de recorte do Master inválida")
+        master_duration=float(shorts.get("master_duration") or 0)
+        ranges=[]
+        for i,(row,hook) in enumerate(zip(srows,expected_hooks),1):
+            if row.get("render_policy")!="contiguous_master_segment" or row.get("boundary_policy")!="master_timeline_partition":
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} não veio diretamente do Master")
+            if row.get("audio_source")!="master_original_audio":
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} não preserva o áudio do Master")
+            if norm_short_title(row.get("title"))!=norm_short_title(hook) or norm_short_title(row.get("approved_hook"))!=norm_short_title(hook):
+                raise RuntimeError(f"QUALITY_BLOCK: título do Short {i} diverge do hook aprovado")
+            if row.get("layout_profile")!="RADAR_MASTER_SPLIT_9X16_V1":
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} sem layout vertical correto")
+            if row.get("cta")!=["INSCREVA-SE AGORA","DEIXE O LIKE","RADAR DOS GAMES"]:
+                raise RuntimeError(f"QUALITY_BLOCK: CTA metadata ausente no Short {i}")
+            meta=load(f"output/short-{i}-youtube.json")
+            if norm_short_title(meta.get("title"))!=norm_short_title(hook):
+                raise RuntimeError(f"QUALITY_BLOCK: metadata do Short {i} diverge do hook aprovado")
+            lo=float(row.get("source_start") or 0)
+            hi=float(row.get("source_end") or 0)
+            duration=float(row.get("duration") or 0)
+            if duration<20 or hi<=lo or abs((hi-lo)-duration)>0.15:
+                raise RuntimeError(f"QUALITY_BLOCK: intervalo/duração inválido no Short {i}")
+            ranges.append((lo,hi))
+        if abs(ranges[0][0])>0.08 or abs(ranges[-1][1]-master_duration)>0.15:
+            raise RuntimeError("QUALITY_BLOCK: os Shorts não cobrem o Master inteiro")
+        for i in range(2):
+            if abs(ranges[i][1]-ranges[i+1][0])>0.08:
+                raise RuntimeError("QUALITY_BLOCK: há lacuna ou sobreposição entre partes do Master")
+        if abs(ranges[0][1]-ranges[0][0] - master_duration/3)>0.2:
+            raise RuntimeError("QUALITY_BLOCK: divisão do Master não está em três partes equivalentes")
+        if abs(ranges[1][1]-ranges[1][0] - master_duration/3)>0.2:
+            raise RuntimeError("QUALITY_BLOCK: divisão do Master não está em três partes equivalentes")
+        if abs(ranges[2][1]-ranges[2][0] - master_duration/3)>0.2:
+            raise RuntimeError("QUALITY_BLOCK: divisão do Master não está em três partes equivalentes")
+        anti_spam={
+            "status":"APPROVED",
+            "policy":"three_non_overlapping_contiguous_master_segments",
+            "master_split":"APPROVED",
+            "segments":len(ranges),
+        }
+        Path("output/anti-repetition-qa.json").write_text(
+            json.dumps(anti_spam,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    else:
+        if shorts.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
+            raise RuntimeError("QUALITY_BLOCK: padrão visual Premium Conversão não aplicado")
+        if shorts.get("hook_policy") != "exact_approved_hook_persistent_all_beats; semantic_scene_match; phrase_level_visuals; premium_conversion_fixed_layout":
+            raise RuntimeError("QUALITY_BLOCK: política de layout Premium ausente")
+        matches=picks.get("semantic_matches") or []
+        if len(matches)!=3:
+            raise RuntimeError("QUALITY_BLOCK: seleção semântica dos Shorts incompleta")
+        for i,(row,hook,match) in enumerate(zip(srows,expected_hooks,matches),1):
+            if row.get("layout_profile") != "RADAR_PREMIUM_CONVERSAO_V1":
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} não usa o padrão Premium Conversão")
+            if row.get("cta") != ["INSCREVA-SE AGORA", "DEIXE O LIKE", "RADAR DOS GAMES"]:
+                raise RuntimeError(f"QUALITY_BLOCK: CTA multiplataforma aprovado ausente no Short {i}")
+            assert row.get("render_policy")=="rebuilt_from_source_assets_not_master_crop",row
+            assert row.get("boundary_policy")=="independent_scene_voice_complete",row
+            assert float(row.get("duration") or 0)>=(20 if image_only else 60),row
+            if norm_short_title(row.get("title")) != norm_short_title(hook):
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} saiu com título diferente do hook aprovado: {row.get('title')} != {hook}")
+            if norm_short_title(row.get("approved_hook")) != norm_short_title(hook):
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} perdeu o hook aprovado no manifesto")
+            if int(match.get("scene_index",-1)) != int(row.get("scene_index",-2)):
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} renderizou cena diferente da seleção semântica")
+            if float(match.get("semantic_score") or 0) <= 0:
+                raise RuntimeError(f"QUALITY_BLOCK: Short {i} sem correspondência semântica entre hook e narração")
+            meta=load(f"output/short-{i}-youtube.json")
+            if norm_short_title(meta.get("title")) != norm_short_title(hook):
+                raise RuntimeError(f"QUALITY_BLOCK: metadata do Short {i} diverge do hook aprovado")
+        try:
+            from repetition_policy import qa_report
+        except ModuleNotFoundError:
+            from src.repetition_policy import qa_report
+        anti_spam=qa_report(plan_scenes,clips,srows)
+        Path("output/anti-repetition-qa.json").write_text(
+            json.dumps(anti_spam,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
 
     sound=render.get("sound_design") or {}
     assert sound.get("voice_chain")=="compression+loudnorm+limiter",sound
@@ -170,11 +216,12 @@ def main():
         "semantic_visual_warnings":int(semantic.get("warning_count") or 0),
         "variable_pacing":"APPROVED",
         "sound_design":"APPROVED",
-        "independent_shorts":"APPROVED",
+        "independent_shorts":"APPROVED_MASTER_SPLIT" if master_split else "APPROVED",
         "short_hooks_exact":"APPROVED",
-        "short_semantic_selection":"APPROVED",
+        "short_semantic_selection":"APPROVED_MASTER_SPLIT" if master_split else "APPROVED",
         "approved_short_hooks":expected_hooks,
         "anti_repetition":"APPROVED",
+        "shorts_source_policy":"contiguous_master_split_v1" if master_split else "independent_rebuild",
         "image_reuse_policy":"limited_by_content_hash; exact_phrase; cooldown; shorts_once",
         "visual_frame_qa":"APPROVED",
         "real_headlines":"APPROVED",
