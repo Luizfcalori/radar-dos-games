@@ -51,9 +51,10 @@
     "A exploração completa o pacote. Além de Honolulu, o jogador visita Rich Island, Nele Island e Madlantis, cada uma com sua identidade e atividades. Há tesouros escondidos, locais para descobrir, personagens excêntricos e minijogos que quebram o ritmo das batalhas. Essa mistura de ação, navegação e atividades paralelas é o que diferencia Pirate Yakuza de uma aventura tradicional de piratas. Tudo acontece dentro do universo de Like a Dragon, onde uma cena séria pode rapidamente dar lugar a uma situação completamente absurda.",
     "Com a chegada ao PlayStation Plus, Pirate Yakuza in Hawaii ganha uma nova chance de encontrar jogadores que ainda não tinham experimentado a aventura de Majima. O destaque não é apenas vestir o personagem de pirata: é alternar estilos de luta, comandar um navio, montar uma tripulação e explorar diferentes regiões do Havaí em busca de respostas. Agora queremos saber: você começaria pelo combate terrestre ou iria direto para as batalhas navais? Conta nos comentários. Este é o Radar dos Games. Inscreva-se para acompanhar mais novidades."
   ],
-  "production_note": "Brief atualizado em 24/11/2026 após bloqueio do download dos vídeos do YouTube. Fontes de gameplay substituídas por três MP4 de trailers listados para o jogo no Steam CDN (Fastly), além da página oficial Steam e páginas oficiais SEGA/RGG Studio. Notícia atual baseada no anúncio PlayStation Blog BR de novembro de 2026. Validar disponibilidade brasileira sem extrapolar territórios confirmados.",
+  "production_note": "Brief atualizado em 24/11/2026 após bloqueio do download dos vídeos do YouTube. Fontes de gameplay substituídas por três MP4 de trailers listados para o jogo no Steam CDN (Fastly), além da página oficial Steam e páginas oficiais SEGA/RGG Studio. Notícia atual baseada no anúncio PlayStation Blog BR de novembro de 2026. Validar disponibilidade brasileira sem extrapolar territórios confirmados. Steam exact-app acquisition enabled via steam_app_id 3061810 so the pipeline fetches full publisher-hosted HLS/DASH trailers and official screenshots, rather than relying on short microtrailers.",
   "minimum_assets": 2,
   "minimum_video_assets": 2,
-  "minimum_unique_video_seconds": 45,
-  "minimum_image_assets": 0
+  "minimum_unique_video_seconds": 120,
+  "minimum_image_assets": 0,
+  "steam_app_id": 3061810
 }
