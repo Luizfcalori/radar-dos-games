@@ -83,7 +83,7 @@ jobs:
 
           for run in runs:
               rid=str(run.get("id") or "")
-              if not rid or rid in imported_runs:
+              if not rid or rid in imported_runs or rid in {"45582673384", "45582038546"}:
                   continue
               created=run.get("created_at") or ""
               try:
