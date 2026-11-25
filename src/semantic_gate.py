@@ -100,16 +100,27 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                 continue
             if asset.get("type")!="video":
                 if image_only:
-                    official_roblox_still = (
+                    official_publisher_still = (
                         asset.get("type") == "image"
                         and asset.get("approved") is True
-                        and str(asset.get("role") or "").startswith("official_roblox_announcement_visual_")
-                        and str(asset.get("source") or "").startswith("https://devforum.roblox.com/")
+                        and (
+                            (
+                                str(asset.get("role") or "").startswith("official_roblox_announcement_visual_")
+                                and str(asset.get("source") or "").startswith("https://devforum.roblox.com/")
+                            )
+                            or (
+                                str(asset.get("role") or "").startswith("official_game_announcement_visual_")
+                                and (
+                                    str(asset.get("source") or "").startswith("https://www.thewitcher.com/")
+                                    or str(asset.get("source") or "").startswith("https://www.cdprojekt.com/")
+                                )
+                            )
+                        )
                         and str(asset.get("url") or "").startswith("https://")
                     )
-                    if not official_roblox_still:
+                    if not official_publisher_still:
                         scene_errors.append({"phrase":phrase,"type":"unverified_image_led_asset",
-                                             "message":"Imagem não pertence ao conjunto de imagens oficiais Roblox autorizado."})
+                                             "message":"Imagem não pertence ao conjunto de imagens oficiais do publisher autorizado."})
                 elif idx not in approved_context_ids:
                     scene_errors.append({"phrase":phrase,"type":"unverified_still",
                                          "message":"Imagem estática sem aprovação contextual e procedência verificável."})

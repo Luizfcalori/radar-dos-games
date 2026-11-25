@@ -57,7 +57,7 @@ def verify_assets(clips, plan):
     has_video = any(x["type"] == "video" for x in found)
     has_official_stills = any(
         x["type"] == "image"
-        and str(x.get("role") or "").startswith("official_roblox_announcement_visual_")
+        and str(x.get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_"))
         and str(x.get("source") or "").startswith("https://")
         for x in found
     )
@@ -105,7 +105,7 @@ def compile_storyboard(plan,clips,selected,outline,visual_inventory=None):
         # the fallback topic-bound and prevents generic third-party images.
         official_role=asset_role.startswith((
             "official_subject_reference_", "official_context_",
-            "official_roblox_announcement_visual_"
+            "official_roblox_announcement_visual_", "official_game_announcement_visual_"
         ))
         same_official_host=bool(primary_source[0] and asset_source[0]==primary_source[0])
         if official_role and same_official_host:

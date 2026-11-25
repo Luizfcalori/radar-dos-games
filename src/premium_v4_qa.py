@@ -83,7 +83,7 @@ def main():
         image_scene_count=sum(
             1 for scene in plan_scenes
             if any(asset_map.get(int(beat.get("media_index") or 0),{}).get("type")=="image"
-                   and str(asset_map.get(int(beat.get("media_index") or 0),{}).get("role") or "").startswith("official_roblox_announcement_visual_")
+                   and str(asset_map.get(int(beat.get("media_index") or 0),{}).get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_"))
                    for beat in scene.get("beats") or [])
         )
         if image_scene_count < len(plan_scenes):
@@ -177,7 +177,7 @@ def main():
                 raise RuntimeError(f"QUALITY_BLOCK: CTA multiplataforma aprovado ausente no Short {i}")
             assert row.get("render_policy")=="rebuilt_from_source_assets_not_master_crop",row
             assert row.get("boundary_policy")=="independent_scene_voice_complete",row
-            assert float(row.get("duration") or 0)>=(20 if image_only else 60),row
+            assert float(row.get("duration") or 0)>=(60),row
             if norm_short_title(row.get("title")) != norm_short_title(hook):
                 raise RuntimeError(f"QUALITY_BLOCK: Short {i} saiu com título diferente do hook aprovado: {row.get('title')} != {hook}")
             if norm_short_title(row.get("approved_hook")) != norm_short_title(hook):

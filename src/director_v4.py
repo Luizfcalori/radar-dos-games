@@ -468,13 +468,13 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     a.get("approved", True) and a.get("type") == "video" for a in assets.values()
                 )
                 if image_only:
-                    # Explicit image-led mode: only official Roblox announcement
+                    # Explicit image-led mode: only publisher-approved announcement
                     # images are eligible. They receive subtle camera motion in
                     # the renderer and are never described as gameplay.
                     image_pool = [
                         a for a in allowed
                         if a.get("type") == "image"
-                        and str(a.get("role") or "").startswith("official_roblox_announcement_visual_")
+                        and str(a.get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_"))
                         and str(a.get("source") or "").startswith("https://")
                     ]
                     image_pool.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
@@ -743,7 +743,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
     image_only = bool(plan.get("allow_image_only_master", False)) and not video_assets
     official_stills=[a for a in assets.values() if a.get("type")=="image"
                      and a.get("approved",True)
-                     and str(a.get("role") or "").startswith("official_roblox_announcement_visual_")]
+                     and str(a.get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_"))]
     if not video_assets and not (image_only and official_stills):
         raise RuntimeError("QUALITY_BLOCK: Master sem gameplay oficial nem fallback image-led autorizado")
 
@@ -758,7 +758,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
         image_scene_count=sum(
             1 for scene in scenes
             if any(assets.get(int(b.get("media_index") or 0),{}).get("type")=="image"
-                   and str(assets.get(int(b.get("media_index") or 0),{}).get("role") or "").startswith("official_roblox_announcement_visual_")
+                   and str(assets.get(int(b.get("media_index") or 0),{}).get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_"))
                    for b in scene.get("beats") or [])
         )
         if image_scene_count < len(scenes):

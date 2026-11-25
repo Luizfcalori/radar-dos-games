@@ -123,12 +123,13 @@ def _approved_gameplay_frame(asset):
 
 def _roblox_announcement_still(asset):
     """Recognize only images acquired from the official Roblox DevForum announcement pages."""
-    return (
-        asset.get("type") == "image"
-        and str(asset.get("role") or "").startswith("official_roblox_announcement_visual_")
-        and str(asset.get("source") or "").startswith("https://devforum.roblox.com/")
-        and str(asset.get("url") or "").startswith("https://")
+    source = str(asset.get("source") or "")
+    role = str(asset.get("role") or "")
+    roblox = role.startswith("official_roblox_announcement_visual_") and source.startswith("https://devforum.roblox.com/")
+    witcher = role.startswith("official_game_announcement_visual_") and (
+        source.startswith("https://www.thewitcher.com/") or source.startswith("https://www.cdprojekt.com/")
     )
+    return asset.get("type") == "image" and (roblox or witcher) and str(asset.get("url") or "").startswith("https://")
 
 
 def _extract_approved_gameplay_frame(video, timestamp, index):
