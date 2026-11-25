@@ -83,7 +83,7 @@ def main():
         image_scene_count=sum(
             1 for scene in plan_scenes
             if any(asset_map.get(int(beat.get("media_index") or 0),{}).get("type")=="image"
-                   and str(asset_map.get(int(beat.get("media_index") or 0),{}).get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_"))
+                   and str(asset_map.get(int(beat.get("media_index") or 0),{}).get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_", "official_subject_reference_"))
                    for beat in scene.get("beats") or [])
         )
         if image_scene_count < len(plan_scenes):
