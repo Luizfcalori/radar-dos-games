@@ -901,6 +901,8 @@ def main():
         manual = load_manual_brief("production/manual-brief-qssr-ps5-2026-10-19.json")
     elif forced_topic_slug == ascii_slug("Fight Night"):
         manual = load_manual_brief("production/manual-brief-fight-night-return-2026-10-21.json")
+    elif forced_topic_slug in (ascii_slug("The Witcher 4"), ascii_slug("The Witcher IV")):
+        manual = load_manual_brief("production/manual-brief-the-witcher-4-2026-11-25.json")
     elif forced_topic_slug == ascii_slug("The Blood of Dawnwalker"):
         manual = load_manual_brief("production/manual-brief-the-blood-of-dawnwalker-2026-10-23.json")
     elif forced_topic_slug == ascii_slug("The Wolf Among Us Remastered"):
@@ -1117,6 +1119,7 @@ def main():
                 "apex-legends-cipher-godzilla-2026-11-15": "production/manual-brief-apex-legends-cipher-godzilla-2026-11-15.json",
                 "where-winds-meet-hutuo-anniversary-2026-11-15": "production/manual-brief-where-winds-meet-hutuo-anniversary-2026-11-15.json",
                 "manual-attack-on-titan-3-paradis-walls-gameplay-pc-specs-2026-11-25": "production/manual-brief-attack-on-titan-3-2026-11-25.json",
+                "manual-the-witcher-4-ciri-development-2028-2026-11-25": "production/manual-brief-the-witcher-4-2026-11-25.json",
                 "roblox-platform-updates-november-2026": "production/manual-brief-roblox-platform-updates-2026-11-23.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
