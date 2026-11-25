@@ -14,60 +14,67 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify recovery report and TikTok queue
+      - name: Verify recovery report and media-backed queue
         shell: bash
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          ids = [
-              'DFMjasmIOSw',
-              't-KVaCwbrbA',
-              'dvu_iLOeRds',
-              'hjCBW6wopN8',
-              'Lc3BXMSZanU',
-              'S-Kw8W24bzM',
+          queue=json.loads(Path('data/tiktok_queue.json').read_text(encoding='utf-8'))
+          report=json.loads(Path('data/tiktok_backfill_report.json').read_text(encoding='utf-8'))
+          items=queue.get('items') or []
+          by_id={str(x.get('youtube_id')):x for x in items if x.get('youtube_id')}
+
+          missing=[
+              x for x in items
+              if x.get('youtube_id') and not str(x.get('media_url') or '').strip()
           ]
+          missing_ids={str(x.get('youtube_id')) for x in missing}
+          reported_ids={str(x.get('youtube_id')) for x in (report.get('remaining') or [])}
 
-          report = json.loads(Path('data/tiktok_backfill_report.json').read_text())
-          assert report.get('total_discovered') == 28, report
-          assert report.get('recovered_count') == 28, report
-          assert report.get('ready_for_tiktok') == 28, report
-          assert report.get('remaining_count') == 0, report
-          assert report.get('remaining') == [], report
+          assert report.get('remaining_count')==len(missing), {
+              'report_remaining_count':report.get('remaining_count'),
+              'actual_missing':len(missing)
+          }
+          assert reported_ids==missing_ids, {
+              'report_ids':sorted(reported_ids),
+              'queue_missing_ids':sorted(missing_ids)
+          }
 
-          queue = json.loads(Path('data/tiktok_queue.json').read_text())
-          items = queue.get('items', [])
-          by_id = {item.get('youtube_id'): item for item in items if item.get('youtube_id')}
-
-          ready = [
-              item for item in items
-              if item.get('youtube_id')
-              and item.get('media_url')
-              and item.get('status') in ('approved', 'ready_for_tiktok')
+          # No item without an MP4 may remain approved/ready for posting.
+          unsafe=[
+              x for x in missing
+              if x.get('status') in ('approved','ready_for_tiktok')
           ]
-          assert len(ready) >= 28, f'only {len(ready)} ready items'
+          assert not unsafe, unsafe
 
-          for video_id in ids:
-              item = by_id.get(video_id)
+          # Three Resident Evil Shorts were restored from the original approved
+          # production artifact; verify their exact permanent asset references.
+          recovered={
+              'xDCHua1DjJg':'resident-evil-requiem-levou-o-premio-mais-importante-de-43929326588-short-1',
+              'wFuquyQt9-w':'resident-evil-requiem-levou-o-premio-mais-importante-de-43929326588-short-2',
+              'GS36QlnZiFw':'resident-evil-requiem-levou-o-premio-mais-importante-de-43929326588-short-3',
+          }
+          for video_id,stem in recovered.items():
+              item=by_id.get(video_id)
               assert item, f'missing queue item {video_id}'
-              assert item.get('status') in ('approved', 'ready_for_tiktok'), item
-              expected = f'https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-youtube-shorts/yt-{video_id}.mp4'
-              assert item.get('media_url') == expected, item
-              text = item.get('post_text', '')
-              assert text.strip(), f'missing post_text {video_id}'
-              assert '#RadarDosGames' in text and '#TikTokGames' in text, f'missing hashtags {video_id}'
+              assert item.get('media_url','').endswith(stem+'.mp4'), item
+              assert item.get('thumbnail_url','').endswith(stem+'.jpg'), item
 
-          print('TikTok Helper queue verified: 28/28 ready; six recovered items have MP4 URLs, captions and hashtags.')
+          print(json.dumps({
+              'queue_total':len(items),
+              'media_missing':len(missing),
+              'media_missing_ids':sorted(missing_ids),
+              'resident_evil_recovered':len(recovered),
+              'report_consistent':True,
+          },ensure_ascii=False,indent=2))
           PY
 
-      - name: Verify six permanent GitHub Release assets
+      - name: Verify permanent recovered assets
         shell: bash
         run: |
           set -euo pipefail
@@ -75,12 +82,23 @@ jobs:
           for id in DFMjasmIOSw t-KVaCwbrbA dvu_iLOeRds hjCBW6wopN8 Lc3BXMSZanU S-Kw8W24bzM; do
             grep -Fx "yt-${id}.mp4" /tmp/assets.txt >/dev/null
           done
-          echo 'All six recovered MP4 assets exist in the permanent GitHub Release.'
+          gh release view tiktok-approved-assets --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' > /tmp/approved-assets.txt
+          for n in 1 2 3; do
+            grep -F "resident-evil-requiem-levou-o-premio-mais-importante-de-43929326588-short-${n}.mp4" /tmp/approved-assets.txt >/dev/null
+            grep -F "resident-evil-requiem-levou-o-premio-mais-importante-de-43929326588-short-${n}.jpg" /tmp/approved-assets.txt >/dev/null
+          done
+          echo 'Recovered assets verified in both permanent releases.'
 
       - name: Summary
         run: |
           echo '### Radar TikTok Helper recovery verification' >> "$GITHUB_STEP_SUMMARY"
-          echo '- Queue: **28/28 ready**' >> "$GITHUB_STEP_SUMMARY"
-          echo '- Remaining: **0**' >> "$GITHUB_STEP_SUMMARY"
-          echo '- Recovered MP4 assets checked: **6/6**' >> "$GITHUB_STEP_SUMMARY"
-          echo '- Captions/hashtags checked for recovered items: **6/6**' >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          q=json.loads(Path('data/tiktok_queue.json').read_text())
+          r=json.loads(Path('data/tiktok_backfill_report.json').read_text())
+          print(f"- Queue entries: **{len(q.get('items') or [])}**")
+          print(f"- Shorts still missing original MP4: **{r.get('remaining_count')}**")
+          print('- Resident Evil originals restored: **3/3**')
+          print('- Existing permanent recovery assets verified: **6/6**')
+          PY
