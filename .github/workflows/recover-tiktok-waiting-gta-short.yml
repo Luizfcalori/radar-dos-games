@@ -1,0 +1,96 @@
+name: Radar TikTok - Recover Waiting GTA 6 Short
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/recover-tiktok-waiting-gta-short.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install media tools
+        run: |
+          python -m pip install --upgrade yt-dlp
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Recover the exact waiting original
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p recovered
+          yt-dlp --no-warnings --no-playlist --retries 2 --fragment-retries 2 \
+            --extractor-args "youtube:player_client=android_vr,web_safari,web" \
+            -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
+            --merge-output-format mp4 \
+            -o "recovered/yt-hvNGrAlPfWA.%(ext)s" \
+            "https://www.youtube.com/shorts/hvNGrAlPfWA"
+          f=$(find recovered -maxdepth 1 -type f ! -name '*.json' | head -1)
+          test -n "$f"
+          if [ "$f" != "recovered/yt-hvNGrAlPfWA.mp4" ]; then
+            ffmpeg -y -loglevel error -i "$f" -c:v libx264 -preset veryfast -crf 20 -c:a aac -movflags +faststart recovered/yt-hvNGrAlPfWA.mp4
+            rm -f "$f"
+          fi
+          test -s recovered/yt-hvNGrAlPfWA.mp4
+          duration=$(ffprobe -v error -show_entries format=duration -of csv=p=0 recovered/yt-hvNGrAlPfWA.mp4)
+          python - "$duration" <<'PY'
+          import sys
+          duration=float(sys.argv[1])
+          if duration < 60:
+              raise SystemExit(f'Short tem {duration:.2f}s; abaixo do mínimo de 60s definido para o Radar. Não será aprovado na fila.')
+          print(f'Short validado: {duration:.2f}s')
+          PY
+
+      - name: Publish recovered media asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view tiktok-approved-assets >/dev/null 2>&1 || gh release create tiktok-approved-assets --title "Radar dos Games - Shorts aprovados para TikTok" --notes "Arquivos aprovados usados pelo Radar TikTok Helper."
+          gh release upload tiktok-approved-assets recovered/yt-hvNGrAlPfWA.mp4 --clobber
+
+      - name: Repair the waiting queue item
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          path=Path('data/tiktok_queue.json')
+          queue=json.loads(path.read_text(encoding='utf-8'))
+          items=queue.get('items') or []
+          item=next((x for x in items if x.get('youtube_id')=='hvNGrAlPfWA'),None)
+          if item is None:
+              raise SystemExit('O item hvNGrAlPfWA não está mais na fila; nenhuma alteração aplicada.')
+          item['media_url']='https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/yt-hvNGrAlPfWA.mp4'
+          item['thumbnail_url']=item.get('thumbnail_url') or 'https://i.ytimg.com/vi/hvNGrAlPfWA/hqdefault.jpg'
+          title=item.get('title') or 'GTA 6 promete elevar a experiência a outro nível!'
+          item['title']=title
+          item['post_text']=title+'\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#GTA6 #RockstarGames #Gaming #GameTok #Jogos'
+          item['status']='approved'
+          item['source']='youtube_channel_recovered_original'
+          item['recovered_at']=datetime.now(timezone.utc).isoformat()
+          queue['updated_at']=datetime.now(timezone.utc).isoformat()
+          path.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'recovered':item['youtube_id'],'status':item['status'],'media_url':item['media_url']}))
+          PY
+
+      - name: Commit queue repair
+        run: |
+          git config user.name 'radar-tiktok-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data/tiktok_queue.json
+          git commit -m 'bot: recover missing GTA 6 Short media for TikTok Helper'
+          git pull --rebase origin main
+          git push origin main
