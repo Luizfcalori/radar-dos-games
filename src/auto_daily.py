@@ -954,6 +954,9 @@ def main():
     elif forced_topic_slug == ascii_slug("Where Winds Meet"):
         # Keep this requested production pinned to the official Hutuo anniversary update.
         manual = load_manual_brief("production/manual-brief-where-winds-meet-hutuo-anniversary-2026-11-15.json")
+    elif forced_topic_slug == ascii_slug("Attack on Titan 3"):
+        # Lock the requested production to the official November 24 gameplay reveal and PC specifications.
+        manual = load_manual_brief("production/manual-brief-attack-on-titan-3-2026-11-25.json")
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
@@ -1112,6 +1115,7 @@ def main():
                 "roblox-rivals-season-4-standard-2026-11-15": "production/manual-brief-roblox-rivals-season-4-2026-11-15.json",
                 "apex-legends-cipher-godzilla-2026-11-15": "production/manual-brief-apex-legends-cipher-godzilla-2026-11-15.json",
                 "where-winds-meet-hutuo-anniversary-2026-11-15": "production/manual-brief-where-winds-meet-hutuo-anniversary-2026-11-15.json",
+                "manual-attack-on-titan-3-paradis-walls-gameplay-pc-specs-2026-11-25": "production/manual-brief-attack-on-titan-3-2026-11-25.json",
                 "roblox-platform-updates-november-2026": "production/manual-brief-roblox-platform-updates-2026-11-23.json",
             }.get(manual.get("content_id"), "production/manual-brief.json"),
         }
