@@ -962,7 +962,9 @@ def main():
     # Execuções explícitas run-only/run-private podem ignorar o brief genérico
     # vigente de outro jogo e carregar somente o brief correspondente ao tema.
     if os.getenv("RADAR_IGNORE_MANUAL_BRIEF", "").strip().lower() in {"1", "true", "yes"}:
-        if forced_topic_slug == ascii_slug("Stranger Than Heaven"):
+        if forced_topic_slug in (ascii_slug("The Witcher 4"), ascii_slug("The Witcher IV")):
+            manual = load_manual_brief("production/manual-brief-the-witcher-4-2026-11-25.json")
+        elif forced_topic_slug == ascii_slug("Stranger Than Heaven"):
             manual = load_manual_brief("production/manual-brief-stranger-than-heaven-2026-11-23.json")
         elif forced_topic_slug in (ascii_slug("DOOM"), ascii_slug("DOOM The Dark Ages"), ascii_slug("DOOM The Dark Ages Slaughter Mode")):
             manual = load_manual_brief("production/manual-brief-doom-the-dark-ages-slaughter-mode-2026-11-22.json")
