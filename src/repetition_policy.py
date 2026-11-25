@@ -201,7 +201,9 @@ def subject_ok(phrase,asset):
 
 def static_limit(asset):
     if _witcher4_curated_still(asset):
-        return 18
+        # Image-led Witcher 4 Master: rotate only verified publisher stills with camera motion.
+        # The no-consecutive-repeat guard remains active.
+        return 96
     if _roblox_announcement_still(asset):
         return 12
     if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset):
@@ -215,7 +217,7 @@ def static_limit(asset):
 
 def static_total_limit(asset):
     if _witcher4_curated_still(asset):
-        return 63.0
+        return 336.0
     if _roblox_announcement_still(asset):
         return 28.0
     return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
