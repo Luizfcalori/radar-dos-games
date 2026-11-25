@@ -12,7 +12,8 @@
   "media_source_urls": [
     "https://www.youtube.com/watch?v=KE_qOdhz24Q",
     "https://www.youtube.com/watch?v=b1-fogapZYA",
-    "https://www.koeitecmoamerica.com/attackontitan3/us/"
+    "https://www.koeitecmoamerica.com/attackontitan3/us/",
+    "https://store.steampowered.com/app/2916700/Attack_on_Titan_3__AOT_3/"
   ],
   "video_urls": [
     "https://www.youtube.com/watch?v=KE_qOdhz24Q",
@@ -34,7 +35,8 @@
     "A lista oficial atual de idiomas de texto não inclui português; áudio anunciado em japonês. Tratar como informação da página oficial consultada, sujeita a atualização.",
     "Master cinematográfico 16:9 Full HD, voz Thalita Multilingual PT-BR V3. Exatamente 3 Shorts independentes, cada um com pelo menos 60 segundos, em 9:16, template Premium Conversão V4. Não transformar o Master em três cortes simples sem identidade visual.",
     "Shorts com capa nos primeiros 1,4 segundos, headline específica, moldura verde neon, assinatura Radar dos Games, CTA INSCREVA-SE AGORA e DEIXE O LIKE. Master com capa premium. Não usar 'ative o sininho' nem @radardosgamesbr.",
-    "Inspecionar gameplay e selecionar cenas antes de finalizar a narração; fala, título e cena devem corresponder. Não repetir o mesmo intervalo de vídeo. Usar somente fontes oficiais do jogo."
+    "Inspecionar gameplay e selecionar cenas antes de finalizar a narração; fala, título e cena devem corresponder. Não repetir o mesmo intervalo de vídeo. Usar somente fontes oficiais do jogo.",
+    "Contingência de mídia validada em 25/11: os dois vídeos do canal oficial no YouTube estão bloqueados para download automatizado por exigência de autenticação etária. Não tentar contornar autenticação nem usar cookies; usar os trailers e capturas oficiais do app Steam exato 2916700 (CDN Steam) como mídia aprovada, mantendo os vídeos YouTube somente como referência editorial e links de fonte."
   ],
   "script_blocks": [
     "Attack on Titan está de volta aos videogames com uma proposta que quer levar os jogadores do começo ao fim da história. E agora, a KOEI TECMO revelou um novo vídeo de gameplay que mostra um lado diferente dessa aventura: a vida dentro das muralhas de Paradis. Em vez de apresentar apenas os confrontos gigantescos contra os Titãs, a demonstração destaca o que acontece entre uma batalha e outra, com atividades, preparação e momentos de exploração. É uma novidade importante para entender como será a rotina de um integrante do Regimento de Exploração em Attack on Titan 3.",
@@ -45,5 +47,10 @@
     "Outra informação importante chegou junto com o novo gameplay: os requisitos oficiais da versão de PC. O jogo exige Windows 11 de 64 bits e 16 GB de memória RAM. No mínimo, a KOEI TECMO indica um Intel Core i5-10600K ou Ryzen 5 2600, junto de uma GTX 1660 SUPER de 6 GB ou Radeon RX 5700 XT de 8 GB. Para a configuração recomendada, a referência sobe para Core i7-10700K ou Ryzen 7 5700X, com RTX 3060 Ti ou RX 7700 XT.",
     "O espaço em disco também merece atenção: são necessários pelo menos 125 GB livres em um SSD, e um NVMe é recomendado. Segundo a página oficial, a configuração mínima busca 30 quadros por segundo em 1080p com qualidade baixa e upscaling ativado. Já a configuração recomendada mira 60 quadros por segundo em Full HD com qualidade alta. A lista oficial de idiomas de texto disponível neste momento não inclui português, enquanto o áudio anunciado é japonês. Isso pode mudar até o lançamento, mas é um detalhe importante para quem está esperando jogar em português.",
     "Attack on Titan 3 chega em 10 de dezembro de 2026 para PlayStation 5, Nintendo Switch 2, Xbox Series X e S e PC pela Steam. Com o novo vídeo, a desenvolvedora mostrou que a aventura quer equilibrar batalhas contra Titãs, vida dentro das muralhas, preparação de equipamentos e expedições externas. Agora fica a pergunta: você está mais empolgado para voltar a usar o equipamento de mobilidade e enfrentar os Titãs ou para explorar as atividades e a rotina do Regimento de Exploração? Conta nos comentários. Este é o Radar dos Games. Inscreva-se para acompanhar as próximas novidades."
+  ],
+  "steam_app_id": "2916700",
+  "blocked_video_urls": [
+    "https://www.youtube.com/watch?v=KE_qOdhz24Q",
+    "https://www.youtube.com/watch?v=b1-fogapZYA"
   ]
 }
