@@ -81,6 +81,20 @@ def _mw4_curated_still(asset):
     )
 
 
+def _witcher4_curated_still(asset):
+    """Recognize only publisher-curated Witcher IV stills from CDPR sources."""
+    role=str(asset.get("role") or "")
+    url=str(asset.get("url") or "").casefold()
+    source=str(asset.get("source") or "").casefold()
+    label=str(asset.get("source_label") or "").casefold()
+    return (
+        asset.get("type") == "image"
+        and role.startswith(("official_subject_reference_", "official_game_announcement_visual_"))
+        and "witcher" in (label + " " + url + " " + source)
+        and any(host in (url + " " + source) for host in ("thewitcher.com", "cdprojekt.com", "cdpr.app"))
+    )
+
+
 def _apex_curated_still(asset):
     """Allow only official Steam screenshots belonging to the exact Apex Legends app."""
     role=str(asset.get("role") or "")
@@ -176,7 +190,7 @@ def subject_ok(phrase,asset):
     ))
     if role.startswith("official_subject_reference_") and is_cta:
         return True
-    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset)):
+    if not (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset) or _witcher4_curated_still(asset)):
         return False
     # Named people, locations or mechanics still need an exact source-label match.
     named_terms=("park hyun jun","john price","kate laswell","sparkworks","thalas")
@@ -186,6 +200,8 @@ def subject_ok(phrase,asset):
 
 
 def static_limit(asset):
+    if _witcher4_curated_still(asset):
+        return 18
     if _roblox_announcement_still(asset):
         return 12
     if _mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset):
@@ -198,6 +214,8 @@ def static_limit(asset):
 
 
 def static_total_limit(asset):
+    if _witcher4_curated_still(asset):
+        return 63.0
     if _roblox_announcement_still(asset):
         return 28.0
     return 14.0 if (_mw4_curated_still(asset) or _apex_curated_still(asset) or _enshrouded_curated_still(asset) or _approved_gameplay_frame(asset)) else MAX_STATIC_TOTAL_SECONDS_MASTER
@@ -235,7 +253,7 @@ class StaticTracker:
         # official MW4 stills after all fresh stills and unique gameplay are exhausted.
         # Usage/seconds caps, subject matching, and the no-immediate-repeat guard
         # remain mandatory.
-        relaxed_official_bridge=relax_cooldown and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset))
+        relaxed_official_bridge=relax_cooldown and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset) or _witcher4_curated_still(asset))
         if not relaxed_official_bridge:
             if row["scene"] is not None and scene_no-row["scene"]<STATIC_COOLDOWN_SCENES:
                 return False
@@ -275,8 +293,8 @@ def validate_master(scenes,assets):
                 # Only an explicitly marked official-image bridge can relax cooldown;
                 # subject match, per-image usage/seconds caps and no consecutive repeats remain enforced.
                 emergency_bridge = (
-                    beat.get("visual_evidence") in ("official_image_subject_label", "official_roblox_announcement_image_with_camera_motion")
-                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset))
+                    beat.get("visual_evidence") in ("official_image_subject_label", "official_roblox_announcement_image_with_camera_motion", "official_announcement_image_with_camera_motion")
+                    and (_mw4_curated_still(asset) or _apex_curated_still(asset) or _approved_gameplay_frame(asset) or _roblox_announcement_still(asset) or _witcher4_curated_still(asset))
                 )
                 if not tracker.can_use(
                     asset, beat.get("text",""), scene_no, cursor, d,
