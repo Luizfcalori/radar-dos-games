@@ -19,15 +19,11 @@
     "https://store.steampowered.com/app/3751260/The_Blood_of_Dawnwalker/"
   ],
   "video_urls": [
-    "https://www.youtube.com/watch?v=OIZqC6H4K5Y",
-    "https://www.youtube.com/watch?v=BooGSMc3aMs",
-    "https://www.youtube.com/watch?v=pi53m9XLE00"
+    "https://video.fastly.steamstatic.com/store_trailers/3751260/1308251755/2d3a4e008fed48ebffdcb03c2211f247bfa8db5f/1789143674/hls_264_master.m3u8",
+    "https://video.fastly.steamstatic.com/store_trailers/3751260/282355957/d0c676932e549cfadeef7ab9c2b55627c5ac2233/1793990654/hls_264_master.m3u8",
+    "https://video.fastly.steamstatic.com/store_trailers/3751260/1945537109/70cc0082590f12244e386896bb00fbd976edeb6a/1787669389/hls_264_master.m3u8"
   ],
-  "video_fallback_urls": [
-    "https://www.youtube.com/watch?v=K86Af9y312U",
-    "https://www.youtube.com/watch?v=s8nLNmda01c",
-    "https://www.youtube.com/watch?v=te73UInH8H8"
-  ],
+  "video_fallback_urls": [],
   "video_roles": {},
   "video_labels": {},
   "visual_reference_images": [],
@@ -67,5 +63,7 @@
     "Então, vale começar uma segunda campanha? Para quem terminou a história e queria continuar evoluindo Coen, a resposta é que agora existe um motivo concreto. O nível máximo de 100, os novos equipamentos, a progressão mantida e a exploração com zone scaling removido mudam a estrutura da repetição. Para quem ainda está na primeira campanha, a recomendação é concluir o epílogo antes de procurar a opção no menu. E se você está no meio da jornada, os ajustes de balanceamento e de terreno também fazem parte da versão 1.2. Não é preciso inventar conteúdo secreto ou prometer uma expansão: o New Game+ já é uma mudança relevante por si só.",
     "Agora queremos saber: você prefere começar o New Game+ mantendo sua build atual ou aproveitar a segunda campanha para testar um estilo completamente diferente? E qual mudança parece mais importante: o limite de nível 100, os equipamentos com atributos atualizados ou a liberdade para explorar as regiões depois do prólogo? Conta nos comentários. Se curte novidades, atualizações e análises de jogos com informação confirmada e gameplay que acompanha o assunto, inscreva-se no Radar dos Games. A gente continua acompanhando Vale Sangora e as próximas novidades de The Blood of Dawnwalker."
   ],
-  "steam_app_id": "3751260"
+  "image_pages": [
+    "https://store.steampowered.com/app/3751260/The_Blood_of_Dawnwalker/"
+  ]
 }
