@@ -19,9 +19,7 @@
     "https://www.cdprojekt.com/en/media/news/the-witcher-iv-revealed-at-the-game-awards/",
     "https://www.cdprojekt.com/en/media/news/cd-projekt-red-and-epic-games-present-the-witcher-4-unreal-engine-5-tech-demo-at-the-state-of-unreal-2025/"
   ],
-  "video_urls": [
-    "https://www.youtube.com/watch?v=54dabgZJ5YA"
-  ],
+  "video_urls": [],
   "approved_for_publish": true,
   "short_hooks": [
     "CIRI NÃO VAI TOMAR DECISÕES COMO GERALT EM THE WITCHER 4!",
@@ -42,7 +40,8 @@
     "Usar somente materiais oficiais de The Witcher 4 e tecnologia UE5 relacionada. Se usar trailer cinematográfico, identificar como cinematográfico; se usar tech demo, identificar como demo técnica e não gameplay final.",
     "Capa oficial do jogo com pequeno logo Radar dos Games; Shorts mostram a capa no início. CTA: inscreva-se. Não usar 'ative o sininho' nem @radardosgamesbr.",
     "Validar sincronização entre fala e imagem, evitar repetição de trechos e loops artificiais. Diretor flexível para selecionar cenas adequadas sem exigir correspondência literal impossível.",
-    "Enviar os quatro vídeos ao YouTube como privados e importar exatamente os três Shorts aprovados no TikTok Helper."
+    "Enviar os quatro vídeos ao YouTube como privados e importar exatamente os três Shorts aprovados no TikTok Helper.",
+    "Mídia alternativa aprovada: o trailer de revelação do YouTube exige autenticação etária e não deve ser baixado nem contornado. Produzir em modo image-led com imagens oficiais diretas do CDN CD PROJEKT RED listadas em visual_reference_images; aplicar movimento cinematográfico sutil, variação de enquadramento e cards informativos. Não simular gameplay nem apresentar imagens estáticas como cenas jogáveis."
   ],
   "script_blocks": [
     "The Witcher está prestes a começar uma nova saga, e desta vez Geralt não será o centro da aventura. A protagonista será Ciri, personagem que os fãs acompanham desde os jogos anteriores, mas que agora assume o papel principal em uma jornada própria. E as novidades mais recentes ajudam a entender por que essa mudança pode transformar a experiência. A CD PROJEKT RED mantém The Witcher 4 como seu maior projeto, com 513 desenvolvedores dedicados ao jogo em outubro de 2026, e a empresa trabalha com uma janela-alvo de lançamento em 2028. Mas o detalhe mais interessante não está apenas no tamanho da produção: está na personalidade de Ciri e na maneira como a história pode ser contada através dela.",
@@ -57,7 +56,55 @@
     "The Witcher 4 não precisa apagar o legado de Geralt para começar uma nova fase. A ideia é mostrar como Ciri encara o Continente com outra personalidade, outra experiência e uma relação diferente com os conflitos que encontra pelo caminho. E agora queremos saber: você está empolgado para jogar como Ciri ou ainda gostaria de ver Geralt como protagonista? Qual novidade chamou mais sua atenção: a mudança narrativa, a escala da equipe ou a tecnologia apresentada em Kovir? Conta nos comentários. Este é o Radar dos Games. Inscreva-se para acompanhar as próximas novidades."
   ],
   "minimum_assets": 2,
-  "minimum_video_assets": 1,
-  "minimum_unique_video_seconds": 20,
-  "minimum_image_assets": 1
+  "minimum_video_assets": 0,
+  "minimum_unique_video_seconds": 0,
+  "minimum_image_assets": 2,
+  "video_fallback_urls": [],
+  "blocked_video_urls": [
+    "https://www.youtube.com/watch?v=54dabgZJ5YA"
+  ],
+  "allow_image_only_master": true,
+  "visual_reference_images": [
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/442b36e68cc7f0425d21ecaa0820de8567b066ae_q90_1920x1080.png",
+      "label": "The Witcher IV — official cinematic reveal key art",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
+    },
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/320d3e3aff885303dcd766c5feaa3265_q90_1920x1080.png",
+      "label": "The Witcher 4 — official Unreal Engine 5 technical demo still",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51521/the-witcher-4-unreal-engine-5-tech-demo"
+    },
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/4605cf1503e88b5e28310a300d054bbe_q90_1280x720.png",
+      "label": "The Witcher IV — official reveal article still 1",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
+    },
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/93817991081fdad8f359a605881bef28_q90_1280x720.png",
+      "label": "The Witcher IV — official reveal article still 2",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
+    },
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/5073f9dfbcf2f30eb290f0f3759c48ca_q90_1280x720.png",
+      "label": "The Witcher IV — official reveal article still 3",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
+    },
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/e85b6f7b21fdf9bbe0ebf9f021d3d306_q90_1280x720.png",
+      "label": "The Witcher IV — official reveal article still 4",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
+    },
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/d26db09389435602252a802257a67748_q90_1280x720.png",
+      "label": "The Witcher IV — official reveal article still 5",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
+    },
+    {
+      "url": "https://public.cdn.cdpr.app/common/news/d721f2c19dd4aa21c4f7f4939c46660d_q90_1280x720.png",
+      "label": "The Witcher IV — official reveal article still 6",
+      "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
+    }
+  ],
+  "production_note": "Brief atualizado em 25/11/2026 após o trailer do YouTube bloquear download automatizado por autenticação etária. A produção usa somente imagens oficiais do CDN CD PROJEKT RED e modo image-led aprovado, sem tentar contornar a restrição do vídeo."
 }
