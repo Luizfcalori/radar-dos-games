@@ -236,7 +236,7 @@ def main():
         # Build a complete editorial short from the selected hook scene plus
         # subsequent narrated scenes. Never loop footage or stretch a still.
         # 65s target leaves a safety margin over TikTok's 60s threshold.
-        target_seconds=20.0 if image_only else 65.0
+        target_seconds=65.0  # image-led também precisa cumprir a regra de monetização: nunca encurtar Shorts
         contributing=[]
         combined_duration=0.0
         combined_voice_seconds=0.0
@@ -264,7 +264,7 @@ def main():
             # só parar quando áudio E sequência visual ultrapassarem 65s.
             if combined_duration>=target_seconds and combined_voice_seconds>=target_seconds:
                 break
-        minimum_short_seconds=20.0 if image_only else 60.0
+        minimum_short_seconds=60.0  # mínimo obrigatório para todos os Shorts, inclusive image-led
         effective_duration=min(combined_duration,combined_voice_seconds)
         if effective_duration<minimum_short_seconds:
             raise RuntimeError(
