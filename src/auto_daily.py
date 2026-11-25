@@ -1300,16 +1300,19 @@ def main():
                 elif "introducing-pass-free-trials" in page_slug:
                     image_label = "Roblox Passes Free Trials teste gratuito beneficios oficiais"
                 else:
-                    image_label = "Roblox novidades plataforma Animation Graph State Machine Luau UI Particles Studio oficiais"
+                    image_label = (manual.get("image_page_labels") or {}).get(page_url) or f"Official {manual.get('title') or 'game'} announcement images"
+                is_roblox_page = "devforum.roblox.com" in urlparse(page_url).netloc.lower()
+                role_prefix = "official_roblox_announcement_visual" if is_roblox_page else "official_game_announcement_visual"
+                evidence = "official_roblox_announcement_page_image" if is_roblox_page else "official_game_announcement_page_image"
                 media_items.append({
                     "type": "image",
                     "url": page_url,
-                    "role": f"official_roblox_announcement_visual_{j:02d}",
+                    "role": f"{role_prefix}_{j:02d}",
                     "max_assets": int(manual.get("images_per_page", 1)),
                     "allow_images_from_page": True,
                     "source_label": image_label,
                     "source_proof": page_url,
-                    "relevance_evidence": "official_roblox_announcement_page_image",
+                    "relevance_evidence": evidence,
                 })
 
 
@@ -1318,19 +1321,21 @@ def main():
         role = f"official_gameplay_or_trailer_{i:02d}" if typ == "video" else f"official_context_{i:02d}"
         source_label = ((manual.get("video_labels") or {}).get(url, "") if manual and typ == "video" else "")
         if manual and manual.get("allow_image_only_master", False) and typ == "image":
-            # Manual Roblox images were discovered on the exact official DevForum
-            # pages. Preserve that page provenance instead of treating the CDN
-            # image URL itself as the source, so image-led QA can verify origin.
-            role = f"official_roblox_announcement_visual_{i:02d}"
+            # Preserve exact publisher-page provenance for approved image-led productions.
             page_slug = urlparse(source_page).path.casefold()
+            is_roblox_page = "devforum.roblox.com" in urlparse(source_page).netloc.lower()
+            role_prefix = "official_roblox_announcement_visual" if is_roblox_page else "official_game_announcement_visual"
+            role = f"{role_prefix}_{i:02d}"
             if "sharper-web-play-rendering-with-webgpu" in page_slug:
                 source_label = "Roblox Web Play WebGPU navegador renderizacao visual oficial"
             elif "avatar-moments-to-showcase" in page_slug:
                 source_label = "Roblox Avatar Moments avatares looks roupas acessorios itens oficiais"
             elif "introducing-pass-free-trials" in page_slug:
                 source_label = "Roblox Passes Free Trials teste gratuito beneficios oficiais"
+            elif is_roblox_page:
+                source_label = "Roblox novidades oficiais da plataforma"
             else:
-                source_label = "Roblox novidades plataforma Animation Graph State Machine Luau UI Particles Studio oficiais"
+                source_label = (manual.get("image_page_labels") or {}).get(source_page) or f"Official {manual.get('title') or 'game'} publisher visuals"
         item = {
             "type": typ,
             "url": url,

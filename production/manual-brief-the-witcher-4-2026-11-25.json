@@ -106,5 +106,14 @@
       "source_proof": "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer"
     }
   ],
-  "production_note": "Brief atualizado em 25/11/2026 após o trailer do YouTube bloquear download automatizado por autenticação etária. A produção usa somente imagens oficiais do CDN CD PROJEKT RED e modo image-led aprovado, sem tentar contornar a restrição do vídeo."
+  "production_note": "Brief atualizado em 25/11/2026 após o trailer do YouTube bloquear download automatizado por autenticação etária. A produção usa somente imagens oficiais do CDN CD PROJEKT RED e modo image-led aprovado, sem tentar contornar a restrição do vídeo.",
+  "image_pages": [
+    "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer",
+    "https://www.thewitcher.com/us/en/news/51521/the-witcher-4-unreal-engine-5-tech-demo"
+  ],
+  "images_per_page": 6,
+  "image_page_labels": {
+    "https://www.thewitcher.com/us/en/news/51115/the-witcher-iv-cinematic-reveal-trailer": "The Witcher IV official cinematic reveal images",
+    "https://www.thewitcher.com/us/en/news/51521/the-witcher-4-unreal-engine-5-tech-demo": "The Witcher 4 official Unreal Engine 5 technical demonstration images"
+  }
 }
