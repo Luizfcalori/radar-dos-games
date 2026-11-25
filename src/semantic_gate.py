@@ -100,20 +100,29 @@ def main(plan_path, clips_path, out_path="output/semantic-visual-qa.json"):
                 continue
             if asset.get("type")!="video":
                 if image_only:
+                    role = str(asset.get("role") or "")
+                    source = str(asset.get("source") or "")
+                    official_witcher_source = source.startswith((
+                        "https://www.thewitcher.com/",
+                        "https://thewitcher.com/",
+                        "https://www.cdprojekt.com/",
+                        "https://cdprojekt.com/",
+                        "https://public.cdn.cdpr.app/",
+                    ))
                     official_publisher_still = (
                         asset.get("type") == "image"
                         and asset.get("approved") is True
                         and (
                             (
-                                str(asset.get("role") or "").startswith("official_roblox_announcement_visual_")
-                                and str(asset.get("source") or "").startswith("https://devforum.roblox.com/")
+                                role.startswith("official_roblox_announcement_visual_")
+                                and source.startswith("https://devforum.roblox.com/")
                             )
                             or (
-                                str(asset.get("role") or "").startswith("official_game_announcement_visual_")
-                                and (
-                                    str(asset.get("source") or "").startswith("https://www.thewitcher.com/")
-                                    or str(asset.get("source") or "").startswith("https://www.cdprojekt.com/")
-                                )
+                                role.startswith((
+                                    "official_game_announcement_visual_",
+                                    "official_subject_reference_",
+                                ))
+                                and official_witcher_source
                             )
                         )
                         and str(asset.get("url") or "").startswith("https://")
