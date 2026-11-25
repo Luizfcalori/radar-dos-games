@@ -2,23 +2,8 @@
   "recovered_count": 18,
   "ready_for_tiktok": 18,
   "total_discovered": 227,
-  "remaining_count": 11,
+  "remaining_count": 8,
   "remaining": [
-    {
-      "youtube_id": "xDCHua1DjJg",
-      "title": "RESIDENT EVIL REQUIEM LEVOU O PRÊMIO MAIS IMPORTANTE DE 2026!",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "wFuquyQt9-w",
-      "title": "GRACE ASHCROFT AINDA TEM MUITO A EVOLUIR — DIZ SUA ATRIZ!",
-      "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "GS36QlnZiFw",
-      "title": "LEON E GRACE: A PARCERIA PODE TER FUTURO NA SÉRIE?",
-      "reason": "original_media_not_recovered_yet"
-    },
     {
       "youtube_id": "4J11rX8qp-U",
       "title": "A Coreia Está Pegando Fogo",
@@ -60,6 +45,10 @@
       "reason": "original_media_not_recovered_yet"
     }
   ],
-  "last_recovery_at": "2026-11-25T11:08:38.915610+00:00",
-  "recovered_this_run": []
+  "last_recovery_at": "2026-11-25T11:10:08.855Z",
+  "recovered_this_run": [
+    "xDCHua1DjJg",
+    "wFuquyQt9-w",
+    "GS36QlnZiFw"
+  ]
 }
