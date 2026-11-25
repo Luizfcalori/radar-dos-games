@@ -344,3 +344,5 @@ def main():
 
 if __name__=="__main__":
     main()
+
+# [run-private] TOPIC=The Witcher 4 — retry com validação conjunta da duração real de voz e vídeo.
