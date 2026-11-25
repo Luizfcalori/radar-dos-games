@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-25T13:56:06.612174+00:00",
+  "updated_at": "2026-11-25T19:35:07.373682+00:00",
   "items": [
     {
       "id": "new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--approved-45616643145-short-1",
@@ -460,7 +460,7 @@
       "youtube_id": "xDCHua1DjJg",
       "youtube_url": "https://www.youtube.com/shorts/xDCHua1DjJg",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_from_production_artifact",
+      "source": "youtube_channel",
       "synced_at": "2026-11-19T20:51:44.095629+00:00",
       "published_at": "2026-11-20T10:52:40.000Z",
       "recovered_at": "2026-11-25T11:09:52.252Z"
@@ -475,7 +475,7 @@
       "youtube_id": "wFuquyQt9-w",
       "youtube_url": "https://www.youtube.com/shorts/wFuquyQt9-w",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_from_production_artifact",
+      "source": "youtube_channel",
       "synced_at": "2026-11-19T20:51:44.095629+00:00",
       "published_at": "2026-11-20T10:52:40.000Z",
       "recovered_at": "2026-11-25T11:09:52.252Z"
@@ -490,7 +490,7 @@
       "youtube_id": "GS36QlnZiFw",
       "youtube_url": "https://www.youtube.com/shorts/GS36QlnZiFw",
       "youtube_published_at": null,
-      "source": "youtube_channel_recovered_from_production_artifact",
+      "source": "youtube_channel",
       "synced_at": "2026-11-19T20:51:44.095629+00:00",
       "published_at": "2026-11-20T10:52:40.000Z",
       "recovered_at": "2026-11-25T11:09:52.252Z"
@@ -3886,6 +3886,19 @@
       "synced_at": "2026-10-04T21:49:04.366835+00:00",
       "recovered_at": "2026-10-04T22:09:09.191174+00:00",
       "published_at": "2026-11-20T10:52:40.000Z"
+    },
+    {
+      "id": "yt-hvNGrAlPfWA",
+      "title": "🎮 GTA 6 promete elevar a experiência a outro nível!",
+      "media_url": "",
+      "thumbnail_url": "https://i.ytimg.com/vi/hvNGrAlPfWA/hqdefault.jpg",
+      "post_text": "🎮 GTA 6 promete elevar a experiência a outro nível!\n\n🎮 Curtiu? Siga o Radar dos Games para mais.\n\n#promete #elevar #experiência #outro #RadarDosGames #Games #Gaming #TikTokGames",
+      "status": "waiting_media",
+      "youtube_id": "hvNGrAlPfWA",
+      "youtube_url": "https://www.youtube.com/shorts/hvNGrAlPfWA",
+      "youtube_published_at": null,
+      "source": "youtube_channel",
+      "synced_at": "2026-11-25T19:35:07.373682+00:00"
     }
   ]
 }
