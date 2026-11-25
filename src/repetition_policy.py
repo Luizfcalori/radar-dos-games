@@ -319,23 +319,35 @@ def validate_master(scenes,assets):
 def validate_short(beats,assets):
     seen=set()
     seconds=defaultdict(float)
+    counts=defaultdict(int)
+    previous=None
     for beat in beats:
         idx=int(beat["media_index"])
         asset=assets.get(idx)
         if not asset:
             raise RuntimeError(f"QUALITY_BLOCK: Short referencia asset ausente {idx}")
         if asset.get("type")!="image":
+            previous=None
             continue
         key=asset_identity(asset)
         d=float(beat["duration"])
-        if key in seen or d>MAX_STATIC_BEAT_SECONDS+0.001:
-            raise RuntimeError(f"QUALITY_BLOCK: Short repete imagem {idx} ou excede 3,5s")
+        curated_witcher=_witcher4_curated_still(asset)
+        if d>MAX_STATIC_BEAT_SECONDS+0.001:
+            raise RuntimeError(f"QUALITY_BLOCK: imagem {idx} excede 3,5s no Short")
+        if key in seen and not curated_witcher:
+            raise RuntimeError(f"QUALITY_BLOCK: Short repete imagem {idx}")
+        if curated_witcher and key==previous:
+            raise RuntimeError(f"QUALITY_BLOCK: Short repete imagem oficial consecutivamente ({idx})")
         if not subject_ok(beat.get("text",""),asset):
             raise RuntimeError(f"QUALITY_BLOCK: imagem {idx} desconectada da narração do Short")
         seconds[key]+=d
-        if seconds[key]>MAX_STATIC_TOTAL_SECONDS_SHORT+0.001:
-            raise RuntimeError(f"QUALITY_BLOCK: imagem {idx} domina o Short")
+        counts[key]+=1
+        limit=24.0 if curated_witcher else MAX_STATIC_TOTAL_SECONDS_SHORT
+        max_count=12 if curated_witcher else 1
+        if seconds[key]>limit+0.001 or counts[key]>max_count:
+            raise RuntimeError(f"QUALITY_BLOCK: imagem {idx} excede limite de uso no Short")
         seen.add(key)
+        previous=key
     try:
         from continuity import validate_video_beats
     except ModuleNotFoundError:
@@ -359,6 +371,12 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
     windows=scene.get("visual_windows") or {}
     timeline=timeline or VideoTimeline(assets)
     used_stills=used_stills if used_stills is not None else set()
+    witcher_short_usage=defaultdict(int)
+    previous_witcher_still=None
+    witcher_pool=[
+        a for a in assets.values()
+        if a.get("type")=="image" and a.get("approved") is True and _witcher4_curated_still(a)
+    ]
 
     # In the explicit Roblox image-led fallback, each Short still uses distinct
     # official images. If adjacent Master beats reuse a still, replace it with
@@ -488,8 +506,33 @@ def replace_short_repeats(scene,assets,timeline=None,used_stills=None):
             timeline.reserve(idx,lo,duration,allow_reuse=False)
             continue
         if asset.get("type")!="image":
+            previous_witcher_still=None
             continue
         key=asset_identity(asset)
+        if _witcher4_curated_still(asset) and not videos:
+            if duration>MAX_STATIC_BEAT_SECONDS+0.001:
+                raise RuntimeError("QUALITY_BLOCK: beat estático do Short excede 3,5s")
+            if (witcher_short_usage[key]>=12 or
+                witcher_short_usage[key]*duration+duration>24.0 or
+                key==previous_witcher_still or
+                not subject_ok(beat.get("text",""),asset)):
+                candidates=[
+                    a for a in witcher_pool
+                    if asset_identity(a)!=previous_witcher_still
+                    and witcher_short_usage[asset_identity(a)]<12
+                    and (witcher_short_usage[asset_identity(a)]+1)*duration<=24.0
+                    and subject_ok(beat.get("text",""),a)
+                ]
+                candidates.sort(key=lambda a:(witcher_short_usage[asset_identity(a)],int(a["index"])))
+                if not candidates:
+                    raise RuntimeError("QUALITY_BLOCK: Short sem still oficial CDPR elegível para rotação")
+                asset=candidates[0]
+                beat["media_index"]=int(asset["index"])
+                beat.pop("source_window",None)
+                key=asset_identity(asset)
+            witcher_short_usage[key]+=1
+            previous_witcher_still=key
+            continue
         if key not in used_stills and duration<=MAX_STATIC_BEAT_SECONDS+0.001 and subject_ok(beat.get("text",""),asset):
             used_stills.add(key)
             continue
