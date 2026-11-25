@@ -474,7 +474,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     image_pool = [
                         a for a in allowed
                         if a.get("type") == "image"
-                        and str(a.get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_"))
+                        and str(a.get("role") or "").startswith(("official_roblox_announcement_visual_", "official_game_announcement_visual_", "official_subject_reference_"))
                         and str(a.get("source") or "").startswith("https://")
                     ]
                     image_pool.sort(key=lambda a:(-match_score(phrase_text,a),usage[int(a["index"])]))
@@ -488,7 +488,7 @@ def main(plan_path="output/auto-media-plan.json", clips_path="output/clips.json"
                     d=min(remaining,3.5)
                     window=None
                     proof={}
-                    evidence="official_roblox_announcement_image_with_camera_motion"
+                    evidence="official_announcement_image_with_camera_motion"
                 else:
                     # Always exhaust unique, reviewed moving footage first. A still is
                     # only a source-matched fallback, and only for a phrase whose named
