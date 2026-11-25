@@ -239,6 +239,7 @@ def main():
         target_seconds=20.0 if image_only else 65.0
         contributing=[]
         combined_duration=0.0
+        combined_voice_seconds=0.0
         for offset in range(len(scenes)):
             candidate_index=(scene_index+offset)%len(scenes)
             candidate=scenes[candidate_index]
@@ -248,14 +249,27 @@ def main():
             if not candidate_beats:
                 continue
             validate_short(candidate_beats,assets)
-            contributing.append((candidate_index,candidate_beats,segments[candidate_index]))
-            combined_duration+=sum(float(b.get("duration") or 0) for b in candidate_beats)
-            if combined_duration>=target_seconds:
+            voice_segment=segments[candidate_index]
+            voice_file=Path(str(voice_segment.get("file") or ""))
+            if not voice_file.exists():
+                raise RuntimeError(
+                    f"QUALITY_BLOCK: áudio da cena {candidate_index+1} ausente para o Short {short_no}"
+                )
+            scene_voice_seconds=probe_duration(voice_file)
+            scene_visual_seconds=sum(float(b.get("duration") or 0) for b in candidate_beats)
+            contributing.append((candidate_index,candidate_beats,voice_segment))
+            combined_duration+=scene_visual_seconds
+            combined_voice_seconds+=scene_voice_seconds
+            # O mix final usa a duração real da narração como limite. Portanto,
+            # só parar quando áudio E sequência visual ultrapassarem 65s.
+            if combined_duration>=target_seconds and combined_voice_seconds>=target_seconds:
                 break
         minimum_short_seconds=20.0 if image_only else 60.0
-        if combined_duration<minimum_short_seconds:
+        effective_duration=min(combined_duration,combined_voice_seconds)
+        if effective_duration<minimum_short_seconds:
             raise RuntimeError(
-                f"QUALITY_BLOCK: Short {short_no} tem apenas {combined_duration:.1f}s de narração/mídia; "
+                f"QUALITY_BLOCK: Short {short_no} tem apenas {effective_duration:.1f}s efetivos "
+                f"(visual={combined_duration:.1f}s; voz={combined_voice_seconds:.1f}s); "
                 f"mínimo real de {minimum_short_seconds:.0f}s. Amplie o roteiro com conteúdo relevante, sem loops."
             )
         beats=[beat for _,rows,_ in contributing for beat in rows]
