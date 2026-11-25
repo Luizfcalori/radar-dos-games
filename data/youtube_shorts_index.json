@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-24T16:26:23.497232+00:00",
-  "total_discovered": 224,
-  "ready_for_tiktok": 15,
+  "updated_at": "2026-11-25T09:35:25.855385+00:00",
+  "total_discovered": 227,
+  "ready_for_tiktok": 18,
   "waiting_media": [
     {
       "youtube_id": "hvNGrAlPfWA",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "LJZwYj3l-34",
+      "youtube_url": "https://www.youtube.com/shorts/LJZwYj3l-34",
+      "title": "ROBLOX AGORA USA WEBGPU: O QUE MUDA AO JOGAR PELO NAVEGADOR?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "oi21yBiDEeE",
+      "youtube_url": "https://www.youtube.com/shorts/oi21yBiDEeE",
+      "title": "AVATAR MOMENTS: AGORA DÁ PARA MOSTRAR E VENDER SEUS LOOKS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "WKS7P7NnsNA",
+      "youtube_url": "https://www.youtube.com/shorts/WKS7P7NnsNA",
+      "title": "PASSES COM TESTE GRÁTIS CHEGAM EM 2 DE DEZEMBRO!",
+      "status": "approved"
+    },
     {
       "youtube_id": "NuScPDBvBM4",
       "youtube_url": "https://www.youtube.com/shorts/NuScPDBvBM4",
