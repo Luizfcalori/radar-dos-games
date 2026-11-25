@@ -2,7 +2,7 @@
   "recovered_count": 18,
   "ready_for_tiktok": 18,
   "total_discovered": 227,
-  "remaining_count": 8,
+  "remaining_count": 7,
   "remaining": [
     {
       "youtube_id": "4J11rX8qp-U",
@@ -38,14 +38,9 @@
       "youtube_id": "XA-YklCtg1k",
       "title": "Gears of War: E-Day é o #1 do TOP 10! 🔥",
       "reason": "original_media_not_recovered_yet"
-    },
-    {
-      "youtube_id": "hvNGrAlPfWA",
-      "title": "🎮 GTA 6 promete elevar a experiência a outro nível!",
-      "reason": "original_media_not_recovered_yet"
     }
   ],
-  "last_recovery_at": "2026-11-25T11:10:08.855Z",
+  "last_recovery_at": "2026-11-25T11:15:30.832Z",
   "recovered_this_run": [
     "xDCHua1DjJg",
     "wFuquyQt9-w",
