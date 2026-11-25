@@ -4,7 +4,7 @@
 
 ## Pipeline obrigatória
 
-- `src/shorts_v4.py` renderiza cada beat usando o layout Premium Conversão.
+- `src/shorts_v4.py` renderiza cada beat usando o layout Premium Conversão. O workflow diário deve executar `python src/shorts_v4.py` para gerar os três Shorts independentes; `src/shorts_from_master.py` é legado e fica proibido no fluxo de publicação, pois apenas divide o Master e não aplica o template.
 - `src/premium_v4_qa.py` bloqueia a produção se o manifesto não identificar `RADAR_PREMIUM_CONVERSAO_V1`, se o CTA não estiver correto ou se faltarem os três Shorts.
 - `src/premium_covers.py` gera as quatro capas premium (Master + 3 Shorts); `src/cover_qa.py` valida as capas.
 - `.github/workflows/daily-video.yml` executa renderização, QA e geração de capas no fluxo diário.
