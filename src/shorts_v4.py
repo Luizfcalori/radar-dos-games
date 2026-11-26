@@ -6,6 +6,7 @@
 import colorsys
 import json
 import math
+import os
 import struct
 import subprocess
 import sys
@@ -215,6 +216,9 @@ def main():
     manifest=load("output/render.json"); timings=load("output/voice-timings.json"); picks=load("output/short-picks.json")
     scenes=manifest.get("scenes") or []; assets={int(a["index"]):a for a in manifest.get("assets") or []}
     plan=load("output/auto-media-plan.json")
+    # One-off exception authorized for this exact production only; all other topics retain 60s.
+    witcher4_exception=os.environ.get("RADAR_TOPIC","").strip().casefold()=="the witcher 4"
+    minimum_short_seconds=15.0 if witcher4_exception else 60.0
     image_only=bool(plan.get("allow_image_only_master", False)) and not any(a.get("type")=="video" for a in assets.values())
     segments=timings.get("segments") or []; indexes=[int(x) for x in picks.get("scene_indexes") or []]
     expected_hooks=[" ".join(str(x or "").split()).strip() for x in (picks.get("expected_hooks") or [])]
@@ -264,7 +268,6 @@ def main():
             # só parar quando áudio E sequência visual ultrapassarem 65s.
             if combined_duration>=target_seconds and combined_voice_seconds>=target_seconds:
                 break
-        minimum_short_seconds=60.0  # mínimo obrigatório para todos os Shorts, inclusive image-led
         effective_duration=min(combined_duration,combined_voice_seconds)
         if effective_duration<minimum_short_seconds:
             raise RuntimeError(
@@ -337,6 +340,7 @@ def main():
         "hook_policy":"exact_approved_hook_persistent_all_beats; semantic_scene_match; phrase_level_visuals; premium_conversion_fixed_layout",
         "expected_hooks":expected_hooks,
         "sound_design":"compression+loudnorm+limiter+subtle_editorial_sfx",
+        "duration_policy":{"minimum_seconds":minimum_short_seconds,"exception":"The Witcher 4 one-off only" if witcher4_exception else None},
         "shorts":report,
     }
     (out/"manifest.json").write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")

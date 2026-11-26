@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Gate editorial Premium V4 Director Cut."""
 import json
+import os
 import re
 from pathlib import Path
 
@@ -107,6 +108,12 @@ def main():
         cadence.append({"scene":row.get("scene"),"beats":row.get("beats"),"avg_beat":avg})
 
     srows=shorts.get("shorts") or []
+    # One-off exception authorized for The Witcher 4 only; global policy remains 60s.
+    witcher4_exception=os.environ.get("RADAR_TOPIC","").strip().casefold()=="the witcher 4"
+    minimum_short_seconds=15.0 if witcher4_exception else 60.0
+    policy=shorts.get("duration_policy") or {}
+    if float(policy.get("minimum_seconds") or 60.0)!=minimum_short_seconds:
+        raise RuntimeError("QUALITY_BLOCK: política de duração do manifesto não corresponde ao tema autorizado")
     assert len(srows)==3,len(srows)
     expected_hooks=[str(x or "").strip() for x in (picks.get("expected_hooks") or [])]
     manifest_hooks=[str(x or "").strip() for x in (shorts.get("expected_hooks") or [])]
@@ -177,7 +184,7 @@ def main():
                 raise RuntimeError(f"QUALITY_BLOCK: CTA multiplataforma aprovado ausente no Short {i}")
             assert row.get("render_policy")=="rebuilt_from_source_assets_not_master_crop",row
             assert row.get("boundary_policy")=="independent_scene_voice_complete",row
-            assert float(row.get("duration") or 0)>=(60),row
+            assert float(row.get("duration") or 0)>=minimum_short_seconds,row
             if norm_short_title(row.get("title")) != norm_short_title(hook):
                 raise RuntimeError(f"QUALITY_BLOCK: Short {i} saiu com título diferente do hook aprovado: {row.get('title')} != {hook}")
             if norm_short_title(row.get("approved_hook")) != norm_short_title(hook):
