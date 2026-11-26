@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-25T11:08:38.915610+00:00",
-  "total_discovered": 227,
-  "ready_for_tiktok": 18,
+  "updated_at": "2026-11-26T11:15:29.709899+00:00",
+  "total_discovered": 230,
+  "ready_for_tiktok": 21,
   "waiting_media": [
     {
       "youtube_id": "hvNGrAlPfWA",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "6VEDwvG03IY",
+      "youtube_url": "https://www.youtube.com/shorts/6VEDwvG03IY",
+      "title": "GORO MAJIMA VIROU PIRATA E CHEGOU AO PLAYSTATION PLUS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "ibbRlTyhQcI",
+      "youtube_url": "https://www.youtube.com/shorts/ibbRlTyhQcI",
+      "title": "DOIS ESTILOS DE LUTA: CACHORRO LOUCO OU PIRATA DO MAR?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "L1-YCDAb1OA",
+      "youtube_url": "https://www.youtube.com/shorts/L1-YCDAb1OA",
+      "title": "BATALHAS NAVAIS, CANHÕES E MAIS DE 100 TRIPULANTES!",
+      "status": "approved"
+    },
     {
       "youtube_id": "LJZwYj3l-34",
       "youtube_url": "https://www.youtube.com/shorts/LJZwYj3l-34",

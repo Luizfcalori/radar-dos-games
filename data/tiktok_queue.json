@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-25T22:50:41.467775+00:00",
+  "updated_at": "2026-11-26T11:15:29.709899+00:00",
   "items": [
     {
       "id": "the-witcher-4-fecha-parceria-com-a-sony-o-que-isso-sign-approved-45682554194-short-1",
@@ -119,9 +119,13 @@
       "source_run_id": 45477449795,
       "short_number": 1,
       "approved_at": "2026-11-24T21:48:17.533896+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-1.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-1.jpg",
+      "youtube_id": "6VEDwvG03IY",
+      "youtube_url": "https://www.youtube.com/shorts/6VEDwvG03IY",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-26T11:15:29.709899+00:00"
     },
     {
       "id": "goro-majima-virou-pirata-e-chegou-ao-playstation-plus-approved-45477449795-short-2",
@@ -131,9 +135,13 @@
       "source_run_id": 45477449795,
       "short_number": 2,
       "approved_at": "2026-11-24T21:48:17.533896+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-2.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-2.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-2.jpg",
+      "youtube_id": "ibbRlTyhQcI",
+      "youtube_url": "https://www.youtube.com/shorts/ibbRlTyhQcI",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-26T11:15:29.709899+00:00"
     },
     {
       "id": "goro-majima-virou-pirata-e-chegou-ao-playstation-plus-approved-45477449795-short-3",
@@ -143,9 +151,13 @@
       "source_run_id": 45477449795,
       "short_number": 3,
       "approved_at": "2026-11-24T21:48:17.533896+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-3.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/goro-majima-virou-pirata-e-chegou-ao-playstation-plus-45477449795-short-3.jpg",
+      "youtube_id": "L1-YCDAb1OA",
+      "youtube_url": "https://www.youtube.com/shorts/L1-YCDAb1OA",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-26T11:15:29.709899+00:00"
     },
     {
       "id": "roblox-agora-usa-webgpu-o-que-muda-ao-jogar-pelo-navega-approved-45373194033-short-1",
