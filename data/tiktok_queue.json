@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-26T11:15:29.709899+00:00",
+  "updated_at": "2026-11-27T11:53:42.284292+00:00",
   "items": [
     {
       "id": "the-witcher-4-fecha-parceria-com-a-sony-o-que-isso-sign-approved-45682554194-short-1",
@@ -83,9 +83,13 @@
       "source_run_id": 45583359684,
       "short_number": 1,
       "approved_at": "2026-11-25T11:07:22.026618+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-1.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-1.jpg",
+      "youtube_id": "ZoDn-7x9rW8",
+      "youtube_url": "https://www.youtube.com/shorts/ZoDn-7x9rW8",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-27T11:53:42.284292+00:00"
     },
     {
       "id": "attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-approved-45583359684-short-2",
@@ -95,9 +99,13 @@
       "source_run_id": 45583359684,
       "short_number": 2,
       "approved_at": "2026-11-25T11:07:22.026618+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-2.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-2.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-2.jpg",
+      "youtube_id": "_tjowShbNng",
+      "youtube_url": "https://www.youtube.com/shorts/_tjowShbNng",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-27T11:53:42.284292+00:00"
     },
     {
       "id": "attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-approved-45583359684-short-3",
@@ -107,9 +115,13 @@
       "source_run_id": 45583359684,
       "short_number": 3,
       "approved_at": "2026-11-25T11:07:22.026618+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-3.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-45583359684-short-3.jpg",
+      "youtube_id": "mp_-7Hm85TQ",
+      "youtube_url": "https://www.youtube.com/shorts/mp_-7Hm85TQ",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-27T11:53:42.284292+00:00"
     },
     {
       "id": "goro-majima-virou-pirata-e-chegou-ao-playstation-plus-approved-45477449795-short-1",

@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-26T11:15:29.709899+00:00",
-  "total_discovered": 230,
-  "ready_for_tiktok": 21,
+  "updated_at": "2026-11-27T11:53:42.284292+00:00",
+  "total_discovered": 233,
+  "ready_for_tiktok": 24,
   "waiting_media": [
     {
       "youtube_id": "hvNGrAlPfWA",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "ZoDn-7x9rW8",
+      "youtube_url": "https://www.youtube.com/shorts/ZoDn-7x9rW8",
+      "title": "ATTACK ON TITAN 3 MOSTRA A VIDA DENTRO DAS MURALHAS!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "_tjowShbNng",
+      "youtube_url": "https://www.youtube.com/shorts/_tjowShbNng",
+      "title": "VOCÊ VAI PODER MODIFICAR ARMAS E MONTAR SUA EQUIPE!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "mp_-7Hm85TQ",
+      "youtube_url": "https://www.youtube.com/shorts/mp_-7Hm85TQ",
+      "title": "OS REQUISITOS DE PC DE ATTACK ON TITAN 3 FORAM REVELADOS!",
+      "status": "approved"
+    },
     {
       "youtube_id": "6VEDwvG03IY",
       "youtube_url": "https://www.youtube.com/shorts/6VEDwvG03IY",
