@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source_channel": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-27T11:53:42.284292+00:00",
+  "updated_at": "2026-11-28T11:11:22.165289+00:00",
   "items": [
     {
       "id": "the-witcher-4-fecha-parceria-com-a-sony-o-que-isso-sign-approved-45682554194-short-1",
@@ -47,9 +47,13 @@
       "source_run_id": 45616643145,
       "short_number": 1,
       "approved_at": "2026-11-25T13:56:00.196377+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-1.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-1.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-1.jpg",
+      "youtube_id": "rM_AwaG5HnU",
+      "youtube_url": "https://www.youtube.com/shorts/rM_AwaG5HnU",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-28T11:11:22.165289+00:00"
     },
     {
       "id": "new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--approved-45616643145-short-2",
@@ -59,9 +63,13 @@
       "source_run_id": 45616643145,
       "short_number": 2,
       "approved_at": "2026-11-25T13:56:00.196377+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-2.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-2.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-2.jpg",
+      "youtube_id": "51UaY78jmF8",
+      "youtube_url": "https://www.youtube.com/shorts/51UaY78jmF8",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-28T11:11:22.165289+00:00"
     },
     {
       "id": "new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--approved-45616643145-short-3",
@@ -71,9 +79,13 @@
       "source_run_id": 45616643145,
       "short_number": 3,
       "approved_at": "2026-11-25T13:56:00.196377+00:00",
-      "source": "approved_production_artifact_auto",
+      "source": "youtube_channel",
       "media_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-3.mp4",
-      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-3.jpg"
+      "thumbnail_url": "https://github.com/Luizfcalori/radar-dos-games/releases/download/tiktok-approved-assets/new-game-no-dawnwalker-voce-recomeca-mas-nao-perde-sua--45616643145-short-3.jpg",
+      "youtube_id": "peK_B1ZjkXk",
+      "youtube_url": "https://www.youtube.com/shorts/peK_B1ZjkXk",
+      "youtube_published_at": null,
+      "synced_at": "2026-11-28T11:11:22.165289+00:00"
     },
     {
       "id": "attack-on-titan-3-mostra-a-vida-dentro-das-muralhas-approved-45583359684-short-1",

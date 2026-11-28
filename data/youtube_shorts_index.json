@@ -1,9 +1,9 @@
 {
   "channel": "https://www.youtube.com/@Radardosgamesbr",
   "shorts_url": "https://www.youtube.com/@Radardosgamesbr/shorts",
-  "updated_at": "2026-11-27T11:53:42.284292+00:00",
-  "total_discovered": 233,
-  "ready_for_tiktok": 24,
+  "updated_at": "2026-11-28T11:11:22.165289+00:00",
+  "total_discovered": 236,
+  "ready_for_tiktok": 27,
   "waiting_media": [
     {
       "youtube_id": "hvNGrAlPfWA",
@@ -12,6 +12,24 @@
     }
   ],
   "items": [
+    {
+      "youtube_id": "rM_AwaG5HnU",
+      "youtube_url": "https://www.youtube.com/shorts/rM_AwaG5HnU",
+      "title": "NEW GAME+ NO DAWNWALKER: VOCÊ RECOMEÇA, MAS NÃO PERDE SUA BUILD!",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "51UaY78jmF8",
+      "youtube_url": "https://www.youtube.com/shorts/51UaY78jmF8",
+      "title": "NÍVEL 100 E INIMIGOS MAIS FORTES: O QUE MUDA NO NEW GAME+?",
+      "status": "approved"
+    },
+    {
+      "youtube_id": "peK_B1ZjkXk",
+      "youtube_url": "https://www.youtube.com/shorts/peK_B1ZjkXk",
+      "title": "ARMAS E ARMADURAS GANHAM NOVAS VERSÕES NO DAWNWALKER!",
+      "status": "approved"
+    },
     {
       "youtube_id": "ZoDn-7x9rW8",
       "youtube_url": "https://www.youtube.com/shorts/ZoDn-7x9rW8",
